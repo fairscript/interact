@@ -1,0 +1,30 @@
+{
+  "name": "lambda-sql",
+  "version": "0.1.0",
+  "description": "A (proof of concept for a) (more) type-safe and FP-oriented SQL builder for TypeScript",
+  "keywords": ["lambda", "sql","typescript", "typesafe", "functional", "fp", "orm"],
+  "homepage": "https://github.com/sekwiatkowski/lambda-sql#Readme.md",
+  "license": "MIT",
+  "author": "Sebastian E. Kwiatkowski",
+  "main": "index.ts",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/sekwiatkowski/lambda-sql.git"
+  },
+  "scripts": {
+    "test": "mocha -r ts-node/register test/**/*.ts"
+  },
+  "dependencies": {
+    "arcsecond": "2.0.3",
+    "get-parameter-names": "0.3.0",
+    "js-snakecase": "1.2.0",
+    "parenthesis": "3.1.7"
+  },
+  "devDependencies": {
+    "@types/mocha": "7.0.1",
+    "@types/node": "13.7.7",
+    "mocha": "7.1.0",
+    "ts-node": "8.6.2",
+    "typescript": "3.8.3"
+  }
+}
