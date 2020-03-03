@@ -10,7 +10,7 @@ describe('Table', () => {
                 .select()
                 .toString(),
             joinWithNewLine([
-                'SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.department_id',
+                'SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.salary, t1.department_id',
                 'FROM employees t1'
             ])
         )
@@ -51,7 +51,7 @@ describe('Table', () => {
                     .select()
                     .toString(),
                 joinWithNewLine([
-                    'SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.department_id',
+                    'SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.salary, t1.department_id',
                     'FROM employees t1',
                     'WHERE t1.id = 1'
                 ])
@@ -59,7 +59,7 @@ describe('Table', () => {
         })
 
         it('with two predicates', () => {
-            const expectedSelect = "SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.department_id"
+            const expectedSelect = "SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.salary, t1.department_id"
             const expectedFrom = "FROM employees t1"
 
             assert.equal(
@@ -90,5 +90,53 @@ describe('Table', () => {
 
     })
 
+    describe('can be sorted', () => {
+
+        describe('by one order', () => {
+            it('in ascending direction', () => {
+                assert.equal(
+                    employees
+                        .sortBy(e => e.salary)
+                        .map(e => e.id)
+                        .toString(),
+                    joinWithNewLine([
+                        'SELECT t1.id',
+                        'FROM employees t1',
+                        'ORDER BY t1.salary ASC'
+                    ])
+                )
+            })
+
+            it('in descending direction', () => {
+                assert.equal(
+                    employees
+                        .sortDescendinglyBy(e => e.salary)
+                        .map(e => e.id)
+                        .toString(),
+                    joinWithNewLine([
+                        'SELECT t1.id',
+                        'FROM employees t1',
+                        'ORDER BY t1.salary DESC'
+                    ])
+                )
+            })
+        })
+
+        it('by two orders', () => {
+            assert.equal(
+                employees
+                    .sortBy(e => e.lastName)
+                    .thenBy(e => e.firstName)
+                    .map(e => e.id)
+                    .toString(),
+                joinWithNewLine([
+                    'SELECT t1.id',
+                    'FROM employees t1',
+                    'ORDER BY t1.last_name ASC, t1.first_name ASC'
+                ])
+            )
+        })
+
+    })
 
 })

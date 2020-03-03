@@ -17,7 +17,8 @@ function removeReturnStatement(body: string): string {
 function removeSemicolon(body: string): string {
     if (body.endsWith(';')) {
         return body.substr(0, body.length - 1)
-    } else {
+    }
+    else {
         return body
     }
 }

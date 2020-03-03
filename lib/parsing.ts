@@ -1,6 +1,8 @@
 import {NestedArray} from './parenthesis_parsing'
 import * as A from 'arcsecond'
 import * as toSnakeCase from 'js-snakecase'
+import computeTableAliases from './table_aliases'
+import * as getParameterNames from 'get-parameter-names'
 
 export function parseSegments(parser, segments: NestedArray, result: string = ''): string {
     return segments.reduce((acc, segment) => {
@@ -29,7 +31,7 @@ export function parseSegments(parser, segments: NestedArray, result: string = ''
 
 // Join arrays
 export const join = (array: string[]) => array.join('')
-export const joinWithWhitespace = (array: string[]) => array.join(', ')
+export const joinWithCommaWhitespace = (array: string[]) => array.join(', ')
 export const joinWithNewLine = (array: string[]) => array.join('\n')
 export const joinNonNullWithNewLine = (array: string[]) => joinWithNewLine(array.filter(x => x !== null))
 
@@ -80,8 +82,17 @@ export const comparisonOperators = A.choice([
 
 // Table fields
 const field = identifier.map(fieldIdentifier => toSnakeCase(fieldIdentifier))
-export function createTableFieldParser(aliases: { [parameter: string]: string }) {
-    const table = identifier.map(tableIdentifier => aliases[tableIdentifier])
-    const tableField = A.sequenceOf([table, dot, field]).map(join)
+export function createTableFieldParser(f: Function) {
+    // Extract the parameter names from the function
+    const parameterNames = getParameterNames(f)
+
+    // Compute a dictionary that maps parameter names to table aliases
+    const tableAliases = computeTableAliases(parameterNames)
+
+    // Create a parser for the aliased table name
+    const aliasedTable = identifier.map(tableIdentifier => tableAliases[tableIdentifier])
+
+    const tableField = A.sequenceOf([aliasedTable, dot, field]).map(join)
+
     return tableField
 }

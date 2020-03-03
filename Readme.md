@@ -146,3 +146,59 @@ WHERE (t1.first_name = 'John') AND (t1.last_name = 'Doe')
 ```
 
 Predicates are put into parentheses and concatenated with the `AND` operator when the `filter` method is invoked multiple times.
+
+### Sorting
+
+#### By one order
+
+##### In ascending direction
+
+TypeScript:
+```typescript
+const sortBySql = employees
+    .sortBy(e => e.salary)
+    .map(e => e.id)
+    .toString()
+```
+
+SQL:
+```sql
+SELECT t1.id
+FROM employees t1
+ORDER BY t1.salary ASC
+```
+
+##### In descending direction
+
+TypeScript:
+```typescript
+const sortDescendinglyBySql = employees
+    .sortDescendinglyBy(e => e.salary)
+    .map(e => e.id)
+    .toString()
+```
+
+SQL:
+```sql
+SELECT t1.id
+FROM employees t1
+ORDER BY t1.salary DESC
+```
+
+#### By two orders
+
+TypeScript:
+```typescript
+const sortByTwoOrdersSql = employees
+    .sortBy(e => e.lastName)
+    .thenBy(e => e.firstName)
+    .map(e => e.id)
+    .toString()
+```
+
+SQL:
+```sql
+SELECT t1.id
+FROM employees t1
+ORDER BY t1.last_name ASC, t1.first_name ASC
+```

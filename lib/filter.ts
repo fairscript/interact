@@ -10,12 +10,10 @@ import {
 import {extractLambdaString} from './lambda_string'
 import normalizeQuotes from './quote_normalization'
 import {escapeParenthesesInsideStrings, parseParentheses, unescapeParenthesesInsideStrings} from './parenthesis_parsing'
-import computeTableAliases from './table_aliases'
-import * as getParameterNames from 'get-parameter-names'
 import * as A from 'arcsecond'
 
-function createPredicateParser(aliases: { [parameter: string]: string }) {
-    const tableField = createTableFieldParser(aliases)
+function createPredicateParser<T>(f: (x: T) => boolean) {
+    const tableField = createTableFieldParser(f)
 
     const comparison = A.sequenceOf(
         [
@@ -50,6 +48,9 @@ function createPredicateParser(aliases: { [parameter: string]: string }) {
 }
 
 export function parsePredicate<T>(f: (x: T) => boolean): string {
+    // Create the parser for the given function
+    const parser = createPredicateParser(f)
+
     // Extract the string containing the lambda
     const lambdaString = extractLambdaString(f)
 
@@ -64,15 +65,6 @@ export function parsePredicate<T>(f: (x: T) => boolean): string {
 
     // Unescape parentheses inside strings
     const unescapedSegments = unescapeParenthesesInsideStrings(escapedSegments, positionsOfParentheses)
-
-    // Extract the parameter names from the function
-    const parameterNames = getParameterNames(f)
-
-    // Compute a dictionary that maps parameter names to table aliases
-    const tableAliases = computeTableAliases(parameterNames)
-
-    // Using this dictionary, create the parser
-    const parser = createPredicateParser(tableAliases)
 
     // Apply the parser
     const predicate = parseSegments(parser, unescapedSegments)
