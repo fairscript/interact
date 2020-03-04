@@ -210,7 +210,14 @@ TypeScript:
 ```typescript
 const aggregationSql = employees
     .groupBy(e => ({departmentId: e.departmentId}))
-    .aggregate((k, x) => ({departmentId: k.departmentId, minimum: x.salary.min(), maximum: x.salary.max()}))
+    .aggregate((key, e) => ({
+        departmentId: key.departmentId,
+        average: e.salary.avg(),
+        count: e.salary.count(),
+        maximum: e.salary.max(),
+        minimum: e.salary.min(),
+        sum: e.salary.sum()
+    }))
     .toString()
 ```
 
