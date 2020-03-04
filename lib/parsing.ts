@@ -96,3 +96,24 @@ export function createTableFieldParser(f: Function) {
 
     return tableField
 }
+
+export function createDictionaryParser(tableField, useKeyAsAlias: boolean) {
+    const key = identifier
+
+    const value = tableField
+
+    const keyValuePair = A.sequenceOf([key, A.optionalWhitespace, colon, A.optionalWhitespace, value])
+
+    const keyValuePairMap = useKeyAsAlias
+        ? ([alias, ws1, colon, ws2, field]) => `${field} AS ${alias}`
+        : ([alias, ws1, colon, ws2, field]) => `${field}`
+
+    const mappedKeyValuePair = keyValuePair.map(keyValuePairMap)
+
+    const keyValuePairs = A.sepBy(A.sequenceOf([A.optionalWhitespace, comma, A.optionalWhitespace]))(mappedKeyValuePair).map(joinWithCommaWhitespace)
+
+    const dictionary = A.sequenceOf([openingBracket, A.optionalWhitespace, keyValuePairs, A.optionalWhitespace, closingBracket]).map(([o, ws1, pairs, ws2, c]) => pairs)
+    const dictionaryInParentheses = A.sequenceOf([openingParenthesis, dictionary, closingParenthesis]).map(([o, d, c]) => d)
+
+    return dictionaryInParentheses
+}

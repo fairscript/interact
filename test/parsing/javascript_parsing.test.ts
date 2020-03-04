@@ -1,6 +1,6 @@
-import {aString, float, identifier, integer, join} from '../lib/parsing'
+import {aString, float, identifier, integer} from '../../lib/parsing'
 import * as assert from 'assert'
-import {extractLambdaString} from '../lib/lambda_string'
+import {extractLambdaString} from '../../lib/lambda_string'
 
 describe('aString', () => {
     it('matches quote, character, quote', () => {

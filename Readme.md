@@ -13,6 +13,7 @@ class Employee {
         public firstName: string,
         public lastName: string,
         public title: string,
+        public salary: number,
         public departmentId: string) {
     }
 }

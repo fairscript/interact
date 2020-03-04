@@ -4,6 +4,7 @@ import {joinNonNullWithNewLine, joinWithNewLine} from './parsing'
 import {generateMap} from './map'
 import {generateFilter} from './filter'
 import {generateSortBy} from './sort_by'
+import {generateGroupBy} from './group_by'
 
 export interface Constructor<T> {
     new (...args: any[]): T
@@ -42,7 +43,21 @@ export type Order<T> = {
     direction: 'asc'|'desc'
 }
 
-export class Table<T> {
+class GroupedTable<T, K> {
+    constructor(
+        private readonly generateTableSql: () => string,
+        private readonly getKey: (x: T) => K) {
+    }
+
+    toString() {
+        return joinWithNewLine([
+            this.generateTableSql(),
+            generateGroupBy(this.getKey)
+        ])
+    }
+}
+
+class Table<T> {
     constructor(
         private readonly constructor: Constructor<T>,
         private readonly name: string,
@@ -54,11 +69,11 @@ export class Table<T> {
     }
 
     sortBy(by: By<T>): SortTable<T> {
-        return new SortTable(() => this.toString(), this.constructor, [{ by, direction: 'asc'}])
+        return new SortTable(() => this.toString(), this.constructor, [{ by, direction: 'asc' }])
     }
 
     sortDescendinglyBy(by: By<T>): SortTable<T> {
-        return new SortTable(() => this.toString(), this.constructor, [{ by, direction: 'desc'}])
+        return new SortTable(() => this.toString(), this.constructor, [{ by, direction: 'desc' }])
     }
 
     select(): SelectTable<T> {
@@ -67,6 +82,10 @@ export class Table<T> {
 
     map<U>(f: (x: T) => U): MapTable<T, U> {
         return new MapTable(() => this.toString(), f)
+    }
+
+    groupBy<K>(getKey: (x: T) => K) : GroupedTable<T, K>{
+        return new GroupedTable<T, K>(() => this.toString(), getKey)
     }
 
     toString(): string {
@@ -79,7 +98,7 @@ export class Table<T> {
     }
 }
 
-export class SortTable<T> {
+class SortTable<T> {
     constructor(
         private readonly generateTableSql: () => string,
         private readonly ctor: Constructor<T>,

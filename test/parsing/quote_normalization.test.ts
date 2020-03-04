@@ -1,4 +1,4 @@
-import normalizeQuotes from '../lib/quote_normalization'
+import normalizeQuotes from '../../lib/quote_normalization'
 import * as assert from 'assert'
 
 describe('normalizeQuotes', () => {

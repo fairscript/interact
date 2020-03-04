@@ -1,10 +1,9 @@
-import {Employee} from './test_tables'
-import {parsePredicate} from '../lib/filter'
+import {Employee} from '../test_tables'
+import {parsePredicate} from '../../lib/filter'
 
 import * as assert from 'assert'
 
 describe('parsePredicate', () => {
-
     describe('can parse strings', () => {
         describe('containing', () => {
             it('parentheses', () => {

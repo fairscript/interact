@@ -1,6 +1,6 @@
 import * as assert from 'assert'
-import {parseMap} from '../lib/map'
-import {Employee} from './test_tables'
+import {parseMap} from '../../lib/map'
+import {Employee} from '../test_tables'
 
 describe('parseMap', function () {
     it('can accept the selection of a single property', () => {

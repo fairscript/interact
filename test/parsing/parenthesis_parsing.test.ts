@@ -1,4 +1,4 @@
-import {escapeParenthesesInsideStrings} from '../lib/parenthesis_parsing'
+import {escapeParenthesesInsideStrings} from '../../lib/parenthesis_parsing'
 import * as assert from 'assert'
 
 describe('escapeParenthesesInsideStrings', () => {
