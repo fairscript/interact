@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import {employees} from '../test_tables'
-import {joinWithNewLine} from '../../lib/parsing'
+import {joinWithNewLine} from '../../lib/parsing/parsing'
 
 describe('Selecting', () => {
     it('all fields corresponding to class properties works', () => {

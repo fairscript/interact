@@ -1,5 +1,5 @@
 import {employees} from '../test_tables'
-import {joinWithNewLine} from '../../lib/parsing'
+import {joinWithNewLine} from '../../lib/parsing/parsing'
 import * as assert from 'assert'
 
 describe('Filtering', () => {

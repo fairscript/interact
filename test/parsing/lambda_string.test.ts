@@ -1,4 +1,4 @@
-import {extractLambdaString} from '../../lib/lambda_string'
+import {extractLambdaString} from '../../lib/parsing/lambda_string'
 import * as assert from 'assert'
 
 describe('extractLambdaString', () => {

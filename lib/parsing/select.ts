@@ -1,4 +1,4 @@
-import {Constructor} from './table'
+import {Constructor} from '../table'
 import * as getParameterNames from 'get-parameter-names'
 import * as toSnakeCase from 'js-snakecase'
 

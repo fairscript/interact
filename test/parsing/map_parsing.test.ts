@@ -1,5 +1,5 @@
 import * as assert from 'assert'
-import {parseMap} from '../../lib/map'
+import {parseMap} from '../../lib/parsing/map'
 import {Employee} from '../test_tables'
 
 describe('parseMap', function () {

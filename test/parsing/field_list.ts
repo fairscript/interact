@@ -1,5 +1,5 @@
 import {Employee} from '../test_tables'
-import {computeFieldList} from '../../lib/select'
+import {computeFieldList} from '../../lib/parsing/select'
 import * as assert from 'assert'
 
 describe('computeFieldList', () => {

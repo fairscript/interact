@@ -1,5 +1,5 @@
 import {Employee} from '../test_tables'
-import {parsePredicate} from '../../lib/filter'
+import {parsePredicate} from '../../lib/parsing/filter'
 
 import * as assert from 'assert'
 

@@ -1,6 +1,6 @@
-import {By, Order} from './table'
 import {createTableFieldParser, joinWithCommaWhitespace} from './parsing'
 import {extractLambdaString} from './lambda_string'
+import {By, Order} from '../queries/sorting'
 
 function parseBy<T>(by: By<T>): string {
     const parser = createTableFieldParser(by)
