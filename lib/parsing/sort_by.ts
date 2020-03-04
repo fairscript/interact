@@ -1,9 +1,12 @@
 import {createTableFieldParser, joinWithCommaWhitespace} from './parsing'
 import {extractLambdaString} from './lambda_string'
 import {By, Order} from '../queries/sorting'
+import * as getParameterNames from 'get-parameter-names'
 
 function parseBy<T>(by: By<T>): string {
-    const parser = createTableFieldParser(by)
+    const tableParameterNames = getParameterNames(by)
+
+    const parser = createTableFieldParser(tableParameterNames)
 
     const lambdaString = extractLambdaString(by)
 

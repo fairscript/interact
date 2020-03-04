@@ -1,13 +1,16 @@
 import {extractLambdaString} from './lambda_string'
-import {createDictionaryParser, createTableFieldParser} from './parsing'
+import {createDictionaryParser, createTableFieldParser, joinWithCommaWhitespace} from './parsing'
+import * as getParameterNames from 'get-parameter-names'
 
 function createGetKeyParser<T, U>(f: (x: T) => U) {
-    const tableField = createTableFieldParser(f)
+    const parameterNames = getParameterNames(f)
 
-    return createDictionaryParser(tableField, false)
+    const tableField = createTableFieldParser(parameterNames)
+
+    return createDictionaryParser(tableField)
 }
 
-export function parseGetKey<T, U>(f: (x: T) => U): string {
+export function parseGetKey<T, U>(f: (x: T) => U): Array<[string, string]> {
     const parser = createGetKeyParser(f)
 
     const lambdaString = extractLambdaString(f)
@@ -17,6 +20,6 @@ export function parseGetKey<T, U>(f: (x: T) => U): string {
     return parsingResult.result
 }
 
-export function generateGroupBy<T, K>(f: (x: T) => K): string {
-    return 'GROUP BY ' + parseGetKey(f)
+export function generateGroupBy<T, K>(keyProperties2TableFields: Array<[string, string]>): string {
+    return 'GROUP BY ' + joinWithCommaWhitespace(keyProperties2TableFields.map(([_, field]) => field))
 }

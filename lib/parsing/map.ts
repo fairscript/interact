@@ -1,13 +1,17 @@
 import {extractLambdaString} from './lambda_string'
-import {createDictionaryParser, createTableFieldParser} from './parsing'
+import {createDictionaryParser, createTableFieldParser, joinWithCommaWhitespace} from './parsing'
 import * as A from 'arcsecond'
+import * as getParameterNames from 'get-parameter-names'
 
 function createMapParser<T, U>(f: (x: T) => U) {
-    const tableField = createTableFieldParser(f)
+    const tableParameterNames = getParameterNames(f)
 
-    const dictionaryInParentheses = createDictionaryParser(tableField, true)
+    const tableField = createTableFieldParser(tableParameterNames)
 
-    return A.choice([dictionaryInParentheses, tableField])
+    const dictionaryParser = createDictionaryParser(tableField)
+        .map(pairs => joinWithCommaWhitespace(pairs.map(([alias, field]) => `${field} AS ${alias}`)))
+
+    return A.choice([dictionaryParser, tableField])
 }
 
 export function parseMap<T, U>(f: (x: T) => U): string {

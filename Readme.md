@@ -203,3 +203,20 @@ SELECT t1.id
 FROM employees t1
 ORDER BY t1.last_name ASC, t1.first_name ASC
 ```
+
+### Grouping / Aggregation
+
+TypeScript:
+```typescript
+const aggregationSql = employees
+    .groupBy(e => ({departmentId: e.departmentId}))
+    .aggregate((k, x) => ({departmentId: k.departmentId, minimum: x.salary.min(), maximum: x.salary.max()}))
+    .toString()
+```
+
+SQL:
+```sql
+SELECT t1.department_id AS departmentId, MIN(t1.salary) AS minimum, MAX(t1.salary) AS maximum
+FROM employees t1
+GROUP BY t1.department_id
+```

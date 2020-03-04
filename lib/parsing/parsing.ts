@@ -2,7 +2,6 @@ import {NestedArray} from './parenthesis_parsing'
 import * as A from 'arcsecond'
 import * as toSnakeCase from 'js-snakecase'
 import computeTableAliases from './table_aliases'
-import * as getParameterNames from 'get-parameter-names'
 
 export function parseSegments(parser, segments: NestedArray, result: string = ''): string {
     return segments.reduce((acc, segment) => {
@@ -33,6 +32,7 @@ export function parseSegments(parser, segments: NestedArray, result: string = ''
 export const join = (array: string[]) => array.join('')
 export const joinWithCommaWhitespace = (array: string[]) => array.join(', ')
 export const joinWithNewLine = (array: string[]) => array.join('\n')
+export const joinWithDot = (array: string[]) => array.join('.')
 export const joinNonNullWithNewLine = (array: string[]) => joinWithNewLine(array.filter(x => x !== null))
 
 // Single characters
@@ -81,39 +81,57 @@ export const comparisonOperators = A.choice([
 ])
 
 // Table fields
-const field = identifier.map(fieldIdentifier => toSnakeCase(fieldIdentifier))
-export function createTableFieldParser(f: Function) {
-    // Extract the parameter names from the function
-    const parameterNames = getParameterNames(f)
-
-    // Compute a dictionary that maps parameter names to table aliases
-    const tableAliases = computeTableAliases(parameterNames)
-
-    // Create a parser for the aliased table name
-    const aliasedTable = identifier.map(tableIdentifier => tableAliases[tableIdentifier])
-
-    const tableField = A.sequenceOf([aliasedTable, dot, field]).map(join)
-
-    return tableField
+export function createObjectPropertyParser(objectParser, propertyParser) {
+    return A.sequenceOf([objectParser, dot, propertyParser])
+        .map(([obj, dot, prop]) => [obj, prop])
 }
 
-export function createDictionaryParser(tableField, useKeyAsAlias: boolean) {
-    const key = identifier
+export function createChoiceFromStrings(names: Array<string>) {
+    return A.choice(names.map(A.str))
+}
 
-    const value = tableField
+const invocation = A.str('()')
 
-    const keyValuePair = A.sequenceOf([key, A.optionalWhitespace, colon, A.optionalWhitespace, value])
+function createFunctionInvocationChoice(functionNames: Array<string>) {
+    return A.sequenceOf([createChoiceFromStrings(functionNames), invocation])
+        .map(([functionName, invocation]) => functionName)
+}
 
-    const keyValuePairMap = useKeyAsAlias
-        ? ([alias, ws1, colon, ws2, field]) => `${field} AS ${alias}`
-        : ([alias, ws1, colon, ws2, field]) => `${field}`
+export function createTableFieldParser(tableParameterNames: Array<string>) {
+    // Compute a dictionary that maps parameter names to table aliases
+    const tableAliases = computeTableAliases(tableParameterNames)
 
-    const mappedKeyValuePair = keyValuePair.map(keyValuePairMap)
+    const objectParser = createChoiceFromStrings(tableParameterNames)
+    const propertyParser = identifier
 
-    const keyValuePairs = A.sepBy(A.sequenceOf([A.optionalWhitespace, comma, A.optionalWhitespace]))(mappedKeyValuePair).map(joinWithCommaWhitespace)
+    return createObjectPropertyParser(objectParser, propertyParser)
+        .map(([obj, prop]) => {
+            return [ tableAliases[obj], toSnakeCase(prop) ]
+        })
+        .map(joinWithDot)
+}
 
-    const dictionary = A.sequenceOf([openingBracket, A.optionalWhitespace, keyValuePairs, A.optionalWhitespace, closingBracket]).map(([o, ws1, pairs, ws2, c]) => pairs)
-    const dictionaryInParentheses = A.sequenceOf([openingParenthesis, dictionary, closingParenthesis]).map(([o, d, c]) => d)
+export function createTableFieldAggregationParser(tableParameterNames: Array<string>, operations: Array<string>) {
+    const tableFieldParser = createTableFieldParser(tableParameterNames)
+
+    const aggregationParser = A.sequenceOf([tableFieldParser, dot, createFunctionInvocationChoice(operations)])
+        .map(([tableField, dot, functionName]) => [ tableField, functionName ])
+
+    return aggregationParser
+}
+
+export function createDictionaryParser(valueParser) {
+
+    const keyValuePair = A.sequenceOf([identifier, A.optionalWhitespace, colon, A.optionalWhitespace, valueParser])
+        .map(([alias, ws1, colon, ws2, field]) => [alias, field])
+
+    const keyValuePairs = A.sepBy(A.sequenceOf([A.optionalWhitespace, comma, A.optionalWhitespace]))(keyValuePair)
+
+    const dictionary = A.sequenceOf([openingBracket, A.optionalWhitespace, keyValuePairs, A.optionalWhitespace, closingBracket])
+        .map(([o, ws1, pairs, ws2, c]) => pairs)
+
+    const dictionaryInParentheses = A.sequenceOf([openingParenthesis, dictionary, closingParenthesis])
+        .map(([o, d, c]) => d)
 
     return dictionaryInParentheses
 }

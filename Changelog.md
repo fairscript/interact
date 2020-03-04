@@ -15,3 +15,9 @@
 
 - Implemented basic support for sorting by multiple orders in ascending and descending direction
 - Added sorting examples to the readme
+
+## v0.3
+
+- Tables can now be grouped.
+- Fields in grouped tables can be aggregated through averaging, counting, minimization and maximization operations
+- Added an aggregation example to the readme

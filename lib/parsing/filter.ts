@@ -11,9 +11,13 @@ import {extractLambdaString} from './lambda_string'
 import normalizeQuotes from './quote_normalization'
 import {escapeParenthesesInsideStrings, parseParentheses, unescapeParenthesesInsideStrings} from './parenthesis_parsing'
 import * as A from 'arcsecond'
+import * as getParameterNames from 'get-parameter-names'
 
 function createPredicateParser<T>(f: (x: T) => boolean) {
-    const tableField = createTableFieldParser(f)
+    // Extract the parameter names from the function
+    const tableParameterNames = getParameterNames(f)
+
+    const tableField = createTableFieldParser(tableParameterNames)
 
     const comparison = A.sequenceOf(
         [
