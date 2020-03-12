@@ -1,6 +1,6 @@
 {
   "name": "lambda-sql",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A (proof of concept for a) (more) type-safe and FP-oriented SQL builder for TypeScript",
   "keywords": ["lambda", "sql","typescript", "typesafe", "functional", "fp", "orm"],
   "homepage": "https://github.com/sekwiatkowski/lambda-sql#Readme.md",

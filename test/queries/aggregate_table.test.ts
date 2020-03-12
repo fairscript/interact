@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import {employees} from '../test_tables'
-import {joinWithNewLine} from '../../lib/parsing/parsing'
+import {joinWithNewLine} from '../../lib/parsing/javascript_parsing'
 
 describe('Aggregation', () => {
     const groupedByDepartmentId = employees
@@ -18,7 +18,7 @@ describe('Aggregation', () => {
         assert.equal(
             groupedByDepartmentId
                 .aggregate((k, x) => ({departmentId: k.departmentId, average: x.salary.avg()}))
-                .toString(),
+                .toSql(),
             computeExpectedSql('AVG(t1.salary) AS average')
         )
     })
@@ -27,7 +27,7 @@ describe('Aggregation', () => {
         assert.equal(
             groupedByDepartmentId
                 .aggregate((k, x) => ({departmentId: k.departmentId, count: x.salary.count()}))
-                .toString(),
+                .toSql(),
             computeExpectedSql('COUNT(t1.salary) AS count')
         )
     })
@@ -36,7 +36,7 @@ describe('Aggregation', () => {
         assert.equal(
             groupedByDepartmentId
                 .aggregate((k, x) => ({departmentId: k.departmentId, maximum: x.salary.max()}))
-                .toString(),
+                .toSql(),
             computeExpectedSql('MAX(t1.salary) AS maximum')
         )
     })
@@ -45,7 +45,7 @@ describe('Aggregation', () => {
         assert.equal(
             groupedByDepartmentId
                 .aggregate((k, x) => ({departmentId: k.departmentId, minimum: x.salary.min()}))
-                .toString(),
+                .toSql(),
             computeExpectedSql('MIN(t1.salary) AS minimum')
         )
     })
@@ -54,7 +54,7 @@ describe('Aggregation', () => {
         assert.equal(
             groupedByDepartmentId
                 .aggregate((k, x) => ({departmentId: k.departmentId, sum: x.salary.sum()}))
-                .toString(),
+                .toSql(),
             computeExpectedSql('SUM(t1.salary) AS sum')
         )
     })
@@ -70,7 +70,7 @@ describe('Aggregation', () => {
                     minimum: e.salary.min(),
                     sum: e.salary.sum()
                 }))
-                .toString(),
+                .toSql(),
             computeExpectedSql('AVG(t1.salary) AS average, COUNT(t1.salary) AS count, MAX(t1.salary) AS maximum, MIN(t1.salary) AS minimum, SUM(t1.salary) AS sum')
         )
     })

@@ -1,53 +1,57 @@
-import {generateFrom} from './parsing/from'
-import {joinNonNullWithNewLine} from './parsing/parsing'
-import {generateFilter} from './parsing/filter'
-import {SelectTable} from './queries/selection'
-import {MapTable} from './queries/mapping'
-import {By, SortTable} from './queries/sorting'
-import {GroupTable} from './queries/grouping'
+import {Constructor, SelectStatement} from './select_statement'
+import {FilterTable} from './queries/filter_table'
+import {SortTable} from './queries/sort_table'
+import {SelectTable} from './queries/select_table'
+import {MapTable} from './queries/map_table'
+import {GroupTable} from './queries/group_table'
 
-export interface Constructor<T> {
-    new (...args: any[]): T
+
+export type Predicate<T> = (x: T) => boolean
+
+export type By<T> = (x: T) => number | string
+export type Order<T> = {
+    by: By<T>
+    direction: 'asc' | 'desc'
 }
 
 class Table<T> {
+    private readonly statement: SelectStatement
+
     constructor(
-        private readonly constructor: Constructor<T>,
-        private readonly name: string,
-        private readonly predicates: Array<(x: T) => boolean> = []) {
+        private constructor: Constructor<T>,
+        tableName: string) {
+
+        this.statement = {
+            tableName,
+            selection: [],
+            predicates: [],
+            orders: [],
+            key: null
+        }
     }
 
-    filter(predicate: (x: T) => boolean): Table<T> {
-        return new Table(this.constructor, this.name, this.predicates.concat(predicate))
+    filter(predicate: Predicate<T>): FilterTable<T> {
+        return new FilterTable(this.constructor, this.statement, predicate)
     }
 
     sortBy(by: By<T>): SortTable<T> {
-        return new SortTable(() => this.toString(), this.constructor, [{ by, direction: 'asc' }])
+        return new SortTable(this.constructor, this.statement, { by, direction: 'asc' })
     }
 
     sortDescendinglyBy(by: By<T>): SortTable<T> {
-        return new SortTable(() => this.toString(), this.constructor, [{ by, direction: 'desc' }])
+        return new SortTable(this.constructor, this.statement, { by, direction: 'desc' })
     }
 
     select(): SelectTable<T> {
-        return new SelectTable(() => this.toString(), this.constructor)
+        return new SelectTable(this.constructor, this.statement)
     }
 
     map<U>(f: (x: T) => U): MapTable<T, U> {
-        return new MapTable(() => this.toString(), f)
+        return new MapTable(this.statement, f)
     }
 
     groupBy<K>(getKey: (x: T) => K) : GroupTable<T, K>{
-        return new GroupTable<T, K>(() => this.toString(), getKey)
-    }
-
-    toString(): string {
-        const fromSql = generateFrom(this.name)
-        const filterSql = this.predicates.length > 0 ? generateFilter(this.predicates) : null
-
-        return joinNonNullWithNewLine([
-            fromSql,
-            filterSql])
+        return new GroupTable<T, K>(this.statement, getKey)
     }
 }
 

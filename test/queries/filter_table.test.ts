@@ -1,5 +1,5 @@
 import {employees} from '../test_tables'
-import {joinWithNewLine} from '../../lib/parsing/parsing'
+import {joinWithNewLine} from '../../lib/parsing/javascript_parsing'
 import * as assert from 'assert'
 
 describe('Filtering', () => {
@@ -9,7 +9,7 @@ describe('Filtering', () => {
             employees
                 .filter(e => e.id == 1)
                 .select()
-                .toString(),
+                .toSql(),
             joinWithNewLine([
                 'SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.salary, t1.department_id',
                 'FROM employees t1',
@@ -26,7 +26,7 @@ describe('Filtering', () => {
             employees
                 .filter(e => e.firstName == 'John' && e.lastName == 'Doe')
                 .select()
-                .toString(),
+                .toSql(),
             joinWithNewLine([
                 expectedSelect,
                 expectedFrom,
@@ -39,7 +39,7 @@ describe('Filtering', () => {
                 .filter(e => e.firstName == 'John')
                 .filter(e => e.lastName == 'Doe')
                 .select()
-                .toString(),
+                .toSql(),
             joinWithNewLine([
                 expectedSelect,
                 expectedFrom,

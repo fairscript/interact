@@ -1,34 +1,31 @@
 import * as assert from 'assert'
-import {parseMap} from '../../lib/parsing/map'
+import {parseMap} from '../../lib/parsing/map_parsing'
 import {Employee} from '../test_tables'
+import {createAlias, createGet} from '../../lib/parsing/select_parsing'
 
 describe('parseMap', function () {
     it('can accept the selection of a single property', () => {
-        assert.equal(
+        assert.deepEqual(
             parseMap((e: Employee) => e.id),
-            't1.id'
-        )
-    })
-
-    it('transforms to snake-case naming style', () => {
-        assert.equal(
-            parseMap((e: Employee) => e.firstName),
-            't1.first_name'
+            [ createGet('e', 'id') ]
         )
     })
 
     describe('can parse an object ', () => {
         it('with a single key', () => {
-            assert.equal(
-                parseMap((e: Employee) => ({id: e.id})),
-                't1.id AS id'
+            assert.deepEqual(
+                parseMap((e: Employee) => ({employeeId: e.id})),
+                [ createAlias(createGet('e', 'id'), 'employeeId') ]
             )
         })
 
         it('with two keys', () => {
-            assert.equal(
-                parseMap((e: Employee) => ({firstName: e.firstName, lastName: e.lastName})),
-                't1.first_name AS firstName, t1.last_name AS lastName'
+            assert.deepEqual(
+                parseMap((e: Employee) => ({first: e.firstName, last: e.lastName})),
+                [
+                    createAlias(createGet('e', 'firstName'), 'first'),
+                    createAlias(createGet('e', 'lastName'), 'last')
+                ]
             )
         })
     })

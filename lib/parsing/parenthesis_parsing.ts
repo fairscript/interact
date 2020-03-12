@@ -49,14 +49,16 @@ export function escapeParenthesesInsideStrings(lambdaString: string): [number[],
     return [positions, escapedString]
 }
 
-export function unescapeParenthesesInsideStrings(segments: NestedArray, parentheses: number[], startPosition: number = 0, result: Array<NestedArray> = []): NestedArray {
-    return segments.reduce(({startPosition, result}, unescapedSegment: NestedArray) => {
+export function unescapeParenthesesInsideStrings(segment: NestedSegment, parentheses: number[], startPosition: number = 0): NestedSegment {
+    let currentPosition = startPosition
 
-        if (Array.isArray(unescapedSegment)) {
-            return { startPosition, result: result.concat(unescapeParenthesesInsideStrings(unescapedSegment, parentheses, startPosition)) }
+    return segment.map(item => {
+
+        if (Array.isArray(item)) {
+            return unescapeParenthesesInsideStrings(item, parentheses, currentPosition)
         }
         else {
-            const escaped = unescapedSegment as string
+            const escaped = item as string
             let segmentLength = escaped.length
 
             let unescaped = ''
@@ -67,27 +69,24 @@ export function unescapeParenthesesInsideStrings(segments: NestedArray, parenthe
                 if (parentheses.includes(startPosition + indexWithinSegment)) {
                     if (character == 'O') {
                         unescaped += '('
-                    }
-                    else {
+                    } else {
                         unescaped += ')'
                     }
-                }
-                else {
+                } else {
                     unescaped += character
                 }
 
                 indexWithinSegment++
             }
 
-            return  { startPosition: startPosition + segmentLength, result: result.concat([unescaped]) }
+            return unescaped
         }
-
-    }, {startPosition, result}).result
+    })
 }
 
-export interface NestedArray extends Array<NestedArray | string> {}
+export interface NestedSegment extends Array<NestedSegment | string> {}
 
-export function parseParentheses(input: string): Array<NestedArray> {
+export function parseParentheses(input: string): Array<NestedSegment> {
     return parenthesis(input, {
             brackets: ['()'],
             escape: '\\',

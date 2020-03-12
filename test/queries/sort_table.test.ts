@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import {employees} from '../test_tables'
-import {joinWithNewLine} from '../../lib/parsing/parsing'
+import {joinWithNewLine} from '../../lib/parsing/javascript_parsing'
 
 describe('Sorting', () => {
 
@@ -10,7 +10,7 @@ describe('Sorting', () => {
                 employees
                     .sortBy(e => e.salary)
                     .map(e => e.id)
-                    .toString(),
+                    .toSql(),
                 joinWithNewLine([
                     'SELECT t1.id',
                     'FROM employees t1',
@@ -24,7 +24,7 @@ describe('Sorting', () => {
                 employees
                     .sortDescendinglyBy(e => e.salary)
                     .map(e => e.id)
-                    .toString(),
+                    .toSql(),
                 joinWithNewLine([
                     'SELECT t1.id',
                     'FROM employees t1',
@@ -40,7 +40,7 @@ describe('Sorting', () => {
                 .sortBy(e => e.lastName)
                 .thenBy(e => e.firstName)
                 .map(e => e.id)
-                .toString(),
+                .toSql(),
             joinWithNewLine([
                 'SELECT t1.id',
                 'FROM employees t1',

@@ -1,22 +1,31 @@
-import {aString, float, identifier, integer} from '../../lib/parsing/parsing'
+import {aString, float, identifier, integer} from '../../lib/parsing/javascript_parsing'
 import * as assert from 'assert'
-import {extractLambdaString} from '../../lib/parsing/lambda_string'
 
-describe('aString', () => {
-    it('matches quote, character, quote', () => {
-        assert.equal(aString.run('\'a\'').result, '\'a\'')
+describe('aString matches strings', () => {
+    describe('surrounded by single quotes', () => {
+        it('containing a single character', () => {
+            assert.equal(aString.run("'a'").result, "'a'")
+        })
+
+        it('containing a two characters', () => {
+            assert.equal(aString.run("'ab'").result, "'ab'")
+        })
+
+        it('containing an escaped single quote', () => {
+            assert.equal(aString.run("'I\\'m'").result, "'I\\'m'")
+        })
     })
 
-    it('matches quote, two characters, quote', () => {
-        assert.equal(aString.run('\'ab\'').result, '\'ab\'')
+    describe('surrounded by double quotes', () => {
+        it('containing a single character', () => {
+            assert.equal(aString.run('"a"').result, '"a"')
+        })
+
+        it('containing a two characters', () => {
+            assert.equal(aString.run('"ab"').result, '"ab"')
+        })
     })
 
-    it('matches quote, I, slash, quote, m, quote', () => {
-        const lambdaString = extractLambdaString(() => 'I\'m')
-
-        const result = aString.run(lambdaString).result
-        assert.equal(result, "'I\\'m'")
-    })
 })
 
 describe('integer', () => {
