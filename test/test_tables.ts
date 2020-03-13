@@ -7,8 +7,16 @@ export class Employee {
         public lastName: string,
         public title: string,
         public salary: number,
-        public departmentId: string) {
+        public departmentId: number) {
+    }
+}
+
+export class Department {
+    constructor(
+        public id: number,
+        public name: string) {
     }
 }
 
 export const employees = defineTable(Employee, 'employees')
+export const departments = defineTable(Employee, 'departments')

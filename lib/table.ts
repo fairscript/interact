@@ -4,7 +4,7 @@ import {SortedTable} from './queries/sort_table'
 import {SelectTable} from './queries/select_table'
 import {MapTable} from './queries/map_table'
 import {GroupTable} from './queries/group_table'
-import {JoinSecondTable} from './queries/join_second_tables'
+import {JoinSecondTable} from './queries/join_second_table'
 import {Value} from './column_operations'
 
 
@@ -13,7 +13,7 @@ export class Table<T> {
 
     constructor(
         private constructor: Constructor<T>,
-        tableName: string) {
+        public tableName: string) {
 
         this.statement = {
             tableName,
