@@ -3,26 +3,29 @@ import {createDictionaryParser, createKeyValuePairParser, createObjectPropertyPa
 import * as A from 'arcsecond'
 import * as getParameterNames from 'get-parameter-names'
 import {createAlias, createGet, ColumnOperation} from '../column_operations'
+import {createFindTableIndex} from './table_index'
 
-function createMapParser<T, U>(f: (table: T) => U) {
+function createMapParser<T, U>(f: Function) {
     const parameterNames = getParameterNames(f)
+
+    const findTableIndex = createFindTableIndex(parameterNames)
 
     const objectProperty = createObjectPropertyParser(parameterNames)
 
     const keyValuePair = createKeyValuePairParser(objectProperty)
-        .map(([alias, [object, property]]) => createAlias(createGet(1, property), alias))
+        .map(([alias, [object, property]]) => createAlias(createGet(findTableIndex(object), property), alias))
 
     const dictionaryParser = createDictionaryParser(keyValuePair)
 
     return A.choice([
         dictionaryParser,
         objectProperty
-            .map(([object, property]) => createGet(1, property))
+            .map(([object, property]) => createGet(findTableIndex(object), property))
             .map(expr => [expr])]
     )
 }
 
-export function parseMap<T, U>(f: (table: T) => U): Array<ColumnOperation> {
+export function parseMap(f: Function): Array<ColumnOperation> {
     const parser = createMapParser(f)
 
     const lambdaString = extractLambdaString(f)

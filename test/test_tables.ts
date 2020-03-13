@@ -19,4 +19,4 @@ export class Department {
 }
 
 export const employees = defineTable(Employee, 'employees')
-export const departments = defineTable(Employee, 'departments')
+export const departments = defineTable(Department, 'departments')

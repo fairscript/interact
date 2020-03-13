@@ -5,14 +5,19 @@ import {generateOrderBy} from './order_by_generation'
 import {joinWithNewLine} from '../parsing/javascript_parsing'
 import {SelectStatement} from '../select_statement'
 import {generateGroupBy} from './group_by_generation'
+import {generateInnerJoin} from './join_generation'
 
 export function generateSql(statement: SelectStatement) {
-    const {selection, tableName, predicates, key, orders} = statement
+    const {selection, tableName, predicates, key, orders, joins} = statement
 
     const parts = [
         generateSelect(selection),
         generateFrom(tableName)
     ]
+
+    if (joins.length > 0) {
+        parts.push(generateInnerJoin(joins))
+    }
 
     if (predicates.length > 0) {
         parts.push(generateWhere(predicates))
