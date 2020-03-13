@@ -3,10 +3,12 @@ import {departments, employees} from '../test_tables'
 import {joinWithNewLine} from '../../lib/parsing/javascript_parsing'
 
 describe('Mapping on joined two tables', () => {
+    const join = employees
+        .join(departments, e => e.departmentId, d => d.id)
+
     it('works for a single value', () => {
         assert.equal(
-            employees
-                .join(departments, e => e.departmentId, d => d.id)
+            join
                 .map(e => e.id)
                 .toSql(),
             joinWithNewLine([

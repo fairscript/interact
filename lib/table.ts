@@ -12,8 +12,8 @@ export class Table<T> {
     private readonly statement: SelectStatement
 
     constructor(
-        private constructor: Constructor<T>,
-        public tableName: string) {
+        protected constructor: Constructor<T>,
+        protected tableName: string) {
 
         this.statement = {
             tableName,
@@ -50,7 +50,7 @@ export class Table<T> {
     }
 
     join<U, K>(otherTable: Table<U>, left: (firstTable: T) => K, right: (secondTable: U) => K) {
-        return new JoinSecondTable<T, U, K>(this.statement, otherTable, left, right)
+        return new JoinSecondTable<T, U, K>(this.constructor, otherTable.constructor, this.statement, otherTable.tableName, left, right)
     }
 }
 
