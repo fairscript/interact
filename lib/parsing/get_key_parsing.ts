@@ -1,7 +1,7 @@
 import {extractLambdaString} from '../lambda_string_extraction'
 import {createDictionaryParser, createKeyValuePairParser, createObjectPropertyParser} from './javascript_parsing'
 import * as getParameterNames from 'get-parameter-names'
-import {createGet, Get} from './select_parsing'
+import {createGet, Get} from '../queries/column_operations'
 
 function createGetKeyParser<T, U>(f: (x: T) => U) {
     const parameterNames = getParameterNames(f)

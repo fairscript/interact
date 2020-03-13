@@ -3,7 +3,7 @@ import {employees} from '../test_tables'
 import {joinWithNewLine} from '../../lib/parsing/javascript_parsing'
 
 describe('Selecting', () => {
-    it('all fields corresponding to class properties works', () => {
+    it('all columns corresponding to class properties works', () => {
         assert.equal(
             employees
                 .select()

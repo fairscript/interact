@@ -21,3 +21,10 @@
 - Tables can now be grouped.
 - Fields in grouped tables can be aggregated through averaging, counting, minimization and maximization operations
 - Added an aggregation example to the readme
+
+## v0.4
+
+- Separated parsing JavaScript code from generating SQL code
+- Introduced the SelectStatement interface to represent the information required to generate a SELECT statement. 
+- Introduced modeling of column-level operations
+- Extended filter functionality through a new predicate parser

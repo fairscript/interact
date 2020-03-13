@@ -1,5 +1,4 @@
 import {Aggregatable} from '../queries/aggregate_table'
-import {Aggregate, createAggregate, createAccessKey, createGet, createAlias} from './select_parsing'
 import {extractLambdaString} from '../lambda_string_extraction'
 import {
     createDictionaryParser, createFunctionInvocationChoice, createKeyValuePairParser,
@@ -9,6 +8,7 @@ import {
 } from './javascript_parsing'
 import * as getParameterNames from 'get-parameter-names'
 import * as A from 'arcsecond'
+import {Aggregate, createAccessKey, createAggregate, createAlias, createGet} from '../queries/column_operations'
 
 const operations = ['avg', 'count', 'min', 'max', 'sum']
 

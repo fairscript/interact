@@ -2,7 +2,7 @@ import {extractLambdaString} from '../lambda_string_extraction'
 import {createDictionaryParser, createKeyValuePairParser, createObjectPropertyParser} from './javascript_parsing'
 import * as A from 'arcsecond'
 import * as getParameterNames from 'get-parameter-names'
-import {createAlias, createGet, PropertyOperation} from './select_parsing'
+import {createAlias, createGet, ColumnOperation} from '../queries/column_operations'
 
 function createMapParser<T, U>(f: (x: T) => U) {
     const parameterNames = getParameterNames(f)
@@ -22,7 +22,7 @@ function createMapParser<T, U>(f: (x: T) => U) {
     )
 }
 
-export function parseMap<T, U>(f: (x: T) => U): Array<PropertyOperation> {
+export function parseMap<T, U>(f: (x: T) => U): Array<ColumnOperation> {
     const parser = createMapParser(f)
 
     const lambdaString = extractLambdaString(f)

@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import {parseMap} from '../../lib/parsing/map_parsing'
 import {Employee} from '../test_tables'
-import {createAlias, createGet} from '../../lib/parsing/select_parsing'
+import {createAlias, createGet} from '../../lib/queries/column_operations'
 
 describe('parseMap', function () {
     it('can accept the selection of a single property', () => {
