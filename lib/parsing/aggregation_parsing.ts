@@ -1,4 +1,3 @@
-import {Aggregatable} from '../queries/aggregate_table'
 import {extractLambdaString} from '../lambda_string_extraction'
 import {
     createDictionaryParser, createFunctionInvocationChoice, createKeyValuePairParser,
@@ -8,7 +7,8 @@ import {
 } from './javascript_parsing'
 import * as getParameterNames from 'get-parameter-names'
 import * as A from 'arcsecond'
-import {Aggregate, createAccessKey, createAggregate, createAlias, createGet} from '../queries/column_operations'
+import {Aggregate, createAccessKey, createAggregate, createAlias, createGet} from '../column_operations'
+import {AggregatableTable} from '../queries/aggregate_table'
 
 const operations = ['avg', 'count', 'min', 'max', 'sum']
 
@@ -32,7 +32,7 @@ function createAggregatePropertyParser(objectParameterNames) {
         .map(([alias, [object, [property, aggregation]]]) => createAlias(createAggregate(aggregation, createGet(object, property)), alias))
 }
 
-function createParser<T, K, A>(f: (k: K, x: Aggregatable<T>) => A) {
+function createAggregationParser<T, K, A>(f: (k: K, x: AggregatableTable<T>) => A) {
     const parameterNames = getParameterNames(f)
 
     const keyParameterName = parameterNames[0]
@@ -49,10 +49,10 @@ function createParser<T, K, A>(f: (k: K, x: Aggregatable<T>) => A) {
     return createDictionaryParser(keyValuePair)
 }
 
-export function parseAggregate<T, K, A>(f: (k: K, x: Aggregatable<T>) => A): Aggregate[] {
+export function parseAggregation<T, K, A>(f: (key: K, table: AggregatableTable<T>) => A): Aggregate[] {
     const lambdaString = extractLambdaString(f)
 
-    const parser = createParser(f)
+    const parser = createAggregationParser(f)
 
     const result = parser.run(lambdaString).result
 

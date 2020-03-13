@@ -1,6 +1,7 @@
-import {ObjectProperty, PredicateExpression, TailItem, Value} from '../parsing/predicate_parsing'
+import {ObjectProperty, PredicateExpression, TailItem} from '../parsing/predicate_parsing'
 import {joinWithWhitespace} from '../parsing/javascript_parsing'
 import * as toSnakeCase from 'js-snakecase'
+import {Value} from '../column_operations'
 
 
 function generateObjectProperty(objectProperty: ObjectProperty) {

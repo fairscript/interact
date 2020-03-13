@@ -1,8 +1,8 @@
 import {SelectStatement} from '../select_statement'
 import {SelectSqlGenerator} from '../sql_generation'
-import {parseAggregate} from '../parsing/aggregation_parsing'
+import {parseAggregation} from '../parsing/aggregation_parsing'
 
-interface AggregatableField<F> {
+export type AggregatableColumn<F> = {
     avg(): F
     count(): F
     max(): F
@@ -10,18 +10,18 @@ interface AggregatableField<F> {
     sum(): F
 }
 
-export type Aggregatable<T> = {
-    [F in keyof T]: AggregatableField<F>
+export type AggregatableTable<T> = {
+    [F in keyof T]: AggregatableColumn<F>
 }
 
 export class AggregateTable<T, K, A> extends SelectSqlGenerator {
     constructor(
         existingStatement: SelectStatement,
-        private readonly aggregation: (key: K, x: Aggregatable<T>) => A) {
+        private readonly aggregate: (key: K, table: AggregatableTable<T>) => A) {
 
         super({
             ...existingStatement,
-            selection: parseAggregate<T, K, A>(aggregation)
+            selection: parseAggregation<T, K, A>(aggregate)
         })
     }
 }

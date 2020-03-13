@@ -1,2 +1,2 @@
-import { createTable } from './table'
-export { createTable }
+import { defineTable } from './table'
+export { defineTable }

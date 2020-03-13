@@ -1,11 +1,17 @@
 import {Constructor, SelectStatement} from '../select_statement'
-import {By, Order} from '../table'
 import {SelectTable} from './select_table'
 import {MapTable} from './map_table'
 import {SelectSqlGenerator} from '../sql_generation'
 import {parseOrder} from '../parsing/order_parsing'
+import {Value} from '../column_operations'
 
-export class SortTable<T> extends SelectSqlGenerator {
+export interface Order<T> {
+    sortBy: (x: T) => Value
+    direction: 'asc' | 'desc'
+}
+
+
+export class SortedTable<T> extends SelectSqlGenerator {
 
     constructor(
         private constructor: Constructor<T>,
@@ -18,21 +24,19 @@ export class SortTable<T> extends SelectSqlGenerator {
         })
     }
 
-    thenBy(by: By<T>): SortTable<T> {
-        return new SortTable(this.constructor, this.statement, {by, direction: 'asc'})
+    thenBy(sortBy: (table: T) => Value): SortedTable<T> {
+        return new SortedTable(this.constructor, this.statement, {sortBy, direction: 'asc'})
     }
 
-    thenDescendinglyBy(by: By<T>): SortTable<T> {
-        return new SortTable(this.constructor, this.statement, {by, direction: 'desc'})
+    thenDescendinglyBy(sortBy: (table: T) => Value): SortedTable<T> {
+        return new SortedTable(this.constructor, this.statement, {sortBy, direction: 'desc'})
     }
 
     select(): SelectTable<T> {
         return new SelectTable(this.constructor, this.statement)
     }
 
-    map<U>(f: (x: T) => U): MapTable<T, U> {
+    map<U>(f: (table: T) => U): MapTable<T, U> {
         return new MapTable(this.statement, f)
     }
-
-
 }

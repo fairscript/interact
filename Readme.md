@@ -19,15 +19,15 @@ class Employee {
 }
 ```
 
-### Step 2) Create a Table instance from this class
+### Step 2) Define a Table instance from this class
 
 ```typescript
-import { createTable } from 'lambda-sql'
+import { defineTable } from 'lambda-sql'
 
-const employees = createTable(Employee, 'employees')
+const employees = defineTable(Employee, 'employees')
 ```
 
-The `createTable` function takes two parameters: a constructor and the database table name.
+The `defineTable` function takes two parameters: a constructor and the database table name.
 
 ### Step 3) Start building queries
 

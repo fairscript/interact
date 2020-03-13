@@ -1,5 +1,5 @@
 import {joinWithCommaWhitespace} from '../parsing/javascript_parsing'
-import {Get} from '../queries/column_operations'
+import {Get} from '../column_operations'
 import {generateGet} from './column_generation'
 
 function generateKey(key: Get[]): string {

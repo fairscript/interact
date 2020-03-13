@@ -1,4 +1,4 @@
-import {createTable} from '../lib'
+import {defineTable} from '../lib'
 
 export class Employee {
     constructor(
@@ -11,4 +11,4 @@ export class Employee {
     }
 }
 
-export const employees = createTable(Employee, 'employees')
+export const employees = defineTable(Employee, 'employees')

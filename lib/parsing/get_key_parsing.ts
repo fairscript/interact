@@ -1,9 +1,9 @@
 import {extractLambdaString} from '../lambda_string_extraction'
 import {createDictionaryParser, createKeyValuePairParser, createObjectPropertyParser} from './javascript_parsing'
 import * as getParameterNames from 'get-parameter-names'
-import {createGet, Get} from '../queries/column_operations'
+import {createGet, Get} from '../column_operations'
 
-function createGetKeyParser<T, U>(f: (x: T) => U) {
+function createGetKeyParser<T, K>(f: (table: T) => K) {
     const parameterNames = getParameterNames(f)
 
     const objectProperty = createObjectPropertyParser(parameterNames)
@@ -14,7 +14,7 @@ function createGetKeyParser<T, U>(f: (x: T) => U) {
     return createDictionaryParser(keyValuePair)
 }
 
-export function parseGetKey<T, U>(f: (x: T) => U): Get[] {
+export function parseGetKey<T, K>(f: (table: T) => K): Get[] {
     const parser = createGetKeyParser(f)
 
     const lambdaString = extractLambdaString(f)

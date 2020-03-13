@@ -1,4 +1,4 @@
-import {Aggregatable, AggregateTable} from './aggregate_table'
+import {AggregatableTable, AggregateTable} from './aggregate_table'
 import {SelectStatement} from '../select_statement'
 import {parseGetKey} from '../parsing/get_key_parsing'
 
@@ -7,7 +7,7 @@ export class GroupTable<T, K> {
 
     constructor(
         existingStatement: SelectStatement,
-        getKey: (x: T) => K) {
+        getKey: (table: T) => K) {
 
         this.statement = {
             ...existingStatement,
@@ -15,8 +15,7 @@ export class GroupTable<T, K> {
         }
     }
 
-    aggregate<A>(aggregation: (k: K, x: Aggregatable<T>) => A): AggregateTable<T, K, A> {
+    aggregate<A>(aggregation: (key: K, table: AggregatableTable<T>) => A): AggregateTable<T, K, A> {
         return new AggregateTable(this.statement, aggregation)
     }
-
 }

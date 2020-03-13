@@ -1,4 +1,4 @@
-import {AccessKey, Aggregate, Alias, ColumnOperation, Get} from '../queries/column_operations'
+import {AccessKey, Aggregate, Alias, ColumnOperation, Get} from '../column_operations'
 import {joinWithCommaWhitespace} from '../parsing/javascript_parsing'
 import * as toSnakeCase from 'js-snakecase'
 

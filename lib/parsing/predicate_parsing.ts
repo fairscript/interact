@@ -16,9 +16,7 @@ import {
 } from './parenthesis_parsing'
 import * as A from 'arcsecond'
 import * as getParameterNames from 'get-parameter-names'
-import {Predicate} from '../table'
-
-export type Value = string|number
+import {Value} from '../column_operations'
 
 export interface ObjectProperty {
     object: string,
@@ -299,7 +297,7 @@ function createBinaryLogicalOperatorSplitter(parameterNames: string[]): (segment
     return split
 }
 
-export function parsePredicate<T>(f: Predicate<T>): PredicateExpression {
+export function parsePredicate<T>(f: (table: T) => boolean): PredicateExpression {
     // Extract the string containing the lambda
     const lambdaString = extractLambdaString(f)
 
