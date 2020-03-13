@@ -9,7 +9,7 @@ function createGetKeyParser<T, K>(f: (table: T) => K) {
     const objectProperty = createObjectPropertyParser(parameterNames)
 
     const keyValuePair = createKeyValuePairParser(objectProperty)
-        .map(([alias, [object, property]]) => createGet(object, property))
+        .map(([alias, [object, property]]) => createGet(1, property))
 
     return createDictionaryParser(keyValuePair)
 }

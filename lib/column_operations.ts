@@ -30,17 +30,19 @@ export function createAggregate(aggregation: 'avg' | 'count' | 'min' | 'max' | '
     }
 }
 
+export type TableIndex = 1 | 2
+
 export interface Get {
     kind: 'get'
-    object: string | null,
-    property: string,
+    table: TableIndex | null,
+    column: string,
 }
 
-export function createGet(object: string | null, property: string): Get {
+export function createGet(table: TableIndex | null, column: string): Get {
     return {
         kind: 'get',
-        object,
-        property
+        table,
+        column
     }
 }
 

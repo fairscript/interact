@@ -29,7 +29,7 @@ function createAggregatePropertyParser(objectParameterNames) {
     const keyValuePair = createKeyValuePairParser(value)
 
     return keyValuePair
-        .map(([alias, [object, [property, aggregation]]]) => createAlias(createAggregate(aggregation, createGet(object, property)), alias))
+        .map(([alias, [object, [property, aggregation]]]) => createAlias(createAggregate(aggregation, createGet(1, property)), alias))
 }
 
 function createAggregationParser<T, K, A>(f: (k: K, x: AggregatableTable<T>) => A) {

@@ -14,8 +14,8 @@ describe('parseJoin', () => {
                 (d: Department) => d.id),
             {
                 tableName: 'departments',
-                left: createGet('e', 'departmentId'),
-                right: createGet('d', 'id')
+                left: createGet(1, 'departmentId'),
+                right: createGet(2, 'id')
             })
 
     })

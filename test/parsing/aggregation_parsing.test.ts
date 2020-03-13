@@ -15,14 +15,14 @@ describe('parseAggregate', () => {
     it('works for aggregation', () => {
         assert.deepEqual(
             parseAggregation((_, e: AggregatableTable<Employee>) => ({ maximumSalary: e.salary.max() })),
-            [createAlias(createAggregate('max', createGet('e', 'salary')), 'maximumSalary')]
+            [createAlias(createAggregate('max', createGet(1, 'salary')), 'maximumSalary')]
         )
     })
 
     it('works for key access and aggregation combined', () => {
         assert.deepEqual(
             parseAggregation((key: {departmentId: string}, e: AggregatableTable<Employee>) => ({ departmentId: key.departmentId, maximumSalary: e.salary.max() })),
-            [createAccessKey('departmentId', 'departmentId'), createAlias(createAggregate('max', createGet('e', 'salary')), 'maximumSalary')]
+            [createAccessKey('departmentId', 'departmentId'), createAlias(createAggregate('max', createGet(1, 'salary')), 'maximumSalary')]
         )
     })
 })

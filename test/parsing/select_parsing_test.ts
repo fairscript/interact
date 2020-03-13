@@ -3,16 +3,16 @@ import {extractPropertiesFromConstructor} from '../../lib/parsing/select_parsing
 import * as assert from 'assert'
 
 describe('extractPropertiesFromConstructor', () => {
-    it('returns a comma/space-separated list of property names', () => {
+    it('returns an array of objects satisfying the Get interface', () => {
         assert.deepEqual(
             extractPropertiesFromConstructor(Employee),
             [
-                {object: null, property: 'id', kind: 'get'},
-                {object: null, property: 'firstName', kind: 'get'},
-                {object: null, property: 'lastName', kind: 'get'},
-                {object: null, property: 'title', kind: 'get'},
-                {object: null, property: 'salary', kind: 'get'},
-                {object: null, property: 'departmentId', kind: 'get'}
+                {table: 1, column: 'id', kind: 'get'},
+                {table: 1, column: 'firstName', kind: 'get'},
+                {table: 1, column: 'lastName', kind: 'get'},
+                {table: 1, column: 'title', kind: 'get'},
+                {table: 1, column: 'salary', kind: 'get'},
+                {table: 1, column: 'departmentId', kind: 'get'}
             ])
     })
 })

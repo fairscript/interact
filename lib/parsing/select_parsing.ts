@@ -4,5 +4,5 @@ import {createGet, ColumnOperation} from '../column_operations'
 
 export function extractPropertiesFromConstructor<T>(constructor: Constructor<T>): Array<ColumnOperation> {
     return getParameterNames(constructor)
-        .map(property => createGet(null, property))
+        .map(property => createGet(1, property))
 }

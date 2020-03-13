@@ -7,7 +7,7 @@ export function generateAggregate(aggregate: Aggregate): string {
 }
 
 export function generateGet(get: Get): string {
-    return 't1' + '.' + toSnakeCase(get.property)
+    return `t${get.table}.${toSnakeCase(get.column)}`
 }
 
 export function generateAlias(alias: Alias): string {

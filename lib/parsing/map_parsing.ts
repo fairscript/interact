@@ -10,14 +10,14 @@ function createMapParser<T, U>(f: (table: T) => U) {
     const objectProperty = createObjectPropertyParser(parameterNames)
 
     const keyValuePair = createKeyValuePairParser(objectProperty)
-        .map(([alias, [object, property]]) => createAlias(createGet(object, property), alias))
+        .map(([alias, [object, property]]) => createAlias(createGet(1, property), alias))
 
     const dictionaryParser = createDictionaryParser(keyValuePair)
 
     return A.choice([
         dictionaryParser,
         objectProperty
-            .map(([object, property]) => createGet(object, property))
+            .map(([object, property]) => createGet(1, property))
             .map(expr => [expr])]
     )
 }
