@@ -1,31 +1,37 @@
 import {extractLambdaString} from '../lambda_string_extraction'
 import * as getParameterNames from 'get-parameter-names'
 import {createObjectPropertyParser} from './javascript_parsing'
-import {Value} from '../column_operations'
-import {Order} from '../queries/sort_table'
+import {Direction} from '../queries/sort_table'
+import {createFindTableIndex} from './table_index'
+import {TableIndex} from '../column_operations'
 
 export interface OrderExpression {
-    object: string,
-    property: string,
+    table: TableIndex,
+    column: string,
     direction: 'asc'|'desc'
 }
 
-function parseSortBy<T>(sortBy: (table: T) => Value): [string, string] {
+function parseSortBy<T>(sortBy: Function): [TableIndex, string] {
     const parameterNames = getParameterNames(sortBy)
 
+    const findTableIndex = createFindTableIndex(parameterNames)
+
     const parser = createObjectPropertyParser(parameterNames)
+        .map(([object, property]) => {
+            return [findTableIndex(object), property]
+        })
 
     const lambdaString = extractLambdaString(sortBy)
 
     return parser.run(lambdaString).result
 }
 
-export function parseOrder<T>(order: Order<T>): OrderExpression {
-    const [object, property] = parseSortBy(order.sortBy)
+export function parseOrder<T>(sortBy: Function, direction: Direction): OrderExpression {
+    const [table, column] = parseSortBy(sortBy)
 
     return {
-        object,
-        property,
-        direction: order.direction
+        table,
+        column,
+        direction
     }
 }

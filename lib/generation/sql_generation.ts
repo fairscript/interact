@@ -7,7 +7,7 @@ import {SelectStatement} from '../select_statement'
 import {generateGroupBy} from './group_by_generation'
 import {generateInnerJoin} from './join_generation'
 
-export function generateSql(statement: SelectStatement) {
+export function generateSql(statement: SelectStatement): string {
     const {selection, tableName, predicates, key, orders, joins} = statement
 
     const parts = [

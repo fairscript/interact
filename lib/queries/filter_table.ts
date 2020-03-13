@@ -1,5 +1,5 @@
 import {Constructor, SelectStatement} from '../select_statement'
-import {SortedTable} from './sort_table'
+import {SortTable} from './sort_table'
 import {SelectTable} from './select_table'
 import {MapTable} from './map_table'
 import {GroupTable} from './group_table'
@@ -23,12 +23,12 @@ export class FilterTable<T> {
         return new FilterTable(this.constructor, this.statement, predicate)
     }
 
-    sortBy(sortBy: (table: T) => Value): SortedTable<T> {
-        return new SortedTable(this.constructor, this.statement, {sortBy, direction: 'asc'})
+    sortBy(sortBy: (table: T) => Value): SortTable<T> {
+        return new SortTable(this.constructor, this.statement, sortBy, 'asc')
     }
 
-    sortDescendinglyBy(sortBy: (table: T) => Value): SortedTable<T> {
-        return new SortedTable(this.constructor, this.statement, {sortBy, direction: 'desc'})
+    sortDescendinglyBy(sortBy: (table: T) => Value): SortTable<T> {
+        return new SortTable(this.constructor, this.statement, sortBy, 'desc')
     }
 
     select(): SelectTable<T> {

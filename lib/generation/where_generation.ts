@@ -4,15 +4,15 @@ import * as toSnakeCase from 'js-snakecase'
 import {Value} from '../column_operations'
 
 
-function generateObjectProperty(objectProperty: ObjectProperty) {
+function generateObjectProperty(objectProperty: ObjectProperty): string {
     return `t1.${toSnakeCase(objectProperty.property)}`
 }
 
-function generateComparisonOperator(operator: '=') {
+function generateComparisonOperator(operator: '='): string {
     return '='
 }
 
-function generateValue(value: Value) {
+function generateValue(value: Value): string {
     if (typeof value === 'string') {
         return "'" + value +  "'"
     }
@@ -21,7 +21,7 @@ function generateValue(value: Value) {
     }
 }
 
-function generateBinaryLogicalOperator(operator: '&&' | '||') {
+function generateBinaryLogicalOperator(operator: '&&' | '||'): string {
     switch (operator) {
         case '&&':
             return 'AND'
@@ -30,7 +30,7 @@ function generateBinaryLogicalOperator(operator: '&&' | '||') {
     }
 }
 
-function generateTailItem(item: TailItem) {
+function generateTailItem(item: TailItem): string {
     return `${generateBinaryLogicalOperator(item.operator)} ${generatePredicate(item.expression)}`
 }
 

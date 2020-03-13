@@ -10,6 +10,6 @@ function generateJoinExpressions(joinExpressions: JoinExpression[]): string {
     return joinWithNewLine(joinExpressions.map(generateJoinExpression))
 }
 
-export function generateInnerJoin(joinExpressions: JoinExpression[]) {
+export function generateInnerJoin(joinExpressions: JoinExpression[]): string {
     return generateJoinExpressions(joinExpressions)
 }

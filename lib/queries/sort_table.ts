@@ -5,31 +5,28 @@ import {SelectSqlGenerator} from '../sql_generation'
 import {parseOrder} from '../parsing/order_parsing'
 import {Value} from '../column_operations'
 
-export interface Order<T> {
-    sortBy: (x: T) => Value
-    direction: 'asc' | 'desc'
-}
+export type Direction = 'asc' | 'desc'
 
-
-export class SortedTable<T> extends SelectSqlGenerator {
+export class SortTable<T> extends SelectSqlGenerator {
 
     constructor(
         private constructor: Constructor<T>,
         existingStatement: SelectStatement,
-        additionalOrder: Order<T>) {
+        sortBy: (x: T) => Value,
+        direction: Direction) {
 
         super({
             ...existingStatement,
-            orders: existingStatement.orders.concat(parseOrder(additionalOrder))
+            orders: existingStatement.orders.concat(parseOrder(sortBy, direction))
         })
     }
 
-    thenBy(sortBy: (table: T) => Value): SortedTable<T> {
-        return new SortedTable(this.constructor, this.statement, {sortBy, direction: 'asc'})
+    thenBy(sortBy: (table: T) => Value): SortTable<T> {
+        return new SortTable(this.constructor, this.statement, sortBy, 'asc')
     }
 
-    thenDescendinglyBy(sortBy: (table: T) => Value): SortedTable<T> {
-        return new SortedTable(this.constructor, this.statement, {sortBy, direction: 'desc'})
+    thenDescendinglyBy(sortBy: (table: T) => Value): SortTable<T> {
+        return new SortTable(this.constructor, this.statement, sortBy, 'desc')
     }
 
     select(): SelectTable<T> {
