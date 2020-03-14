@@ -6,6 +6,8 @@ import {Value} from '../../column_operations'
 import {SortTable} from '../one/sort_table'
 import {SortTwoTables} from './sort_two_tables'
 import {FilterTwoTables} from './filter_two_tables'
+import {GroupTable} from '../one/group_table'
+import {GroupTwoTables} from './group_two_tables'
 
 export class JoinSecondTable<T1, T2, K1> {
     private readonly statement: SelectStatement
@@ -42,6 +44,10 @@ export class JoinSecondTable<T1, T2, K1> {
 
     select(first: string, second: string): SelectTwoTables<T1, T2> {
         return new SelectTwoTables<T1, T2>(this.firstConstructor, this.secondConstructor, this.statement, first, second)
+    }
+
+    groupBy<K>(getKey: (first: T1, second: T2) => K) : GroupTwoTables<T1, T2, K>{
+        return new GroupTwoTables<T1, T2, K>(this.statement, getKey)
     }
 }
 

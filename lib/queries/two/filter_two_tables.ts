@@ -4,6 +4,8 @@ import {Value} from '../../column_operations'
 import {SortTwoTables} from './sort_two_tables'
 import {SelectTwoTables} from './select_two_tables'
 import {MapTwoTables} from './map_two_tables'
+import {GroupTable} from '../one/group_table'
+import {GroupTwoTables} from './group_two_tables'
 
 export class FilterTwoTables<T1, T2> {
     private readonly statement: SelectStatement
@@ -39,4 +41,7 @@ export class FilterTwoTables<T1, T2> {
         return new MapTwoTables(this.statement, f)
     }
 
+    groupBy<K>(getKey: (first: T1, second: T2) => K) : GroupTwoTables<T1, T2, K>{
+        return new GroupTwoTables<T1, T2, K>(this.statement, getKey)
+    }
 }
