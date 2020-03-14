@@ -40,7 +40,7 @@ The `defineTable` function takes two parameters: a constructor and the database 
 ### Step 3) Start building queries
 
 ```typescript
-const sql = employees
+employees
     .filter(e => e.id === 1)
     .map(e => ({ firstName: e.firstName, lastName: e.lastName }))
     .toSql()
@@ -60,7 +60,7 @@ WHERE t1.id = 1
 
 TypeScript:
 ```typescript
-const selectSql = employees
+employees
     .select()
     .toSql()
 ``` 
@@ -79,7 +79,7 @@ Note that the `select` method selects all table columns that correspond to class
 
 TypeScript:
 ```typescript
-const mapToValueSql = employees
+employees
     .map(e => e.id)
     .toSql()
 ```
@@ -93,7 +93,7 @@ FROM employees t1
 #### Mapping to an object
 TypeScript:
 ```typescript
-const mapToObject = employees
+employees
     .map(e => ({ firstName: e.firstName, lastName: e.lastName}))
     .toSql(),
 ```
@@ -108,7 +108,7 @@ FROM employees t1`
 
 #### Single predicate
 ```typescript
-const filterWithSinglePredicate = employees
+employees
     .filter(e => e.id == 1)
     .select()
 
@@ -123,7 +123,7 @@ const filterWithSinglePredicate = employees
 
 TypeScript:
 ```typescript
-const filterWithConjunction1 = employees
+employees
    .filter(e => e.firstName == 'John' && e.lastName == 'Doe')
    .select()
    .toSql()
@@ -140,7 +140,7 @@ WHERE t1.first_name = 'John' AND t1.last_name = 'Doe'
 
 TypeScript:
 ```typescript
-const filterWithConjunction2 = employees
+employees
     .filter(e => e.firstName == 'John')
     .filter(e => e.lastName == 'Doe')
     .select()
@@ -164,7 +164,7 @@ Predicates are put into parentheses and concatenated with the `AND` operator whe
 
 TypeScript:
 ```typescript
-const sortBySql = employees
+employees
     .sortBy(e => e.salary)
     .map(e => e.id)
     .toSql()
@@ -181,7 +181,7 @@ ORDER BY t1.salary ASC
 
 TypeScript:
 ```typescript
-const sortDescendinglyBySql = employees
+employees
     .sortDescendinglyBy(e => e.salary)
     .map(e => e.id)
     .toSql()
@@ -198,7 +198,7 @@ ORDER BY t1.salary DESC
 
 TypeScript:
 ```typescript
-const sortByTwoOrdersSql = employees
+employees
     .sortBy(e => e.lastName)
     .thenBy(e => e.firstName)
     .map(e => e.id)
@@ -216,7 +216,7 @@ ORDER BY t1.last_name ASC, t1.first_name ASC
 
 TypeScript:
 ```typescript
-const aggregationSql = employees
+employees
     .groupBy(e => ({departmentId: e.departmentId}))
     .aggregate((key, e) => ({
         departmentId: key.departmentId,
@@ -248,7 +248,7 @@ GROUP BY t1.department_id
 
 TypeScript:
 ```typescript
-const joinSql = employees
+employees
     .join(departments, e => e.departmentId, d => d.id)
     .map((e, d) => ({firstName: e.firstName, lastName: e.lastName, department: d.name}))
     .toSql()
@@ -265,7 +265,7 @@ INNER JOIN departments t2 ON t1.department_id = t2.id
 
 TypeScript:
 ```typescript
-const selectSql = employees
+employees
     .join(departments, e => e.departmentId, d => d.id)
     .select('employee', 'department')
     .toSql()
