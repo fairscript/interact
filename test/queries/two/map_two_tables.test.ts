@@ -1,6 +1,6 @@
 import * as assert from 'assert'
-import {departments, employees} from '../test_tables'
-import {joinWithNewLine} from '../../lib/parsing/javascript_parsing'
+import {departments, employees} from '../../test_tables'
+import {joinWithNewLine} from '../../../lib/parsing/javascript_parsing'
 
 describe('Mapping on joined two tables', () => {
     const join = employees

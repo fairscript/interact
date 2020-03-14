@@ -1,9 +1,9 @@
-import {Constructor, SelectStatement} from '../select_statement'
-import {parseJoin} from '../parsing/join_parsing'
+import {Constructor, SelectStatement} from '../../select_statement'
+import {parseJoin} from '../../parsing/join_parsing'
 import {MapTwoTables} from './map_two_tables'
 import {SelectTwoTables} from './select_two_tables'
-import {Value} from '../column_operations'
-import {SortTable} from './sort_table'
+import {Value} from '../../column_operations'
+import {SortTable} from '../one/sort_table'
 import {SortTwoTables} from './sort_two_tables'
 
 export class JoinSecondTable<T1, T2, K1> {

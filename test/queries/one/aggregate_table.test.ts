@@ -1,6 +1,6 @@
 import * as assert from 'assert'
-import {employees} from '../test_tables'
-import {joinWithNewLine} from '../../lib/parsing/javascript_parsing'
+import {employees} from '../../test_tables'
+import {joinWithNewLine} from '../../../lib/parsing/javascript_parsing'
 
 describe('Aggregation', () => {
     const groupedByDepartmentId = employees

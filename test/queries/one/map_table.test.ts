@@ -1,6 +1,6 @@
 import * as assert from 'assert'
-import {employees} from '../test_tables'
-import {joinWithNewLine} from '../../lib/parsing/javascript_parsing'
+import {employees} from '../../test_tables'
+import {joinWithNewLine} from '../../../lib/parsing/javascript_parsing'
 
 describe('Mapping on a single table', () => {
     it('works for a single value', () => {

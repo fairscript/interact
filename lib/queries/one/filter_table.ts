@@ -1,10 +1,10 @@
-import {Constructor, SelectStatement} from '../select_statement'
+import {Constructor, SelectStatement} from '../../select_statement'
 import {SortTable} from './sort_table'
 import {SelectTable} from './select_table'
 import {MapTable} from './map_table'
 import {GroupTable} from './group_table'
-import {parsePredicate} from '../parsing/predicate_parsing'
-import {Value} from '../column_operations'
+import {parsePredicate} from '../../parsing/predicate_parsing'
+import {Value} from '../../column_operations'
 
 export class FilterTable<T> {
     private readonly statement: SelectStatement

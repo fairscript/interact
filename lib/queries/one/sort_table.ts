@@ -1,9 +1,9 @@
-import {Constructor, SelectStatement} from '../select_statement'
+import {Constructor, SelectStatement} from '../../select_statement'
 import {SelectTable} from './select_table'
 import {MapTable} from './map_table'
-import {SelectSqlGenerator} from '../sql_generation'
-import {parseOrder} from '../parsing/order_parsing'
-import {Value} from '../column_operations'
+import {SelectSqlGenerator} from '../../sql_generation'
+import {parseOrder} from '../../parsing/order_parsing'
+import {Value} from '../../column_operations'
 
 export type Direction = 'asc' | 'desc'
 

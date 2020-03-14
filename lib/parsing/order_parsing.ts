@@ -1,7 +1,7 @@
 import {extractLambdaString} from '../lambda_string_extraction'
 import * as getParameterNames from 'get-parameter-names'
 import {createObjectPropertyParser} from './javascript_parsing'
-import {Direction} from '../queries/sort_table'
+import {Direction} from '../queries/one/sort_table'
 import {createFindTableIndex} from './table_index'
 import {TableIndex} from '../column_operations'
 

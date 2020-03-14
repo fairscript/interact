@@ -1,6 +1,6 @@
-import {SelectStatement} from '../select_statement'
-import {SelectSqlGenerator} from '../sql_generation'
-import {parseAggregation} from '../parsing/aggregation_parsing'
+import {SelectStatement} from '../../select_statement'
+import {SelectSqlGenerator} from '../../sql_generation'
+import {parseAggregation} from '../../parsing/aggregation_parsing'
 
 export type AggregatableColumn<F> = {
     avg(): F

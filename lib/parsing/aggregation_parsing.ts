@@ -8,7 +8,7 @@ import {
 import * as getParameterNames from 'get-parameter-names'
 import * as A from 'arcsecond'
 import {Aggregate, createAccessKey, createAggregate, createAlias, createGet} from '../column_operations'
-import {AggregatableTable} from '../queries/aggregate_table'
+import {AggregatableTable} from '../queries/one/aggregate_table'
 
 const operations = ['avg', 'count', 'min', 'max', 'sum']
 

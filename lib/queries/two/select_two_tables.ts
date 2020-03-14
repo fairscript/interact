@@ -1,6 +1,6 @@
-import {Constructor, SelectStatement} from '../select_statement'
-import {SelectSqlGenerator} from '../sql_generation'
-import {parseMultiTableSelect} from '../parsing/select_parsing'
+import {Constructor, SelectStatement} from '../../select_statement'
+import {SelectSqlGenerator} from '../../sql_generation'
+import {parseMultiTableSelect} from '../../parsing/select_parsing'
 
 export class SelectTwoTables<T1, T2> extends SelectSqlGenerator {
     constructor(

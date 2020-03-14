@@ -1,10 +1,10 @@
 import {Constructor, SelectStatement} from './select_statement'
-import {FilterTable} from './queries/filter_table'
-import {SortTable} from './queries/sort_table'
-import {SelectTable} from './queries/select_table'
-import {MapTable} from './queries/map_table'
-import {GroupTable} from './queries/group_table'
-import {JoinSecondTable} from './queries/join_second_table'
+import {FilterTable} from './queries/one/filter_table'
+import {SortTable} from './queries/one/sort_table'
+import {SelectTable} from './queries/one/select_table'
+import {MapTable} from './queries/one/map_table'
+import {GroupTable} from './queries/one/group_table'
+import {JoinSecondTable} from './queries/two/join_second_table'
 import {Value} from './column_operations'
 
 

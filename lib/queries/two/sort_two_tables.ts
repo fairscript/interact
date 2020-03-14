@@ -1,12 +1,12 @@
-import {Constructor, SelectStatement} from '../select_statement'
-import {SelectTable} from './select_table'
-import {MapTable} from './map_table'
-import {SelectSqlGenerator} from '../sql_generation'
-import {parseOrder} from '../parsing/order_parsing'
-import {Value} from '../column_operations'
+import {Constructor, SelectStatement} from '../../select_statement'
+import {SelectTable} from '../one/select_table'
+import {MapTable} from '../one/map_table'
+import {SelectSqlGenerator} from '../../sql_generation'
+import {parseOrder} from '../../parsing/order_parsing'
+import {Value} from '../../column_operations'
 import {SelectTwoTables} from './select_two_tables'
 import {MapTwoTables} from './map_two_tables'
-import {Direction} from './sort_table'
+import {Direction} from '../one/sort_table'
 
 export class SortTwoTables<T1, T2> extends SelectSqlGenerator {
 

@@ -1,6 +1,6 @@
 import {AggregatableTable, AggregateTable} from './aggregate_table'
-import {SelectStatement} from '../select_statement'
-import {parseGetKey} from '../parsing/get_key_parsing'
+import {SelectStatement} from '../../select_statement'
+import {parseGetKey} from '../../parsing/get_key_parsing'
 
 export class GroupTable<T, K> {
     private readonly statement: SelectStatement

@@ -2,7 +2,7 @@ import * as assert from 'assert'
 import {parseAggregation} from '../../lib/parsing/aggregation_parsing'
 import {Employee} from '../test_tables'
 import {createAccessKey, createAggregate, createAlias, createGet} from '../../lib/column_operations'
-import {AggregatableTable} from '../../lib/queries/aggregate_table'
+import {AggregatableTable} from '../../lib/queries/one/aggregate_table'
 
 describe('parseAggregate', () => {
     it('works for key access', () => {
