@@ -25,13 +25,17 @@ export interface Comparison {
     kind: 'comparison'
 }
 
-export function createComparison(left: Get, operator: '=', right: Value): Comparison {
+function createComparison(left: Get, operator: '=', right: Value): Comparison {
     return {
         left,
         operator,
         right,
         kind: 'comparison'
     }
+}
+
+export function createEquality(left: Get, right: Value): Comparison {
+    return createComparison(left, '=', right)
 }
 
 export interface InsideParentheses {
