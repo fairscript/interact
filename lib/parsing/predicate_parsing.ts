@@ -30,20 +30,53 @@ export interface Comparison {
     kind: 'comparison'
 }
 
+export function createComparison(left: ObjectProperty, operator: '=', right: Value): Comparison {
+    return {
+        left,
+        operator,
+        right,
+        kind: 'comparison'
+    }
+}
+
 export interface InsideParentheses {
     inside: PredicateExpression
     kind: 'inside'
 }
 
+export function createInsideParentheses(inside: PredicateExpression): InsideParentheses {
+    return {
+        inside,
+        kind: 'inside'
+    }
+}
+
 export interface TailItem {
     operator: '&&'|'||',
     expression: PredicateExpression
+    kind: 'tail-item'
+}
+
+export function createTailItem(operator: '&&'|'||', expression: PredicateExpression): TailItem {
+    return {
+        operator,
+        expression,
+        kind: 'tail-item'
+    }
 }
 
 export interface Concatenation {
     head: PredicateExpression,
     tail: TailItem[],
     kind: 'concatenation'
+}
+
+export function createConcatenation(head: PredicateExpression, tail: TailItem[]): Concatenation {
+    return {
+        head,
+        tail,
+        kind: 'concatenation'
+    }
 }
 
 export type PredicateExpression = InsideParentheses | Concatenation | Comparison
@@ -92,7 +125,7 @@ function createConcatenationParser(comparison, tailItems) {
 }
 
 function createLeafParser(parameterNames) {
-    const mapToComparisonObject = ([left, operator, right]) => ({ left, operator: '=', right, kind: 'comparison' })
+    const mapToComparisonObject = ([left, operator, right]) => createComparison(left, '=', right)
 
     const objectPropertyParser = createObjectPropertyParser(parameterNames).map(([object, property]) => ({ object, property }))
     const comparisonParser = createComparisonParser(objectPropertyParser, createValueParser(aString.map(x => x.slice(1, x.length-1)), aNumber))
@@ -108,11 +141,7 @@ function createLeafParser(parameterNames) {
                 }
             })
 
-            return {
-                head,
-                tail,
-                kind: 'concatenation'
-            }
+            return createConcatenation(head, tail)
         })
 
 
@@ -144,7 +173,7 @@ function createSegmentParser(parameterNames: String[]): (segment: NestedSegment)
     function parseInsideParentheses(segment: NestedSegment): InsideParentheses {
         const inside = parseSegment(segment)
 
-        return { inside, kind: 'inside' }
+        return createInsideParentheses(inside)
     }
 
     function parseHead(segment: NestedSegment): [PredicateExpression, number] {
@@ -168,54 +197,51 @@ function createSegmentParser(parameterNames: String[]): (segment: NestedSegment)
         throw Error(`Unsupported head segment: ${segment}`)
     }
 
+    function parseTailItem(segment: NestedSegment, index: number): [TailItem, number] {
+        const operator = segment[index]
+        if (typeof operator !== 'string' || (operator !== '&&' && operator !== '||')) {
+            throw Error(`Unsupported tail segment: ${segment}\nExpected a binary logical operator at position ${index}`)
+        }
+
+        const remainingSegments = segment.length-index-1
+        const nextSegment = segment[index + 1]
+        if (typeof nextSegment !== 'string') {
+            throw Error(`Unsupported tail segment: ${segment}\\nExpected string at position ${index+1}`)
+        }
+
+        // [ '&&', '(', [..], ')' ]
+        if (nextSegment === '(' && remainingSegments >= 3) {
+
+            const arr = segment[index + 2]
+            if (!Array.isArray(arr)) {
+                throw Error(`Unsupported tail segment: ${segment}\\nExpected an array at position ${index+2}`)
+            }
+
+            const closingParenthesis = segment[index + 3]
+            if (typeof closingParenthesis !== 'string' || closingParenthesis !== ')') {
+                throw Error(`Unsupported tail segment: ${segment}\\nExpected closing parenthesis at position ${index+3}`)
+            }
+
+            return [createTailItem(operator, parseInsideParentheses(arr)), 4]
+        }
+        // [ '&&', 'e.id === 1' ]
+        else {
+            const expression = parseLeaf([nextSegment])
+
+            return [createTailItem(operator, expression), 2]
+        }
+    }
+
     function parseTail(segment: NestedSegment, start: number): TailItem[] {
         const tail: TailItem[] = []
 
         let index = start
 
         while (index < segment.length-1) {
-            const operator = segment[index]
-            if (typeof operator !== 'string' || (operator !== '&&' && operator !== '||')) {
-                throw Error(`Unsupported tail segment: ${segment}\nExpected a binary logical operator at position ${index}`)
-            }
-
-            const remainingSegments = segment.length-index-1
-            const nextSegment = segment[index + 1]
-            if (typeof nextSegment !== 'string') {
-                throw Error(`Unsupported tail segment: ${segment}\\nExpected string at position ${index+1}`)
-            }
-
-            // [ '&&', '(', [..], ')' ]
-            if (nextSegment === '(' && remainingSegments >= 3) {
-
-                const arr = segment[index + 2]
-                if (!Array.isArray(arr)) {
-                    throw Error(`Unsupported tail segment: ${segment}\\nExpected an array at position ${index+2}`)
-                }
-
-                const closingParenthesis = segment[index + 3]
-                if (typeof closingParenthesis !== 'string' || closingParenthesis !== ')') {
-                    throw Error(`Unsupported tail segment: ${segment}\\nExpected closing parenthesis at position ${index+3}`)
-                }
-
-                tail.push({
-                    operator,
-                    expression: parseInsideParentheses(arr)
-                })
-
-                index += 4
-            }
-            // [ '&&', 'e.id === 1' ]
-            else {
-                const expression = parseLeaf([nextSegment])
-
-                tail.push({
-                    operator,
-                    expression
-                })
-
-                index += 2
-            }
+            const [item, addToIndex]  = parseTailItem(segment, index)
+            
+            tail.push(item)
+            index += addToIndex
         }
 
         return tail
@@ -235,12 +261,7 @@ function createSegmentParser(parameterNames: String[]): (segment: NestedSegment)
             const [head, startTail] = parseHead(segment)
             const tail = parseTail(segment, startTail)
 
-            return {
-                head,
-                tail,
-                kind: 'concatenation'
-            }
-
+            return createConcatenation(head, tail)
         }
     }
 
