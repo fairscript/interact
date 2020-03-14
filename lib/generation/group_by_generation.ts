@@ -1,11 +1,11 @@
 import {joinWithCommaWhitespace} from '../parsing/javascript_parsing'
-import {Get} from '../column_operations'
 import {generateGet} from './column_generation'
+import {PartOfKey} from '../parsing/get_key_parsing'
 
-function generateKey(key: Get[]): string {
-    return joinWithCommaWhitespace(key.map(generateGet))
+function generateKey(key: PartOfKey[]): string {
+    return joinWithCommaWhitespace(key.map(alias => generateGet(alias.get)))
 }
 
-export function generateGroupBy<T, K>(key: Get[]): string {
+export function generateGroupBy<T, K>(key: PartOfKey[]): string {
     return 'GROUP BY ' + generateKey(key)
 }

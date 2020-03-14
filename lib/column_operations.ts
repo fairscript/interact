@@ -1,6 +1,6 @@
 export type Value = string | number
 
-export type ColumnOperation = Alias | Get | Aggregate | AccessKey
+export type ColumnOperation = Alias | Get | Aggregate
 
 export interface Alias {
     kind: 'alias'
@@ -43,19 +43,5 @@ export function createGet(table: TableIndex | null, column: string): Get {
         kind: 'get',
         table,
         column
-    }
-}
-
-export interface AccessKey {
-    kind: 'access-key'
-    property: string,
-    alias: string
-}
-
-export function createAccessKey(property: string | null, alias: string): AccessKey {
-    return {
-        kind: 'access-key',
-        property,
-        alias
     }
 }

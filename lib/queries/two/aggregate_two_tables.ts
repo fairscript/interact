@@ -14,10 +14,10 @@ export type AggregatableTable<T> = {
     [F in keyof T]: AggregatableColumn<F>
 }
 
-export class AggregateTable<T, K, A> extends SelectSqlGenerator {
+export class AggregateTwoTables<T1, T2, K, A> extends SelectSqlGenerator {
     constructor(
         existingStatement: SelectStatement,
-        aggregation: (key: K, table: AggregatableTable<T>) => A) {
+        aggregation: (key: K, first: AggregatableTable<T1>, second: AggregatableTable<T2>) => A) {
 
         super({
             ...existingStatement,
