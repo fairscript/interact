@@ -4,7 +4,7 @@ A (proof of concept for a) (more) type-safe and FP-oriented SQL builder for Type
 
 ## Getting started
 
-### Step 1) Define a class
+### Step 1) Define classes
 
 ```typescript
 class Employee {
@@ -17,14 +17,22 @@ class Employee {
         public departmentId: string) {
     }
 }
+
+class Department {
+    constructor(
+        public id: number,
+        public name: string) {
+    }
+}
 ```
 
-### Step 2) Define a Table instance from this class
+### Step 2) Define tables
 
 ```typescript
 import { defineTable } from 'lambda-sql'
 
 const employees = defineTable(Employee, 'employees')
+const departments = defineTable(Department, 'departments')
 ```
 
 The `defineTable` function takes two parameters: a constructor and the database table name.
@@ -35,7 +43,7 @@ The `defineTable` function takes two parameters: a constructor and the database 
 const sql = employees
     .filter(e => e.id === 1)
     .map(e => ({ firstName: e.firstName, lastName: e.lastName }))
-    .toString()
+    .toSql()
 ```
 
 This generates the following SQL query:
@@ -54,7 +62,7 @@ TypeScript:
 ```typescript
 const selectSql = employees
     .select()
-    .toString()
+    .toSql()
 ``` 
 
 SQL:
@@ -73,7 +81,7 @@ TypeScript:
 ```typescript
 const mapToValueSql = employees
     .map(e => e.id)
-    .toString()
+    .toSql()
 ```
 
 SQL:
@@ -87,7 +95,7 @@ TypeScript:
 ```typescript
 const mapToObject = employees
     .map(e => ({ firstName: e.firstName, lastName: e.lastName}))
-    .toString(),
+    .toSql(),
 ```
 
 SQL:
@@ -118,7 +126,7 @@ TypeScript:
 const filterWithConjunction1 = employees
    .filter(e => e.firstName == 'John' && e.lastName == 'Doe')
    .select()
-   .toString()
+   .toSql()
 ```
 
 SQL:
@@ -136,7 +144,7 @@ const filterWithConjunction2 = employees
     .filter(e => e.firstName == 'John')
     .filter(e => e.lastName == 'Doe')
     .select()
-    .toString()
+    .toSql()
 ````
 
 SQL:
@@ -159,7 +167,7 @@ TypeScript:
 const sortBySql = employees
     .sortBy(e => e.salary)
     .map(e => e.id)
-    .toString()
+    .toSql()
 ```
 
 SQL:
@@ -176,7 +184,7 @@ TypeScript:
 const sortDescendinglyBySql = employees
     .sortDescendinglyBy(e => e.salary)
     .map(e => e.id)
-    .toString()
+    .toSql()
 ```
 
 SQL:
@@ -194,7 +202,7 @@ const sortByTwoOrdersSql = employees
     .sortBy(e => e.lastName)
     .thenBy(e => e.firstName)
     .map(e => e.id)
-    .toString()
+    .toSql()
 ```
 
 SQL:
@@ -218,7 +226,7 @@ const aggregationSql = employees
         minimum: e.salary.min(),
         sum: e.salary.sum()
     }))
-    .toString()
+    .toSql()
 ```
 
 SQL:
@@ -232,4 +240,40 @@ SELECT
     SUM(t1.salary) AS sum
 FROM employees t1
 GROUP BY t1.department_id
+```
+
+### Joins
+
+#### Joining two tables
+
+TypeScript:
+```typescript
+const joinSql = employees
+    .join(departments, e => e.departmentId, d => d.id)
+    .map((e, d) => ({firstName: e.firstName, lastName: e.lastName, department: d.name}))
+    .toSql()
+```
+
+SQL:
+```sql
+SELECT t1.first_name AS firstName, t1.last_name as lastName, t2.name AS department
+FROM employees t1
+INNER JOIN departments t2 ON t1.department_id = t2.id
+```
+
+#### Selecting all columns corresponding to class properties
+
+TypeScript:
+```typescript
+const selectSql = employees
+    .join(departments, e => e.departmentId, d => d.id)
+    .select('employee', 'department')
+    .toSql()
+```
+
+SQL:
+```sql
+SELECT t1.id AS employee_id, t1.first_name AS employee_firstName, t1.last_name AS employee_lastName, t1.title AS employee_title, t1.salary AS employee_salary, t1.department_id AS employee_departmentId, t2.id AS department_id, t2.name AS department_name
+FROM employees t1
+INNER JOIN departments t2 ON t1.department_id = t2.id
 ```
