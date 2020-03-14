@@ -17,6 +17,7 @@ import {
 import * as A from 'arcsecond'
 import * as getParameterNames from 'get-parameter-names'
 import {createGet, Get, Value} from '../column_operations'
+import {createFindTableIndex} from './table_index'
 
 export interface Comparison {
     left: Get,
@@ -134,7 +135,9 @@ function createConcatenationParser(comparison, tailItems) {
 function createLeafParser(parameterNames) {
     const mapToComparisonObject = ([left, operator, right]) => createComparison(left, '=', right)
 
-    const objectPropertyParser = createObjectPropertyParser(parameterNames).map(([object, property]) => createGet(1, property))
+    let findTableIndex = createFindTableIndex(parameterNames)
+
+    const objectPropertyParser = createObjectPropertyParser(parameterNames).map(([object, property]) => createGet(findTableIndex(object), property))
     const comparisonParser = createComparisonParser(objectPropertyParser, createValueParser(aString.map(x => x.slice(1, x.length-1)), aNumber))
         .map(mapToComparisonObject)
 
@@ -325,7 +328,7 @@ function createBinaryLogicalOperatorSplitter(parameterNames: string[]): (segment
     return split
 }
 
-export function parsePredicate<T>(f: (table: T) => boolean): PredicateExpression {
+export function parsePredicate(f: Function): PredicateExpression {
     // Extract the string containing the lambda
     const lambdaString = extractLambdaString(f)
 

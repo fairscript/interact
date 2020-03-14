@@ -1,4 +1,4 @@
-import {Employee} from '../test_tables'
+import {departments, Employee, employees} from '../test_tables'
 import {
     createAnd,
     createConcatenation, createEquality,
@@ -21,7 +21,7 @@ describe('parsePredicate', () => {
         describe('with a double equality sign', () => {
             it('with an integer', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => e.id == 1),
+                    parsePredicate(e => e.id == 1),
                     idEqualsOne)
             })
 
@@ -29,13 +29,13 @@ describe('parsePredicate', () => {
                 describe('surrounded by', () => {
                     it('single quotes', () => {
                         assert.deepEqual(
-                            parsePredicate<Employee>(e => e.title == 'some title'),
+                            parsePredicate(e => e.title == 'some title'),
                             createEquality(createGet(1, 'title'), 'some title'))
                     })
 
                     it('double quotes', () => {
                         assert.deepEqual(
-                            parsePredicate<Employee>(e => e.title == "some title"),
+                            parsePredicate(e => e.title == "some title"),
                             createEquality(createGet(1, 'title'), 'some title'))
                     })
                 })
@@ -43,19 +43,19 @@ describe('parsePredicate', () => {
                 describe('containing', () => {
                     it('parentheses', () => {
                         assert.deepEqual(
-                            parsePredicate<Employee>(e => e.title == '(text in parentheses)'),
+                            parsePredicate(e => e.title == '(text in parentheses)'),
                             createEquality(createGet(1, 'title'), '(text in parentheses)'))
                     })
 
                     it('double parentheses', () => {
                         assert.deepEqual(
-                            parsePredicate<Employee>(e => e.title == '((text in parentheses))'),
+                            parsePredicate(e => e.title == '((text in parentheses))'),
                             createEquality(createGet(1, 'title'), '((text in parentheses))'))
                     })
 
                     it('escaped single quotes', () => {
                         assert.deepEqual(
-                            parsePredicate<Employee>(e => e.title == 'I\'m'),
+                            parsePredicate(e => e.title == 'I\'m'),
                             createEquality(createGet(1, 'title'), "I\\'m"))
                     })
                 })
@@ -65,42 +65,42 @@ describe('parsePredicate', () => {
         describe('with a triple equality sign', () => {
             it('with an integer', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => e.id === 1),
+                    parsePredicate(e => e.id === 1),
                     idEqualsOne)
             })
 
             it('with a string', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => e.title === 'some title'),
+                    parsePredicate(e => e.title === 'some title'),
                     createEquality(createGet(1, 'title'), 'some title'))
             })
         })
     })
 
-    describe('can parse parentheses containing a comparison', () => {
+    describe('can parse comparisons inside parentheses', () => {
         it('with an integer', () => {
             assert.deepEqual(
-                parsePredicate<Employee>(e => (e.id === 1)),
+                parsePredicate(e => (e.id === 1)),
                 createInsideParentheses(idEqualsOne))
         })
 
         it('with a string', () => {
             assert.deepEqual(
-                parsePredicate<Employee>(e => (e.title == 'some title')),
+                parsePredicate(e => (e.title == 'some title')),
                 createInsideParentheses(createEquality(createGet(1, 'title'), 'some title')))
         })
     })
 
-    describe('can parse parentheses inside parentheses containing a comparison', () => {
+    describe('can parse comparisons inside parentheses inside parentheses', () => {
         it('with an integer', () => {
             assert.deepEqual(
-                parsePredicate<Employee>(e => ((e.id == 1))),
+                parsePredicate(e => ((e.id == 1))),
                 createInsideParentheses(createInsideParentheses(idEqualsOne)))
         })
 
         it('with a string', () => {
             assert.deepEqual(
-                parsePredicate<Employee>(e => ((e.title == 'some title'))),
+                parsePredicate(e => ((e.title == 'some title'))),
                 createInsideParentheses(createInsideParentheses(createEquality(createGet(1, 'title'), 'some title'))))
         })
     })
@@ -110,7 +110,7 @@ describe('parsePredicate', () => {
         describe('of two literals', () => {
             it('without parentheses', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => e.firstName == 'John' && e.lastName == 'Doe'),
+                    parsePredicate(e => e.firstName == 'John' && e.lastName == 'Doe'),
                     createConcatenation(
                         firstNameEqualsJohn,
                         [
@@ -121,7 +121,7 @@ describe('parsePredicate', () => {
 
             it('with parentheses around the conjunction', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => (e.firstName == 'John' && e.lastName == 'Doe')),
+                    parsePredicate(e => (e.firstName == 'John' && e.lastName == 'Doe')),
                     createInsideParentheses(
                         createConcatenation(
                             firstNameEqualsJohn,
@@ -135,7 +135,7 @@ describe('parsePredicate', () => {
 
             it('with parentheses around each literal', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => (e.firstName == 'John') && (e.lastName == 'Doe')),
+                    parsePredicate(e => (e.firstName == 'John') && (e.lastName == 'Doe')),
                     createConcatenation(
                         createInsideParentheses(
                             firstNameEqualsJohn
@@ -150,7 +150,7 @@ describe('parsePredicate', () => {
 
             it('with parentheses around the first of the two literals', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => (e.firstName == 'John') && e.lastName == 'Doe'),
+                    parsePredicate(e => (e.firstName == 'John') && e.lastName == 'Doe'),
                     createConcatenation(
                         createInsideParentheses(
                             firstNameEqualsJohn
@@ -165,7 +165,7 @@ describe('parsePredicate', () => {
 
             it('with parentheses around the second of the two literals', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => e.firstName == 'John' && (e.lastName == 'Doe')),
+                    parsePredicate(e => e.firstName == 'John' && (e.lastName == 'Doe')),
                     createConcatenation(
                         firstNameEqualsJohn,
                         [
@@ -183,7 +183,7 @@ describe('parsePredicate', () => {
         describe('of three literals', () => {
             it('with no parentheses', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => e.title == 'CEO' && e.firstName == 'John' && e.lastName == 'Doe'),
+                    parsePredicate(e => e.title == 'CEO' && e.firstName == 'John' && e.lastName == 'Doe'),
                     createConcatenation(
                         titleEqualsCeo,
                         [
@@ -195,7 +195,7 @@ describe('parsePredicate', () => {
 
             it('with parentheses around the conjunction', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => (e.title == 'CEO' && e.firstName == 'John' && e.lastName == 'Doe')),
+                    parsePredicate(e => (e.title == 'CEO' && e.firstName == 'John' && e.lastName == 'Doe')),
                     createInsideParentheses(
                         createConcatenation(
                             titleEqualsCeo,
@@ -210,7 +210,7 @@ describe('parsePredicate', () => {
 
             it('with parentheses around each literal', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => (e.title == 'CEO') && (e.firstName == 'John') && (e.lastName == 'Doe')),
+                    parsePredicate(e => (e.title == 'CEO') && (e.firstName == 'John') && (e.lastName == 'Doe')),
                     createConcatenation(
                         createInsideParentheses(
                             titleEqualsCeo
@@ -229,7 +229,7 @@ describe('parsePredicate', () => {
 
             it('with parentheses around the first literal', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => (e.title == 'CEO') && e.firstName == 'John' && e.lastName == 'Doe'),
+                    parsePredicate(e => (e.title == 'CEO') && e.firstName == 'John' && e.lastName == 'Doe'),
                     createConcatenation(
                         createInsideParentheses(
                             titleEqualsCeo
@@ -243,7 +243,7 @@ describe('parsePredicate', () => {
 
             it('with parentheses around the second literal', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => e.title == 'CEO' && (e.firstName == 'John') && e.lastName == 'Doe'),
+                    parsePredicate(e => e.title == 'CEO' && (e.firstName == 'John') && e.lastName == 'Doe'),
                     createConcatenation(
                         titleEqualsCeo,
                         [
@@ -258,7 +258,7 @@ describe('parsePredicate', () => {
 
             it('with parentheses around the first two literals', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => (e.title == 'CEO' && e.firstName == 'John') && e.lastName == 'Doe'),
+                    parsePredicate(e => (e.title == 'CEO' && e.firstName == 'John') && e.lastName == 'Doe'),
                     createConcatenation(
                         createInsideParentheses(
                             createConcatenation(
@@ -277,7 +277,7 @@ describe('parsePredicate', () => {
 
             it('with parentheses around the last two literals', () => {
                 assert.deepEqual(
-                    parsePredicate<Employee>(e => e.title == 'CEO' && (e.firstName == 'John' && e.lastName == 'Doe')),
+                    parsePredicate(e => e.title == 'CEO' && (e.firstName == 'John' && e.lastName == 'Doe')),
                     createConcatenation(
                         titleEqualsCeo,
                         [
@@ -299,7 +299,7 @@ describe('parsePredicate', () => {
 
         it('of two disjunctions', () => {
             assert.deepEqual(
-                parsePredicate<Employee>(e => (e.firstName == 'John' || e.firstName == 'Richard') && (e.lastName == 'Doe' || e.lastName == 'Roe')),
+                parsePredicate(e => (e.firstName == 'John' || e.firstName == 'Richard') && (e.lastName == 'Doe' || e.lastName == 'Roe')),
                 createConcatenation(
                     createInsideParentheses(
                         createConcatenation(
@@ -330,7 +330,7 @@ describe('parsePredicate', () => {
 
         it('of two literals', () => {
             assert.deepEqual(
-                parsePredicate<Employee>(e => e.firstName == 'Jim' || e.firstName == 'James'),
+                parsePredicate(e => e.firstName == 'Jim' || e.firstName == 'James'),
                 createConcatenation(
                     createEquality(createGet(1, 'firstName'), 'Jim'),
                     [
@@ -344,7 +344,7 @@ describe('parsePredicate', () => {
 
         it('of two conjunctions', () => {
             assert.deepEqual(
-                parsePredicate<Employee>(e => e.firstName == 'John' && e.lastName == 'Doe' || e.firstName == 'Richard' && e.lastName == 'Roe'),
+                parsePredicate(e => e.firstName == 'John' && e.lastName == 'Doe' || e.firstName == 'Richard' && e.lastName == 'Roe'),
                 createConcatenation(
                     firstNameEqualsJohn,
                     [
@@ -356,5 +356,46 @@ describe('parsePredicate', () => {
             )
         })
 
+    })
+
+    describe('can parse predicates in a join of two tables', () => {
+
+        it('when the comparison refers to the first table', () => {
+            assert.deepEqual(
+                parsePredicate((e, d) => e.lastName == 'Doe'),
+                createEquality(createGet(1, 'lastName'), 'Doe')
+            )
+        })
+
+        it('when the comparison refers to the second table', () => {
+            assert.deepEqual(
+                parsePredicate((e, d) => d.id == 1),
+                createEquality(createGet(2, 'id'), 1)
+            )
+        })
+
+        it('when comparisons refer to both tables', () => {
+            assert.deepEqual(
+                parsePredicate((e, d) => e.lastName == 'Doe' && d.id == 1),
+                createConcatenation(
+                    createEquality(createGet(1, 'lastName'), 'Doe'),
+                    [
+                        createAnd(
+                            createEquality(createGet(2, 'id'), 1))
+                    ])
+            )
+        })
+
+        it('when comparisons refer to both tables in reverse order', () => {
+            assert.deepEqual(
+                parsePredicate((e, d) => d.id == 1 && e.lastName == 'Doe'),
+                createConcatenation(
+                    createEquality(createGet(2, 'id'), 1),
+                    [
+                        createAnd(
+                            createEquality(createGet(1, 'lastName'), 'Doe'))
+                    ])
+            )
+        })
     })
 })
