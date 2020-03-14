@@ -1,8 +1,8 @@
 import {Employee} from '../test_tables'
 import {
+    createAnd,
     createComparison, createConcatenation,
-    createInsideParentheses,
-    createTailItem,
+    createInsideParentheses, createOr,
     parsePredicate
 } from '../../lib/parsing/predicate_parsing'
 import * as assert from 'assert'
@@ -105,7 +105,7 @@ describe('parsePredicate', () => {
                     createConcatenation(
                         createComparison({object: 'e', property: 'firstName'}, '=', 'John'),
                         [
-                            createTailItem('&&', createComparison({object: 'e', property: 'lastName'}, '=', 'Doe'))
+                            createAnd(createComparison({object: 'e', property: 'lastName'}, '=', 'Doe'))
                         ]
                     ))
             })
@@ -117,7 +117,7 @@ describe('parsePredicate', () => {
                         createConcatenation(
                             createComparison({object: 'e', property: 'firstName'}, '=', 'John'),
                             [
-                                createTailItem('&&', createComparison({object: 'e', property: 'lastName'}, '=', 'Doe'))
+                                createAnd(createComparison({object: 'e', property: 'lastName'}, '=', 'Doe'))
                             ]
                         )
                     )
@@ -132,8 +132,7 @@ describe('parsePredicate', () => {
                             createComparison({object: 'e', property: 'firstName'}, '=', 'John')
                         ),
                         [
-                            createTailItem(
-                                '&&',
+                            createAnd(
                                 createInsideParentheses(
                                     createComparison({object: 'e', property: 'lastName'}, '=', 'Doe')
                                 )
@@ -150,8 +149,7 @@ describe('parsePredicate', () => {
                             createComparison({object: 'e', property: 'firstName'}, '=', 'John')
                         ),
                         [
-                            createTailItem(
-                                '&&',
+                            createAnd(
                                 createComparison({object: 'e', property: 'lastName'}, '=', 'Doe')
                             )
                         ]
@@ -164,8 +162,7 @@ describe('parsePredicate', () => {
                     createConcatenation(
                         createComparison({object: 'e', property: 'firstName'}, '=', 'John'),
                         [
-                            createTailItem(
-                                '&&',
+                            createAnd(
                                 createInsideParentheses(
                                     createComparison({object: 'e', property: 'lastName'}, '=', 'Doe')
                                 )
@@ -183,12 +180,10 @@ describe('parsePredicate', () => {
                     createConcatenation(
                         createComparison({object: 'e', property: 'title'}, '=', 'CEO'),
                         [
-                            createTailItem(
-                                '&&',
+                            createAnd(
                                 createComparison({object: 'e', property: 'firstName'}, '=', 'John')
                             ),
-                            createTailItem(
-                                '&&',
+                            createAnd(
                                 createComparison({object: 'e', property: 'lastName'}, '=', 'Doe')
                             )
                         ]
@@ -202,12 +197,10 @@ describe('parsePredicate', () => {
                         createConcatenation(
                             createComparison({object: 'e', property: 'title'}, '=', 'CEO'),
                             [
-                                createTailItem(
-                                    '&&',
+                                createAnd(
                                     createComparison({object: 'e', property: 'firstName'}, '=', 'John')
                                 ),
-                                createTailItem(
-                                    '&&',
+                                createAnd(
                                     createComparison({object: 'e', property: 'lastName'}, '=', 'Doe')
                                 )
                             ]
@@ -224,14 +217,12 @@ describe('parsePredicate', () => {
                             createComparison({object: 'e', property: 'title'}, '=', 'CEO')
                         ),
                         [
-                            createTailItem(
-                                '&&',
+                            createAnd(
                                 createInsideParentheses(
                                     createComparison({object: 'e', property: 'firstName'}, '=', 'John')
                                 )
                             ),
-                            createTailItem(
-                                '&&',
+                            createAnd(
                                 createInsideParentheses(
                                     createComparison({object: 'e', property: 'lastName'}, '=', 'Doe')
                                 )
@@ -249,12 +240,10 @@ describe('parsePredicate', () => {
                             createComparison({object: 'e', property: 'title'}, '=', 'CEO')
                         ),
                         [
-                            createTailItem(
-                                '&&',
+                            createAnd(
                                 createComparison({object: 'e', property: 'firstName'}, '=', 'John')
                             ),
-                            createTailItem(
-                                '&&',
+                            createAnd(
                                 createComparison({object: 'e', property: 'lastName'}, '=', 'Doe')
                             )
                         ]
@@ -267,14 +256,12 @@ describe('parsePredicate', () => {
                     createConcatenation(
                         createComparison({object: 'e', property: 'title'}, '=', 'CEO'),
                         [
-                            createTailItem(
-                                '&&',
+                            createAnd(
                                 createInsideParentheses(
                                     createComparison({object: 'e', property: 'firstName'}, '=', 'John')
                                 )
                             ),
-                            createTailItem(
-                                '&&',
+                            createAnd(
                                 createComparison({object: 'e', property: 'lastName'}, '=', 'Doe')
                             )
                         ]
@@ -290,16 +277,14 @@ describe('parsePredicate', () => {
                             createConcatenation(
                                 createComparison({object: 'e', property: 'title'}, '=', 'CEO'),
                                 [
-                                    createTailItem(
-                                        '&&',
+                                    createAnd(
                                         createComparison({object: 'e', property: 'firstName'}, '=', 'John')
                                     )
                                 ]
                             )
                         ),
                         [
-                            createTailItem(
-                                '&&',
+                            createAnd(
                                 createComparison({object: 'e', property: 'lastName'}, '=', 'Doe')
                             )
                         ]
@@ -313,14 +298,12 @@ describe('parsePredicate', () => {
                     createConcatenation(
                         createComparison({object: 'e', property: 'title'}, '=', 'CEO'),
                         [
-                            createTailItem(
-                                '&&',
+                            createAnd(
                                 createInsideParentheses(
                                     createConcatenation(
                                         createComparison({object: 'e', property: 'firstName'}, '=', 'John'),
                                         [
-                                            createTailItem(
-                                                '&&',
+                                            createAnd(
                                                 createComparison({object: 'e', property: 'lastName'}, '=', 'Doe')
                                             )
                                         ]
@@ -341,28 +324,27 @@ describe('parsePredicate', () => {
                         createConcatenation(
                             createComparison({object: 'e', property: 'firstName'}, '=', 'John'),
                             [
-                                createTailItem(
-                                    '||',
+                                createOr(
                                     createComparison({object: 'e', property: 'firstName'}, '=', 'Richard')
                                 )
                             ],
                         )
                     ),
                     [
-                        createTailItem(
-                            '&&',
+                        createAnd(
                             createInsideParentheses(
                                 createConcatenation(
                                     createComparison({object: 'e', property: 'lastName'}, '=', 'Doe'),
                                     [
-                                        createTailItem(
-                                            '||',
+                                        createOr(
                                             createComparison({object: 'e', property: 'lastName'}, '=', 'Roe'))
+
                                     ]
                                 )
                             )
                         )
-                    ])
+                    ]
+                )
             )
         })
     })
@@ -375,8 +357,7 @@ describe('parsePredicate', () => {
                 createConcatenation(
                     createComparison({object: 'e', property: 'firstName'}, '=', 'Jim'),
                     [
-                        createTailItem(
-                            '||',
+                        createOr(
                             createComparison({object: 'e', property: 'firstName'}, '=', 'James')
                         )
                     ]
@@ -387,24 +368,20 @@ describe('parsePredicate', () => {
         it('of two conjunctions', () => {
             assert.deepEqual(
                 parsePredicate<Employee>(e => e.firstName == 'John' && e.lastName == 'Doe' || e.firstName == 'Richard' && e.lastName == 'Roe'),
-                {
-                    head: createComparison({object: 'e', property: 'firstName'}, '=', 'John'),
-                    tail: [
-                        createTailItem(
-                            '&&',
+                createConcatenation(
+                    createComparison({object: 'e', property: 'firstName'}, '=', 'John'),
+                    [
+                        createAnd(
                             createComparison({object: 'e', property: 'lastName'}, '=', 'Doe')
                         ),
-                        createTailItem(
-                            '||',
+                        createOr(
                             createComparison({object: 'e', property: 'firstName'}, '=', 'Richard')
                         ),
-                        createTailItem(
-                            '&&',
+                        createAnd(
                             createComparison({object: 'e', property: 'lastName'}, '=', 'Roe')
                         )
-                    ],
-                    kind: 'concatenation'
-                }
+                    ]
+                )
             )
         })
 

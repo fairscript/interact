@@ -57,12 +57,21 @@ export interface TailItem {
     kind: 'tail-item'
 }
 
-export function createTailItem(operator: '&&'|'||', expression: PredicateExpression): TailItem {
+function createTailItem(operator: '&&'|'||', expression: PredicateExpression): TailItem {
     return {
         operator,
         expression,
         kind: 'tail-item'
     }
+}
+
+
+export function createAnd(expression: PredicateExpression): TailItem {
+    return createTailItem('&&', expression)
+}
+
+export function createOr(expression: PredicateExpression): TailItem {
+    return createTailItem('||', expression)
 }
 
 export interface Concatenation {
