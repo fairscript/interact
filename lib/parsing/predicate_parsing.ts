@@ -16,21 +16,16 @@ import {
 } from './parenthesis_parsing'
 import * as A from 'arcsecond'
 import * as getParameterNames from 'get-parameter-names'
-import {Value} from '../column_operations'
-
-export interface ObjectProperty {
-    object: string,
-    property: string,
-}
+import {createGet, Get, Value} from '../column_operations'
 
 export interface Comparison {
-    left: ObjectProperty,
+    left: Get,
     operator: '=',
     right: Value,
     kind: 'comparison'
 }
 
-export function createComparison(left: ObjectProperty, operator: '=', right: Value): Comparison {
+export function createComparison(left: Get, operator: '=', right: Value): Comparison {
     return {
         left,
         operator,
@@ -64,7 +59,6 @@ function createTailItem(operator: '&&'|'||', expression: PredicateExpression): T
         kind: 'tail-item'
     }
 }
-
 
 export function createAnd(expression: PredicateExpression): TailItem {
     return createTailItem('&&', expression)
@@ -136,7 +130,7 @@ function createConcatenationParser(comparison, tailItems) {
 function createLeafParser(parameterNames) {
     const mapToComparisonObject = ([left, operator, right]) => createComparison(left, '=', right)
 
-    const objectPropertyParser = createObjectPropertyParser(parameterNames).map(([object, property]) => ({ object, property }))
+    const objectPropertyParser = createObjectPropertyParser(parameterNames).map(([object, property]) => createGet(1, property))
     const comparisonParser = createComparisonParser(objectPropertyParser, createValueParser(aString.map(x => x.slice(1, x.length-1)), aNumber))
         .map(mapToComparisonObject)
 

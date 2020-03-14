@@ -1,12 +1,8 @@
-import {ObjectProperty, PredicateExpression, TailItem} from '../parsing/predicate_parsing'
+import {PredicateExpression, TailItem} from '../parsing/predicate_parsing'
 import {joinWithWhitespace} from '../parsing/javascript_parsing'
-import * as toSnakeCase from 'js-snakecase'
 import {Value} from '../column_operations'
+import {generateGet} from './column_generation'
 
-
-function generateObjectProperty(objectProperty: ObjectProperty): string {
-    return `t1.${toSnakeCase(objectProperty.property)}`
-}
 
 function generateComparisonOperator(operator: '='): string {
     return '='
@@ -37,7 +33,7 @@ function generateTailItem(item: TailItem): string {
 function generatePredicate(predicate: PredicateExpression): string {
     switch (predicate.kind) {
         case 'comparison':
-            return `${generateObjectProperty(predicate.left)} ${generateComparisonOperator(predicate.operator)} ${generateValue(predicate.right)}`
+            return `${generateGet(predicate.left)} ${generateComparisonOperator(predicate.operator)} ${generateValue(predicate.right)}`
         case 'inside':
             return '(' + generatePredicate(predicate.inside) + ')'
         case 'concatenation':
