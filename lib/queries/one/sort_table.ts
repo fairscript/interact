@@ -31,14 +31,14 @@ export class SortTable<T> {
             })
     }
 
-    select(): TableSelection {
+    select(): TableSelection<T> {
         return new TableSelection({
             ...this.statement,
             selection: parseSingleTableSelect(this.constructor)
         })
     }
 
-    get<U extends Value>(f: (table: T) => U): ColumnSelection {
+    get<U extends Value>(f: (table: T) => U): ColumnSelection<U> {
         return new ColumnSelection(
             {
                 ...this.statement,
@@ -46,7 +46,7 @@ export class SortTable<T> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableSelection {
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableSelection<U> {
         return new TableSelection(
             {
                 ...this.statement,
@@ -54,7 +54,7 @@ export class SortTable<T> {
             })
     }
 
-    groupBy<K extends StringValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{
+    groupBy<K extends StringValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K> {
         return new GroupTable<T, K>(
             {
                 ...this.statement,

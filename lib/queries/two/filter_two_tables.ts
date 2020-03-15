@@ -47,7 +47,7 @@ export class FilterTwoTables<T1, T2> {
             })
     }
 
-    select(first: string, second: string): TableSelection {
+    select<K extends string>(first: string, second: string): TableSelection<{ [first in K]: T1 } & { [second in K]: T2 }> {
         return new TableSelection(
             {
                 ...this.statement,
@@ -58,7 +58,7 @@ export class FilterTwoTables<T1, T2> {
             })
     }
 
-    get<U extends Value>(f: (first: T1, second: T2) => U): ColumnSelection {
+    get<U extends Value>(f: (first: T1, second: T2) => U): ColumnSelection<U> {
         return new ColumnSelection(
             {
                 ...this.statement,
@@ -66,7 +66,7 @@ export class FilterTwoTables<T1, T2> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): TableSelection {
+    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): TableSelection<U> {
         return new TableSelection(
             {
                 ...this.statement,

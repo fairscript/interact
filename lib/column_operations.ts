@@ -1,12 +1,15 @@
-export type ColumnOperation = Alias | Get | Aggregate | Count
+import {SubselectStatement} from './select_statement'
+
+export type AliasedColumnOperation = Get | Aggregate | Count | Subselect
+export type ColumnOperation = Alias | AliasedColumnOperation
 
 export interface Alias {
     kind: 'alias'
-    operation: Get | Aggregate
+    operation: AliasedColumnOperation
     alias: string,
 }
 
-export function createAlias(operation: Get | Aggregate, alias: string): Alias {
+export function createAlias(operation: AliasedColumnOperation, alias: string): Alias {
     return {
         kind: 'alias',
         operation,
@@ -51,5 +54,17 @@ export interface Count {
 export function createCount(): Count {
     return {
         kind: 'count'
+    }
+}
+
+export interface Subselect {
+    statement: SubselectStatement
+    kind: 'subselect'
+}
+
+export function createSubselect(statement: SubselectStatement): Subselect {
+    return {
+        statement,
+        kind: 'subselect'
     }
 }

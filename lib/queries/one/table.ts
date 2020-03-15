@@ -14,6 +14,7 @@ import {parseGetKey} from '../../parsing/get_key_parsing'
 import {parseJoin} from '../../parsing/join_parsing'
 import {createCount} from '../../column_operations'
 import {ColumnSelection, TableSelection} from '../selection'
+import {parseMapS} from '../../parsing/maps_parsing'
 
 
 export class Table<T> {
@@ -59,7 +60,7 @@ export class Table<T> {
             })
     }
 
-    select(): TableSelection {
+    select(): TableSelection<T> {
         return new TableSelection(
             {
                 ...this.statement,
@@ -67,7 +68,7 @@ export class Table<T> {
             })
     }
 
-    get<U extends Value>(f: (table: T) => U): ColumnSelection {
+    get<U extends Value>(f: (table: T) => U): ColumnSelection<U> {
         return new ColumnSelection(
             {
                 ...this.statement,
@@ -75,7 +76,7 @@ export class Table<T> {
             })
     }
 
-    count(): ColumnSelection {
+    count(): ColumnSelection<number> {
         return new ColumnSelection(
             {
                 ...this.statement,
@@ -83,7 +84,7 @@ export class Table<T> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableSelection {
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableSelection<U> {
         return new TableSelection(
             {
                 ...this.statement,
@@ -91,8 +92,12 @@ export class Table<T> {
             })
     }
 
-    mapS<S, U extends StringValueOrColumnSelectionRecord>(tableInSubquery: Table<S>, f: (s: Table<S>, x: T) => U): TableSelection {
-        throw Error('Not implemented')
+    mapS<S, U extends StringValueOrColumnSelectionRecord>(tableInSubquery: Table<S>, f: (s: Table<S>, x: T) => U): TableSelection<U> {
+        return new TableSelection(
+            {
+                ...this.statement,
+                selection: parseMapS(f)
+            })
     }
 
     groupBy<K extends StringValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{

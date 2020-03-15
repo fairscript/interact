@@ -8,7 +8,7 @@ export class GroupTwoTables<T1, T2, K extends StringValueRecord> {
     constructor(private readonly statement: SelectStatement) {}
 
     aggregate<A extends StringValueRecord>(
-        aggregation: (key: K, first: AggregatableTable<T1>, second: AggregatableTable<T2>) => EnforceNonEmptyRecord<A> & A): TableSelection {
+        aggregation: (key: K, first: AggregatableTable<T1>, second: AggregatableTable<T2>) => EnforceNonEmptyRecord<A> & A): TableSelection<A> {
         return new TableSelection(
             {
                 ...this.statement,

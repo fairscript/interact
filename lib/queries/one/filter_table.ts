@@ -44,7 +44,7 @@ export class FilterTable<T> {
             })
     }
 
-    select(): TableSelection {
+    select(): TableSelection<T> {
         return new TableSelection(
             {
                 ...this.statement,
@@ -52,7 +52,7 @@ export class FilterTable<T> {
             })
     }
 
-    get<U extends Value>(f: (table: T) => U): ColumnSelection {
+    get<U extends Value>(f: (table: T) => U): ColumnSelection<U> {
         return new ColumnSelection(
             {
                 ...this.statement,
@@ -60,7 +60,7 @@ export class FilterTable<T> {
             })
     }
 
-    count(): ColumnSelection {
+    count(): ColumnSelection<number> {
         return new ColumnSelection(
             {
                 ...this.statement,
@@ -68,7 +68,7 @@ export class FilterTable<T> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableSelection {
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableSelection<U> {
         return new TableSelection(
             {
                 ...this.statement,

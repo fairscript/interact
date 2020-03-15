@@ -1,4 +1,4 @@
-import {Aggregate, Alias, ColumnOperation, Count, Get} from '../column_operations'
+import {Aggregate, Alias, AliasedColumnOperation, ColumnOperation, Count, Get, Subselect} from '../column_operations'
 import {joinWithCommaWhitespace} from '../parsing/javascript_parsing'
 import * as toSnakeCase from 'js-snakecase'
 
@@ -11,23 +11,35 @@ function generateAggregate(aggregate: Aggregate): string {
 }
 
 function generateAlias(alias: Alias): string {
-    return `${generateColumnOperation(alias.operation)} AS ${alias.alias}`
+    return `${generateAliasedColumnOperation(alias.operation)} AS ${alias.alias}`
 }
 
 function generateCount(operation: Count): string {
-    return 'COUNT(*)';
+    return 'COUNT(*)'
 }
 
-function generateColumnOperation(operation: ColumnOperation): string {
+function generateAliasedColumnOperation(operation: AliasedColumnOperation) {
     switch (operation.kind) {
         case 'aggregate':
             return generateAggregate(operation)
         case 'get':
             return generateGet(operation)
-        case 'alias':
-            return generateAlias(operation)
         case 'count':
             return generateCount(operation)
+        case 'subselect':
+            throw Error('Not implemented')
+    }
+}
+
+function generateColumnOperation(operation: ColumnOperation): string {
+    switch (operation.kind) {
+        case 'alias':
+            return generateAlias(operation)
+        case 'aggregate':
+        case 'get':
+        case 'count':
+        case 'subselect':
+            return generateAliasedColumnOperation(operation)
     }
 }
 
