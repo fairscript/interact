@@ -6,7 +6,7 @@ import {GroupTable} from './queries/one/group_table'
 import {JoinSecondTable} from './queries/two/join_second_table'
 import {MapTable} from './queries/one/map_table'
 import {GetColumnFromTable} from './queries/one/get_column_from_table'
-import {EnforceNonEmptyRecord, StringValueRecord} from './record'
+import {EnforceNonEmptyRecord, StringValueOrGetColumnRecord, StringValueRecord} from './record'
 import {Value} from './value'
 import {parseOrder} from './parsing/order_parsing'
 import {parseSingleTableSelect} from './parsing/select_parsing'
@@ -15,6 +15,7 @@ import {parseGet} from './generation/get_parsing'
 import {parseMap} from './parsing/map_parsing'
 import {parseGetKey} from './parsing/get_key_parsing'
 import {parseJoin} from './parsing/join_parsing'
+import {createCount} from './column_operations'
 
 
 export class Table<T> {
@@ -76,12 +77,24 @@ export class Table<T> {
             })
     }
 
+    count(): GetColumnFromTable {
+        return new GetColumnFromTable(
+            {
+                ...this.statement,
+                selection: [createCount()]
+            })
+    }
+
     map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): MapTable {
         return new MapTable(
             {
                 ...this.statement,
                 selection: parseMap(f)
             })
+    }
+
+    mapS<S, U extends StringValueOrGetColumnRecord>(tableInSubquery: Table<S>, f: (s: Table<S>, x: T) => U): MapTable {
+        throw Error('Not implemented')
     }
 
     groupBy<K extends StringValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{

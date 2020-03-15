@@ -1,6 +1,4 @@
-
-
-export type ColumnOperation = Alias | Get | Aggregate
+export type ColumnOperation = Alias | Get | Aggregate | Count
 
 export interface Alias {
     kind: 'alias'
@@ -43,5 +41,15 @@ export function createGet(table: TableIndex | null, column: string): Get {
         kind: 'get',
         table,
         column
+    }
+}
+
+export interface Count {
+    kind: 'count'
+}
+
+export function createCount(): Count {
+    return {
+        kind: 'count'
     }
 }

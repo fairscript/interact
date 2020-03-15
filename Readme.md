@@ -277,3 +277,21 @@ SELECT t1.id AS employee_id, t1.first_name AS employee_firstName, t1.last_name A
 FROM employees t1
 INNER JOIN departments t2 ON t1.department_id = t2.id
 ```
+
+
+### Counting
+
+TypeScript:
+```typescript
+employees
+    .filter(e => e.departmentId === 1)
+    .count()
+    .toSql()
+```
+
+SQL:
+```sql
+SELECT COUNT(*)
+FROM employees t1
+WHERE t1.department_id = 1
+```

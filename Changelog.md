@@ -39,4 +39,8 @@
 
 ## v0.5.2
 
-- Enforced groups and the result of maps and aggregations to be non-empty objects satisfying Record<string, Value> 
+- Enforced groups and the result of maps and aggregations to be non-empty objects satisfying Record<string, Value>
+
+## v0.5.3
+
+- Implemented support for counting filtered and unfiltered tables 

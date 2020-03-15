@@ -12,6 +12,7 @@ import {parseSingleTableSelect} from '../../parsing/select_parsing'
 import {parseGet} from '../../generation/get_parsing'
 import {parseMap} from '../../parsing/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
+import {createCount} from '../../column_operations'
 
 export class FilterTable<T> {
 
@@ -58,6 +59,14 @@ export class FilterTable<T> {
             {
                 ...this.statement,
                 selection: [parseGet(f)]
+            })
+    }
+
+    count(): GetColumnFromTable {
+        return new GetColumnFromTable(
+            {
+                ...this.statement,
+                selection: [createCount()]
             })
     }
 
