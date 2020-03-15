@@ -7,45 +7,73 @@ import {parsePredicate} from '../../parsing/predicate_parsing'
 import {GetColumnFromTable} from './get_column_from_table'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {Value} from '../../value'
+import {parseOrder} from '../../parsing/order_parsing'
+import {parseSingleTableSelect} from '../../parsing/select_parsing'
+import {parseGet} from '../../generation/get_parsing'
+import {parseMap} from '../../parsing/map_parsing'
+import {parseGetKey} from '../../parsing/get_key_parsing'
 
 export class FilterTable<T> {
-    private readonly statement: SelectStatement
 
     constructor(
-        private constructor: Constructor<T>,
-        existingStatement: SelectStatement,
-        predicate: (table: T) => boolean) {
-        this.statement = {
-            ...existingStatement,
-            predicates: existingStatement.predicates.concat(parsePredicate(predicate))
-        }
-    }
+        private readonly constructor: Constructor<T>,
+        private readonly statement: SelectStatement) {}
 
     filter(predicate: (table: T) => boolean): FilterTable<T> {
-        return new FilterTable(this.constructor, this.statement, predicate)
+        return new FilterTable(
+            this.constructor,
+            {
+                ...this.statement,
+                predicates: this.statement.predicates.concat(parsePredicate(predicate))
+            }
+        )
     }
 
     sortBy(sortBy: (table: T) => Value): SortTable<T> {
-        return new SortTable(this.constructor, this.statement, sortBy, 'asc')
+        return new SortTable(
+            {
+                ...this.statement,
+                orders: this.statement.orders.concat(parseOrder(sortBy, 'asc'))
+            })
     }
 
     sortDescendinglyBy(sortBy: (table: T) => Value): SortTable<T> {
-        return new SortTable(this.constructor, this.statement, sortBy, 'desc')
+        return new SortTable(
+            {
+                ...this.statement,
+                orders: this.statement.orders.concat(parseOrder(sortBy, 'desc'))
+            })
     }
 
-    select(): SelectTable<T> {
-        return new SelectTable(this.constructor, this.statement)
+    select(): SelectTable {
+        return new SelectTable(
+            {
+                ...this.statement,
+                selection: parseSingleTableSelect(this.constructor)
+            })
     }
 
-    get<U extends Value>(f: (table: T) => U): GetColumnFromTable<T, U> {
-        return new GetColumnFromTable(this.statement, f)
+    get<U extends Value>(f: (table: T) => U): GetColumnFromTable {
+        return new GetColumnFromTable(
+            {
+                ...this.statement,
+                selection: [parseGet(f)]
+            })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): MapTable<T, U> {
-        return new MapTable(this.statement, f)
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): MapTable {
+        return new MapTable(
+            {
+                ...this.statement,
+                selection: parseMap(f)
+            })
     }
 
     groupBy<K extends StringValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{
-        return new GroupTable<T, K>(this.statement, getKey)
+        return new GroupTable<T, K>(
+            {
+                ...this.statement,
+                key: parseGetKey(getKey)
+            })
     }
 }

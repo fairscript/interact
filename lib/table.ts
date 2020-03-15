@@ -6,9 +6,15 @@ import {GroupTable} from './queries/one/group_table'
 import {JoinSecondTable} from './queries/two/join_second_table'
 import {MapTable} from './queries/one/map_table'
 import {GetColumnFromTable} from './queries/one/get_column_from_table'
-import {createFunctionInvocationChoice} from './parsing/javascript_parsing'
 import {EnforceNonEmptyRecord, StringValueRecord} from './record'
 import {Value} from './value'
+import {parseOrder} from './parsing/order_parsing'
+import {parseSingleTableSelect} from './parsing/select_parsing'
+import {parsePredicate} from './parsing/predicate_parsing'
+import {parseGet} from './generation/get_parsing'
+import {parseMap} from './parsing/map_parsing'
+import {parseGetKey} from './parsing/get_key_parsing'
+import {parseJoin} from './parsing/join_parsing'
 
 
 export class Table<T> {
@@ -29,35 +35,71 @@ export class Table<T> {
     }
 
     filter(predicate: (table: T) => boolean): FilterTable<T> {
-        return new FilterTable(this.constructor, this.statement, predicate)
+        return new FilterTable(
+            this.constructor,
+            {
+                ...this.statement,
+                predicates: this.statement.predicates.concat(parsePredicate(predicate))
+            }
+        )
     }
 
     sortBy(sortBy: (table: T) => Value): SortTable<T> {
-        return new SortTable(this.constructor, this.statement, sortBy, 'asc')
+        return new SortTable(
+            {
+                ...this.statement,
+                orders: this.statement.orders.concat(parseOrder(sortBy, 'asc'))
+            })
     }
 
     sortDescendinglyBy(sortBy: (table: T) => Value): SortTable<T> {
-        return new SortTable(this.constructor, this.statement, sortBy, 'desc')
+        return new SortTable(
+            {
+                ...this.statement,
+                orders: this.statement.orders.concat(parseOrder(sortBy, 'desc'))
+            })
     }
 
-    select(): SelectTable<T> {
-        return new SelectTable<T>(this.constructor, this.statement)
+    select(): SelectTable {
+        return new SelectTable(
+            {
+                ...this.statement,
+                selection: parseSingleTableSelect(this.constructor)
+            })
     }
 
-    get<U extends Value>(f: (table: T) => U): GetColumnFromTable<T, U> {
-        return new GetColumnFromTable(this.statement, f)
+    get<U extends Value>(f: (table: T) => U): GetColumnFromTable {
+        return new GetColumnFromTable(
+            {
+                ...this.statement,
+                selection: [parseGet(f)]
+            })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): MapTable<T, U> {
-        return new MapTable(this.statement, f)
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): MapTable {
+        return new MapTable(
+            {
+                ...this.statement,
+                selection: parseMap(f)
+            })
     }
 
     groupBy<K extends StringValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{
-        return new GroupTable<T, K>(this.statement, getKey)
+        return new GroupTable<T, K>(
+            {
+                ...this.statement,
+                key: parseGetKey(getKey)
+            })
     }
 
     join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T) => K, right: (secondTable: U) => K) {
-        return new JoinSecondTable<T, U, K>(this.constructor, otherTable.constructor, this.statement, otherTable.tableName, left, right)
+        return new JoinSecondTable<T, U, K>(
+            this.constructor,
+            otherTable.constructor,
+            {
+                ...this.statement,
+                joins: this.statement.joins.concat([parseJoin(otherTable.tableName, left, right)])
+            })
     }
 }
 

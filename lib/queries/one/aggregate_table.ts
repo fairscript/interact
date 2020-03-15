@@ -15,14 +15,8 @@ export type AggregatableTable<T> = {
     [F in keyof T]: AggregatableColumn<F>
 }
 
-export class AggregateTable<T, K extends StringValueRecord, A extends StringValueRecord> extends SelectSqlGenerator {
-    constructor(
-        existingStatement: SelectStatement,
-        aggregation: (key: K, table: AggregatableTable<T>) => EnforceNonEmptyRecord<A> & A) {
-
-        super({
-            ...existingStatement,
-            selection: parseAggregation(aggregation, existingStatement.key)
-        })
+export class AggregateTable extends SelectSqlGenerator {
+    constructor(statement: SelectStatement) {
+        super(statement)
     }
 }

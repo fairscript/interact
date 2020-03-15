@@ -8,50 +8,83 @@ import {GroupTwoTables} from './group_two_tables'
 import {GetColumnFromTwoTables} from './get_column_from_two_tables'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {Value} from '../../value'
+import {parseGet} from '../../generation/get_parsing'
+import {parseMap} from '../../parsing/map_parsing'
+import {parseMultiTableSelect} from '../../parsing/select_parsing'
+import {parseOrder} from '../../parsing/order_parsing'
+import {parsePredicate} from '../../parsing/predicate_parsing'
+import {parseGetKey} from '../../parsing/get_key_parsing'
 
 export class JoinSecondTable<T1, T2, K1> {
-    private readonly statement: SelectStatement
 
     constructor(
-        private firstConstructor: Constructor<T1>,
-        private secondConstructor: Constructor<T2>,
-        existingStatement: SelectStatement,
-        secondTableName: string,
-        left: (firstTable: T1) => K1,
-        right: (secondTable: T2) => K1) {
-
-        this.statement = {
-            ...existingStatement,
-            joins: existingStatement.joins.concat([parseJoin(secondTableName, left, right)])
-        }
-    }
+        private readonly firstConstructor: Constructor<T1>,
+        private readonly secondConstructor: Constructor<T2>,
+        private readonly statement: SelectStatement) {}
 
     filter(predicate: (first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
-        return new FilterTwoTables(this.firstConstructor, this.secondConstructor, this.statement, predicate)
+        return new FilterTwoTables(
+            this.firstConstructor,
+            this.secondConstructor,
+            {
+                ...this.statement,
+                predicates: this.statement.predicates.concat(parsePredicate(predicate))
+            })
     }
 
     sortBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {
-        return new SortTwoTables(this.firstConstructor, this.secondConstructor, this.statement, sortBy, 'asc')
+        return new SortTwoTables(
+            this.firstConstructor,
+            this.secondConstructor,
+            {
+                ...this.statement,
+                orders: this.statement.orders.concat(parseOrder(sortBy, 'asc'))
+            })
     }
 
     sortDescendinglyBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {
-        return new SortTwoTables(this.firstConstructor, this.secondConstructor, this.statement, sortBy, 'desc')
+        return new SortTwoTables(
+            this.firstConstructor,
+            this.secondConstructor,
+            {
+                ...this.statement,
+                orders: this.statement.orders.concat(parseOrder(sortBy, 'desc'))
+            })
     }
 
-    get<U extends Value>(f: (first: T1, second: T2) => U): GetColumnFromTwoTables<T1, T2, U> {
-        return new GetColumnFromTwoTables(this.statement, f)
+    select(first: string, second: string): SelectTwoTables {
+        return new SelectTwoTables(
+            {
+                ...this.statement,
+                selection: parseMultiTableSelect({
+                    [first]: this.firstConstructor,
+                    [second]: this.secondConstructor
+                })
+            })
     }
 
-    select(first: string, second: string): SelectTwoTables<T1, T2> {
-        return new SelectTwoTables<T1, T2>(this.firstConstructor, this.secondConstructor, this.statement, first, second)
+    get<U extends Value>(f: (first: T1, second: T2) => U): GetColumnFromTwoTables {
+        return new GetColumnFromTwoTables(
+            {
+                ...this.statement,
+                selection: [parseGet(f)]
+            })
     }
 
-    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): MapTwoTables<T1, T2, U> {
-        return new MapTwoTables(this.statement, f)
+    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): MapTwoTables {
+        return new MapTwoTables(
+            {
+                ...this.statement,
+                selection: parseMap(f)
+            })
     }
 
     groupBy<K extends StringValueRecord>(getKey: (first: T1, second: T2) => EnforceNonEmptyRecord<K> & K) : GroupTwoTables<T1, T2, K>{
-        return new GroupTwoTables<T1, T2, K>(this.statement, getKey)
+        return new GroupTwoTables<T1, T2, K>(
+            {
+                ...this.statement,
+                key: parseGetKey(getKey)
+            })
     }
 }
 
