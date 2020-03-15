@@ -1,5 +1,5 @@
 import {Value} from './value'
-import {GetColumnFromTable} from './queries/one/get_column_from_table'
+import {GetColumnFromTable} from './queries/selections/get_column_from_table'
 
 export type EnforceNonEmptyRecord<R> = keyof R extends never ? never : R
 

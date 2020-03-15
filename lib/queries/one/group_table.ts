@@ -1,4 +1,4 @@
-import {AggregatableTable, AggregateTable} from './aggregate_table'
+import {AggregatableTable, AggregateTable} from '../selections/aggregate_table'
 import {SelectStatement} from '../../select_statement'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {parseAggregation} from '../../parsing/aggregation_parsing'
