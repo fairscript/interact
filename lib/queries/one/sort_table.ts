@@ -1,7 +1,5 @@
 import {SelectStatement} from '../../select_statement'
-import {TableSelection} from '../selections/table_selection'
 import {parseOrder} from '../../parsing/order_parsing'
-import {ColumnSelection} from '../selections/column_selection'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {GroupTable} from './group_table'
 import {Value} from '../../value'
@@ -9,6 +7,7 @@ import {parseSingleTableSelect} from '../../parsing/select_parsing'
 import {parseGet} from '../../generation/get_parsing'
 import {parseMap} from '../../parsing/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
+import {ColumnSelection, TableSelection} from '../selection'
 
 export type Direction = 'asc' | 'desc'
 

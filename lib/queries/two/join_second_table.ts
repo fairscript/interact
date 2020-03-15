@@ -10,8 +10,7 @@ import {parseMultiTableSelect} from '../../parsing/select_parsing'
 import {parseOrder} from '../../parsing/order_parsing'
 import {parsePredicate} from '../../parsing/predicate_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {TableSelection} from '../selections/table_selection'
-import {ColumnSelection} from '../selections/column_selection'
+import {ColumnSelection, TableSelection} from '../selection'
 
 export class JoinSecondTable<T1, T2, K1> {
 

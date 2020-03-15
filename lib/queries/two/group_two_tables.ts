@@ -2,7 +2,7 @@ import {SelectStatement} from '../../select_statement'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {parseAggregation} from '../../parsing/aggregation_parsing'
 import {AggregatableTable} from '../one/aggregatable_table'
-import {TableSelection} from '../selections/table_selection'
+import {TableSelection} from '../selection'
 
 export class GroupTwoTables<T1, T2, K extends StringValueRecord> {
     constructor(private readonly statement: SelectStatement) {}

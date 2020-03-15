@@ -7,8 +7,7 @@ import {parseGet} from '../../generation/get_parsing'
 import {parseMap} from '../../parsing/map_parsing'
 import {parseMultiTableSelect} from '../../parsing/select_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {ColumnSelection} from '../selections/column_selection'
-import {TableSelection} from '../selections/table_selection'
+import {ColumnSelection, TableSelection} from '../selection'
 
 export class SortTwoTables<T1, T2> {
 

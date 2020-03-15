@@ -1,9 +1,7 @@
 import {Constructor, SelectStatement} from '../../select_statement'
 import {SortTable} from './sort_table'
-import {TableSelection} from '../selections/table_selection'
 import {GroupTable} from './group_table'
 import {parsePredicate} from '../../parsing/predicate_parsing'
-import {ColumnSelection} from '../selections/column_selection'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseOrder} from '../../parsing/order_parsing'
@@ -12,6 +10,7 @@ import {parseGet} from '../../generation/get_parsing'
 import {parseMap} from '../../parsing/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {createCount} from '../../column_operations'
+import {ColumnSelection, TableSelection} from '../selection'
 
 export class FilterTable<T> {
 

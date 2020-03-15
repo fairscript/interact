@@ -9,8 +9,7 @@ import {parseMap} from '../../parsing/map_parsing'
 import {parseMultiTableSelect} from '../../parsing/select_parsing'
 import {parseOrder} from '../../parsing/order_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {TableSelection} from '../selections/table_selection'
-import {ColumnSelection} from '../selections/column_selection'
+import {ColumnSelection, TableSelection} from '../selection'
 
 export class FilterTwoTables<T1, T2> {
     constructor(
