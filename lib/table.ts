@@ -2,10 +2,11 @@ import {Constructor, SelectStatement} from './select_statement'
 import {FilterTable} from './queries/one/filter_table'
 import {SortTable} from './queries/one/sort_table'
 import {SelectTable} from './queries/one/select_table'
-import {MapTable} from './queries/one/map_table'
 import {GroupTable} from './queries/one/group_table'
 import {JoinSecondTable} from './queries/two/join_second_table'
 import {Value} from './column_operations'
+import {MapTable} from './queries/one/map_table'
+import {GetColumnFromTable} from './queries/one/get_column_from_table'
 
 
 export class Table<T> {
@@ -38,10 +39,14 @@ export class Table<T> {
     }
 
     select(): SelectTable<T> {
-        return new SelectTable(this.constructor, this.statement)
+        return new SelectTable<T>(this.constructor, this.statement)
     }
 
-    map<U>(f: (table: T) => U): MapTable<T, U> {
+    get<U extends Value>(f: (table: T) => U): GetColumnFromTable<T, U> {
+        return new GetColumnFromTable(this.statement, f)
+    }
+
+    map<U extends Record<string, Value>>(f: (table: T) => U): MapTable<T, U> {
         return new MapTable(this.statement, f)
     }
 

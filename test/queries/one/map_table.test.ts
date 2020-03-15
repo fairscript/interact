@@ -3,18 +3,6 @@ import {employees} from '../../test_tables'
 import {joinWithNewLine} from '../../../lib/parsing/javascript_parsing'
 
 describe('Mapping on a single table', () => {
-    it('works for a single value', () => {
-        assert.equal(
-            employees
-                .map(e => e.id)
-                .toSql(),
-            joinWithNewLine([
-                'SELECT t1.id',
-                'FROM employees t1'
-            ])
-        )
-    })
-
     it('works for an object', () => {
         assert.equal(
             employees

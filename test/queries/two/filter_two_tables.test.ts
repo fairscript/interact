@@ -11,7 +11,7 @@ describe('Filtering a join of two tables works for a predicate', () => {
         assert.equal(
             join
                 .filter((e, d) => e.id === 1)
-                .map((e, d) => d.name)
+                .get((e, d) => d.name)
                 .toSql(),
             joinWithNewLine([
                 'SELECT t2.name',
@@ -26,7 +26,7 @@ describe('Filtering a join of two tables works for a predicate', () => {
         assert.equal(
             join
                 .filter((e, d) => d.id === 1)
-                .map((e, d) => e.id)
+                .get((e, d) => e.id)
                 .toSql(),
             joinWithNewLine([
                 'SELECT t1.id',
@@ -41,7 +41,7 @@ describe('Filtering a join of two tables works for a predicate', () => {
         assert.equal(
             join
                 .filter((e, d) => e.lastName === 'Doe' && d.id === 1)
-                .map((e, d) => e.id === 1)
+                .get((e, d) => e.id)
                 .toSql(),
             joinWithNewLine([
                 'SELECT t1.id',

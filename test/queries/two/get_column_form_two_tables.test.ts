@@ -2,19 +2,15 @@ import * as assert from 'assert'
 import {departments, employees} from '../../test_tables'
 import {joinWithNewLine} from '../../../lib/parsing/javascript_parsing'
 
-describe('Mapping on a join of two tables', () => {
+describe('Getting a single column from a join of table', () => {
     it('works', () => {
         assert.equal(
             employees
                 .join(departments, e => e.departmentId, d => d.id)
-                .map((e, d) => ({
-                    firstName: e.firstName,
-                    lastName: e.lastName,
-                    department: d.name
-                }))
+                .get(e => e.id)
                 .toSql(),
             joinWithNewLine([
-                'SELECT t1.first_name AS firstName, t1.last_name AS lastName, t2.name AS department',
+                'SELECT t1.id',
                 'FROM employees t1',
                 'INNER JOIN departments t2 ON t1.department_id = t2.id'
             ])

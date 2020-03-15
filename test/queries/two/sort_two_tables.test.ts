@@ -11,7 +11,7 @@ describe('Sorting two tables', () => {
             assert.equal(
                 join
                     .sortBy(e => e.salary)
-                    .map(e => e.id)
+                    .get(e => e.id)
                     .toSql(),
                 joinWithNewLine([
                     'SELECT t1.id',
@@ -26,7 +26,7 @@ describe('Sorting two tables', () => {
             assert.equal(
                 join
                     .sortDescendinglyBy(e => e.salary)
-                    .map(e => e.id)
+                    .get(e => e.id)
                     .toSql(),
                 joinWithNewLine([
                     'SELECT t1.id',
@@ -44,7 +44,7 @@ describe('Sorting two tables', () => {
                 .sortBy((e, d) => d.name)
                 .thenBy(e => e.firstName)
                 .thenBy(e => e.lastName)
-                .map(e => e.id)
+                .get(e => e.id)
                 .toSql(),
             joinWithNewLine([
                 'SELECT t1.id',

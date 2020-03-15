@@ -1,6 +1,6 @@
 import {SelectStatement} from '../../select_statement'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {AggregatableTable, AggregateTable} from '../one/aggregate_table'
+import {AggregatableTable} from '../one/aggregate_table'
 import {AggregateTwoTables} from './aggregate_two_tables'
 
 export class GroupTwoTables<T1, T2, K> {

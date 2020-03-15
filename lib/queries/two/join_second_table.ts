@@ -3,11 +3,10 @@ import {parseJoin} from '../../parsing/join_parsing'
 import {MapTwoTables} from './map_two_tables'
 import {SelectTwoTables} from './select_two_tables'
 import {Value} from '../../column_operations'
-import {SortTable} from '../one/sort_table'
 import {SortTwoTables} from './sort_two_tables'
 import {FilterTwoTables} from './filter_two_tables'
-import {GroupTable} from '../one/group_table'
 import {GroupTwoTables} from './group_two_tables'
+import {GetColumnFromTwoTables} from './get_column_from_two_tables'
 
 export class JoinSecondTable<T1, T2, K1> {
     private readonly statement: SelectStatement
@@ -38,7 +37,11 @@ export class JoinSecondTable<T1, T2, K1> {
         return new SortTwoTables(this.firstConstructor, this.secondConstructor, this.statement, sortBy, 'desc')
     }
 
-    map<U>(f: (first: T1, second: T2) => U): MapTwoTables<T1, T2, U> {
+    get<U extends Value>(f: (first: T1, second: T2) => U): GetColumnFromTwoTables<T1, T2, U> {
+        return new GetColumnFromTwoTables(this.statement, f)
+    }
+
+    map<U extends Record<string, Value>>(f: (first: T1, second: T2) => U): MapTwoTables<T1, T2, U> {
         return new MapTwoTables(this.statement, f)
     }
 

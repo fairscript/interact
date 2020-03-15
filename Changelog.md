@@ -28,3 +28,11 @@
 - Introduced the SelectStatement interface to represent the information required to generate a SELECT statement. 
 - Introduced modeling of column-level operations
 - Extended filter functionality through a new predicate parser
+
+## v0.5
+
+- Implemented support for joins of two tables
+
+## v0.5.1
+
+- Separated the selection of a single column ("get" method) from the mapping of rows to objects ("map" method)

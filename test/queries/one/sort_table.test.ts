@@ -9,7 +9,7 @@ describe('Sorting one table', () => {
             assert.equal(
                 employees
                     .sortBy(e => e.salary)
-                    .map(e => e.id)
+                    .get(e => e.id)
                     .toSql(),
                 joinWithNewLine([
                     'SELECT t1.id',
@@ -23,7 +23,7 @@ describe('Sorting one table', () => {
             assert.equal(
                 employees
                     .sortDescendinglyBy(e => e.salary)
-                    .map(e => e.id)
+                    .get(e => e.id)
                     .toSql(),
                 joinWithNewLine([
                     'SELECT t1.id',
@@ -39,7 +39,7 @@ describe('Sorting one table', () => {
             employees
                 .sortBy(e => e.lastName)
                 .thenBy(e => e.firstName)
-                .map(e => e.id)
+                .get(e => e.id)
                 .toSql(),
             joinWithNewLine([
                 'SELECT t1.id',

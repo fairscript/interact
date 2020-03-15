@@ -1,8 +1,7 @@
 import {extractLambdaString} from '../lambda_string_extraction'
 import {createDictionaryParser, createKeyValuePairParser, createObjectPropertyParser} from './javascript_parsing'
-import * as A from 'arcsecond'
 import * as getParameterNames from 'get-parameter-names'
-import {createAlias, createGet, ColumnOperation} from '../column_operations'
+import {createAlias, createGet, Alias} from '../column_operations'
 import {createFindTableIndex} from './table_index'
 
 function createMapParser<T, U>(f: Function) {
@@ -17,15 +16,10 @@ function createMapParser<T, U>(f: Function) {
 
     const dictionaryParser = createDictionaryParser(keyValuePair)
 
-    return A.choice([
-        dictionaryParser,
-        objectProperty
-            .map(([object, property]) => createGet(findTableIndex(object), property))
-            .map(expr => [expr])]
-    )
+    return dictionaryParser
 }
 
-export function parseMap(f: Function): Array<ColumnOperation> {
+export function parseMap(f: Function): Array<Alias> {
     const parser = createMapParser(f)
 
     const lambdaString = extractLambdaString(f)

@@ -1,12 +1,11 @@
 import {Constructor, SelectStatement} from '../../select_statement'
-import {SelectTable} from '../one/select_table'
-import {MapTable} from '../one/map_table'
 import {SelectSqlGenerator} from '../../sql_generation'
 import {parseOrder} from '../../parsing/order_parsing'
 import {Value} from '../../column_operations'
 import {SelectTwoTables} from './select_two_tables'
 import {MapTwoTables} from './map_two_tables'
 import {Direction} from '../one/sort_table'
+import {GetColumnFromTwoTables} from './get_column_from_two_tables'
 
 export class SortTwoTables<T1, T2> extends SelectSqlGenerator {
 
@@ -35,7 +34,11 @@ export class SortTwoTables<T1, T2> extends SelectSqlGenerator {
         return new SelectTwoTables(this.firstConstructor, this.secondConstructor, this.statement, first, second)
     }
 
-    map<U>(f: (first: T1, second: T2) => U): MapTwoTables<T1, T2, U> {
+    get<U extends Value>(f: (first: T1, second: T2) => U): GetColumnFromTwoTables<T1, T2, U> {
+        return new GetColumnFromTwoTables(this.statement, f)
+    }
+
+    map<U extends Record<string, Value>>(f: (first: T1, second: T2) => U): MapTwoTables<T1, T2, U> {
         return new MapTwoTables(this.statement, f)
     }
 }
