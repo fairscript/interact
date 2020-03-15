@@ -1,7 +1,5 @@
-import {Constructor, SelectStatement} from '../../select_statement'
+import {SelectStatement} from '../../select_statement'
 import {TableSelection} from '../selections/table_selection'
-import {TableMap} from '../selections/table_map'
-import {SelectSqlGenerator} from '../../sql_generation'
 import {parseOrder} from '../../parsing/order_parsing'
 import {ColumnSelection} from '../selections/column_selection'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
@@ -49,8 +47,8 @@ export class SortTable<T> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableMap {
-        return new TableMap(
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableSelection {
+        return new TableSelection(
             {
                 ...this.statement,
                 selection: parseMap(f)

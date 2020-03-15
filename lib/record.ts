@@ -5,4 +5,4 @@ export type EnforceNonEmptyRecord<R> = keyof R extends never ? never : R
 
 export type StringValueRecord = Record<string, Value>
 
-export type StringValueOrGetColumnRecord = Record<string, Value|ColumnSelection>
+export type StringValueOrColumnSelectionRecord = Record<string, Value|ColumnSelection>

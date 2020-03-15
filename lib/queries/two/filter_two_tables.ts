@@ -11,7 +11,6 @@ import {parseOrder} from '../../parsing/order_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {TableSelection} from '../selections/table_selection'
 import {ColumnSelection} from '../selections/column_selection'
-import {TableMap} from '../selections/table_map'
 
 export class FilterTwoTables<T1, T2> {
     constructor(
@@ -68,8 +67,8 @@ export class FilterTwoTables<T1, T2> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): TableMap {
-        return new TableMap(
+    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): TableSelection {
+        return new TableSelection(
             {
                 ...this.statement,
                 selection: parseMap(f)

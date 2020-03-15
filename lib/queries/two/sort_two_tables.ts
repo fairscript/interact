@@ -8,7 +8,6 @@ import {parseMap} from '../../parsing/map_parsing'
 import {parseMultiTableSelect} from '../../parsing/select_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {ColumnSelection} from '../selections/column_selection'
-import {TableMap} from '../selections/table_map'
 import {TableSelection} from '../selections/table_selection'
 
 export class SortTwoTables<T1, T2> {
@@ -57,8 +56,8 @@ export class SortTwoTables<T1, T2> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): TableMap {
-        return new TableMap(
+    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): TableSelection {
+        return new TableSelection(
             {
                 ...this.statement,
                 selection: parseMap(f)

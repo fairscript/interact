@@ -1,7 +1,6 @@
 import {Constructor, SelectStatement} from '../../select_statement'
 import {SortTable} from './sort_table'
 import {TableSelection} from '../selections/table_selection'
-import {TableMap} from '../selections/table_map'
 import {GroupTable} from './group_table'
 import {parsePredicate} from '../../parsing/predicate_parsing'
 import {ColumnSelection} from '../selections/column_selection'
@@ -70,8 +69,8 @@ export class FilterTable<T> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableMap {
-        return new TableMap(
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableSelection {
+        return new TableSelection(
             {
                 ...this.statement,
                 selection: parseMap(f)

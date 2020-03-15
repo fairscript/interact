@@ -4,9 +4,8 @@ import {SortTable} from './sort_table'
 import {TableSelection} from '../selections/table_selection'
 import {GroupTable} from './group_table'
 import {JoinSecondTable} from '../two/join_second_table'
-import {TableMap} from '../selections/table_map'
 import {ColumnSelection} from '../selections/column_selection'
-import {EnforceNonEmptyRecord, StringValueOrGetColumnRecord, StringValueRecord} from '../../record'
+import {EnforceNonEmptyRecord, StringValueOrColumnSelectionRecord, StringValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseOrder} from '../../parsing/order_parsing'
 import {parseSingleTableSelect} from '../../parsing/select_parsing'
@@ -85,15 +84,15 @@ export class Table<T> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableMap {
-        return new TableMap(
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableSelection {
+        return new TableSelection(
             {
                 ...this.statement,
                 selection: parseMap(f)
             })
     }
 
-    mapS<S, U extends StringValueOrGetColumnRecord>(tableInSubquery: Table<S>, f: (s: Table<S>, x: T) => U): TableMap {
+    mapS<S, U extends StringValueOrColumnSelectionRecord>(tableInSubquery: Table<S>, f: (s: Table<S>, x: T) => U): TableSelection {
         throw Error('Not implemented')
     }
 
