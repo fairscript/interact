@@ -10,9 +10,9 @@ import {parseMultiTableSelect} from '../../parsing/select_parsing'
 import {parseOrder} from '../../parsing/order_parsing'
 import {parsePredicate} from '../../parsing/predicate_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {SelectTable} from '../selections/select_table'
-import {GetColumnFromTable} from '../selections/get_column_from_table'
-import {MapTable} from '../selections/map_table'
+import {TableSelection} from '../selections/table_selection'
+import {ColumnSelection} from '../selections/column_selection'
+import {TableMap} from '../selections/table_map'
 
 export class JoinSecondTable<T1, T2, K1> {
 
@@ -51,8 +51,8 @@ export class JoinSecondTable<T1, T2, K1> {
             })
     }
 
-    select(first: string, second: string): SelectTable {
-        return new SelectTable(
+    select(first: string, second: string): TableSelection {
+        return new TableSelection(
             {
                 ...this.statement,
                 selection: parseMultiTableSelect({
@@ -62,16 +62,16 @@ export class JoinSecondTable<T1, T2, K1> {
             })
     }
 
-    get<U extends Value>(f: (first: T1, second: T2) => U): GetColumnFromTable {
-        return new GetColumnFromTable(
+    get<U extends Value>(f: (first: T1, second: T2) => U): ColumnSelection {
+        return new ColumnSelection(
             {
                 ...this.statement,
                 selection: [parseGet(f)]
             })
     }
 
-    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): MapTable {
-        return new MapTable(
+    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): TableMap {
+        return new TableMap(
             {
                 ...this.statement,
                 selection: parseMap(f)

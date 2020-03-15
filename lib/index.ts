@@ -1,2 +1,2 @@
-import { defineTable } from './table'
+import { defineTable } from './queries/one/table'
 export { defineTable }

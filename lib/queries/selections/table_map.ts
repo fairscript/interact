@@ -1,7 +1,7 @@
-import {SelectSqlGenerator} from '../../sql_generation'
 import {SelectStatement} from '../../select_statement'
+import {SelectSqlGenerator} from '../../sql_generation'
 
-export class GetColumnFromTable extends SelectSqlGenerator {
+export class TableMap extends SelectSqlGenerator {
     constructor(existingStatement: SelectStatement) {
         super(existingStatement)
     }

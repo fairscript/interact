@@ -1,10 +1,10 @@
 import {Constructor, SelectStatement} from '../../select_statement'
 import {SortTable} from './sort_table'
-import {SelectTable} from '../selections/select_table'
-import {MapTable} from '../selections/map_table'
+import {TableSelection} from '../selections/table_selection'
+import {TableMap} from '../selections/table_map'
 import {GroupTable} from './group_table'
 import {parsePredicate} from '../../parsing/predicate_parsing'
-import {GetColumnFromTable} from '../selections/get_column_from_table'
+import {ColumnSelection} from '../selections/column_selection'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseOrder} from '../../parsing/order_parsing'
@@ -46,32 +46,32 @@ export class FilterTable<T> {
             })
     }
 
-    select(): SelectTable {
-        return new SelectTable(
+    select(): TableSelection {
+        return new TableSelection(
             {
                 ...this.statement,
                 selection: parseSingleTableSelect(this.constructor)
             })
     }
 
-    get<U extends Value>(f: (table: T) => U): GetColumnFromTable {
-        return new GetColumnFromTable(
+    get<U extends Value>(f: (table: T) => U): ColumnSelection {
+        return new ColumnSelection(
             {
                 ...this.statement,
                 selection: [parseGet(f)]
             })
     }
 
-    count(): GetColumnFromTable {
-        return new GetColumnFromTable(
+    count(): ColumnSelection {
+        return new ColumnSelection(
             {
                 ...this.statement,
                 selection: [createCount()]
             })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): MapTable {
-        return new MapTable(
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableMap {
+        return new TableMap(
             {
                 ...this.statement,
                 selection: parseMap(f)

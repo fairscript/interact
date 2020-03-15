@@ -1,9 +1,9 @@
 import {Constructor, SelectStatement} from '../../select_statement'
-import {SelectTable} from '../selections/select_table'
-import {MapTable} from '../selections/map_table'
+import {TableSelection} from '../selections/table_selection'
+import {TableMap} from '../selections/table_map'
 import {SelectSqlGenerator} from '../../sql_generation'
 import {parseOrder} from '../../parsing/order_parsing'
-import {GetColumnFromTable} from '../selections/get_column_from_table'
+import {ColumnSelection} from '../selections/column_selection'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {GroupTable} from './group_table'
 import {Value} from '../../value'
@@ -34,23 +34,23 @@ export class SortTable<T> {
             })
     }
 
-    select(): SelectTable {
-        return new SelectTable({
+    select(): TableSelection {
+        return new TableSelection({
             ...this.statement,
             selection: parseSingleTableSelect(this.constructor)
         })
     }
 
-    get<U extends Value>(f: (table: T) => U): GetColumnFromTable {
-        return new GetColumnFromTable(
+    get<U extends Value>(f: (table: T) => U): ColumnSelection {
+        return new ColumnSelection(
             {
                 ...this.statement,
                 selection: [parseGet(f)]
             })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): MapTable {
-        return new MapTable(
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableMap {
+        return new TableMap(
             {
                 ...this.statement,
                 selection: parseMap(f)

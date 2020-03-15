@@ -1,21 +1,21 @@
-import {Constructor, SelectStatement} from './select_statement'
-import {FilterTable} from './queries/one/filter_table'
-import {SortTable} from './queries/one/sort_table'
-import {SelectTable} from './queries/selections/select_table'
-import {GroupTable} from './queries/one/group_table'
-import {JoinSecondTable} from './queries/two/join_second_table'
-import {MapTable} from './queries/selections/map_table'
-import {GetColumnFromTable} from './queries/selections/get_column_from_table'
-import {EnforceNonEmptyRecord, StringValueOrGetColumnRecord, StringValueRecord} from './record'
-import {Value} from './value'
-import {parseOrder} from './parsing/order_parsing'
-import {parseSingleTableSelect} from './parsing/select_parsing'
-import {parsePredicate} from './parsing/predicate_parsing'
-import {parseGet} from './generation/get_parsing'
-import {parseMap} from './parsing/map_parsing'
-import {parseGetKey} from './parsing/get_key_parsing'
-import {parseJoin} from './parsing/join_parsing'
-import {createCount} from './column_operations'
+import {Constructor, SelectStatement} from '../../select_statement'
+import {FilterTable} from './filter_table'
+import {SortTable} from './sort_table'
+import {TableSelection} from '../selections/table_selection'
+import {GroupTable} from './group_table'
+import {JoinSecondTable} from '../two/join_second_table'
+import {TableMap} from '../selections/table_map'
+import {ColumnSelection} from '../selections/column_selection'
+import {EnforceNonEmptyRecord, StringValueOrGetColumnRecord, StringValueRecord} from '../../record'
+import {Value} from '../../value'
+import {parseOrder} from '../../parsing/order_parsing'
+import {parseSingleTableSelect} from '../../parsing/select_parsing'
+import {parsePredicate} from '../../parsing/predicate_parsing'
+import {parseGet} from '../../generation/get_parsing'
+import {parseMap} from '../../parsing/map_parsing'
+import {parseGetKey} from '../../parsing/get_key_parsing'
+import {parseJoin} from '../../parsing/join_parsing'
+import {createCount} from '../../column_operations'
 
 
 export class Table<T> {
@@ -61,39 +61,39 @@ export class Table<T> {
             })
     }
 
-    select(): SelectTable {
-        return new SelectTable(
+    select(): TableSelection {
+        return new TableSelection(
             {
                 ...this.statement,
                 selection: parseSingleTableSelect(this.constructor)
             })
     }
 
-    get<U extends Value>(f: (table: T) => U): GetColumnFromTable {
-        return new GetColumnFromTable(
+    get<U extends Value>(f: (table: T) => U): ColumnSelection {
+        return new ColumnSelection(
             {
                 ...this.statement,
                 selection: [parseGet(f)]
             })
     }
 
-    count(): GetColumnFromTable {
-        return new GetColumnFromTable(
+    count(): ColumnSelection {
+        return new ColumnSelection(
             {
                 ...this.statement,
                 selection: [createCount()]
             })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): MapTable {
-        return new MapTable(
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableMap {
+        return new TableMap(
             {
                 ...this.statement,
                 selection: parseMap(f)
             })
     }
 
-    mapS<S, U extends StringValueOrGetColumnRecord>(tableInSubquery: Table<S>, f: (s: Table<S>, x: T) => U): MapTable {
+    mapS<S, U extends StringValueOrGetColumnRecord>(tableInSubquery: Table<S>, f: (s: Table<S>, x: T) => U): TableMap {
         throw Error('Not implemented')
     }
 

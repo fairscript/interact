@@ -15,7 +15,7 @@ export type AggregatableTable<T> = {
     [F in keyof T]: AggregatableColumn<F>
 }
 
-export class AggregateTable extends SelectSqlGenerator {
+export class TableAggregation extends SelectSqlGenerator {
     constructor(statement: SelectStatement) {
         super(statement)
     }
