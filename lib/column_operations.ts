@@ -1,4 +1,4 @@
-export type Value = string | number
+
 
 export type ColumnOperation = Alias | Get | Aggregate
 

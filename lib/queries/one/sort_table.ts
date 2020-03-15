@@ -3,8 +3,10 @@ import {SelectTable} from './select_table'
 import {MapTable} from './map_table'
 import {SelectSqlGenerator} from '../../sql_generation'
 import {parseOrder} from '../../parsing/order_parsing'
-import {Value} from '../../column_operations'
 import {GetColumnFromTable} from './get_column_from_table'
+import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
+import {GroupTable} from './group_table'
+import {Value} from '../../value'
 
 export type Direction = 'asc' | 'desc'
 
@@ -38,7 +40,11 @@ export class SortTable<T> extends SelectSqlGenerator {
         return new GetColumnFromTable(this.statement, f)
     }
 
-    map<U extends Record<string, Value>>(f: (table: T) => U): MapTable<T, U> {
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): MapTable<T, U> {
         return new MapTable(this.statement, f)
+    }
+
+    groupBy<K extends StringValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{
+        return new GroupTable<T, K>(this.statement, getKey)
     }
 }

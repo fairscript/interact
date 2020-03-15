@@ -1,7 +1,7 @@
 import {PredicateExpression, TailItem} from '../parsing/predicate_parsing'
 import {joinWithWhitespace} from '../parsing/javascript_parsing'
-import {Value} from '../column_operations'
 import {generateGet} from './column_generation'
+import {Value} from '../value'
 
 
 function generateComparisonOperator(operator: '='): string {

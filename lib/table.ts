@@ -4,9 +4,11 @@ import {SortTable} from './queries/one/sort_table'
 import {SelectTable} from './queries/one/select_table'
 import {GroupTable} from './queries/one/group_table'
 import {JoinSecondTable} from './queries/two/join_second_table'
-import {Value} from './column_operations'
 import {MapTable} from './queries/one/map_table'
 import {GetColumnFromTable} from './queries/one/get_column_from_table'
+import {createFunctionInvocationChoice} from './parsing/javascript_parsing'
+import {EnforceNonEmptyRecord, StringValueRecord} from './record'
+import {Value} from './value'
 
 
 export class Table<T> {
@@ -46,15 +48,15 @@ export class Table<T> {
         return new GetColumnFromTable(this.statement, f)
     }
 
-    map<U extends Record<string, Value>>(f: (table: T) => U): MapTable<T, U> {
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): MapTable<T, U> {
         return new MapTable(this.statement, f)
     }
 
-    groupBy<K>(getKey: (table: T) => K) : GroupTable<T, K>{
+    groupBy<K extends StringValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{
         return new GroupTable<T, K>(this.statement, getKey)
     }
 
-    join<U, K>(otherTable: Table<U>, left: (firstTable: T) => K, right: (secondTable: U) => K) {
+    join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T) => K, right: (secondTable: U) => K) {
         return new JoinSecondTable<T, U, K>(this.constructor, otherTable.constructor, this.statement, otherTable.tableName, left, right)
     }
 }

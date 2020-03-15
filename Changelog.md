@@ -36,3 +36,7 @@
 ## v0.5.1
 
 - Separated the selection of a single column ("get" method) from the mapping of rows to objects ("map" method)
+
+## v0.5.2
+
+- Enforced groups and the result of maps and aggregations to be non-empty objects satisfying Record<string, Value> 

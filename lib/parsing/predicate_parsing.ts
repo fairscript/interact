@@ -16,8 +16,9 @@ import {
 } from './parenthesis_parsing'
 import * as A from 'arcsecond'
 import * as getParameterNames from 'get-parameter-names'
-import {createGet, Get, Value} from '../column_operations'
+import {createGet, Get} from '../column_operations'
 import {createFindTableIndex} from './table_index'
+import {Value} from '../value'
 
 export interface Comparison {
     left: Get,
