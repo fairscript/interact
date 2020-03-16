@@ -49,6 +49,7 @@ describe('integer', () => {
         it('+1', () => {
             assert.equal(integer.run('+1').result, '+1')
         })
+
     })
 })
 

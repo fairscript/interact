@@ -1,14 +1,17 @@
-import {PredicateExpression, TailItem} from '../parsing/predicate_parsing'
+import {
+    Comparison,
+    Concatenation,
+    InsideParentheses,
+    PredicateExpression, Side,
+    TailItem
+} from '../parsing/predicate_parsing'
 import {joinWithWhitespace} from '../parsing/javascript_parsing'
 import {generateGet} from './column_generation'
-import {Value} from '../value'
+import {Constant} from '../column_operations'
 
 
-function generateComparisonOperator(operator: '='): string {
-    return '='
-}
-
-function generateValue(value: Value): string {
+function generateConstant(constant: Constant): string {
+    const value = constant.value
     if (typeof value === 'string') {
         return "'" + value +  "'"
     }
@@ -30,16 +33,37 @@ function generateTailItem(item: TailItem): string {
     return `${generateBinaryLogicalOperator(item.operator)} ${generatePredicate(item.expression)}`
 }
 
+function generateSide(side: Side): string {
+    switch (side.kind) {
+        case 'get':
+            return generateGet(side)
+        case 'constant':
+            return generateConstant(side)
+    }
+}
+
+function generateComparison(predicate: Comparison): string {
+    return `${generateSide(predicate.left)} ${predicate.operator} ${generateSide(predicate.right)}`
+}
+
+function generateInsideParentheses(predicate: InsideParentheses): string {
+    return '(' + generatePredicate(predicate.inside) + ')'
+}
+
+function generateConcatenation(predicate: Concatenation): string {
+    const head = generatePredicate(predicate.head)
+
+    return joinWithWhitespace([head].concat(predicate.tail.map(generateTailItem)))
+}
+
 function generatePredicate(predicate: PredicateExpression): string {
     switch (predicate.kind) {
         case 'comparison':
-            return `${generateGet(predicate.left)} ${generateComparisonOperator(predicate.operator)} ${generateValue(predicate.right)}`
+            return generateComparison(predicate)
         case 'inside':
-            return '(' + generatePredicate(predicate.inside) + ')'
+            return generateInsideParentheses(predicate)
         case 'concatenation':
-            const head = generatePredicate(predicate.head)
-
-            return joinWithWhitespace([head].concat(predicate.tail.map(generateTailItem)))
+            return generateConcatenation(predicate)
     }
 }
 

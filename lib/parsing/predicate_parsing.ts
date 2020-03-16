@@ -1,6 +1,6 @@
 import {
-    comparisonOperators,
-    binaryLogicalOperators,
+    aComparisonOperator,
+    aBinaryLogicalOperator,
     createObjectPropertyParser,
     closingParenthesis,
     openingParenthesis,
@@ -16,18 +16,20 @@ import {
 } from './parenthesis_parsing'
 import * as A from 'arcsecond'
 import * as getParameterNames from 'get-parameter-names'
-import {createGet, Get} from '../column_operations'
+import {Constant, createConstant, createGet, Get} from '../column_operations'
 import {createFindTableIndex} from './table_index'
-import {Value} from '../value'
+
+export type SqlComparisonOperator = '='|'>'|'>='|'<'|'<='
+export type Side = Constant|Get
 
 export interface Comparison {
-    left: Get,
-    operator: '=',
-    right: Value,
+    left: Side,
+    operator: SqlComparisonOperator,
+    right: Side,
     kind: 'comparison'
 }
 
-function createComparison(left: Get, operator: '=', right: Value): Comparison {
+function createComparison(left: Side, operator: SqlComparisonOperator, right: Side): Comparison {
     return {
         left,
         operator,
@@ -36,8 +38,24 @@ function createComparison(left: Get, operator: '=', right: Value): Comparison {
     }
 }
 
-export function createEquality(left: Get, right: Value): Comparison {
+export function createEquality(left: Side, right: Side): Comparison {
     return createComparison(left, '=', right)
+}
+
+export function createGreaterThan(left: Side, right: Side): Comparison {
+    return createComparison(left, '>', right)
+}
+
+export function createGreaterThanOrEqualTo(left: Side, right: Side): Comparison {
+    return createComparison(left, '>=', right)
+}
+
+export function createLessThan(left: Side, right: Side): Comparison {
+    return createComparison(left, '<', right)
+}
+
+export function createLessThanOrEqualTo(left: Side, right: Side): Comparison {
+    return createComparison(left, '<=', right)
 }
 
 export interface InsideParentheses {
@@ -90,23 +108,25 @@ export function createConcatenation(head: PredicateExpression, tail: TailItem[])
 
 export type PredicateExpression = InsideParentheses | Concatenation | Comparison
 
-function createComparisonParser(objectPropertyParser, valueParser) {
+function createComparisonParser(valueParser, objectPropertyParser) {
+    const valueOrObjectProperty = A.choice([valueParser, objectPropertyParser])
+
     return A.sequenceOf(
         [
-            objectPropertyParser,
+            valueOrObjectProperty,
             A.optionalWhitespace,
-            comparisonOperators,
+            aComparisonOperator,
             A.optionalWhitespace,
-            valueParser
+            valueOrObjectProperty
         ])
-        .map(([objectProperty, ws1, operator, ws2, value]) => ([objectProperty, operator, value]))
+        .map(([left, ws1, operator, ws2, right]) => ([left, operator, right]))
 }
 
 function createTailItemsParser(comparison) {
     return A.many1(
         A.sequenceOf([
             A.optionalWhitespace,
-            binaryLogicalOperators,
+            aBinaryLogicalOperator,
             A.optionalWhitespace,
             comparison
         ])
@@ -119,7 +139,7 @@ function createReverseTailItemParser(comparison) {
         A.sequenceOf([
             comparison,
             A.optionalWhitespace,
-            binaryLogicalOperators,
+            aBinaryLogicalOperator,
             A.optionalWhitespace,
         ])
         .map(([comparison, ws1, operator, ws2]) => ([comparison, operator]))
@@ -133,13 +153,24 @@ function createConcatenationParser(comparison, tailItems) {
     ])
 }
 
+function mapJsComparisonOperatorToSqlComparisonOperator(operator): SqlComparisonOperator {
+    switch (operator) {
+        case '===':
+        case '==':
+            return '='
+        default:
+            return operator
+    }
+}
+
 function createLeafParser(parameterNames) {
-    const mapToComparisonObject = ([left, operator, right]) => createComparison(left, '=', right)
+    const mapToComparisonObject = ([left, operator, right]) => createComparison(left, mapJsComparisonOperatorToSqlComparisonOperator(operator), right)
 
     let findTableIndex = createFindTableIndex(parameterNames)
 
+    const valueParser = createValueParser(aString.map(x => x.slice(1, x.length - 1)), aNumber).map(value => createConstant(value))
     const objectPropertyParser = createObjectPropertyParser(parameterNames).map(([object, property]) => createGet(findTableIndex(object), property))
-    const comparisonParser = createComparisonParser(objectPropertyParser, createValueParser(aString.map(x => x.slice(1, x.length-1)), aNumber))
+    const comparisonParser = createComparisonParser(valueParser, objectPropertyParser)
         .map(mapToComparisonObject)
 
     const tailItemsParser = createTailItemsParser(comparisonParser)
@@ -281,13 +312,13 @@ function createSegmentParser(parameterNames: String[]): (segment: NestedSegment)
 
 function createBinaryLogicalOperatorSplitter(parameterNames: string[]): (segment: NestedSegment) => NestedSegment {
     const objectProperty = createObjectPropertyParser(parameterNames).map(joinWithDot)
-    const comparison = createComparisonParser(objectProperty, createValueParser()).map(x => x).map(joinWithWhitespace)
+    const comparison = createComparisonParser(createValueParser(), objectProperty).map(joinWithWhitespace)
     const tailItems = createTailItemsParser(comparison).map(items => items.reduce((acc, item) => acc.concat(item)), [])
     const reverseTailItems = createReverseTailItemParser(comparison).map(items => items.reduce((acc, item) => acc.concat(item)), [])
 
     const parser = A.choice([
         // ) && (
-        A.sequenceOf([closingParenthesis, A.optionalWhitespace, binaryLogicalOperators, A.optionalWhitespace, openingParenthesis])
+        A.sequenceOf([closingParenthesis, A.optionalWhitespace, aBinaryLogicalOperator, A.optionalWhitespace, openingParenthesis])
             .map(([cp, ws1, operator, ws2, op]) => [')', operator, '(']),
 
         // ) && e.id === 1

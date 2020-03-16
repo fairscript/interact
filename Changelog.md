@@ -13,7 +13,7 @@
 
 ## v0.2
 
-- Implemented basic support for sorting by multiple orders in ascending and descending direction
+- Sorting by multiple orders in ascending and descending direction
 - Added sorting examples to the readme
 
 ## v0.3
@@ -31,7 +31,7 @@
 
 ## v0.5
 
-- Implemented support for joins of two tables
+- Joins of two tables
 
 ## v0.5.1
 
@@ -43,4 +43,9 @@
 
 ## v0.5.3
 
-- Implemented support for counting filtered and unfiltered tables 
+- Counting filtered and unfiltered tables 
+
+## v0.5.4
+
+- Greater than, greater than or equal to, less than or equal to, less than
+- Table columns and constants can now be on both sides of a comparison.

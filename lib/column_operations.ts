@@ -1,4 +1,5 @@
 import {SubselectStatement} from './select_statement'
+import {Value} from './value'
 
 export type AliasedColumnOperation = Get | Aggregate | Count | Subselect
 export type ColumnOperation = Alias | AliasedColumnOperation
@@ -44,6 +45,18 @@ export function createGet(table: TableIndex | null, column: string): Get {
         kind: 'get',
         table,
         column
+    }
+}
+
+export interface Constant {
+    kind: 'constant'
+    value: Value
+}
+
+export function createConstant(value: Value): Constant {
+    return {
+        kind: 'constant',
+        value
     }
 }
 

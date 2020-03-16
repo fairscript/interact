@@ -57,8 +57,8 @@ export function createValueParser(stringParser = aString, numberParser = aNumber
 }
 
 // Operators
-export const binaryLogicalOperators = createChoiceFromStrings(['&&', '||'])
-export const comparisonOperators = createChoiceFromStrings(['===', '=='])
+export const aBinaryLogicalOperator = createChoiceFromStrings(['&&', '||'])
+export const aComparisonOperator = createChoiceFromStrings(['===', '==', '>=', '<=', '>', '<'])
 
 // Object property
 export function createObjectPropertyParser(objectNames: Array<string>, propertyParser = identifier) {

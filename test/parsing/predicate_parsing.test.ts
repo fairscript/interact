@@ -1,28 +1,65 @@
-import {departments, Employee, employees} from '../test_tables'
 import {
     createAnd,
-    createConcatenation, createEquality,
-    createInsideParentheses, createOr,
+    createConcatenation, createEquality, createGreaterThan, createGreaterThanOrEqualTo,
+    createInsideParentheses, createLessThan, createLessThanOrEqualTo, createOr,
     parsePredicate
 } from '../../lib/parsing/predicate_parsing'
 import * as assert from 'assert'
-import {createGet} from '../../lib/column_operations'
+import {createConstant, createGet} from '../../lib/column_operations'
 
 
 describe('parsePredicate', () => {
-    const idEqualsOne = createEquality(createGet(1, 'id'), 1)
-    const titleEqualsCeo = createEquality(createGet(1, 'title'), 'CEO')
-    const firstNameEqualsJohn = createEquality(createGet(1, 'firstName'), 'John')
-    const lastNameEqualsDoe = createEquality(createGet(1, 'lastName'), 'Doe')
-    const firstNameEqualsRichard = createEquality(createGet(1, 'firstName'), 'Richard')
-    const lastNameEqualsRoe = createEquality(createGet(1, 'lastName'), 'Roe')
+    const idEqualsOne = createEquality(createGet(1, 'id'), createConstant(1))
+    const idEqualsOneInReverseOrder = createEquality(createConstant(1), createGet(1, 'id'))
+    const titleEqualsCeo = createEquality(createGet(1, 'title'), createConstant('CEO'))
+    const firstNameEqualsJohn = createEquality(createGet(1, 'firstName'), createConstant('John'))
+    const lastNameEqualsDoe = createEquality(createGet(1, 'lastName'), createConstant('Doe'))
+    const firstNameEqualsRichard = createEquality(createGet(1, 'firstName'), createConstant('Richard'))
+    const lastNameEqualsRoe = createEquality(createGet(1, 'lastName'), createConstant('Roe'))
 
     describe('can parse comparisons', () => {
-        describe('with a double equality sign', () => {
-            it('with an integer', () => {
+        describe('with inequalities', () => {
+            const getSalary = createGet(1, 'salary')
+            const fiveThousand = createConstant(5_000)
+
+            it('greater than', () => {
                 assert.deepEqual(
-                    parsePredicate(e => e.id == 1),
-                    idEqualsOne)
+                    parsePredicate(e => e.salary > 5000),
+                    createGreaterThan(getSalary, fiveThousand))
+            })
+
+            it('greater than or equal to', () => {
+                assert.deepEqual(
+                    parsePredicate(e => e.salary >= 5000),
+                    createGreaterThanOrEqualTo(getSalary, fiveThousand))
+            })
+
+            it('less than', () => {
+                assert.deepEqual(
+                    parsePredicate(e => e.salary < 5000),
+                    createLessThan(getSalary, fiveThousand))
+            })
+
+            it('less than or equal to', () => {
+                assert.deepEqual(
+                    parsePredicate(e => e.salary <= 5000),
+                    createLessThanOrEqualTo(getSalary, fiveThousand))
+            })
+        })
+
+        describe('with a double equality sign', () => {
+            describe('with an integer', () => {
+                it('on the right side', () => {
+                    assert.deepEqual(
+                        parsePredicate(e => e.id == 1),
+                        idEqualsOne)
+                })
+
+                it('on the left side', () => {
+                    assert.deepEqual(
+                        parsePredicate(e => 1 == e.id),
+                        idEqualsOneInReverseOrder)
+                })
             })
 
             describe('with a string', () => {
@@ -30,13 +67,13 @@ describe('parsePredicate', () => {
                     it('single quotes', () => {
                         assert.deepEqual(
                             parsePredicate(e => e.title == 'some title'),
-                            createEquality(createGet(1, 'title'), 'some title'))
+                            createEquality(createGet(1, 'title'), createConstant('some title')))
                     })
 
                     it('double quotes', () => {
                         assert.deepEqual(
                             parsePredicate(e => e.title == "some title"),
-                            createEquality(createGet(1, 'title'), 'some title'))
+                            createEquality(createGet(1, 'title'), createConstant('some title')))
                     })
                 })
 
@@ -44,19 +81,19 @@ describe('parsePredicate', () => {
                     it('parentheses', () => {
                         assert.deepEqual(
                             parsePredicate(e => e.title == '(text in parentheses)'),
-                            createEquality(createGet(1, 'title'), '(text in parentheses)'))
+                            createEquality(createGet(1, 'title'), createConstant('(text in parentheses)')))
                     })
 
                     it('double parentheses', () => {
                         assert.deepEqual(
                             parsePredicate(e => e.title == '((text in parentheses))'),
-                            createEquality(createGet(1, 'title'), '((text in parentheses))'))
+                            createEquality(createGet(1, 'title'), createConstant('((text in parentheses))')))
                     })
 
                     it('escaped single quotes', () => {
                         assert.deepEqual(
                             parsePredicate(e => e.title == 'I\'m'),
-                            createEquality(createGet(1, 'title'), "I\\'m"))
+                            createEquality(createGet(1, 'title'), createConstant("I\\'m")))
                     })
                 })
 
@@ -72,7 +109,7 @@ describe('parsePredicate', () => {
             it('with a string', () => {
                 assert.deepEqual(
                     parsePredicate(e => e.title === 'some title'),
-                    createEquality(createGet(1, 'title'), 'some title'))
+                    createEquality(createGet(1, 'title'), createConstant('some title')))
             })
         })
     })
@@ -87,7 +124,7 @@ describe('parsePredicate', () => {
         it('with a string', () => {
             assert.deepEqual(
                 parsePredicate(e => (e.title == 'some title')),
-                createInsideParentheses(createEquality(createGet(1, 'title'), 'some title')))
+                createInsideParentheses(createEquality(createGet(1, 'title'), createConstant('some title'))))
         })
     })
 
@@ -101,7 +138,7 @@ describe('parsePredicate', () => {
         it('with a string', () => {
             assert.deepEqual(
                 parsePredicate(e => ((e.title == 'some title'))),
-                createInsideParentheses(createInsideParentheses(createEquality(createGet(1, 'title'), 'some title'))))
+                createInsideParentheses(createInsideParentheses(createEquality(createGet(1, 'title'), createConstant('some title')))))
         })
     })
 
@@ -332,10 +369,10 @@ describe('parsePredicate', () => {
             assert.deepEqual(
                 parsePredicate(e => e.firstName == 'Jim' || e.firstName == 'James'),
                 createConcatenation(
-                    createEquality(createGet(1, 'firstName'), 'Jim'),
+                    createEquality(createGet(1, 'firstName'), createConstant('Jim')),
                     [
                         createOr(
-                            createEquality(createGet(1, 'firstName'), 'James')
+                            createEquality(createGet(1, 'firstName'), createConstant('James'))
                         )
                     ]
                 )
@@ -363,14 +400,14 @@ describe('parsePredicate', () => {
         it('when the comparison refers to the first table', () => {
             assert.deepEqual(
                 parsePredicate((e, d) => e.lastName == 'Doe'),
-                createEquality(createGet(1, 'lastName'), 'Doe')
+                createEquality(createGet(1, 'lastName'), createConstant('Doe'))
             )
         })
 
         it('when the comparison refers to the second table', () => {
             assert.deepEqual(
                 parsePredicate((e, d) => d.id == 1),
-                createEquality(createGet(2, 'id'), 1)
+                createEquality(createGet(2, 'id'), createConstant(1))
             )
         })
 
@@ -378,10 +415,10 @@ describe('parsePredicate', () => {
             assert.deepEqual(
                 parsePredicate((e, d) => e.lastName == 'Doe' && d.id == 1),
                 createConcatenation(
-                    createEquality(createGet(1, 'lastName'), 'Doe'),
+                    createEquality(createGet(1, 'lastName'), createConstant('Doe')),
                     [
                         createAnd(
-                            createEquality(createGet(2, 'id'), 1))
+                            createEquality(createGet(2, 'id'), createConstant(1)))
                     ])
             )
         })
@@ -390,10 +427,10 @@ describe('parsePredicate', () => {
             assert.deepEqual(
                 parsePredicate((e, d) => d.id == 1 && e.lastName == 'Doe'),
                 createConcatenation(
-                    createEquality(createGet(2, 'id'), 1),
+                    createEquality(createGet(2, 'id'), createConstant(1)),
                     [
                         createAnd(
-                            createEquality(createGet(1, 'lastName'), 'Doe'))
+                            createEquality(createGet(1, 'lastName'), createConstant('Doe')))
                     ])
             )
         })

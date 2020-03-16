@@ -107,15 +107,20 @@ FROM employees t1`
 ### Filtering
 
 #### Single predicate
+
 ```typescript
 employees
     .filter(e => e.id == 1)
     .select()
-
-// SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.department_id
-// FROM employees t1
-// WHERE t1.id = 1
 ```
+
+```sql
+SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.department_id
+FROM employees t1
+WHERE t1.id = 1
+```
+
+Currently, the following comparison operators are supported: *equal* ("===" or "=="), *greater than*, *greater than or equal to*, *less than* and *less than or equal to*.
 
 #### Conjunction of predicates
 
