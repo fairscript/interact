@@ -4,14 +4,14 @@ import * as toSnakeCase from 'js-snakecase'
 
 
 function generateOrder(order: OrderExpression): string {
-    return `t${order.table}.${toSnakeCase(order.column)} ${order.direction.toUpperCase()}`
+    return `${order.table}.${toSnakeCase(order.property)} ${order.direction.toUpperCase()}`
 }
 
-function generateOrders(orders: Array<OrderExpression>): string {
+function generateOrders(orders: OrderExpression[]): string {
     return joinWithCommaWhitespace(orders.map(generateOrder))
 
 }
 
-export function generateOrderBy(orders: Array<OrderExpression>): string {
+export function generateOrderBy(orders: OrderExpression[]): string {
     return 'ORDER BY ' + generateOrders(orders)
 }

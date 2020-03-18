@@ -1,62 +1,63 @@
 import {extractLambdaString} from '../lambda_string_extraction'
 import {
-    createDictionaryParser, createFunctionInvocationChoice, createKeyValuePairParser,
-    createObjectPropertyParser,
+    createDictionaryParser, createParameterlessFunctionInvocationChoice, createKeyValuePairParser,
+    createNamedObjectPropertyParser,
     dot,
     identifier
 } from './javascript_parsing'
 import * as getParameterNames from 'get-parameter-names'
 import * as A from 'arcsecond'
-import {
-    ColumnOperation,
-    createAggregate,
-    createAlias,
-    createGet, Get
-} from '../column_operations'
-import {createFindTableIndex} from './table_index'
-import {PartOfKey} from './get_key_parsing'
+import { createGetFromParameter, GetFromParameter } from '../column_operations'
+import {Key} from './get_key_parsing'
 
-const operations = ['avg', 'count', 'min', 'max', 'sum']
+export interface Aggregate {
+    kind: 'aggregate'
+    aggregation: 'avg' | 'count' | 'min' | 'max' | 'sum'
+    get: GetFromParameter
+}
+
+export function createAggregate(aggregation: 'avg' | 'count' | 'min' | 'max' | 'sum', get: GetFromParameter): Aggregate {
+    return {
+        kind: 'aggregate',
+        aggregation,
+        get
+    }
+}
+
+export interface GetPartOfKey {
+    kind: 'get-part-of-key',
+    part: string,
+}
+
+export function createGetPartOfKey(part: string): GetPartOfKey {
+    return {
+        kind: 'get-part-of-key',
+        part
+    }
+}
 
 function createAccessKeyParser(keyParameterName) {
-    const value = createObjectPropertyParser([keyParameterName])
+    const value = createNamedObjectPropertyParser([keyParameterName])
 
     const keyValuePair = createKeyValuePairParser(value)
 
     return keyValuePair
-        .map(([alias, [object, partOfKey]]) => [partOfKey, alias])
+        .map(([alias, [object, partOfKey]]) => [alias, createGetPartOfKey(partOfKey)])
 }
 
 function createAggregateColumnParser(objectParameterNames) {
-    const columnAggregation = A.sequenceOf([identifier, dot, createFunctionInvocationChoice(operations)])
+    const columnAggregation = A.sequenceOf([identifier, dot, createParameterlessFunctionInvocationChoice(['avg', 'count', 'min', 'max', 'sum'])])
         .map(([property, dot, operation]) => [property, operation])
 
-    const value = createObjectPropertyParser(objectParameterNames, columnAggregation)
+    const value = createNamedObjectPropertyParser(objectParameterNames, columnAggregation)
     const keyValuePair = createKeyValuePairParser(value)
 
-    const findTableIndex = createFindTableIndex(objectParameterNames)
-
     return keyValuePair
-        .map(([alias, [object, [property, aggregation]]]) => createAlias(createAggregate(aggregation, createGet(findTableIndex(object), property)), alias))
+        .map(([alias, [object, [property, aggregation]]]) => [alias, createAggregate(aggregation, createGetFromParameter(object, property))])
 }
 
-function mapPartOfKeyAliasToGet(key: PartOfKey[]): { [id: string]: Get } {
-    return key.reduce((acc, item) => {
-        acc[item.alias] = item.get
-
-        return acc
-    }, {})
-}
-
-function createAggregationParser(f: Function, key: PartOfKey[]) {
-    const parameterNames = getParameterNames(f)
-
-    const keyParameterName = parameterNames[0]
-    const partOfKeyAliasToGetMap = mapPartOfKeyAliasToGet(key)
+function createAggregationParser(keyParameterName: string, objectParameterNames: string[]) {
     const accessKeyParser = createAccessKeyParser(keyParameterName)
-        .map(([partOfKey, alias]) => createAlias(partOfKeyAliasToGetMap[partOfKey], alias))
-
-    const objectParameterNames = parameterNames.slice(1)
     const aggregateColumnParser = createAggregateColumnParser(objectParameterNames)
 
     const keyValuePair = A.choice([
@@ -67,12 +68,58 @@ function createAggregationParser(f: Function, key: PartOfKey[]) {
     return createDictionaryParser(keyValuePair)
 }
 
-export function parseAggregation(f: Function, key: PartOfKey[]): ColumnOperation[] {
+export interface Aggregation {
+    kind: 'aggregation',
+    partOfKeyToTableAndProperty: {[partOfKey: string]: [string, string]},
+    parameterToTable: {[partOfKey: string]: string},
+
+    operations: [string, GetPartOfKey|Aggregate][]
+}
+
+export function createAggregation(
+    partOfKeyToTableAndProperty: {[partOfKey: string]: [string, string]},
+    parameterToTable: {[partOfKey: string]: string},
+    operations: [string, GetPartOfKey|Aggregate][]): Aggregation {
+
+    return {
+        kind: 'aggregation',
+        partOfKeyToTableAndProperty,
+        parameterToTable,
+        operations
+    }
+}
+
+export function parseAggregation(f: Function, key: Key): Aggregation {
+    const parameterNames = getParameterNames(f)
+
+    const partOfKeyToTableAndProperty = key.parts.reduce(
+        (acc, part) => {
+            acc[part.alias] = [key.parameterToTable[part.get.parameter], part.get.property]
+
+            return acc
+        },
+        {}
+    )
+
+    // The first parameter of the function represents the key.
+    const keyParameterName = parameterNames[0]
+    // The remaining parameters represent tables.
+    const objectParameterNames = parameterNames.slice(1)
+
+    const parameterToTable = objectParameterNames.reduce(
+        (acc, name, index) => {
+            acc[name] = `t${index+1}`
+            return acc
+        },
+        {})
+
+    const parser = createAggregationParser(keyParameterName, objectParameterNames)
+
     const lambdaString = extractLambdaString(f)
 
-    const parser = createAggregationParser(f, key)
+    const operations = parser.run(lambdaString).result
 
-    const result = parser.run(lambdaString).result
+    const aggregation = createAggregation(partOfKeyToTableAndProperty, parameterToTable, operations)
 
-    return result
+    return aggregation
 }

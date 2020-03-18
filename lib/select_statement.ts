@@ -1,8 +1,8 @@
-import {PredicateExpression} from './parsing/predicate_parsing'
+import {Filter} from './parsing/filter_parsing'
 import {OrderExpression} from './parsing/order_parsing'
-import {Get, ColumnOperation, Count} from './column_operations'
 import {JoinExpression} from './parsing/join_parsing'
-import {PartOfKey} from './parsing/get_key_parsing'
+import {Key} from './parsing/get_key_parsing'
+import {Selection} from './parsing/select_parsing'
 
 export interface Constructor<T> {
     new (...args: any[]): T
@@ -10,17 +10,37 @@ export interface Constructor<T> {
 
 export interface SelectStatement {
     tableName: string
-    selection: ColumnOperation[]
-    predicates: PredicateExpression[]
+    selection: Selection
+    filters: Filter[]
     orders: OrderExpression[]
-    joins: JoinExpression[]
-    key: PartOfKey[]|null
+    join: JoinExpression
+    key: Key|null,
+
+    kind: 'select-statement'
 }
 
+export function createEmptySelectStatement(tableName: string): SelectStatement {
+    return {
+        tableName,
+        selection: null,
+        filters: [],
+        orders: [],
+        join: null,
+        key: null,
+        kind: 'select-statement'
+    }
+}
 
 export interface SubselectStatement {
     tableName: string
-    selection: Count
-    predicates: PredicateExpression[]
+    filters: Filter[]
+    kind: 'subselect-statement'
 }
 
+export function createSubselectStatement(tableName: string, filters: Filter[]): SubselectStatement {
+    return {
+        tableName,
+        filters,
+        kind: 'subselect-statement'
+    }
+}

@@ -1,4 +1,4 @@
-import {Constructor, SelectStatement} from '../../select_statement'
+import {Constructor, createEmptySelectStatement, SelectStatement} from '../../select_statement'
 import {FilterTable} from './filter_table'
 import {SortTable} from './sort_table'
 import {GroupTable} from './group_table'
@@ -6,15 +6,15 @@ import {JoinSecondTable} from '../two/join_second_table'
 import {EnforceNonEmptyRecord, StringValueOrColumnSelectionRecord, StringValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseOrder} from '../../parsing/order_parsing'
-import {parseSingleTableSelect} from '../../parsing/select_parsing'
-import {parsePredicate} from '../../parsing/predicate_parsing'
-import {parseGet} from '../../generation/get_parsing'
+import {parseSelectSingleTable} from '../../parsing/select_parsing'
+import {parseFilter} from '../../parsing/filter_parsing'
+import {parseGet} from '../../parsing/get_parsing'
 import {parseMap} from '../../parsing/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {parseJoin} from '../../parsing/join_parsing'
-import {createCount} from '../../column_operations'
 import {ColumnSelection, TableSelection} from '../selection'
 import {parseMapS} from '../../parsing/maps_parsing'
+import {createCountSelection} from '../../parsing/count_selection'
 
 
 export class Table<T> {
@@ -24,14 +24,7 @@ export class Table<T> {
         protected constructor: Constructor<T>,
         protected tableName: string) {
 
-        this.statement = {
-            tableName,
-            selection: [],
-            predicates: [],
-            orders: [],
-            joins: [],
-            key: null
-        }
+        this.statement = createEmptySelectStatement(tableName)
     }
 
     filter(predicate: (table: T) => boolean): FilterTable<T> {
@@ -39,7 +32,7 @@ export class Table<T> {
             this.constructor,
             {
                 ...this.statement,
-                predicates: this.statement.predicates.concat(parsePredicate(predicate))
+                filters: this.statement.filters.concat(parseFilter(predicate))
             }
         )
     }
@@ -64,7 +57,7 @@ export class Table<T> {
         return new TableSelection(
             {
                 ...this.statement,
-                selection: parseSingleTableSelect(this.constructor)
+                selection: parseSelectSingleTable(this.constructor)
             })
     }
 
@@ -72,7 +65,7 @@ export class Table<T> {
         return new ColumnSelection(
             {
                 ...this.statement,
-                selection: [parseGet(f)]
+                selection: parseGet(f)
             })
     }
 
@@ -80,7 +73,7 @@ export class Table<T> {
         return new ColumnSelection(
             {
                 ...this.statement,
-                selection: [createCount()]
+                selection: createCountSelection()
             })
     }
 
@@ -96,7 +89,7 @@ export class Table<T> {
         return new TableSelection(
             {
                 ...this.statement,
-                selection: parseMapS(f)
+                selection: parseMapS(f, [tableInSubquery.tableName])
             })
     }
 
@@ -114,7 +107,7 @@ export class Table<T> {
             otherTable.constructor,
             {
                 ...this.statement,
-                joins: this.statement.joins.concat([parseJoin(otherTable.tableName, left, right)])
+                join: parseJoin(otherTable.tableName, left, right)
             })
     }
 }

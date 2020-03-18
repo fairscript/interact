@@ -1,12 +1,12 @@
 import {
     Comparison,
-    Concatenation,
+    Concatenation, Filter,
     InsideParentheses,
     PredicateExpression, Side,
     TailItem
-} from '../parsing/predicate_parsing'
+} from '../parsing/filter_parsing'
 import {joinWithWhitespace} from '../parsing/javascript_parsing'
-import {generateGet} from './column_generation'
+import {generateGetFromParameter} from './get_from_parameter_generation'
 import {Constant} from '../column_operations'
 
 
@@ -29,53 +29,64 @@ function generateBinaryLogicalOperator(operator: '&&' | '||'): string {
     }
 }
 
-function generateTailItem(item: TailItem): string {
-    return `${generateBinaryLogicalOperator(item.operator)} ${generatePredicate(item.expression)}`
+function generateTailItem(parameterNameToTableAlias: { [parameterName: string]: string }): (item: TailItem) => string {
+    return item => {
+        const binaryOperator = generateBinaryLogicalOperator(item.operator)
+        const predicate = generatePredicate(parameterNameToTableAlias, item.expression)
+
+        return `${binaryOperator} ${predicate}`
+    }
 }
 
-function generateSide(side: Side): string {
+function generateSide(parameterNameToTableAlias: { [parameterName: string]: string }, side: Side): string {
     switch (side.kind) {
-        case 'get':
-            return generateGet(side)
+        case 'get-from-parameter':
+            return generateGetFromParameter(parameterNameToTableAlias, side)
         case 'constant':
             return generateConstant(side)
     }
 }
 
-function generateComparison(predicate: Comparison): string {
-    return `${generateSide(predicate.left)} ${predicate.operator} ${generateSide(predicate.right)}`
+function generateComparison(parameterNameToTableAlias: { [parameterName: string]: string }, predicate: Comparison): string {
+    return `${generateSide(parameterNameToTableAlias, predicate.left)} ${predicate.operator} ${generateSide(parameterNameToTableAlias, predicate.right)}`
 }
 
-function generateInsideParentheses(predicate: InsideParentheses): string {
-    return '(' + generatePredicate(predicate.inside) + ')'
+function generateInsideParentheses(parameterNameToTableAlias: { [parameterName: string]: string }, predicate: InsideParentheses): string {
+    return '(' + generatePredicate(parameterNameToTableAlias, predicate.inside) + ')'
 }
 
-function generateConcatenation(predicate: Concatenation): string {
-    const head = generatePredicate(predicate.head)
+function generateConcatenation(parameterNameToTableAlias: { [parameterName: string]: string }, predicate: Concatenation): string {
+    const head = generatePredicate(parameterNameToTableAlias, predicate.head)
 
-    return joinWithWhitespace([head].concat(predicate.tail.map(generateTailItem)))
+    return joinWithWhitespace([head].concat(predicate.tail.map(generateTailItem(parameterNameToTableAlias))))
 }
 
-function generatePredicate(predicate: PredicateExpression): string {
+function generatePredicate(parameterNameToTableAlias: { [parameterName: string]: string }, predicate: PredicateExpression): string {
     switch (predicate.kind) {
         case 'comparison':
-            return generateComparison(predicate)
+            return generateComparison(parameterNameToTableAlias, predicate)
         case 'inside':
-            return generateInsideParentheses(predicate)
+            return generateInsideParentheses(parameterNameToTableAlias, predicate)
         case 'concatenation':
-            return generateConcatenation(predicate)
+            return generateConcatenation(parameterNameToTableAlias, predicate)
     }
 }
 
-function generatePredicates(predicates: Array<PredicateExpression>): string {
-    if (predicates.length == 1) {
-        return generatePredicate(predicates[0])
+export function generateFilter(filter: Filter): string {
+    const { parameterToTable, predicate } = filter
+
+    return generatePredicate(parameterToTable, predicate)
+}
+
+export function generateFilters(filters: Filter[]): string {
+    if (filters.length == 1) {
+        return generateFilter(filters[0])
     }
     else {
-        return predicates.map(generatePredicate).map(sql => '(' + sql + ')').join(' AND ')
+        return filters.map(generateFilter).map(sql => '(' + sql + ')').join(' AND ')
     }
 }
 
-export function generateWhere(predicates: Array<PredicateExpression>): string {
-    return `WHERE ${generatePredicates(predicates)}`
+export function generateWhere(filters: Filter[]): string {
+    return `WHERE ${generateFilters(filters)}`
 }

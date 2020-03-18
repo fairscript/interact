@@ -17,7 +17,7 @@ describe('Aggregation', () => {
     it('using averaging works', () => {
         assert.equal(
             groupedByDepartmentId
-                .aggregate((k, x) => ({departmentId: k.departmentId, average: x.salary.avg()}))
+                .aggregate((k, e) => ({departmentId: k.departmentId, average: e.salary.avg()}))
                 .toSql(),
             computeExpectedSql('AVG(t1.salary) AS average')
         )
@@ -26,7 +26,7 @@ describe('Aggregation', () => {
     it('using counting works', () => {
         assert.equal(
             groupedByDepartmentId
-                .aggregate((k, x) => ({departmentId: k.departmentId, count: x.salary.count()}))
+                .aggregate((k, e) => ({departmentId: k.departmentId, count: e.salary.count()}))
                 .toSql(),
             computeExpectedSql('COUNT(t1.salary) AS count')
         )
@@ -35,7 +35,7 @@ describe('Aggregation', () => {
     it('using maximization works', () => {
         assert.equal(
             groupedByDepartmentId
-                .aggregate((k, x) => ({departmentId: k.departmentId, maximum: x.salary.max()}))
+                .aggregate((k, e) => ({departmentId: k.departmentId, maximum: e.salary.max()}))
                 .toSql(),
             computeExpectedSql('MAX(t1.salary) AS maximum')
         )
@@ -44,7 +44,7 @@ describe('Aggregation', () => {
     it('using minimization works', () => {
         assert.equal(
             groupedByDepartmentId
-                .aggregate((k, x) => ({departmentId: k.departmentId, minimum: x.salary.min()}))
+                .aggregate((k, e) => ({departmentId: k.departmentId, minimum: e.salary.min()}))
                 .toSql(),
             computeExpectedSql('MIN(t1.salary) AS minimum')
         )
@@ -53,7 +53,7 @@ describe('Aggregation', () => {
     it('using summation works', () => {
         assert.equal(
             groupedByDepartmentId
-                .aggregate((k, x) => ({departmentId: k.departmentId, sum: x.salary.sum()}))
+                .aggregate((k, e) => ({departmentId: k.departmentId, sum: e.salary.sum()}))
                 .toSql(),
             computeExpectedSql('SUM(t1.salary) AS sum')
         )

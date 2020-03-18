@@ -1,15 +1,18 @@
 import {JoinExpression} from '../parsing/join_parsing'
-import {joinWithNewLine} from '../parsing/javascript_parsing'
-import {generateGet} from './column_generation'
+import {generateGetFromParameter} from './get_from_parameter_generation'
 
-function generateJoinExpression(expr: JoinExpression, index: number): string {
-    return `INNER JOIN ${expr.tableName} t${index+2} ON ${generateGet(expr.left)} = ${generateGet(expr.right)}`
+function generateJoinExpression(expr: JoinExpression): string {
+    const { tableName, left, right } = expr
+
+    const leftParameter = left.parameter
+    const rightParameter = right.parameter
+
+    const leftSql = `${generateGetFromParameter({[leftParameter]: 't1'}, left)}`
+    const rightSql = `${generateGetFromParameter({[rightParameter]: 't2'}, right)}`
+
+    return `${tableName} t2 ON ${leftSql} = ${rightSql}`
 }
 
-function generateJoinExpressions(joinExpressions: JoinExpression[]): string {
-    return joinWithNewLine(joinExpressions.map(generateJoinExpression))
-}
-
-export function generateInnerJoin(joinExpressions: JoinExpression[]): string {
-    return generateJoinExpressions(joinExpressions)
+export function generateInnerJoin(joinExpression: JoinExpression): string {
+    return `INNER JOIN ${generateJoinExpression(joinExpression)}`
 }

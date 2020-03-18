@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import {Department, departments, Employee} from '../test_tables'
 import {parseJoin} from '../../lib/parsing/join_parsing'
-import {createGet} from '../../lib/column_operations'
+import {createGetFromParameter} from '../../lib/column_operations'
 
 describe('parseJoin', () => {
 
@@ -14,8 +14,8 @@ describe('parseJoin', () => {
                 (d: Department) => d.id),
             {
                 tableName: 'departments',
-                left: createGet(1, 'departmentId'),
-                right: createGet(2, 'id')
+                left: createGetFromParameter('e', 'departmentId'),
+                right: createGetFromParameter('d', 'id')
             })
 
     })

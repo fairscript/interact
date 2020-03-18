@@ -8,28 +8,28 @@ import {generateGroupBy} from './group_by_generation'
 import {generateInnerJoin} from './join_generation'
 
 export function generateSql(statement: SelectStatement): string {
-    const {selection, tableName, predicates, key, orders, joins} = statement
+    const {selection, tableName, filters, key, orders, join} = statement
 
-    const parts = [
+    const clauses = [
         generateSelect(selection),
         generateFrom(tableName)
     ]
 
-    if (joins.length > 0) {
-        parts.push(generateInnerJoin(joins))
+    if (join !== null) {
+        clauses.push(generateInnerJoin(join))
     }
 
-    if (predicates.length > 0) {
-        parts.push(generateWhere(predicates))
+    if (filters.length > 0) {
+        clauses.push(generateWhere(filters))
     }
 
     if (key != null) {
-        parts.push(generateGroupBy(key))
+        clauses.push(generateGroupBy(key))
     }
 
     if (orders.length > 0) {
-        parts.push(generateOrderBy(orders))
+        clauses.push(generateOrderBy(orders))
     }
 
-    return joinWithNewLine(parts)
+    return joinWithNewLine(clauses)
 }

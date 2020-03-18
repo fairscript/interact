@@ -1,7 +1,7 @@
 import {
     aComparisonOperator,
     aBinaryLogicalOperator,
-    createObjectPropertyParser,
+    createNamedObjectPropertyParser,
     closingParenthesis,
     openingParenthesis,
     joinWithWhitespace, createValueParser, aNumber, aString, joinWithDot
@@ -16,11 +16,11 @@ import {
 } from './parenthesis_parsing'
 import * as A from 'arcsecond'
 import * as getParameterNames from 'get-parameter-names'
-import {Constant, createConstant, createGet, Get} from '../column_operations'
-import {createFindTableIndex} from './table_index'
+import {Constant, createConstant, createGetFromParameter, GetFromParameter} from '../column_operations'
+import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
 
 export type SqlComparisonOperator = '='|'>'|'>='|'<'|'<='
-export type Side = Constant|Get
+export type Side = Constant|GetFromParameter
 
 export interface Comparison {
     left: Side,
@@ -29,10 +29,10 @@ export interface Comparison {
     kind: 'comparison'
 }
 
-function createComparison(left: Side, operator: SqlComparisonOperator, right: Side): Comparison {
+export function createComparison(left: Side, operator: SqlComparisonOperator, right: Side): Comparison {
     return {
         left,
-        operator,
+        operator: mapJsComparisonOperatorToSqlComparisonOperator(operator),
         right,
         kind: 'comparison'
     }
@@ -76,7 +76,7 @@ export interface TailItem {
     kind: 'tail-item'
 }
 
-function createTailItem(operator: '&&'|'||', expression: PredicateExpression): TailItem {
+export function createTailItem(operator: '&&'|'||', expression: PredicateExpression): TailItem {
     return {
         operator,
         expression,
@@ -108,7 +108,19 @@ export function createConcatenation(head: PredicateExpression, tail: TailItem[])
 
 export type PredicateExpression = InsideParentheses | Concatenation | Comparison
 
-function createComparisonParser(valueParser, objectPropertyParser) {
+export interface Filter {
+    parameterToTable: {[parameter: string]: string}
+    predicate: PredicateExpression
+}
+
+export function createFilter(parameterToTable: {[parameter: string]: string}, predicate: PredicateExpression): Filter {
+    return {
+        parameterToTable,
+        predicate
+    }
+}
+
+export function createComparisonParser(valueParser, objectPropertyParser) {
     const valueOrObjectProperty = A.choice([valueParser, objectPropertyParser])
 
     return A.sequenceOf(
@@ -122,22 +134,22 @@ function createComparisonParser(valueParser, objectPropertyParser) {
         .map(([left, ws1, operator, ws2, right]) => ([left, operator, right]))
 }
 
-function createTailItemsParser(comparison) {
+export function createTailItemsParser(side) {
     return A.many1(
         A.sequenceOf([
             A.optionalWhitespace,
             aBinaryLogicalOperator,
             A.optionalWhitespace,
-            comparison
+            side
         ])
         .map(([ws1, operator, ws2, comparison]) => ([operator, comparison]))
     )
 }
 
-function createReverseTailItemParser(comparison) {
+function createReverseTailItemParser(side) {
     return A.many1(
         A.sequenceOf([
-            comparison,
+            side,
             A.optionalWhitespace,
             aBinaryLogicalOperator,
             A.optionalWhitespace,
@@ -146,9 +158,9 @@ function createReverseTailItemParser(comparison) {
     )
 }
 
-function createConcatenationParser(comparison, tailItems) {
+export function createConcatenationParser(head, tailItems) {
     return A.sequenceOf([
-        comparison,
+        head,
         tailItems
     ])
 }
@@ -164,12 +176,10 @@ function mapJsComparisonOperatorToSqlComparisonOperator(operator): SqlComparison
 }
 
 function createLeafParser(parameterNames) {
-    const mapToComparisonObject = ([left, operator, right]) => createComparison(left, mapJsComparisonOperatorToSqlComparisonOperator(operator), right)
-
-    let findTableIndex = createFindTableIndex(parameterNames)
+    const mapToComparisonObject = ([left, operator, right]) => createComparison(left, operator, right)
 
     const valueParser = createValueParser(aString.map(x => x.slice(1, x.length - 1)), aNumber).map(value => createConstant(value))
-    const objectPropertyParser = createObjectPropertyParser(parameterNames).map(([object, property]) => createGet(findTableIndex(object), property))
+    const objectPropertyParser = createNamedObjectPropertyParser(parameterNames).map(([object, property]) => createGetFromParameter(object, property))
     const comparisonParser = createComparisonParser(valueParser, objectPropertyParser)
         .map(mapToComparisonObject)
 
@@ -311,7 +321,7 @@ function createSegmentParser(parameterNames: String[]): (segment: NestedSegment)
 }
 
 function createBinaryLogicalOperatorSplitter(parameterNames: string[]): (segment: NestedSegment) => NestedSegment {
-    const objectProperty = createObjectPropertyParser(parameterNames).map(joinWithDot)
+    const objectProperty = createNamedObjectPropertyParser(parameterNames).map(joinWithDot)
     const comparison = createComparisonParser(createValueParser(), objectProperty).map(joinWithWhitespace)
     const tailItems = createTailItemsParser(comparison).map(items => items.reduce((acc, item) => acc.concat(item)), [])
     const reverseTailItems = createReverseTailItemParser(comparison).map(items => items.reduce((acc, item) => acc.concat(item)), [])
@@ -360,8 +370,8 @@ function createBinaryLogicalOperatorSplitter(parameterNames: string[]): (segment
     return split
 }
 
-export function parsePredicate(f: Function): PredicateExpression {
-    // Extract the string containing the lambda
+export function parsePredicate(f: Function, parameterNames: string[]): PredicateExpression {
+// Extract the string containing the lambda
     const lambdaString = extractLambdaString(f)
 
     // Replace double quotes around string with single quotes
@@ -376,8 +386,6 @@ export function parsePredicate(f: Function): PredicateExpression {
     // Unescape parentheses inside strings
     const unescapedSegments = unescapeParenthesesInsideStrings(escapedSegments, positionsOfParentheses)
 
-    const parameterNames = getParameterNames(f)
-
     // Split up strings that contain binary operators
     const splitBinaryLogicalOperators = createBinaryLogicalOperatorSplitter(parameterNames)
 
@@ -385,7 +393,17 @@ export function parsePredicate(f: Function): PredicateExpression {
 
     const parseSegment = createSegmentParser(parameterNames)
 
-    const result = parseSegment(preprocessedSegments)
+    const predicate = parseSegment(preprocessedSegments)
 
-    return result
+    return predicate
+}
+
+export function parseFilter(f: Function): Filter {
+    const parameterNames = getParameterNames(f)
+
+    const parameterToTable = mapParameterNamesToTableAliases(parameterNames)
+
+    const predicate = parsePredicate(f, parameterNames)
+
+    return createFilter(parameterToTable, predicate)
 }

@@ -1,26 +1,26 @@
-import {createGet, Get, TableIndex} from '../column_operations'
-import {createObjectPropertyParser} from './javascript_parsing'
+import {createGetFromParameter, GetFromParameter} from '../column_operations'
+import {createNamedObjectPropertyParser} from './javascript_parsing'
 import * as getParameterNames from 'get-parameter-names'
 import {extractLambdaString} from '../lambda_string_extraction'
 
 export interface JoinExpression {
     tableName: string,
-    left: Get,
-    right: Get
+    left: GetFromParameter,
+    right: GetFromParameter
 }
 
-function createOnParser(parameterNames: string[], tableIndex: TableIndex) {
-    const objectPropertyParser = createObjectPropertyParser(parameterNames)
+function createOnParser(parameterNames: string[]) {
+    const objectPropertyParser = createNamedObjectPropertyParser(parameterNames)
 
     const parser = objectPropertyParser
-        .map(([object, property]) => createGet(tableIndex, property))
+        .map(([object, property]) => createGetFromParameter(object, property))
 
     return parser
 }
 
-function parseSide<T, K1>(f: (table: T) => K1, tableIndex: TableIndex): Get {
+function parseSide<T, K1>(f: (table: T) => K1): GetFromParameter {
     const parameterNames = getParameterNames(f)
-    const parser = createOnParser(parameterNames, tableIndex)
+    const parser = createOnParser(parameterNames)
 
     const lambdaString = extractLambdaString(f)
 
@@ -34,7 +34,7 @@ export function parseJoin<T1, T2, K1>(
 
     return {
         tableName,
-        left: parseSide(left, 1),
-        right: parseSide(right, 2)
+        left: parseSide(left),
+        right: parseSide(right)
     }
 }

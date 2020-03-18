@@ -3,9 +3,9 @@ import {parseOrder} from '../../parsing/order_parsing'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {GroupTwoTables} from './group_two_tables'
 import {Value} from '../../value'
-import {parseGet} from '../../generation/get_parsing'
+import {parseGet} from '../../parsing/get_parsing'
 import {parseMap} from '../../parsing/map_parsing'
-import {parseMultiTableSelect} from '../../parsing/select_parsing'
+import {parseSelectMultipleTables} from '../../parsing/select_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {ColumnSelection, TableSelection} from '../selection'
 
@@ -40,10 +40,10 @@ export class SortTwoTables<T1, T2> {
         return new TableSelection(
             {
                 ...this.statement,
-                selection: parseMultiTableSelect({
-                    [first]: this.firstConstructor,
-                    [second]: this.secondConstructor
-                })
+                selection: parseSelectMultipleTables([
+                    [first, this.firstConstructor],
+                    [second, this.secondConstructor]
+                ])
             })
     }
 
@@ -51,7 +51,7 @@ export class SortTwoTables<T1, T2> {
         return new ColumnSelection(
             {
                 ...this.statement,
-                selection: [parseGet(f)]
+                selection: parseGet(f)
             })
     }
 

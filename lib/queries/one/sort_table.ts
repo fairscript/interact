@@ -3,8 +3,8 @@ import {parseOrder} from '../../parsing/order_parsing'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {GroupTable} from './group_table'
 import {Value} from '../../value'
-import {parseSingleTableSelect} from '../../parsing/select_parsing'
-import {parseGet} from '../../generation/get_parsing'
+import {parseSelectSingleTable} from '../../parsing/select_parsing'
+import {parseGet} from '../../parsing/get_parsing'
 import {parseMap} from '../../parsing/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {ColumnSelection, TableSelection} from '../selection'
@@ -34,7 +34,7 @@ export class SortTable<T> {
     select(): TableSelection<T> {
         return new TableSelection({
             ...this.statement,
-            selection: parseSingleTableSelect(this.constructor)
+            selection: parseSelectSingleTable(this.constructor)
         })
     }
 
@@ -42,7 +42,7 @@ export class SortTable<T> {
         return new ColumnSelection(
             {
                 ...this.statement,
-                selection: [parseGet(f)]
+                selection: parseGet(f)
             })
     }
 

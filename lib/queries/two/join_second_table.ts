@@ -4,11 +4,11 @@ import {FilterTwoTables} from './filter_two_tables'
 import {GroupTwoTables} from './group_two_tables'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {Value} from '../../value'
-import {parseGet} from '../../generation/get_parsing'
+import {parseGet} from '../../parsing/get_parsing'
 import {parseMap} from '../../parsing/map_parsing'
-import {parseMultiTableSelect} from '../../parsing/select_parsing'
+import {parseSelectMultipleTables} from '../../parsing/select_parsing'
 import {parseOrder} from '../../parsing/order_parsing'
-import {parsePredicate} from '../../parsing/predicate_parsing'
+import {parseFilter} from '../../parsing/filter_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {ColumnSelection, TableSelection} from '../selection'
 
@@ -25,7 +25,7 @@ export class JoinSecondTable<T1, T2, K1> {
             this.secondConstructor,
             {
                 ...this.statement,
-                predicates: this.statement.predicates.concat(parsePredicate(predicate))
+                filters: this.statement.filters.concat(parseFilter(predicate))
             })
     }
 
@@ -53,10 +53,10 @@ export class JoinSecondTable<T1, T2, K1> {
         return new TableSelection(
             {
                 ...this.statement,
-                selection: parseMultiTableSelect({
-                    [first]: this.firstConstructor,
-                    [second]: this.secondConstructor
-                })
+                selection: parseSelectMultipleTables([
+                    [first, this.firstConstructor],
+                    [second, this.secondConstructor]
+                ])
             })
     }
 
@@ -64,7 +64,7 @@ export class JoinSecondTable<T1, T2, K1> {
         return new ColumnSelection(
             {
                 ...this.statement,
-                selection: [parseGet(f)]
+                selection: parseGet(f)
             })
     }
 

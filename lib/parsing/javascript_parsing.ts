@@ -7,7 +7,7 @@ export const joinWithWhitespace = (array: string[]) => array.join(' ')
 export const joinWithCommaWhitespace = (array: string[]) => array.join(', ')
 export const joinWithNewLine = (array: string[]) => array.join('\n')
 
-export function createChoiceFromStrings(names: Array<string>) {
+export function createChoiceFromStrings(names: string[]) {
     return A.choice(names.map(A.str))
 }
 
@@ -15,6 +15,7 @@ export function createChoiceFromStrings(names: Array<string>) {
 export const dot = A.char('.')
 export const comma = A.char(',')
 export const colon = A.char(':')
+export const semicolon = A.char(';')
 export const underscore = A.char('_')
 export const dollarSign = A.char('$')
 export const singleQuote = A.char('\'')
@@ -61,9 +62,13 @@ export const aBinaryLogicalOperator = createChoiceFromStrings(['&&', '||'])
 export const aComparisonOperator = createChoiceFromStrings(['===', '==', '>=', '<=', '>', '<'])
 
 // Object property
-export function createObjectPropertyParser(objectNames: Array<string>, propertyParser = identifier) {
-    return A.sequenceOf([createChoiceFromStrings(objectNames), dot, propertyParser])
+export function createObjectPropertyParser(objectParser, propertyParser) {
+    return A.sequenceOf([objectParser, dot, propertyParser])
         .map(([object, dot, property]) => [object, property])
+}
+
+export function createNamedObjectPropertyParser(objectNames: string[], propertyParser = identifier) {
+    return createObjectPropertyParser(createChoiceFromStrings(objectNames), propertyParser)
 }
 
 export function createKeyValuePairParser(valueParser) {
@@ -85,9 +90,9 @@ export function createDictionaryParser(keyValuePair) {
 }
 
 // Function invocation
-const invocation = A.str('()')
+const parameterlessInvocation = A.str('()')
 
-export function createFunctionInvocationChoice(functionNames: Array<string>) {
-    return A.sequenceOf([createChoiceFromStrings(functionNames), invocation])
+export function createParameterlessFunctionInvocationChoice(functionNames: string[]) {
+    return A.sequenceOf([createChoiceFromStrings(functionNames), parameterlessInvocation])
         .map(([functionName, invocation]) => functionName)
 }

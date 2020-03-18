@@ -1,72 +1,17 @@
 import {SubselectStatement} from './select_statement'
 import {Value} from './value'
 
-export type AliasedColumnOperation = Get | Aggregate | Count | Subselect
-export type ColumnOperation = Alias | AliasedColumnOperation
-
-export interface Alias {
-    kind: 'alias'
-    operation: AliasedColumnOperation
-    alias: string,
+export interface GetFromParameter {
+    kind: 'get-from-parameter'
+    parameter: string,
+    property: string,
 }
 
-export function createAlias(operation: AliasedColumnOperation, alias: string): Alias {
+export function createGetFromParameter(parameter: string, property: string): GetFromParameter {
     return {
-        kind: 'alias',
-        operation,
-        alias
-    }
-}
-
-export interface Aggregate {
-    kind: 'aggregate'
-    aggregation: 'avg' | 'count' | 'min' | 'max' | 'sum'
-    get: Get
-}
-
-export function createAggregate(aggregation: 'avg' | 'count' | 'min' | 'max' | 'sum', get: Get): Aggregate {
-    return {
-        kind: 'aggregate',
-        aggregation,
-        get
-    }
-}
-
-export type TableIndex = 1 | 2
-
-export interface Get {
-    kind: 'get'
-    table: TableIndex | null,
-    column: string,
-}
-
-export function createGet(table: TableIndex | null, column: string): Get {
-    return {
-        kind: 'get',
-        table,
-        column
-    }
-}
-
-export interface Constant {
-    kind: 'constant'
-    value: Value
-}
-
-export function createConstant(value: Value): Constant {
-    return {
-        kind: 'constant',
-        value
-    }
-}
-
-export interface Count {
-    kind: 'count'
-}
-
-export function createCount(): Count {
-    return {
-        kind: 'count'
+        kind: 'get-from-parameter',
+        parameter,
+        property
     }
 }
 
@@ -79,5 +24,17 @@ export function createSubselect(statement: SubselectStatement): Subselect {
     return {
         statement,
         kind: 'subselect'
+    }
+}
+
+export interface Constant {
+    kind: 'constant'
+    value: Value
+}
+
+export function createConstant(value: Value): Constant {
+    return {
+        kind: 'constant',
+        value
     }
 }

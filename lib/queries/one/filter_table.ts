@@ -1,16 +1,16 @@
 import {Constructor, SelectStatement} from '../../select_statement'
 import {SortTable} from './sort_table'
 import {GroupTable} from './group_table'
-import {parsePredicate} from '../../parsing/predicate_parsing'
+import {parseFilter} from '../../parsing/filter_parsing'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseOrder} from '../../parsing/order_parsing'
-import {parseSingleTableSelect} from '../../parsing/select_parsing'
-import {parseGet} from '../../generation/get_parsing'
+import {parseSelectSingleTable} from '../../parsing/select_parsing'
+import {parseGet} from '../../parsing/get_parsing'
 import {parseMap} from '../../parsing/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {createCount} from '../../column_operations'
 import {ColumnSelection, TableSelection} from '../selection'
+import {createCountSelection} from '../../parsing/count_selection'
 
 export class FilterTable<T> {
 
@@ -23,7 +23,7 @@ export class FilterTable<T> {
             this.constructor,
             {
                 ...this.statement,
-                predicates: this.statement.predicates.concat(parsePredicate(predicate))
+                filters: this.statement.filters.concat(parseFilter(predicate))
             }
         )
     }
@@ -48,7 +48,7 @@ export class FilterTable<T> {
         return new TableSelection(
             {
                 ...this.statement,
-                selection: parseSingleTableSelect(this.constructor)
+                selection: parseSelectSingleTable(this.constructor)
             })
     }
 
@@ -56,7 +56,7 @@ export class FilterTable<T> {
         return new ColumnSelection(
             {
                 ...this.statement,
-                selection: [parseGet(f)]
+                selection: parseGet(f)
             })
     }
 
@@ -64,7 +64,7 @@ export class FilterTable<T> {
         return new ColumnSelection(
             {
                 ...this.statement,
-                selection: [createCount()]
+                selection: createCountSelection()
             })
     }
 
