@@ -89,6 +89,44 @@ export function createDictionaryParser(keyValuePair) {
     return dictionaryInParentheses
 }
 
+// Function body
+const aReturn = A.str('return')
+
+export function createFunctionBody(returnParser) {
+    return A.sequenceOf([
+        openingBracket,
+        A.optionalWhitespace,
+        aReturn,
+        A.optionalWhitespace,
+        returnParser,
+        A.optionalWhitespace,
+        semicolon,
+        A.optionalWhitespace,
+        closingBracket
+    ])
+}
+
+// Lambda function
+const functionSignature = A.sequenceOf([
+    openingParenthesis,
+    A.sequenceOf([
+        identifier,
+        A.many(A.sequenceOf([A.optionalWhitespace, comma, A.optionalWhitespace, identifier]).map(([ws1, c, ws2, parameter]) => parameter))
+    ]),
+    closingParenthesis,
+]).map(([op, [head, tail], cp]) => [head].concat(tail))
+
+export function createLambdaParser(functionBody) {
+    return A.sequenceOf([
+        A.str('function'),
+        A.optionalWhitespace,
+        functionSignature,
+        A.optionalWhitespace,
+        functionBody
+    ])
+        .map(([str, ws1, parameters, ws2, body]) => [parameters, body])
+}
+
 // Function invocation
 const parameterlessInvocation = A.str('()')
 

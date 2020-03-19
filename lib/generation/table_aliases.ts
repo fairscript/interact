@@ -1,7 +1,7 @@
-export function mapParameterNamesToTableAliases(parameterNames: string[]): { [parameterName: string]: string } {
+export function mapParameterNamesToTableAliases(parameterNames: string[], prefix: string = 't'): { [parameterName: string]: string } {
     return parameterNames.reduce(
         (acc, parameter, index) => {
-            acc[parameter] = `t${index+1}`
+            acc[parameter] = `${prefix}${index+1}`
 
             return acc
         },

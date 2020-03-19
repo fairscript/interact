@@ -22,15 +22,17 @@ export function createMapSelection(
     }
 }
 
+export function createGetFromParameterParser(parameterNames: string[]) {
+    return createNamedObjectPropertyParser(parameterNames)
+        .map(([object, property]) => createGetFromParameter(object, property))
+}
+
 function createMapParser(parameterNames: string[]) {
-    const objectProperty = createNamedObjectPropertyParser(parameterNames)
+    const getFromParameterParser = createGetFromParameterParser(parameterNames)
 
-    const keyValuePair = createKeyValuePairParser(objectProperty)
-        .map(([alias, [object, property]]) => [alias, createGetFromParameter(object, property)])
+    const keyValuePair = createKeyValuePairParser(getFromParameterParser)
 
-    const dictionaryParser = createDictionaryParser(keyValuePair)
-
-    return dictionaryParser
+    return createDictionaryParser(keyValuePair)
 }
 
 export function parseMap(f: Function): Selection {

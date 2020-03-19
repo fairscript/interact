@@ -18,6 +18,7 @@ import * as getParameterNames from 'get-parameter-names'
 import {createConstant, createGetFromParameter} from '../column_operations'
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
 import {
+    createPredicateExpressionParser,
     PredicateExpression
 } from './predicate_parsing'
 import {Comparison, createComparison, createComparisonParser} from './predicate/comparison'
@@ -265,6 +266,16 @@ export function parsePredicate(f: Function, parameterNames: string[]): Predicate
     return predicate
 }
 
+export function parseFilter(f: Function): Filter {
+    const parameterNames = getParameterNames(f)
+
+    const parameterToTable = mapParameterNamesToTableAliases(parameterNames)
+
+    const predicate = parsePredicate(f, parameterNames)
+
+    return createFilter(parameterToTable, predicate)
+}
+
 export interface Filter {
     parameterToTable: {[parameter: string]: string}
     predicate: PredicateExpression
@@ -275,14 +286,4 @@ export function createFilter(parameterToTable: {[parameter: string]: string}, pr
         parameterToTable,
         predicate
     }
-}
-
-export function parseFilter(f: Function): Filter {
-    const parameterNames = getParameterNames(f)
-
-    const parameterToTable = mapParameterNamesToTableAliases(parameterNames)
-
-    const predicate = parsePredicate(f, parameterNames)
-
-    return createFilter(parameterToTable, predicate)
 }
