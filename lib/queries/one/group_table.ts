@@ -7,11 +7,13 @@ import {TableSelection} from '../selection'
 export class GroupTable<T, K extends StringValueRecord> {
     constructor(private readonly statement: SelectStatement) {}
 
-    aggregate<A extends StringValueRecord>(aggregation: (key: K, table: AggregatableTable<T>) => EnforceNonEmptyRecord<A> & A): TableSelection<A> {
+    aggregate<A extends StringValueRecord>(
+        aggregation: (key: K, table: AggregatableTable<T>, count: () => number) => EnforceNonEmptyRecord<A> & A): TableSelection<A> {
+
         return new TableSelection(
             {
                 ...this.statement,
-                selection: parseAggregation(aggregation, this.statement.key)
+                selection: parseAggregation(aggregation, this.statement.key, 1)
             })
     }
 }

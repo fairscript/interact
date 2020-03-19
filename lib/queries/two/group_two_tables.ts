@@ -12,7 +12,7 @@ export class GroupTwoTables<T1, T2, K extends StringValueRecord> {
         return new TableSelection(
             {
                 ...this.statement,
-                selection: parseAggregation(aggregation, this.statement.key)
+                selection: parseAggregation(aggregation, this.statement.key, 2)
             })
     }
 }

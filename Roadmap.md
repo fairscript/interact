@@ -1,20 +1,19 @@
 # Roadmap
 
-## v0.6.1
-- Interfaces to model operations allowed in subqueries
-- Use COUNT(*) in grouped tables
-
 ## v0.6.2
+- Interfaces to model operations allowed in subqueries
+
+## v0.6.3
 - Unify predicate parsing in queries and subqueries
 
 ## v0.7
-- Joins of up to five tables (using code generation)
-
-## v0.8
 - ORM for SQLite
 
-## v0.9
+## v0.8
 - Parameters
+
+## v0.9
+- Joins of up to five tables (using code generation)
 
 ## v0.10
 - Testing and, if need be, increasing the robustness of the parser

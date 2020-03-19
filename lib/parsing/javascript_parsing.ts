@@ -92,7 +92,12 @@ export function createDictionaryParser(keyValuePair) {
 // Function invocation
 const parameterlessInvocation = A.str('()')
 
+export function createParameterlessFunctionInvocation(functionName: string) {
+    return A.sequenceOf([A.str(functionName), A.optionalWhitespace, parameterlessInvocation])
+        .map(([functionName, ws, invocation]) => functionName)
+
+}
+
 export function createParameterlessFunctionInvocationChoice(functionNames: string[]) {
-    return A.sequenceOf([createChoiceFromStrings(functionNames), parameterlessInvocation])
-        .map(([functionName, invocation]) => functionName)
+    return A.choice(functionNames.map(createParameterlessFunctionInvocation))
 }

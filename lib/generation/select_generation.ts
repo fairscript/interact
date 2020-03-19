@@ -1,16 +1,17 @@
 import {MultiTableSelection, Selection, SingleTableSelection} from '../parsing/select_parsing'
 import * as toSnakeCase from 'js-snakecase'
 import {GetSelection} from '../parsing/get_parsing'
-import {Aggregate, Aggregation, GetPartOfKey} from '../parsing/aggregation_parsing'
+import {AggregateColumn, Aggregation, CountRowsInGroup, GetPartOfKey} from '../parsing/aggregation_parsing'
 import {joinWithCommaWhitespace} from '../parsing/javascript_parsing'
 import {MapSelection} from '../parsing/map_parsing'
 import {GetFromParameter, Subselect} from '../column_operations'
 import {generateGetFromParameter} from './get_from_parameter_generation'
 import {generateSubselect} from './subselect_generation'
+import {generateCount} from './count_selection'
 
 
-function generateCountSelection (): string {
-    return 'COUNT(*)'
+function generateCountSelection(): string {
+    return generateCount()
 }
 
 function generateSingleTableSelection (selection: SingleTableSelection): string {
@@ -50,13 +51,15 @@ function generateAggregation(aggregation: Aggregation): string {
         return `${aggregationOperation.toUpperCase()}(${table}.${column})`
     }
 
-    function generateUnaliasedAggregationOperation(operation: GetPartOfKey|Aggregate) {
+    function generateUnaliasedAggregationOperation(operation: GetPartOfKey|AggregateColumn|CountRowsInGroup) {
         switch (operation.kind) {
             case 'get-part-of-key':
                 return generateGetPartOfKey(operation.part)
-            case 'aggregate':
+            case 'aggregate-column':
                 const {parameter, property} = operation.get
                 return generateAggregate(operation.aggregation, parameter, property)
+            case 'count-rows-in-group':
+                return generateCount()
         }
     }
 

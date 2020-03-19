@@ -3,26 +3,12 @@ import {
     createDictionaryParser, createParameterlessFunctionInvocationChoice, createKeyValuePairParser,
     createNamedObjectPropertyParser,
     dot,
-    identifier
+    identifier, createParameterlessFunctionInvocation
 } from './javascript_parsing'
 import * as getParameterNames from 'get-parameter-names'
 import * as A from 'arcsecond'
 import { createGetFromParameter, GetFromParameter } from '../column_operations'
 import {Key} from './get_key_parsing'
-
-export interface Aggregate {
-    kind: 'aggregate'
-    aggregation: 'avg' | 'count' | 'min' | 'max' | 'sum'
-    get: GetFromParameter
-}
-
-export function createAggregate(aggregation: 'avg' | 'count' | 'min' | 'max' | 'sum', get: GetFromParameter): Aggregate {
-    return {
-        kind: 'aggregate',
-        aggregation,
-        get
-    }
-}
 
 export interface GetPartOfKey {
     kind: 'get-part-of-key',
@@ -36,50 +22,84 @@ export function createGetPartOfKey(part: string): GetPartOfKey {
     }
 }
 
-function createAccessKeyParser(keyParameterName) {
-    const value = createNamedObjectPropertyParser([keyParameterName])
+type ColumnAggregationOperation = 'avg' | 'min' | 'max' | 'sum'
 
-    const keyValuePair = createKeyValuePairParser(value)
+export interface AggregateColumn {
+    kind: 'aggregate-column'
+    aggregation: ColumnAggregationOperation
+    get: GetFromParameter
+}
 
-    return keyValuePair
-        .map(([alias, [object, partOfKey]]) => [alias, createGetPartOfKey(partOfKey)])
+export function createAggregateColumn(aggregation: ColumnAggregationOperation, get: GetFromParameter): AggregateColumn {
+    return {
+        kind: 'aggregate-column',
+        aggregation,
+        get
+    }
+}
+
+export interface CountRowsInGroup {
+    kind: 'count-rows-in-group'
+}
+
+export function createCountRowsInGroup(): CountRowsInGroup {
+    return {
+        kind: 'count-rows-in-group'
+    }
+}
+
+function createCountParser(countParameter) {
+    return createParameterlessFunctionInvocation(countParameter)
+        .map(() => createCountRowsInGroup())
+}
+
+function createGetPartOfKeyParser(keyParameterName) {
+    return createNamedObjectPropertyParser([keyParameterName])
+        .map(([object, partOfKey]) => createGetPartOfKey(partOfKey))
 }
 
 function createAggregateColumnParser(objectParameterNames) {
-    const columnAggregation = A.sequenceOf([identifier, dot, createParameterlessFunctionInvocationChoice(['avg', 'count', 'min', 'max', 'sum'])])
+    const columnAggregation = A.sequenceOf([identifier, dot, createParameterlessFunctionInvocationChoice(['avg', 'min', 'max', 'sum'])])
         .map(([property, dot, operation]) => [property, operation])
 
-    const value = createNamedObjectPropertyParser(objectParameterNames, columnAggregation)
-    const keyValuePair = createKeyValuePairParser(value)
-
-    return keyValuePair
-        .map(([alias, [object, [property, aggregation]]]) => [alias, createAggregate(aggregation, createGetFromParameter(object, property))])
+    return createNamedObjectPropertyParser(objectParameterNames, columnAggregation)
+        .map(([object, [property, aggregation]]) => createAggregateColumn(aggregation, createGetFromParameter(object, property)))
 }
 
-function createAggregationParser(keyParameterName: string, objectParameterNames: string[]) {
-    const accessKeyParser = createAccessKeyParser(keyParameterName)
+function createAggregationParser(keyParameterName: string, objectParameterNames: string[], countParameter: string|null) {
+    const valueParsers = []
+
+    if (countParameter != null) {
+        const countParser = createCountParser(countParameter)
+        valueParsers.push(countParser)
+    }
+
+    const accessKeyParser = createGetPartOfKeyParser(keyParameterName)
     const aggregateColumnParser = createAggregateColumnParser(objectParameterNames)
 
-    const keyValuePair = A.choice([
-        accessKeyParser,
-        aggregateColumnParser
-    ])
+    valueParsers.push(accessKeyParser, aggregateColumnParser)
 
-    return createDictionaryParser(keyValuePair)
+    const keyValuePairParsers = A.choice(valueParsers.map(valueParser => {
+        return createKeyValuePairParser(valueParser)
+    }))
+
+    return createDictionaryParser(keyValuePairParsers)
 }
+
+type AggregationOperation = GetPartOfKey|AggregateColumn|CountRowsInGroup
 
 export interface Aggregation {
     kind: 'aggregation',
     partOfKeyToTableAndProperty: {[partOfKey: string]: [string, string]},
     parameterToTable: {[partOfKey: string]: string},
 
-    operations: [string, GetPartOfKey|Aggregate][]
+    operations: [string, AggregationOperation][]
 }
 
 export function createAggregation(
     partOfKeyToTableAndProperty: {[partOfKey: string]: [string, string]},
     parameterToTable: {[partOfKey: string]: string},
-    operations: [string, GetPartOfKey|Aggregate][]): Aggregation {
+    operations: [string, AggregationOperation][]): Aggregation {
 
     return {
         kind: 'aggregation',
@@ -89,7 +109,7 @@ export function createAggregation(
     }
 }
 
-export function parseAggregation(f: Function, key: Key): Aggregation {
+export function parseAggregation(f: Function, key: Key, numberOfTables: number): Aggregation {
     const parameterNames = getParameterNames(f)
 
     const partOfKeyToTableAndProperty = key.parts.reduce(
@@ -101,10 +121,9 @@ export function parseAggregation(f: Function, key: Key): Aggregation {
         {}
     )
 
-    // The first parameter of the function represents the key.
     const keyParameterName = parameterNames[0]
-    // The remaining parameters represent tables.
-    const objectParameterNames = parameterNames.slice(1)
+    const objectParameterNames = parameterNames.slice(1, numberOfTables+1)
+    const countParameter = parameterNames.length > 1 + numberOfTables ? parameterNames[parameterNames.length - 1]: null
 
     const parameterToTable = objectParameterNames.reduce(
         (acc, name, index) => {
@@ -113,11 +132,12 @@ export function parseAggregation(f: Function, key: Key): Aggregation {
         },
         {})
 
-    const parser = createAggregationParser(keyParameterName, objectParameterNames)
+    const parser = createAggregationParser(keyParameterName, objectParameterNames, countParameter)
 
     const lambdaString = extractLambdaString(f)
 
-    const operations = parser.run(lambdaString).result
+    const parsingResult = parser.run(lambdaString)
+    const operations = parsingResult.result
 
     const aggregation = createAggregation(partOfKeyToTableAndProperty, parameterToTable, operations)
 

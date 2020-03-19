@@ -49,3 +49,11 @@
 
 - Greater than, greater than or equal to, less than or equal to, less than
 - Table columns and constants can now be on both sides of a comparison.
+
+## v0.6
+
+- Count subqueries with one or more filters
+
+## v0.6.1
+
+- Count in grouped tables is now defined on the table-level.
