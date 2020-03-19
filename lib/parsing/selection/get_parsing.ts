@@ -1,8 +1,8 @@
-import {createNamedObjectPropertyParser} from './javascript_parsing'
-import {createGetFromParameter, GetFromParameter} from '../column_operations'
+import {createNamedObjectPropertyParser} from '../javascript_parsing'
+import {createGetFromParameter, GetFromParameter} from '../../column_operations'
 import * as getParameterNames from 'get-parameter-names'
-import {extractLambdaString} from '../lambda_string_extraction'
-import {Selection} from './select_parsing'
+import {extractLambdaString} from '../../lambda_string_extraction'
+import {Selection} from '../selection_parsing'
 
 function createGetParser<T, U>(parameterNames: string[]) {
     const objectProperty = createNamedObjectPropertyParser(parameterNames)

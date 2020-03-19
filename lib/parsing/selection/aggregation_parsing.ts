@@ -1,14 +1,14 @@
-import {extractLambdaString} from '../lambda_string_extraction'
+import {extractLambdaString} from '../../lambda_string_extraction'
 import {
     createDictionaryParser, createParameterlessFunctionInvocationChoice, createKeyValuePairParser,
     createNamedObjectPropertyParser,
     dot,
     identifier, createParameterlessFunctionInvocation
-} from './javascript_parsing'
+} from '../javascript_parsing'
 import * as getParameterNames from 'get-parameter-names'
 import * as A from 'arcsecond'
-import { createGetFromParameter, GetFromParameter } from '../column_operations'
-import {Key} from './get_key_parsing'
+import { createGetFromParameter, GetFromParameter } from '../../column_operations'
+import {Key} from '../get_key_parsing'
 
 export interface GetPartOfKey {
     kind: 'get-part-of-key',

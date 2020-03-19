@@ -3,7 +3,7 @@ import * as toSnakeCase from 'js-snakecase'
 import {
     Aggregation,
     AggregationOperation
-} from '../../parsing/aggregation_parsing'
+} from '../../parsing/selection/aggregation_parsing'
 import {generateCount} from '../count_selection'
 import {joinWithCommaWhitespace} from '../../parsing/javascript_parsing'
 

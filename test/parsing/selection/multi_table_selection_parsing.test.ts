@@ -1,20 +1,9 @@
-import {Department, Employee} from '../test_tables'
+import {Department, Employee} from '../../test_tables'
+import * as assert from 'assert'
 import {
     createMultiTableSelection,
-    createSingleTableSelection,
-    parseSelectMultipleTables,
-    parseSelectSingleTable
-} from '../../lib/parsing/select_parsing'
-import * as assert from 'assert'
-
-describe('parseSelectSingleTable', () => {
-    it('returns an array of objects satisfying the Get interface', () => {
-        assert.deepEqual(
-            parseSelectSingleTable(Employee),
-            createSingleTableSelection([ 'id', 'firstName', 'lastName', 'title', 'salary', 'departmentId' ])
-        )
-    })
-})
+    parseSelectMultipleTables
+} from '../../../lib/parsing/selection/multi_table_selection_parsing'
 
 describe('parseMultiTableSelect', () => {
     it('returns an array of objects satisfying the Alias interface', () => {

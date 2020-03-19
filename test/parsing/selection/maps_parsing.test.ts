@@ -2,11 +2,11 @@ import * as assert from 'assert'
 import {
     createGetFromParameter,
     createSubselect
-} from '../../lib/column_operations'
-import {parseMapS} from '../../lib/parsing/maps_parsing'
-import {createEquality, createFilter, createGreaterThan} from '../../lib/parsing/filter_parsing'
-import {createSubselectStatement} from '../../lib/select_statement'
-import {createMapSelection} from '../../lib/parsing/map_parsing'
+} from '../../../lib/column_operations'
+import {parseMapS} from '../../../lib/parsing/selection/maps_parsing'
+import {createEquality, createFilter, createGreaterThan} from '../../../lib/parsing/filter_parsing'
+import {createSubselectStatement} from '../../../lib/select_statement'
+import {createMapSelection} from '../../../lib/parsing/selection/map_parsing'
 
 describe('parseMapS can parse a map with a subquery', function () {
 

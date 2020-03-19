@@ -1,4 +1,4 @@
-import {Selection} from '../parsing/select_parsing'
+import {Selection} from '../parsing/selection_parsing'
 import {generateCountSelection} from './selection/count_selection'
 import {generateGetSelection} from './selection/get_selection'
 import {generateMapSelection} from './selection/map_selection'

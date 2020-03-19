@@ -3,11 +3,11 @@ import {parseOrder} from '../../parsing/order_parsing'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {GroupTwoTables} from './group_two_tables'
 import {Value} from '../../value'
-import {parseGet} from '../../parsing/get_parsing'
-import {parseMap} from '../../parsing/map_parsing'
-import {parseSelectMultipleTables} from '../../parsing/select_parsing'
+import {parseGet} from '../../parsing/selection/get_parsing'
+import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {ColumnSelection, TableSelection} from '../selection'
+import {parseSelectMultipleTables} from '../../parsing/selection/multi_table_selection_parsing'
 
 export class SortTwoTables<T1, T2> {
 

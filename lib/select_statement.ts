@@ -2,7 +2,7 @@ import {Filter} from './parsing/filter_parsing'
 import {OrderExpression} from './parsing/order_parsing'
 import {JoinExpression} from './parsing/join_parsing'
 import {Key} from './parsing/get_key_parsing'
-import {Selection} from './parsing/select_parsing'
+import {Selection} from './parsing/selection_parsing'
 
 export interface Constructor<T> {
     new (...args: any[]): T

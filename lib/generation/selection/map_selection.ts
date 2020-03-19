@@ -1,4 +1,4 @@
-import {MapSelection} from '../../parsing/map_parsing'
+import {MapSelection} from '../../parsing/selection/map_parsing'
 import {joinWithCommaWhitespace} from '../../parsing/javascript_parsing'
 import {GetFromParameter, Subselect} from '../../column_operations'
 import {generateGetFromParameter} from '../get_from_parameter_generation'

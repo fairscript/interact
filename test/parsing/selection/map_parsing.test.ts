@@ -1,7 +1,7 @@
 import * as assert from 'assert'
-import {createMapSelection, parseMap} from '../../lib/parsing/map_parsing'
-import {Employee} from '../test_tables'
-import {createGetFromParameter} from '../../lib/column_operations'
+import {createMapSelection, parseMap} from '../../../lib/parsing/selection/map_parsing'
+import {Employee} from '../../test_tables'
+import {createGetFromParameter} from '../../../lib/column_operations'
 
 describe('parseMap can parse an object', function () {
     it('with a single key', () => {

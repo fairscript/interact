@@ -1,7 +1,7 @@
 import {
     createConstant,
     createGetFromParameter, createSubselect
-} from '../column_operations'
+} from '../../column_operations'
 import {
     aNumber,
     aString,
@@ -19,17 +19,17 @@ import {
     openingBracket,
     openingParenthesis,
     semicolon
-} from './javascript_parsing'
+} from '../javascript_parsing'
 import * as A from 'arcsecond'
 import {
     createComparison,
     createComparisonParser, createConcatenation, createFilter,
     createInsideParentheses, createTailItem,
     createTailItemsParser
-} from './filter_parsing'
-import {extractLambdaString} from '../lambda_string_extraction'
+} from '../filter_parsing'
+import {extractLambdaString} from '../../lambda_string_extraction'
 import * as getParameterNames from 'get-parameter-names'
-import {createSubselectStatement} from '../select_statement'
+import {createSubselectStatement} from '../../select_statement'
 import {createMapSelection, MapSelection} from './map_parsing'
 
 function createPredicateExpressionParser() {

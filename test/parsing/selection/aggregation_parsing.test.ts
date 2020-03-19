@@ -4,11 +4,11 @@ import {
     createAggregation, createCountRowsInGroup,
     createGetPartOfKey,
     parseAggregation
-} from '../../lib/parsing/aggregation_parsing'
-import {Employee} from '../test_tables'
-import {createGetFromParameter} from '../../lib/column_operations'
-import {AggregatableTable} from '../../lib/queries/one/aggregatable_table'
-import {createKey, createPartOfKey} from '../../lib/parsing/get_key_parsing'
+} from '../../../lib/parsing/selection/aggregation_parsing'
+import {Employee} from '../../test_tables'
+import {createGetFromParameter} from '../../../lib/column_operations'
+import {AggregatableTable} from '../../../lib/queries/one/aggregatable_table'
+import {createKey, createPartOfKey} from '../../../lib/parsing/get_key_parsing'
 
 describe('parseAggregate', () => {
     const firstKeyColumn = createGetFromParameter('e', 'departmentId')

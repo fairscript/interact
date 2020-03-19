@@ -1,9 +1,9 @@
-import {extractLambdaString} from '../lambda_string_extraction'
-import {createDictionaryParser, createKeyValuePairParser, createNamedObjectPropertyParser} from './javascript_parsing'
+import {extractLambdaString} from '../../lambda_string_extraction'
+import {createDictionaryParser, createKeyValuePairParser, createNamedObjectPropertyParser} from '../javascript_parsing'
 import * as getParameterNames from 'get-parameter-names'
-import {createGetFromParameter, GetFromParameter, Subselect} from '../column_operations'
-import {Selection} from './select_parsing'
-import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
+import {createGetFromParameter, GetFromParameter, Subselect} from '../../column_operations'
+import {Selection} from '../selection_parsing'
+import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 
 export interface MapSelection {
     kind: 'map-selection'

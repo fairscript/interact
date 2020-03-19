@@ -5,12 +5,12 @@ import {parseFilter} from '../../parsing/filter_parsing'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseOrder} from '../../parsing/order_parsing'
-import {parseSelectSingleTable} from '../../parsing/select_parsing'
-import {parseGet} from '../../parsing/get_parsing'
-import {parseMap} from '../../parsing/map_parsing'
+import {parseGet} from '../../parsing/selection/get_parsing'
+import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {ColumnSelection, TableSelection} from '../selection'
-import {createCountSelection} from '../../parsing/count_selection'
+import {createCountSelection} from '../../parsing/selection/count_parsing'
+import {parseSelectSingleTable} from '../../parsing/selection/single_table_selection_parsing'
 
 export class FilterTable<T> {
 

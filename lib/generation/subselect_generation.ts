@@ -1,6 +1,6 @@
 import {Subselect} from '../column_operations'
 import {generateSelect} from './select_generation'
-import {createCountSelection} from '../parsing/count_selection'
+import {createCountSelection} from '../parsing/selection/count_parsing'
 import {generateWhere} from './where_generation'
 import {joinWithWhitespace} from '../parsing/javascript_parsing'
 

@@ -1,6 +1,6 @@
 import {SelectStatement} from '../../select_statement'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
-import {parseAggregation} from '../../parsing/aggregation_parsing'
+import {parseAggregation} from '../../parsing/selection/aggregation_parsing'
 import {AggregatableTable} from '../one/aggregatable_table'
 import {TableSelection} from '../selection'
 
