@@ -57,3 +57,7 @@
 ## v0.6.1
 
 - Count in grouped tables is now defined on the table-level.
+
+## v0.6.2
+
+- Subtable interface represents supported subquery operations

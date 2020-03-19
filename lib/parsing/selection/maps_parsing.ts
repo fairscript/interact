@@ -107,7 +107,7 @@ const count = A.str('count()')
 function createSubselectParser(subtableParameterNames, filter) {
     return A.sequenceOf([
         createChoiceFromStrings(subtableParameterNames),
-        A.many1(A.sequenceOf([dot, filter]).map(([dot, filter]) => filter)),
+        A.many(A.sequenceOf([dot, filter]).map(([dot, filter]) => filter)),
         dot,
         count])
 }

@@ -3,6 +3,24 @@ import {employees} from '../../test_tables'
 import {joinWithNewLine} from '../../../lib/parsing/javascript_parsing'
 
 describe('mapS works', () => {
+    it('for a map with an unfiltered subquery', () => {
+        const actual = employees
+            .mapS(
+                employees,
+                (st, e) => ({
+                    id: e.id,
+                    count: st.count()
+                }))
+            .toSql()
+
+        const expected = joinWithNewLine([
+            'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1) AS count',
+            'FROM employees t1'
+        ])
+
+        assert.deepEqual(actual, expected)
+    })
+
     it('for a map with a filtered subquery', () => {
         const actual = employees
             .mapS(
