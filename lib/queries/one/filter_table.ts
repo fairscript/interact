@@ -11,6 +11,9 @@ import {parseGetKey} from '../../parsing/get_key_parsing'
 import {SelectSqlGenerator} from '../selection'
 import {createCountSelection} from '../../parsing/selection/count_parsing'
 import {parseSelectSingleTable} from '../../parsing/selection/single_table_selection_parsing'
+import {Subtable} from './subtable'
+import {parseMapS} from '../../parsing/selection/maps_parsing'
+import {Table} from './table'
 
 export class FilterTable<T> {
 
@@ -73,6 +76,14 @@ export class FilterTable<T> {
             {
                 ...this.statement,
                 selection: parseMap(f)
+            })
+    }
+
+    mapS<S, U extends StringValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectSqlGenerator<U> {
+        return new SelectSqlGenerator(
+            {
+                ...this.statement,
+                selection: parseMapS(f, [tableInSubquery.tableName])
             })
     }
 

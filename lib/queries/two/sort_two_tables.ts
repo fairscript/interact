@@ -8,6 +8,9 @@ import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {SelectSqlGenerator} from '../selection'
 import {parseSelectMultipleTables} from '../../parsing/selection/multi_table_selection_parsing'
+import {Table} from '../one/table'
+import {Subtable} from '../one/subtable'
+import {parseMapS} from '../../parsing/selection/maps_parsing'
 
 export class SortTwoTables<T1, T2> {
 
@@ -60,6 +63,16 @@ export class SortTwoTables<T1, T2> {
             {
                 ...this.statement,
                 selection: parseMap(f)
+            })
+    }
+
+    mapS<S, U extends StringValueRecord>(
+        tableInSubquery: Table<S>,
+        f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectSqlGenerator<U> {
+        return new SelectSqlGenerator(
+            {
+                ...this.statement,
+                selection: parseMapS(f, [tableInSubquery.tableName])
             })
     }
 

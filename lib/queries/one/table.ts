@@ -23,7 +23,7 @@ export class Table<T> {
 
     constructor(
         protected constructor: Constructor<T>,
-        protected tableName: string) {
+        public tableName: string) {
 
         this.statement = createEmptySelectStatement(tableName)
     }
@@ -86,7 +86,7 @@ export class Table<T> {
             })
     }
 
-    mapS<S, U extends StringValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => U): SelectSqlGenerator<U> {
+    mapS<S, U extends StringValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectSqlGenerator<U> {
         return new SelectSqlGenerator(
             {
                 ...this.statement,
