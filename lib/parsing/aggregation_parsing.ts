@@ -86,7 +86,7 @@ function createAggregationParser(keyParameterName: string, objectParameterNames:
     return createDictionaryParser(keyValuePairParsers)
 }
 
-type AggregationOperation = GetPartOfKey|AggregateColumn|CountRowsInGroup
+export type AggregationOperation = GetPartOfKey|AggregateColumn|CountRowsInGroup
 
 export interface Aggregation {
     kind: 'aggregation',

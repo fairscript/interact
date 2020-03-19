@@ -1,91 +1,11 @@
-import {MultiTableSelection, Selection, SingleTableSelection} from '../parsing/select_parsing'
-import * as toSnakeCase from 'js-snakecase'
-import {GetSelection} from '../parsing/get_parsing'
-import {AggregateColumn, Aggregation, CountRowsInGroup, GetPartOfKey} from '../parsing/aggregation_parsing'
-import {joinWithCommaWhitespace} from '../parsing/javascript_parsing'
-import {MapSelection} from '../parsing/map_parsing'
-import {GetFromParameter, Subselect} from '../column_operations'
-import {generateGetFromParameter} from './get_from_parameter_generation'
-import {generateSubselect} from './subselect_generation'
-import {generateCount} from './count_selection'
+import {Selection} from '../parsing/select_parsing'
+import {generateCountSelection} from './selection/count_selection'
+import {generateGetSelection} from './selection/get_selection'
+import {generateMapSelection} from './selection/map_selection'
+import {generateAggregationSelection} from './selection/aggregation_selection'
+import {generateSingleTableSelection} from './selection/single_table_selection'
+import {generateMultiTableSelection} from './selection/multi_table_selection'
 
-
-function generateCountSelection(): string {
-    return generateCount()
-}
-
-function generateSingleTableSelection (selection: SingleTableSelection): string {
-    return joinWithCommaWhitespace(selection.properties.map(toSnakeCase).map(column => `t1.${column}`))
-}
-
-function generateMultiTableSelection (selection: MultiTableSelection): string {
-    const {nameToTable, properties} = selection
-
-    return joinWithCommaWhitespace(properties
-        .map(([alias, [name, property]]) => {
-            const table = nameToTable[name]
-            const column = toSnakeCase(property)
-            return `${table}.${column} AS ${alias}`
-        }))
-}
-
-function generateGetSelection(selection: GetSelection): string {
-    return `${selection.table}.${toSnakeCase(selection.property)}`
-}
-
-function generateAggregation(aggregation: Aggregation): string {
-    const partOfKeyToTable = aggregation.partOfKeyToTableAndProperty
-    const parameterToTable = aggregation.parameterToTable
-    
-    function generateGetPartOfKey(part: string): string {
-        const [table, property] = partOfKeyToTable[part]
-        const column = toSnakeCase(property)
-
-        return `${table}.${column}`
-    }
-
-    function generateAggregate(aggregationOperation: string, parameter: string, property: string): string {
-        const table = parameterToTable[parameter]
-        const column = toSnakeCase(property)
-
-        return `${aggregationOperation.toUpperCase()}(${table}.${column})`
-    }
-
-    function generateUnaliasedAggregationOperation(operation: GetPartOfKey|AggregateColumn|CountRowsInGroup) {
-        switch (operation.kind) {
-            case 'get-part-of-key':
-                return generateGetPartOfKey(operation.part)
-            case 'aggregate-column':
-                const {parameter, property} = operation.get
-                return generateAggregate(operation.aggregation, parameter, property)
-            case 'count-rows-in-group':
-                return generateCount()
-        }
-    }
-
-    const columnOperations = aggregation.operations.map(([alias, operation]) =>
-        `${generateUnaliasedAggregationOperation(operation)} AS ${alias}`
-    )
-
-    return joinWithCommaWhitespace(columnOperations)
-}
-
-function generateColumnOperation(parameterToTable: {[parameter: string]: string}, operation: GetFromParameter|Subselect): string {
-    switch (operation.kind) {
-        case 'get-from-parameter':
-            return generateGetFromParameter(parameterToTable, operation)
-        case 'subselect':
-            return generateSubselect(operation)
-    }
-}
-
-function generateMapSelection (selection: MapSelection): string {
-    const { parameterToTable, operations } = selection
-
-    return joinWithCommaWhitespace(operations.map(([alias, operation]) => {
-        return `${generateColumnOperation(parameterToTable, operation)} AS ${alias}`
-    }))
-}
 
 function generateSelection(selection: Selection): string {
     switch (selection.kind) {
@@ -98,7 +18,7 @@ function generateSelection(selection: Selection): string {
         case 'get-selection':
             return generateGetSelection(selection)
         case 'aggregation':
-            return generateAggregation(selection)
+            return generateAggregationSelection(selection)
         case 'map-selection':
             return generateMapSelection(selection)
     }
