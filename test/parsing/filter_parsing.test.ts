@@ -2,14 +2,18 @@ import * as assert from 'assert'
 import {createConstant, createGetFromParameter} from '../../lib/column_operations'
 import {Department, Employee} from '../test_tables'
 import {
-    createAnd,
-    createConcatenation,
-    createEquality,
-    createGreaterThan,
-    createGreaterThanOrEqualTo, createInsideParentheses, createLessThan, createLessThanOrEqualTo, createOr,
     PredicateExpression
 } from '../../lib/parsing/predicate_parsing'
 import {parsePredicate} from '../../lib/parsing/filter_parsing'
+import {
+    createEquality,
+    createGreaterThan,
+    createGreaterThanOrEqualTo,
+    createLessThan,
+    createLessThanOrEqualTo
+} from '../../lib/parsing/predicate/comparison'
+import {createAnd, createConcatenation, createOr} from '../../lib/parsing/predicate/concatenation'
+import {createInsideParentheses} from '../../lib/parsing/predicate/inside_parentheses'
 
 
 describe('parsePredicate', () => {

@@ -7,7 +7,7 @@ import {parseMapS} from '../../../lib/parsing/selection/maps_parsing'
 import {createFilter} from '../../../lib/parsing/filter_parsing'
 import {createSubselectStatement} from '../../../lib/select_statement'
 import {createMapSelection} from '../../../lib/parsing/selection/map_parsing'
-import {createEquality, createGreaterThan} from '../../../lib/parsing/predicate_parsing'
+import {createEquality, createGreaterThan} from '../../../lib/parsing/predicate/comparison'
 
 describe('parseMapS can parse a map with a subquery', function () {
 

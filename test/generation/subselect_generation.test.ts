@@ -3,7 +3,7 @@ import {generateSubselect} from '../../lib/generation/subselect_generation'
 import {createSubselectStatement} from '../../lib/select_statement'
 import {createFilter} from '../../lib/parsing/filter_parsing'
 import * as assert from 'assert'
-import {createGreaterThan} from '../../lib/parsing/predicate_parsing'
+import {createGreaterThan} from '../../lib/parsing/predicate/comparison'
 
 describe('generateSubselect', () => {
     it('works for a subselect statement with one filter', () => {

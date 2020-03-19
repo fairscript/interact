@@ -1,148 +1,18 @@
 import * as A from 'arcsecond'
 import {
-    aBinaryLogicalOperator,
-    aComparisonOperator,
     aNumber,
-    aString, closingParenthesis,
+    aString,
+    closingParenthesis,
     createObjectPropertyParser,
     createValueParser,
     identifier,
     openingParenthesis
 } from './javascript_parsing'
-import {Constant, createConstant, createGetFromParameter, GetFromParameter} from '../column_operations'
+import {createConstant, createGetFromParameter} from '../column_operations'
+import {Comparison, createComparison, createComparisonParser} from './predicate/comparison'
+import {Concatenation, createConcatenation, createTailItem, createTailItemsParser} from './predicate/concatenation'
+import {createInsideParentheses, InsideParentheses} from './predicate/inside_parentheses'
 
-
-export type SqlComparisonOperator = '='|'>'|'>='|'<'|'<='
-
-function mapJsComparisonOperatorToSqlComparisonOperator(operator): SqlComparisonOperator {
-    switch (operator) {
-        case '===':
-        case '==':
-            return '='
-        default:
-            return operator
-    }
-}
-
-export type Side = Constant|GetFromParameter
-
-export interface Comparison {
-    left: Side,
-    operator: SqlComparisonOperator,
-    right: Side,
-    kind: 'comparison'
-}
-
-export function createComparison(left: Side, operator: SqlComparisonOperator, right: Side): Comparison {
-    return {
-        left,
-        operator: mapJsComparisonOperatorToSqlComparisonOperator(operator),
-        right,
-        kind: 'comparison'
-    }
-}
-
-export function createEquality(left: Side, right: Side): Comparison {
-    return createComparison(left, '=', right)
-}
-
-export function createGreaterThan(left: Side, right: Side): Comparison {
-    return createComparison(left, '>', right)
-}
-
-export function createGreaterThanOrEqualTo(left: Side, right: Side): Comparison {
-    return createComparison(left, '>=', right)
-}
-
-export function createLessThan(left: Side, right: Side): Comparison {
-    return createComparison(left, '<', right)
-}
-
-export function createLessThanOrEqualTo(left: Side, right: Side): Comparison {
-    return createComparison(left, '<=', right)
-}
-
-export function createComparisonParser(valueParser, objectPropertyParser) {
-    const valueOrObjectProperty = A.choice([valueParser, objectPropertyParser])
-
-    return A.sequenceOf(
-        [
-            valueOrObjectProperty,
-            A.optionalWhitespace,
-            aComparisonOperator,
-            A.optionalWhitespace,
-            valueOrObjectProperty
-        ])
-        .map(([left, ws1, operator, ws2, right]) => ([left, operator, right]))
-}
-
-export function createAnd(expression: PredicateExpression): TailItem {
-    return createTailItem('&&', expression)
-}
-
-
-export function createOr(expression: PredicateExpression): TailItem {
-    return createTailItem('||', expression)
-}
-
-export interface Concatenation {
-    head: PredicateExpression,
-    tail: TailItem[],
-    kind: 'concatenation'
-}
-
-export interface TailItem {
-    operator: '&&'|'||',
-    expression: PredicateExpression
-    kind: 'tail-item'
-}
-
-export function createTailItem(operator: '&&'|'||', expression: PredicateExpression): TailItem {
-    return {
-        operator,
-        expression,
-        kind: 'tail-item'
-    }
-}
-
-export function createTailItemsParser(side) {
-    return A.many1(
-        A.sequenceOf([
-            A.optionalWhitespace,
-            aBinaryLogicalOperator,
-            A.optionalWhitespace,
-            side
-        ])
-            .map(([ws1, operator, ws2, comparison]) => ([operator, comparison]))
-    )
-}
-
-export interface InsideParentheses {
-    inside: PredicateExpression
-    kind: 'inside'
-}
-
-export function createInsideParentheses(inside: PredicateExpression): InsideParentheses {
-    return {
-        inside,
-        kind: 'inside'
-    }
-}
-
-export function createConcatenation(head: PredicateExpression, tail: TailItem[]): Concatenation {
-    return {
-        head,
-        tail,
-        kind: 'concatenation'
-    }
-}
-
-export function createConcatenationParser(head, tailItems) {
-    return A.sequenceOf([
-        head,
-        tailItems
-    ])
-}
 
 export type PredicateExpression = InsideParentheses | Concatenation | Comparison
 

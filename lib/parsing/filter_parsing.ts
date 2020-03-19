@@ -18,13 +18,17 @@ import * as getParameterNames from 'get-parameter-names'
 import {createConstant, createGetFromParameter} from '../column_operations'
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
 import {
-    Comparison, Concatenation,
-    createComparison, createComparisonParser, createConcatenation,
-    createConcatenationParser, createInsideParentheses,
-    createTailItem, createTailItemsParser, InsideParentheses,
-    PredicateExpression,
-    TailItem
+    PredicateExpression
 } from './predicate_parsing'
+import {Comparison, createComparison, createComparisonParser} from './predicate/comparison'
+import {
+    Concatenation,
+    createConcatenation,
+    createConcatenationParser,
+    createTailItem,
+    createTailItemsParser, TailItem
+} from './predicate/concatenation'
+import {createInsideParentheses, InsideParentheses} from './predicate/inside_parentheses'
 
 function createReverseTailItemParser(side) {
     return A.many1(
@@ -37,19 +41,6 @@ function createReverseTailItemParser(side) {
             .map(([comparison, ws1, operator, ws2]) => ([comparison, operator]))
     )
 }
-
-export interface Filter {
-    parameterToTable: {[parameter: string]: string}
-    predicate: PredicateExpression
-}
-
-export function createFilter(parameterToTable: {[parameter: string]: string}, predicate: PredicateExpression): Filter {
-    return {
-        parameterToTable,
-        predicate
-    }
-}
-
 
 function createLeafParser(parameterNames) {
     const mapToComparisonObject = ([left, operator, right]) => createComparison(left, operator, right)
@@ -272,6 +263,18 @@ export function parsePredicate(f: Function, parameterNames: string[]): Predicate
     const predicate = parseSegment(preprocessedSegments)
 
     return predicate
+}
+
+export interface Filter {
+    parameterToTable: {[parameter: string]: string}
+    predicate: PredicateExpression
+}
+
+export function createFilter(parameterToTable: {[parameter: string]: string}, predicate: PredicateExpression): Filter {
+    return {
+        parameterToTable,
+        predicate
+    }
 }
 
 export function parseFilter(f: Function): Filter {
