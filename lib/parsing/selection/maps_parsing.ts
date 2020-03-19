@@ -1,10 +1,7 @@
 import {
-    createConstant,
     createGetFromParameter, createSubselect
 } from '../../column_operations'
 import {
-    aNumber,
-    aString,
     closingBracket,
     closingParenthesis,
     comma,
@@ -12,8 +9,6 @@ import {
     createDictionaryParser,
     createKeyValuePairParser,
     createNamedObjectPropertyParser,
-    createObjectPropertyParser,
-    createValueParser,
     dot,
     identifier,
     openingBracket,
@@ -21,38 +16,13 @@ import {
     semicolon
 } from '../javascript_parsing'
 import * as A from 'arcsecond'
-import {
-    createComparison,
-    createComparisonParser, createConcatenation, createFilter,
-    createInsideParentheses, createTailItem,
-    createTailItemsParser
-} from '../filter_parsing'
 import {extractLambdaString} from '../../lambda_string_extraction'
 import * as getParameterNames from 'get-parameter-names'
 import {createSubselectStatement} from '../../select_statement'
 import {createMapSelection, MapSelection} from './map_parsing'
+import {createFilter} from '../filter_parsing'
+import {createPredicateExpressionParser} from '../predicate_parsing'
 
-function createPredicateExpressionParser() {
-    const comparisonParser = createComparisonParser(
-        createValueParser(aString.map(x => x.slice(1, x.length - 1)), aNumber).map(v => createConstant(v)),
-        createObjectPropertyParser(identifier, identifier).map(([object, property]) => createGetFromParameter(object, property))
-    ).map(([left, operator, right]) => createComparison(left, operator, right))
-
-    const insideParser = A.recursiveParser(() => A.choice([concatenationParser, insideParenthesesParser, comparisonParser]))
-    const insideParenthesesParser = A.sequenceOf([openingParenthesis, A.optionalWhitespace, insideParser, A.optionalWhitespace, closingParenthesis])
-        .map(([op, ws1, inside, ws2, cp]) => createInsideParentheses(inside))
-
-    const concatenationParser = A.sequenceOf([
-        A.choice([insideParenthesesParser, comparisonParser]),
-        createTailItemsParser(A.choice([insideParenthesesParser, comparisonParser]))
-            .map(([operator, comparison]) => createTailItem(operator, comparison))
-    ])
-        .map(([head, tail]) => createConcatenation(head, tail))
-
-    const predicateExpressionParser = A.choice([concatenationParser, insideParenthesesParser, comparisonParser])
-
-    return predicateExpressionParser
-}
 
 const parameterList = A.sequenceOf([
     identifier,

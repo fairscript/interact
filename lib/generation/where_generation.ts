@@ -1,13 +1,15 @@
-import {
-    Comparison,
-    Concatenation, Filter,
-    InsideParentheses,
-    PredicateExpression, Side,
-    TailItem
-} from '../parsing/filter_parsing'
 import {joinWithWhitespace} from '../parsing/javascript_parsing'
 import {generateGetFromParameter} from './get_from_parameter_generation'
 import {Constant} from '../column_operations'
+import {
+    Comparison,
+    Concatenation,
+    InsideParentheses,
+    PredicateExpression,
+    Side,
+    TailItem
+} from '../parsing/predicate_parsing'
+import {Filter} from '../parsing/filter_parsing'
 
 
 function generateConstant(constant: Constant): string {

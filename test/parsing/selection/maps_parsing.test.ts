@@ -4,9 +4,10 @@ import {
     createSubselect
 } from '../../../lib/column_operations'
 import {parseMapS} from '../../../lib/parsing/selection/maps_parsing'
-import {createEquality, createFilter, createGreaterThan} from '../../../lib/parsing/filter_parsing'
+import {createFilter} from '../../../lib/parsing/filter_parsing'
 import {createSubselectStatement} from '../../../lib/select_statement'
 import {createMapSelection} from '../../../lib/parsing/selection/map_parsing'
+import {createEquality, createGreaterThan} from '../../../lib/parsing/predicate_parsing'
 
 describe('parseMapS can parse a map with a subquery', function () {
 

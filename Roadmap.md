@@ -13,7 +13,7 @@
 - Joins of up to five tables (using code generation)
 
 ## v0.10
-- Testing and, if need be, increasing the robustness of the parser
+- Testing and, if necessary, increasing the robustness of the parser
 
 ## v0.11
 - Basic dialect support (PostgreSQL, BigQuery)
