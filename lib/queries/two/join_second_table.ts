@@ -9,7 +9,7 @@ import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseOrder} from '../../parsing/order_parsing'
 import {parseFilter} from '../../parsing/filter_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {ColumnSelection, TableSelection} from '../selection'
+import {SelectSqlGenerator} from '../selection'
 import {parseSelectMultipleTables} from '../../parsing/selection/multi_table_selection_parsing'
 
 export class JoinSecondTable<T1, T2, K1> {
@@ -49,8 +49,8 @@ export class JoinSecondTable<T1, T2, K1> {
             })
     }
 
-    select<K extends string>(first: string, second: string): TableSelection<{ [first in K]: T1 } & { [second in K]: T2 }> {
-        return new TableSelection(
+    select<K extends string>(first: string, second: string): SelectSqlGenerator<{ [first in K]: T1 } & { [second in K]: T2 }> {
+        return new SelectSqlGenerator(
             {
                 ...this.statement,
                 selection: parseSelectMultipleTables([
@@ -60,16 +60,16 @@ export class JoinSecondTable<T1, T2, K1> {
             })
     }
 
-    get<U extends Value>(f: (first: T1, second: T2) => U): ColumnSelection<U> {
-        return new ColumnSelection(
+    get<U extends Value>(f: (first: T1, second: T2) => U): SelectSqlGenerator<U> {
+        return new SelectSqlGenerator(
             {
                 ...this.statement,
                 selection: parseGet(f)
             })
     }
 
-    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): TableSelection<U> {
-        return new TableSelection(
+    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectSqlGenerator<U> {
+        return new SelectSqlGenerator(
             {
                 ...this.statement,
                 selection: parseMap(f)

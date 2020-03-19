@@ -6,7 +6,7 @@ import {Value} from '../../value'
 import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {ColumnSelection, TableSelection} from '../selection'
+import {SelectSqlGenerator} from '../selection'
 import {parseSelectSingleTable} from '../../parsing/selection/single_table_selection_parsing'
 
 export type Direction = 'asc' | 'desc'
@@ -31,23 +31,23 @@ export class SortTable<T> {
             })
     }
 
-    select(): TableSelection<T> {
-        return new TableSelection({
+    select(): SelectSqlGenerator<T> {
+        return new SelectSqlGenerator({
             ...this.statement,
             selection: parseSelectSingleTable(this.constructor)
         })
     }
 
-    get<U extends Value>(f: (table: T) => U): ColumnSelection<U> {
-        return new ColumnSelection(
+    get<U extends Value>(f: (table: T) => U): SelectSqlGenerator<U> {
+        return new SelectSqlGenerator(
             {
                 ...this.statement,
                 selection: parseGet(f)
             })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): TableSelection<U> {
-        return new TableSelection(
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectSqlGenerator<U> {
+        return new SelectSqlGenerator(
             {
                 ...this.statement,
                 selection: parseMap(f)
