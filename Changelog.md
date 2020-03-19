@@ -61,3 +61,7 @@
 ## v0.6.2
 
 - Subtable interface represents supported subquery operations
+
+## v0.6.3
+
+- Subqueries on filtered tables, sorted tables and joins of two tables 

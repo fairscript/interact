@@ -1,9 +1,5 @@
 # Roadmap
 
-## v0.6.3
-- Add mapS to other table classes
-- Implement get selection in subqueries
-
 ## v0.6.4
 - Unify predicate parsing in queries and subqueries
 
