@@ -4,7 +4,7 @@ import {
     Aggregation,
     AggregationOperation
 } from '../../parsing/selection/aggregation_parsing'
-import {generateCount} from '../count_selection'
+import {generateCount} from '../count_generation'
 import {joinWithCommaWhitespace} from '../../parsing/javascript_parsing'
 
 function generateGetPartOfKey(partOfKeyToTableAndProperty: { [part: string]: [string, string] }, part: string): string {

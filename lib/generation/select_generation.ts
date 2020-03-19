@@ -1,10 +1,10 @@
 import {Selection} from '../parsing/selection_parsing'
-import {generateCountSelection} from './selection/count_selection'
-import {generateGetSelection} from './selection/get_selection'
-import {generateMapSelection} from './selection/map_selection'
-import {generateAggregationSelection} from './selection/aggregation_selection'
-import {generateSingleTableSelection} from './selection/single_table_selection'
-import {generateMultiTableSelection} from './selection/multi_table_selection'
+import {generateCountSelection} from './selection/count_selection_generation'
+import {generateGetSelection} from './selection/get_selection_generation'
+import {generateMapSelection} from './selection/map_selection_generation'
+import {generateAggregationSelection} from './selection/aggregation_selection_generation'
+import {generateSingleTableSelection} from './selection/single_table_selection_generation'
+import {generateMultiTableSelection} from './selection/multi_table_selection_generation'
 
 
 function generateSelection(selection: Selection): string {
