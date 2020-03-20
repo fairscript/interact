@@ -1,8 +1,7 @@
-import {extractLambdaString} from '../lambda_string_extraction'
 import {createDictionaryParser, createKeyValuePairParser, createNamedObjectPropertyParser} from './javascript_parsing'
-import * as getParameterNames from 'get-parameter-names'
 import {createGetFromParameter, GetFromParameter} from '../column_operations'
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
+import {parseLambdaFunction} from './lambda_parsing'
 
 export interface PartOfKey {
     alias: string
@@ -38,14 +37,13 @@ function createGetKeyParser(parameterNames: string[]) {
 }
 
 export function parseGetKey(f: Function): Key {
-    const parameterNames = getParameterNames(f)
-    const parameterToTable = mapParameterNamesToTableAliases(parameterNames)
+    const { parameters, expression } = parseLambdaFunction(f)
 
-    const parser = createGetKeyParser(parameterNames)
+    const parameterToTable = mapParameterNamesToTableAliases(parameters)
 
-    const lambdaString = extractLambdaString(f)
+    const parser = createGetKeyParser(parameters)
 
-    const parts = parser.run(lambdaString).result
+    const parts = parser.run(expression).result
 
     const key = createKey(parameterToTable, parts)
 

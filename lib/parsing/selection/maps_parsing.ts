@@ -2,20 +2,18 @@ import {createSubselect} from '../../column_operations'
 import {
     closingParenthesis,
     createChoiceFromStrings,
-    createDictionaryParser, createFunctionBody,
-    createKeyValuePairParser, createLambdaParser,
+    createDictionaryParser, createKeyValuePairParser, createLambdaParser,
     createParameterlessFunctionInvocation,
     dot,
     openingParenthesis,
 } from '../javascript_parsing'
 import * as A from 'arcsecond'
-import {extractLambdaString} from '../../lambda_string_extraction'
-import * as getParameterNames from 'get-parameter-names'
 import {createSubselectStatement} from '../../select_statement'
 import {createGetFromParameterParser, createMapSelection, MapSelection} from './map_parsing'
 import {createFilter} from '../filter_parsing'
 import {createPredicateExpressionParser} from '../predicate_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
+import {parseLambdaFunction} from '../lambda_parsing'
 
 function createFilterParser() {
     return A.sequenceOf([
@@ -64,14 +62,12 @@ function createSubselectParser(
 }
 
 export function parseMapS(f: Function, subtableNames: string[]): MapSelection {
-    const lambdaString = extractLambdaString(f)
+    const { parameters, expression } = parseLambdaFunction(f)
 
-    const parameterNames = getParameterNames(f)
-
-    const subParameterNames = parameterNames.slice(0, subtableNames.length)
+    const subParameterNames = parameters.slice(0, subtableNames.length)
     const subParameterToTable = mapParameterNamesToTableAliases(subParameterNames, 's')
 
-    const outerParameterNames = parameterNames.slice(subtableNames.length)
+    const outerParameterNames = parameters.slice(subtableNames.length)
     const outerParameterToTable = mapParameterNamesToTableAliases(outerParameterNames, 't')
 
     const getParser = createGetFromParameterParser(outerParameterNames)
@@ -86,7 +82,7 @@ export function parseMapS(f: Function, subtableNames: string[]): MapSelection {
 
     const parser = createDictionaryParser(keyValuePair)
 
-    const result = parser.run(lambdaString).result
+    const result = parser.run(expression).result
 
     return createMapSelection(outerParameterToTable, result)
 }

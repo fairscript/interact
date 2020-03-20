@@ -1,7 +1,6 @@
 import {createGetFromParameter, GetFromParameter} from '../column_operations'
 import {createNamedObjectPropertyParser} from './javascript_parsing'
-import * as getParameterNames from 'get-parameter-names'
-import {extractLambdaString} from '../lambda_string_extraction'
+import {parseLambdaFunction} from './lambda_parsing'
 
 export interface JoinExpression {
     tableName: string,
@@ -18,19 +17,18 @@ function createOnParser(parameterNames: string[]) {
     return parser
 }
 
-function parseSide<T, K1>(f: (table: T) => K1): GetFromParameter {
-    const parameterNames = getParameterNames(f)
-    const parser = createOnParser(parameterNames)
+function parseSide(f: Function): GetFromParameter {
+    const { parameters, expression } = parseLambdaFunction(f)
 
-    const lambdaString = extractLambdaString(f)
+    const parser = createOnParser(parameters)
 
-    return parser.run(lambdaString).result
+    return parser.run(expression).result
 }
 
-export function parseJoin<T1, T2, K1>(
+export function parseJoin(
     tableName: string,
-    left: (firstTable: T1) => K1,
-    right: (secondTable: T2) => K1): JoinExpression {
+    left: Function,
+    right: Function): JoinExpression {
 
     return {
         tableName,

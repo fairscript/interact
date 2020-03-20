@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.5
+
+- Removed the dependency on get-parameter-names
+
 ## v0.6.4
 
 - Unified predicate parsing in queries and subqueries

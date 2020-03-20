@@ -1,9 +1,9 @@
-import {extractLambdaString} from '../../lambda_string_extraction'
 import {createDictionaryParser, createKeyValuePairParser, createNamedObjectPropertyParser} from '../javascript_parsing'
-import * as getParameterNames from 'get-parameter-names'
 import {createGetFromParameter, GetFromParameter, Subselect} from '../../column_operations'
 import {Selection} from '../selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
+import {parseLambdaFunction} from '../lambda_parsing'
+
 
 export interface MapSelection {
     kind: 'map-selection'
@@ -36,14 +36,12 @@ function createMapParser(parameterNames: string[]) {
 }
 
 export function parseMap(f: Function): Selection {
-    const parameterNames = getParameterNames(f)
+    const { parameters, expression } = parseLambdaFunction(f)
 
-    const parameterToTable = mapParameterNamesToTableAliases(parameterNames)
-    const parser = createMapParser(parameterNames)
+    const parameterToTable = mapParameterNamesToTableAliases(parameters)
+    const parser = createMapParser(parameters)
 
-    const lambdaString = extractLambdaString(f)
-
-    const operations = parser.run(lambdaString).result
+    const operations = parser.run(expression).result
 
     return createMapSelection(parameterToTable, operations)
 }

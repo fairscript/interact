@@ -1,8 +1,7 @@
 import {createNamedObjectPropertyParser} from '../javascript_parsing'
-import {createGetFromParameter, GetFromParameter} from '../../column_operations'
-import * as getParameterNames from 'get-parameter-names'
-import {extractLambdaString} from '../../lambda_string_extraction'
+import {createGetFromParameter} from '../../column_operations'
 import {Selection} from '../selection_parsing'
+import {parseLambdaFunction} from '../lambda_parsing'
 
 function createGetParser<T, U>(parameterNames: string[]) {
     const objectProperty = createNamedObjectPropertyParser(parameterNames)
@@ -26,15 +25,13 @@ export function createGetSelection(table: string, property: string): GetSelectio
 }
 
 export function parseGet(f: Function): Selection {
-    const parameterNames = getParameterNames(f)
+    const { parameters, expression } = parseLambdaFunction(f)
 
-    const parser = createGetParser(parameterNames)
+    const parser = createGetParser(parameters)
 
-    const lambdaString = extractLambdaString(f)
+    const getFromParameter = parser.run(expression).result
 
-    const getFromParameter = parser.run(lambdaString).result
-
-    const table = `t${parameterNames.indexOf(getFromParameter.parameter)+1}`
+    const table = `t${parameters.indexOf(getFromParameter.parameter)+1}`
 
     return createGetSelection(table, getFromParameter.property)
 }

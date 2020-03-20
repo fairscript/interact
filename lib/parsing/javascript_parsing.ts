@@ -2,7 +2,6 @@ import * as A from 'arcsecond'
 
 // Join arrays
 export const join = (array: string[]) => array.join('')
-export const joinWithDot = (array: string[]) => array.join('.')
 export const joinWithWhitespace = (array: string[]) => array.join(' ')
 export const joinWithCommaWhitespace = (array: string[]) => array.join(', ')
 export const joinWithNewLine = (array: string[]) => array.join('\n')
@@ -90,7 +89,7 @@ export function createDictionaryParser(keyValuePair) {
 }
 
 // Function body
-const aReturn = A.str('return')
+export const aReturn = A.str('return')
 
 export function createFunctionBody(returnParser) {
     return A.sequenceOf([

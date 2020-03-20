@@ -12,8 +12,8 @@ import {createConstant, createGetFromParameter} from '../column_operations'
 import {Comparison, createComparison, createComparisonParser} from './predicate/comparison'
 import {Concatenation, createConcatenation, createTailItem, createTailItemsParser} from './predicate/concatenation'
 import {createInsideParentheses, InsideParentheses} from './predicate/inside_parentheses'
-import {extractLambdaString} from '../lambda_string_extraction'
 import normalizeQuotes from './quote_normalization'
+import {parseLambdaFunction} from './lambda_parsing'
 
 
 export type PredicateExpression = InsideParentheses | Concatenation | Comparison
@@ -43,12 +43,12 @@ export function createPredicateExpressionParser() {
 }
 
 export function parsePredicate(f: Function): PredicateExpression {
+    const { expression } = parseLambdaFunction(f)
+
     const predicateExpressionParser = createPredicateExpressionParser()
 
-    const lambdaString = extractLambdaString(f)
-
     // Replace double quotes around string with single quotes
-    const withNormalizedQuotes = normalizeQuotes(lambdaString)
+    const withNormalizedQuotes = normalizeQuotes(expression)
 
     // Escape parentheses?
     // Escape binary operators?

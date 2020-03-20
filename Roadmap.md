@@ -1,7 +1,7 @@
 # Roadmap
 
-## v0.6.5
-- Remove the dependency on get-parameter-names
+## v0.6.6
+- Unify lambda function parsing for inner and outer functions
 
 ## v0.7
 - ORM for SQLite

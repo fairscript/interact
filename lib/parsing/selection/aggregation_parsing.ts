@@ -1,14 +1,13 @@
-import {extractLambdaString} from '../../lambda_string_extraction'
 import {
     createDictionaryParser, createParameterlessFunctionInvocationChoice, createKeyValuePairParser,
     createNamedObjectPropertyParser,
     dot,
     identifier, createParameterlessFunctionInvocation
 } from '../javascript_parsing'
-import * as getParameterNames from 'get-parameter-names'
 import * as A from 'arcsecond'
 import { createGetFromParameter, GetFromParameter } from '../../column_operations'
 import {Key} from '../get_key_parsing'
+import {parseLambdaFunction} from '../lambda_parsing'
 
 export interface GetPartOfKey {
     kind: 'get-part-of-key',
@@ -110,7 +109,7 @@ export function createAggregation(
 }
 
 export function parseAggregation(f: Function, key: Key, numberOfTables: number): Aggregation {
-    const parameterNames = getParameterNames(f)
+    const { parameters, expression } = parseLambdaFunction(f)
 
     const partOfKeyToTableAndProperty = key.parts.reduce(
         (acc, part) => {
@@ -121,9 +120,9 @@ export function parseAggregation(f: Function, key: Key, numberOfTables: number):
         {}
     )
 
-    const keyParameterName = parameterNames[0]
-    const objectParameterNames = parameterNames.slice(1, numberOfTables+1)
-    const countParameter = parameterNames.length > 1 + numberOfTables ? parameterNames[parameterNames.length - 1]: null
+    const keyParameterName = parameters[0]
+    const objectParameterNames = parameters.slice(1, numberOfTables+1)
+    const countParameter = parameters.length > 1 + numberOfTables ? parameters[parameters.length - 1]: null
 
     const parameterToTable = objectParameterNames.reduce(
         (acc, name, index) => {
@@ -134,9 +133,7 @@ export function parseAggregation(f: Function, key: Key, numberOfTables: number):
 
     const parser = createAggregationParser(keyParameterName, objectParameterNames, countParameter)
 
-    const lambdaString = extractLambdaString(f)
-
-    const parsingResult = parser.run(lambdaString)
+    const parsingResult = parser.run(expression)
     const operations = parsingResult.result
 
     const aggregation = createAggregation(partOfKeyToTableAndProperty, parameterToTable, operations)

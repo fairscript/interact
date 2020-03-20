@@ -1,6 +1,6 @@
 {
   "name": "lambda-sql",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "A (proof of concept for a) (more) type-safe and FP-oriented SQL builder for TypeScript",
   "keywords": [
     "lambda",
@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "arcsecond": "2.0.4",
-    "get-parameter-names": "0.3.0",
     "js-snakecase": "1.2.0"
   },
   "devDependencies": {
