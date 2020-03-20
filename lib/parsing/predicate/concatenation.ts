@@ -49,10 +49,3 @@ export function createConcatenation(head: PredicateExpression, tail: TailItem[])
         kind: 'concatenation'
     }
 }
-
-export function createConcatenationParser(head, tailItems) {
-    return A.sequenceOf([
-        head,
-        tailItems
-    ])
-}

@@ -8,11 +8,11 @@ import {
 } from '../javascript/invocation_parsing'
 import {
     createDictionaryParser,
-    createKeyValuePairParser,
-    createNamedObjectPropertyParser
+    createKeyValuePairParser
 } from '../javascript/record_parsing'
 import {identifier} from '../javascript/identifier_parsing'
 import {dot} from '../javascript/single_character_parsing'
+import {createNamedObjectPropertyParser} from '../javascript/object_parsing'
 
 export interface GetPartOfKey {
     kind: 'get-part-of-key',

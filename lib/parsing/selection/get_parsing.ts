@@ -1,7 +1,7 @@
 import {createGetFromParameter} from '../../column_operations'
 import {Selection} from '../selection_parsing'
 import {parseLambdaFunction} from '../lambda_parsing'
-import {createNamedObjectPropertyParser} from '../javascript/record_parsing'
+import {createNamedObjectPropertyParser} from '../javascript/object_parsing'
 
 function createGetParser<T, U>(parameterNames: string[]) {
     const objectProperty = createNamedObjectPropertyParser(parameterNames)

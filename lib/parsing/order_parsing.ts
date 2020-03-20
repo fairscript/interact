@@ -1,6 +1,6 @@
 import {Direction} from '../queries/one/sort_table'
 import {parseLambdaFunction} from './lambda_parsing'
-import {createNamedObjectPropertyParser} from './javascript/record_parsing'
+import {createNamedObjectPropertyParser} from './javascript/object_parsing'
 
 export interface OrderExpression {
     table: string,

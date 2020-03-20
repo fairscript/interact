@@ -5,10 +5,10 @@ import {Concatenation, createConcatenation, createTailItem, createTailItemsParse
 import {createInsideParentheses, InsideParentheses} from './predicate/inside_parentheses'
 import normalizeQuotes from './quote_normalization'
 import {parseLambdaFunction} from './lambda_parsing'
-import {createObjectPropertyParser} from './javascript/record_parsing'
 import {identifier} from './javascript/identifier_parsing'
 import {closingParenthesis, openingParenthesis} from './javascript/single_character_parsing'
 import {aNumber, aString, createValueParser} from './javascript/value_parsing'
+import {createObjectPropertyParser} from './javascript/object_parsing'
 
 
 export type PredicateExpression = InsideParentheses | Concatenation | Comparison

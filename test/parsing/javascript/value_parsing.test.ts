@@ -1,6 +1,5 @@
 import * as assert from 'assert'
-import {identifier} from '../../lib/parsing/javascript/identifier_parsing'
-import {aString, float, integer} from '../../lib/parsing/javascript/value_parsing'
+import {aString, float, integer} from '../../../lib/parsing/javascript/value_parsing'
 
 describe('aString matches strings', () => {
     describe('surrounded by single quotes', () => {
@@ -70,19 +69,6 @@ describe('float', () => {
 
         it('+0.1', () => {
             assert.equal(float.run('+0.1').result, '+0.1')
-        })
-    })
-})
-
-describe('identifier', () => {
-
-    describe('matches', () => {
-
-        it('lower camel case alphabetic identifiers', () => {
-            assert.equal(
-                identifier.run('firstName').result,
-                'firstName'
-            )
         })
     })
 })

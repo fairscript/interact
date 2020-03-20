@@ -4,9 +4,9 @@ import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {parseLambdaFunction} from '../lambda_parsing'
 import {
     createDictionaryParser,
-    createKeyValuePairParser,
-    createNamedObjectPropertyParser
+    createKeyValuePairParser
 } from '../javascript/record_parsing'
+import {createNamedObjectPropertyParser} from '../javascript/object_parsing'
 
 
 export interface MapSelection {
