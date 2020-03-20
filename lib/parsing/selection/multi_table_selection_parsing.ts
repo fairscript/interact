@@ -1,4 +1,5 @@
-import * as getParameterNames from 'get-parameter-names'
+import {parseLambdaFunction} from '../lambda_parsing'
+import {parseConstructor} from '../constructor_parsing'
 
 export interface MultiTableSelection {
     kind: 'multi-table-selection'
@@ -24,7 +25,9 @@ export function parseSelectMultipleTables(pairs: [string, Function][]): MultiTab
 
     const operations = pairs.reduce(
         (acc, [name, table]) => {
-            const tableAliases = getParameterNames(table)
+            const properties = parseConstructor(table)
+
+            const tableAliases = properties
                 .map(property => [`${name}_${property}`, [name, property]])
 
             return acc.concat(tableAliases)

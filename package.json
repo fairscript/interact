@@ -1,6 +1,6 @@
 {
   "name": "lambda-sql",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "A (proof of concept for a) (more) type-safe and FP-oriented SQL builder for TypeScript",
   "keywords": [
     "lambda",

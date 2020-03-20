@@ -1,24 +1,26 @@
-import * as toSnakeCase from 'js-snakecase'
-
 import {
     Aggregation,
     AggregationOperation
 } from '../../parsing/selection/aggregation_parsing'
 import {generateCount} from '../count_generation'
 import {joinWithCommaWhitespace} from '../../parsing/javascript_parsing'
+import {generateColumnAccess} from '../column_access_generation'
 
 function generateGetPartOfKey(partOfKeyToTableAndProperty: { [part: string]: [string, string] }, part: string): string {
-    const [table, property] = partOfKeyToTableAndProperty[part]
-    const column = toSnakeCase(property)
+    const [tableAlias, property] = partOfKeyToTableAndProperty[part]
 
-    return `${table}.${column}`
+    return generateColumnAccess(tableAlias, property)
 }
 
-function generateAggregate(parameterToTable: { [part: string]: string }, aggregationOperation: string, parameter: string, property: string): string {
-    const table = parameterToTable[parameter]
-    const column = toSnakeCase(property)
+function generateAggregate(
+    parameterToTable: { [part: string]: string },
+    aggregationOperation: string,
+    parameter: string,
+    property: string): string {
 
-    return `${aggregationOperation.toUpperCase()}(${table}.${column})`
+    const tableAlias = parameterToTable[parameter]
+
+    return `${aggregationOperation.toUpperCase()}(${generateColumnAccess(tableAlias, property)})`
 }
 
 function createGenerateAggregationOperation(

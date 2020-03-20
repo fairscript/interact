@@ -1,6 +1,6 @@
 # Roadmap
 
-## v0.6.6
+## v0.6.7
 - Unify lambda function parsing for inner and outer functions
 
 ## v0.7

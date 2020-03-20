@@ -1,6 +1,6 @@
-import * as getParameterNames from 'get-parameter-names'
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
 import {parsePredicate, PredicateExpression} from './predicate_parsing'
+import {parseLambdaFunction} from './lambda_parsing'
 
 export interface Filter {
     parameterToTable: {[parameter: string]: string}
@@ -15,8 +15,9 @@ export function createFilter(parameterToTable: {[parameter: string]: string}, pr
 }
 
 export function parseFilter(f: Function): Filter {
-    const parameterNames = getParameterNames(f)
-    const parameterToTable = mapParameterNamesToTableAliases(parameterNames)
+    const { parameters } = parseLambdaFunction(f)
+
+    const parameterToTable = mapParameterNamesToTableAliases(parameters)
 
     const predicate = parsePredicate(f)
 

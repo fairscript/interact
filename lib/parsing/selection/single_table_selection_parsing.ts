@@ -1,5 +1,5 @@
-import * as getParameterNames from 'get-parameter-names'
 import {Selection} from '../selection_parsing'
+import {parseConstructor} from '../constructor_parsing'
 
 export interface SingleTableSelection {
     kind: 'single-table-selection'
@@ -14,7 +14,7 @@ export function createSingleTableSelection(properties: string[]): SingleTableSel
 }
 
 export function parseSelectSingleTable(constructor: Function): Selection {
-    const operations = getParameterNames(constructor)
+    const properties = parseConstructor(constructor)
 
-    return createSingleTableSelection(operations)
+    return createSingleTableSelection(properties)
 }
