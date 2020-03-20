@@ -3,8 +3,8 @@ import {
     AggregationOperation
 } from '../../parsing/selection/aggregation_parsing'
 import {generateCount} from '../count_generation'
-import {joinWithCommaWhitespace} from '../../parsing/javascript_parsing'
 import {generateColumnAccess} from '../column_access_generation'
+import {joinWithCommaWhitespace} from '../../parsing/parsing_helpers'
 
 function generateGetPartOfKey(partOfKeyToTableAndProperty: { [part: string]: [string, string] }, part: string): string {
     const [tableAlias, property] = partOfKeyToTableAndProperty[part]

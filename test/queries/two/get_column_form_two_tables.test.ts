@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import {departments, employees} from '../../test_tables'
-import {joinWithNewLine} from '../../../lib/parsing/javascript_parsing'
+import {joinWithNewLine} from '../../../lib/parsing/parsing_helpers'
 
 describe('Getting a single column from a join of table', () => {
     it('works', () => {

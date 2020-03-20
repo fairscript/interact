@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import {employees} from '../../test_tables'
-import {joinWithNewLine} from '../../../lib/parsing/javascript_parsing'
+import {joinWithNewLine} from '../../../lib/parsing/parsing_helpers'
 
 describe('Counting on a single table', () => {
     it('works without filtering', () => {

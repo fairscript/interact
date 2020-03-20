@@ -1,16 +1,16 @@
 import * as A from 'arcsecond'
 
+import {identifier} from './identifier_parsing'
 import {
     closingBracket,
     closingParenthesis,
     colon,
     comma,
-    createChoiceFromStrings,
     dot,
-    identifier,
     openingBracket,
     openingParenthesis
-} from '../javascript_parsing'
+} from './single_character_parsing'
+import {createChoiceFromStrings} from '../parsing_helpers'
 
 export function createObjectPropertyParser(objectParser, propertyParser) {
     return A.sequenceOf([objectParser, dot, propertyParser])

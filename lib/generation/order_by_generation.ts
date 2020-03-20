@@ -1,6 +1,6 @@
 import {OrderExpression} from '../parsing/order_parsing'
-import {joinWithCommaWhitespace} from '../parsing/javascript_parsing'
 import {generateColumnAccess} from './column_access_generation'
+import {joinWithCommaWhitespace} from '../parsing/parsing_helpers'
 
 
 function generateOrder(order: OrderExpression): string {

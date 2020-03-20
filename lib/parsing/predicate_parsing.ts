@@ -1,12 +1,4 @@
 import * as A from 'arcsecond'
-import {
-    aNumber,
-    aString,
-    closingParenthesis,
-    createValueParser,
-    identifier,
-    openingParenthesis
-} from './javascript_parsing'
 import {createConstant, createGetFromParameter} from '../column_operations'
 import {Comparison, createComparison, createComparisonParser} from './predicate/comparison'
 import {Concatenation, createConcatenation, createTailItem, createTailItemsParser} from './predicate/concatenation'
@@ -14,6 +6,9 @@ import {createInsideParentheses, InsideParentheses} from './predicate/inside_par
 import normalizeQuotes from './quote_normalization'
 import {parseLambdaFunction} from './lambda_parsing'
 import {createObjectPropertyParser} from './javascript/record_parsing'
+import {identifier} from './javascript/identifier_parsing'
+import {closingParenthesis, openingParenthesis} from './javascript/single_character_parsing'
+import {aNumber, aString, createValueParser} from './javascript/value_parsing'
 
 
 export type PredicateExpression = InsideParentheses | Concatenation | Comparison

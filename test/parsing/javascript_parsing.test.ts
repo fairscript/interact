@@ -1,5 +1,6 @@
-import {aString, float, identifier, integer} from '../../lib/parsing/javascript_parsing'
 import * as assert from 'assert'
+import {identifier} from '../../lib/parsing/javascript/identifier_parsing'
+import {aString, float, integer} from '../../lib/parsing/javascript/value_parsing'
 
 describe('aString matches strings', () => {
     describe('surrounded by single quotes', () => {

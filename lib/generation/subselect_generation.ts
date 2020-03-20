@@ -2,7 +2,7 @@ import {Subselect} from '../column_operations'
 import {generateSelect} from './select_generation'
 import {createCountSelection} from '../parsing/selection/count_parsing'
 import {generateWhere} from './where_generation'
-import {joinWithWhitespace} from '../parsing/javascript_parsing'
+import {joinWithWhitespace} from '../parsing/parsing_helpers'
 
 export function generateSubselect(subselect: Subselect): string {
     const {tableName, filters} = subselect.statement

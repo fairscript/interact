@@ -1,6 +1,6 @@
 import * as A from 'arcsecond'
-import {aBinaryLogicalOperator} from '../javascript_parsing'
 import {PredicateExpression} from '../predicate_parsing'
+import {aBinaryLogicalOperator} from '../javascript/operator_parsing'
 
 export interface TailItem {
     operator: '&&' | '||',

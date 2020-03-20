@@ -1,8 +1,8 @@
 import {MapSelection} from '../../parsing/selection/map_parsing'
-import {joinWithCommaWhitespace} from '../../parsing/javascript_parsing'
 import {GetFromParameter, Subselect} from '../../column_operations'
 import {generateGetFromParameter} from '../get_from_parameter_generation'
 import {generateSubselect} from '../subselect_generation'
+import {joinWithCommaWhitespace} from '../../parsing/parsing_helpers'
 
 function generateColumnOperation(parameterToTable: { [parameter: string]: string }, operation: GetFromParameter | Subselect): string {
     switch (operation.kind) {

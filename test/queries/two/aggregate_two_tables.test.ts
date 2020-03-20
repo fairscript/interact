@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import {departments, employees} from '../../test_tables'
-import {joinWithNewLine} from '../../../lib/parsing/javascript_parsing'
+import {joinWithNewLine} from '../../../lib/parsing/parsing_helpers'
 
 describe('Aggregation of a join of two tables', () => {
     it('with an aggregated column from the first table works', () => {

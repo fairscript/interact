@@ -1,13 +1,12 @@
 import * as A from 'arcsecond'
+import {identifier} from './javascript/identifier_parsing'
 import {
-    aReturn, closingBracket,
-    closingParenthesis,
-    comma,
-    identifier,
+    closingBracket,
+    closingParenthesis, comma,
     openingBracket,
     openingParenthesis,
     semicolon
-} from './javascript_parsing'
+} from './javascript/single_character_parsing'
 
 interface LambdaFunctionParsingResult {
     parameters: string[],
@@ -31,7 +30,7 @@ const lambdaFunctionParser = A.coroutine(function*() {
 
     yield A.sequenceOf([A.optionalWhitespace, closingParenthesis])
 
-    yield A.sequenceOf([A.optionalWhitespace, openingBracket, A.optionalWhitespace, aReturn, A.optionalWhitespace])
+    yield A.sequenceOf([A.optionalWhitespace, openingBracket, A.optionalWhitespace, A.str('return'), A.optionalWhitespace])
 
     const expression = yield A.everythingUntil(A.sequenceOf([semicolon, A.optionalWhitespace, closingBracket, A.optionalWhitespace, A.endOfInput]))
 

@@ -1,6 +1,6 @@
 import * as A from 'arcsecond'
-import {aComparisonOperator} from '../javascript_parsing'
 import {Constant, GetFromParameter} from '../../column_operations'
+import {aComparisonOperator} from '../javascript/operator_parsing'
 
 export type SqlComparisonOperator = '=' | '>' | '>=' | '<' | '<='
 

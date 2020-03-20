@@ -2,10 +2,10 @@ import {generateSelect} from './select_generation'
 import {generateFrom} from './from_generation'
 import {generateWhere} from './where_generation'
 import {generateOrderBy} from './order_by_generation'
-import {joinWithNewLine} from '../parsing/javascript_parsing'
 import {SelectStatement} from '../select_statement'
 import {generateGroupBy} from './group_by_generation'
 import {generateInnerJoin} from './join_generation'
+import {joinWithNewLine} from '../parsing/parsing_helpers'
 
 export function generateSql(statement: SelectStatement): string {
     const {selection, tableName, filters, key, orders, join} = statement

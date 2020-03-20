@@ -1,0 +1,16 @@
+import * as A from 'arcsecond'
+
+export const dot = A.char('.')
+export const comma = A.char(',')
+export const colon = A.char(':')
+export const semicolon = A.char(';')
+export const underscore = A.char('_')
+export const dollarSign = A.char('$')
+export const singleQuote = A.char('\'')
+export const doubleQuote = A.char('\"')
+export const openingParenthesis = A.char('(')
+export const closingParenthesis = A.char(')')
+export const openingBracket = A.char('{')
+export const closingBracket = A.char('}')
+export const plus = A.char('+')
+export const minus = A.char('-')

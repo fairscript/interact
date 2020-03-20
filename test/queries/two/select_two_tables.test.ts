@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import {departments, employees} from '../../test_tables'
-import {joinWithNewLine} from '../../../lib/parsing/javascript_parsing'
+import {joinWithNewLine} from '../../../lib/parsing/parsing_helpers'
 
 describe('Selecting', () => {
     it('all columns in two tables corresponding to class properties works', () => {

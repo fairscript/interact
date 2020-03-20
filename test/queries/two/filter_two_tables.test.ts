@@ -1,6 +1,6 @@
 import {departments, employees} from '../../test_tables'
-import {joinWithNewLine} from '../../../lib/parsing/javascript_parsing'
 import * as assert from 'assert'
+import {joinWithNewLine} from '../../../lib/parsing/parsing_helpers'
 
 describe('Filtering a join of two tables works for a predicate', () => {
 

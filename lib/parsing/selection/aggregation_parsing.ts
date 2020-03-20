@@ -1,7 +1,3 @@
-import {
-    dot,
-    identifier
-} from '../javascript_parsing'
 import * as A from 'arcsecond'
 import { createGetFromParameter, GetFromParameter } from '../../column_operations'
 import {Key} from '../get_key_parsing'
@@ -15,6 +11,8 @@ import {
     createKeyValuePairParser,
     createNamedObjectPropertyParser
 } from '../javascript/record_parsing'
+import {identifier} from '../javascript/identifier_parsing'
+import {dot} from '../javascript/single_character_parsing'
 
 export interface GetPartOfKey {
     kind: 'get-part-of-key',

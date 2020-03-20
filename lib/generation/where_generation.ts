@@ -1,4 +1,3 @@
-import {joinWithWhitespace} from '../parsing/javascript_parsing'
 import {generateGetFromParameter} from './get_from_parameter_generation'
 import {Constant} from '../column_operations'
 import {
@@ -8,6 +7,7 @@ import {Filter} from '../parsing/filter_parsing'
 import {Comparison, Side} from '../parsing/predicate/comparison'
 import {Concatenation, TailItem} from '../parsing/predicate/concatenation'
 import {InsideParentheses} from '../parsing/predicate/inside_parentheses'
+import {joinWithWhitespace} from '../parsing/parsing_helpers'
 
 
 function generateConstant(constant: Constant): string {
