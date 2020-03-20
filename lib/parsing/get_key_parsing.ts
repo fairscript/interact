@@ -1,7 +1,11 @@
-import {createDictionaryParser, createKeyValuePairParser, createNamedObjectPropertyParser} from './javascript_parsing'
 import {createGetFromParameter, GetFromParameter} from '../column_operations'
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
 import {parseLambdaFunction} from './lambda_parsing'
+import {
+    createDictionaryParser,
+    createKeyValuePairParser,
+    createNamedObjectPropertyParser
+} from './javascript/record_parsing'
 
 export interface PartOfKey {
     alias: string

@@ -2,8 +2,7 @@ import {createSubselect} from '../../column_operations'
 import {
     closingParenthesis,
     createChoiceFromStrings,
-    createDictionaryParser, createKeyValuePairParser, createLambdaParser,
-    createParameterlessFunctionInvocation,
+    createLambdaParser,
     dot,
     openingParenthesis,
 } from '../javascript_parsing'
@@ -14,6 +13,8 @@ import {createFilter} from '../filter_parsing'
 import {createPredicateExpressionParser} from '../predicate_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {parseLambdaFunction} from '../lambda_parsing'
+import {createParameterlessFunctionInvocation} from '../javascript/invocation_parsing'
+import {createDictionaryParser, createKeyValuePairParser} from '../javascript/record_parsing'
 
 function createFilterParser() {
     return A.sequenceOf([

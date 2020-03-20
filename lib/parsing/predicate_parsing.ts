@@ -3,7 +3,6 @@ import {
     aNumber,
     aString,
     closingParenthesis,
-    createObjectPropertyParser,
     createValueParser,
     identifier,
     openingParenthesis
@@ -14,6 +13,7 @@ import {Concatenation, createConcatenation, createTailItem, createTailItemsParse
 import {createInsideParentheses, InsideParentheses} from './predicate/inside_parentheses'
 import normalizeQuotes from './quote_normalization'
 import {parseLambdaFunction} from './lambda_parsing'
+import {createObjectPropertyParser} from './javascript/record_parsing'
 
 
 export type PredicateExpression = InsideParentheses | Concatenation | Comparison

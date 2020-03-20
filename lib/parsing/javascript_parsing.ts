@@ -60,34 +60,6 @@ export function createValueParser(stringParser = aString, numberParser = aNumber
 export const aBinaryLogicalOperator = createChoiceFromStrings(['&&', '||'])
 export const aComparisonOperator = createChoiceFromStrings(['===', '==', '>=', '<=', '>', '<'])
 
-// Object property
-export function createObjectPropertyParser(objectParser, propertyParser) {
-    return A.sequenceOf([objectParser, dot, propertyParser])
-        .map(([object, dot, property]) => [object, property])
-}
-
-export function createNamedObjectPropertyParser(objectNames: string[], propertyParser = identifier) {
-    return createObjectPropertyParser(createChoiceFromStrings(objectNames), propertyParser)
-}
-
-export function createKeyValuePairParser(valueParser) {
-    return A.sequenceOf([identifier, A.optionalWhitespace, colon, A.optionalWhitespace, valueParser])
-        .map(([key, ws1, colon, ws2, value]) => [key, value])
-}
-
-// Dictionary
-export function createDictionaryParser(keyValuePair) {
-    const keyValuePairs = A.sepBy(A.sequenceOf([A.optionalWhitespace, comma, A.optionalWhitespace]))(keyValuePair)
-
-    const dictionary = A.sequenceOf([openingBracket, A.optionalWhitespace, keyValuePairs, A.optionalWhitespace, closingBracket])
-        .map(([o, ws1, pairs, ws2, c]) => pairs)
-
-    const dictionaryInParentheses = A.sequenceOf([openingParenthesis, dictionary, closingParenthesis])
-        .map(([o, d, c]) => d)
-
-    return dictionaryInParentheses
-}
-
 // Function body
 export const aReturn = A.str('return')
 
@@ -125,19 +97,6 @@ export function createLambdaParser(returnParser) {
         createFunctionBody(returnParser)
     ])
         .map(([str, ws1, parameters, ws2, body]) => [parameters, body])
-}
-
-// Function invocation
-const parameterlessInvocation = A.str('()')
-
-export function createParameterlessFunctionInvocation(functionName: string) {
-    return A.sequenceOf([A.str(functionName), A.optionalWhitespace, parameterlessInvocation])
-        .map(([functionName, ws, invocation]) => functionName)
-
-}
-
-export function createParameterlessFunctionInvocationChoice(functionNames: string[]) {
-    return A.choice(functionNames.map(createParameterlessFunctionInvocation))
 }
 
 // Parameter list

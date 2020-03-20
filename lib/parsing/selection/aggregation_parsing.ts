@@ -1,13 +1,20 @@
 import {
-    createDictionaryParser, createParameterlessFunctionInvocationChoice, createKeyValuePairParser,
-    createNamedObjectPropertyParser,
     dot,
-    identifier, createParameterlessFunctionInvocation
+    identifier
 } from '../javascript_parsing'
 import * as A from 'arcsecond'
 import { createGetFromParameter, GetFromParameter } from '../../column_operations'
 import {Key} from '../get_key_parsing'
 import {parseLambdaFunction} from '../lambda_parsing'
+import {
+    createParameterlessFunctionInvocation,
+    createParameterlessFunctionInvocationChoice
+} from '../javascript/invocation_parsing'
+import {
+    createDictionaryParser,
+    createKeyValuePairParser,
+    createNamedObjectPropertyParser
+} from '../javascript/record_parsing'
 
 export interface GetPartOfKey {
     kind: 'get-part-of-key',

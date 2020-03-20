@@ -1,6 +1,6 @@
 import {createGetFromParameter, GetFromParameter} from '../column_operations'
-import {createNamedObjectPropertyParser} from './javascript_parsing'
 import {parseLambdaFunction} from './lambda_parsing'
+import {createNamedObjectPropertyParser} from './javascript/record_parsing'
 
 export interface JoinExpression {
     tableName: string,

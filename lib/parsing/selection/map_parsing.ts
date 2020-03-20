@@ -1,8 +1,12 @@
-import {createDictionaryParser, createKeyValuePairParser, createNamedObjectPropertyParser} from '../javascript_parsing'
 import {createGetFromParameter, GetFromParameter, Subselect} from '../../column_operations'
 import {Selection} from '../selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {parseLambdaFunction} from '../lambda_parsing'
+import {
+    createDictionaryParser,
+    createKeyValuePairParser,
+    createNamedObjectPropertyParser
+} from '../javascript/record_parsing'
 
 
 export interface MapSelection {
