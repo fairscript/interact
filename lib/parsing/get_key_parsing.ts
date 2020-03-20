@@ -2,10 +2,9 @@ import {createGetFromParameter, GetFromParameter} from '../column_operations'
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
 import {parseLambdaFunction} from './lambda_parsing'
 import {
-    createDictionaryParser,
-    createKeyValuePairParser
+    createRecordParser,
+    createKeyValuePairParser, createNamedObjectPropertyParser
 } from './javascript/record_parsing'
-import {createNamedObjectPropertyParser} from './javascript/object_parsing'
 
 export interface PartOfKey {
     alias: string
@@ -37,7 +36,7 @@ function createGetKeyParser(parameterNames: string[]) {
     const keyValuePair = createKeyValuePairParser(objectProperty)
         .map(([alias, [object, property]]) => createPartOfKey(alias, createGetFromParameter(object, property)))
 
-    return createDictionaryParser(keyValuePair)
+    return createRecordParser(keyValuePair)
 }
 
 export function parseGetKey(f: Function): Key {

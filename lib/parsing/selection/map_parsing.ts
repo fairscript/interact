@@ -3,10 +3,9 @@ import {Selection} from '../selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {parseLambdaFunction} from '../lambda_parsing'
 import {
-    createDictionaryParser,
-    createKeyValuePairParser
+    createRecordParser,
+    createKeyValuePairParser, createNamedObjectPropertyParser
 } from '../javascript/record_parsing'
-import {createNamedObjectPropertyParser} from '../javascript/object_parsing'
 
 
 export interface MapSelection {
@@ -36,7 +35,7 @@ function createMapParser(parameterNames: string[]) {
 
     const keyValuePair = createKeyValuePairParser(getFromParameterParser)
 
-    return createDictionaryParser(keyValuePair)
+    return createRecordParser(keyValuePair)
 }
 
 export function parseMap(f: Function): Selection {

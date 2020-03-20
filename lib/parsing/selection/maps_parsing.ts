@@ -10,7 +10,7 @@ import {createPredicateExpressionParser} from '../predicate_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {parseLambdaFunction} from '../lambda_parsing'
 import {createParameterlessFunctionInvocation} from '../javascript/invocation_parsing'
-import {createDictionaryParser, createKeyValuePairParser} from '../javascript/record_parsing'
+import {createRecordParser, createKeyValuePairParser} from '../javascript/record_parsing'
 import {closingParenthesis, dot, openingParenthesis} from '../javascript/single_character_parsing'
 import {createChoiceFromStrings} from '../parsing_helpers'
 
@@ -79,7 +79,7 @@ export function parseMapS(f: Function, subtableNames: string[]): MapSelection {
 
     const keyValuePair = createKeyValuePairParser(dictionaryValueParser)
 
-    const parser = createDictionaryParser(keyValuePair)
+    const parser = createRecordParser(keyValuePair)
 
     const result = parser.run(expression).result
 
