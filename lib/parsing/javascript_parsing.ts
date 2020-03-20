@@ -104,6 +104,7 @@ export function createFunctionBody(returnParser) {
         A.optionalWhitespace,
         closingBracket
     ])
+        .map(([ob, ws1, ret, ws2, returnParserResult, ws3, sc, ws4, cb]) => returnParserResult)
 }
 
 // Lambda function
@@ -116,13 +117,13 @@ const functionSignature = A.sequenceOf([
     closingParenthesis,
 ]).map(([op, [head, tail], cp]) => [head].concat(tail))
 
-export function createLambdaParser(functionBody) {
+export function createLambdaParser(returnParser) {
     return A.sequenceOf([
         A.str('function'),
         A.optionalWhitespace,
         functionSignature,
         A.optionalWhitespace,
-        functionBody
+        createFunctionBody(returnParser)
     ])
         .map(([str, ws1, parameters, ws2, body]) => [parameters, body])
 }

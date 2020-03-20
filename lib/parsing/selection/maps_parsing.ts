@@ -1,11 +1,10 @@
-import {createGetFromParameter, createSubselect} from '../../column_operations'
+import {createSubselect} from '../../column_operations'
 import {
-    closingBracket,
     closingParenthesis,
     createChoiceFromStrings,
     createDictionaryParser, createFunctionBody,
     createKeyValuePairParser, createLambdaParser,
-    createNamedObjectPropertyParser, createParameterlessFunctionInvocation,
+    createParameterlessFunctionInvocation,
     dot,
     openingParenthesis,
 } from '../javascript_parsing'
@@ -18,22 +17,14 @@ import {createFilter} from '../filter_parsing'
 import {createPredicateExpressionParser} from '../predicate_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 
-
-
 function createFilterParser() {
-    const predicateExpressionParser = createPredicateExpressionParser()
-
-    const functionBody = createFunctionBody(predicateExpressionParser)
-        .map(([ob, ws1, ret, ws2, predicate, ws3, sc, ws4, cb]) => predicate)
-
     return A.sequenceOf([
         A.str('filter'),
         openingParenthesis,
-        createLambdaParser(functionBody),
+        createLambdaParser(createPredicateExpressionParser()),
         closingParenthesis
     ])
 }
-
 
 const count = createParameterlessFunctionInvocation('count')
 

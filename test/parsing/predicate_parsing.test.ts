@@ -2,9 +2,9 @@ import * as assert from 'assert'
 import {createConstant, createGetFromParameter} from '../../lib/column_operations'
 import {Department, Employee} from '../test_tables'
 import {
+    parsePredicate,
     PredicateExpression
 } from '../../lib/parsing/predicate_parsing'
-import {parsePredicate} from '../../lib/parsing/filter_parsing'
 import {
     createEquality,
     createGreaterThan,
@@ -26,11 +26,11 @@ describe('parsePredicate', () => {
     const lastNameEqualsRoe = createEquality(createGetFromParameter('e', 'lastName'), createConstant('Roe'))
 
     function parsePredicateWithEmployeeParameter(f: (e: Employee) => boolean): PredicateExpression {
-        return parsePredicate(f, ['e'])
+        return parsePredicate(f)
     }
 
     function parsePredicateWithEmployeeAndDepartmentParameters(f: (e: Employee, d: Department) => boolean): PredicateExpression {
-        return parsePredicate(f, ['e', 'd'])
+        return parsePredicate(f)
     }
 
     describe('can parse comparisons', () => {
@@ -115,6 +115,7 @@ describe('parsePredicate', () => {
 
             })
         })
+
         describe('with a triple equality sign', () => {
             it('with an integer', () => {
                 assert.deepEqual(
