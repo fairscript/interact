@@ -64,4 +64,8 @@
 
 ## v0.6.3
 
-- Subqueries on filtered tables, sorted tables and joins of two tables 
+- Subqueries on filtered tables, sorted tables and joins of two tables
+
+## v0.6.4
+
+- Unified predicate parsing in queries and subqueries

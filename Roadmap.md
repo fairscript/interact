@@ -1,7 +1,7 @@
 # Roadmap
 
-## v0.6.4
-- Unify predicate parsing in queries and subqueries
+## v0.6.5
+- Remove the dependency on get-parameter-names
 
 ## v0.7
 - ORM for SQLite
