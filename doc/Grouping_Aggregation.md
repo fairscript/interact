@@ -12,7 +12,6 @@ employees
         minimum: e.salary.min(),
         sum: e.salary.sum()
     }))
-    .toSql()
 ```
 
 SQL:

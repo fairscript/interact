@@ -1,7 +1,7 @@
 # Roadmap
 
-## v0.7
-- ORM for SQLite
+## v0.7.1
+- Parallel queries
 
 ## v0.8
 - Parameters

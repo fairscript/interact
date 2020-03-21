@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.7
+- Basic object-relational mapping support for SQLite
+
 ## v0.6.7
 - Unified lambda function parsing for inner and outer functions
 

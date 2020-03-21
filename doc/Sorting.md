@@ -9,7 +9,6 @@ TypeScript:
 employees
     .sortBy(e => e.salary)
     .map(e => e.id)
-    .toSql()
 ```
 
 SQL:
@@ -26,7 +25,6 @@ TypeScript:
 employees
     .sortDescendinglyBy(e => e.salary)
     .map(e => e.id)
-    .toSql()
 ```
 
 SQL:
@@ -44,7 +42,6 @@ employees
     .sortBy(e => e.lastName)
     .thenBy(e => e.firstName)
     .map(e => e.id)
-    .toSql()
 ```
 
 SQL:

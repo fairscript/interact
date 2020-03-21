@@ -4,7 +4,6 @@ TypeScript:
 ```typescript
 employees
     .get(e => e.salary)
-    .toSql()
 ```
 
 SQL:

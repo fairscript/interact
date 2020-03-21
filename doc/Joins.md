@@ -5,7 +5,6 @@ TypeScript:
 employees
     .join(departments, e => e.departmentId, d => d.id)
     .map((e, d) => ({firstName: e.firstName, lastName: e.lastName, department: d.name}))
-    .toSql()
 ```
 
 SQL:
@@ -22,7 +21,6 @@ TypeScript:
 employees
     .join(departments, e => e.departmentId, d => d.id)
     .select('employee', 'department')
-    .toSql()
 ```
 
 SQL:

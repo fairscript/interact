@@ -5,7 +5,6 @@ TypeScript:
 employees
     .filter(e => e.departmentId === 1)
     .count()
-    .toSql()
 ```
 
 SQL:

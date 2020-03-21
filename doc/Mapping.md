@@ -6,7 +6,6 @@ TypeScript:
 ```typescript
 employees
     .map(e => e.id)
-    .toSql()
 ```
 
 SQL:
@@ -20,7 +19,6 @@ TypeScript:
 ```typescript
 employees
     .map(e => ({ firstName: e.firstName, lastName: e.lastName}))
-    .toSql(),
 ```
 
 SQL:

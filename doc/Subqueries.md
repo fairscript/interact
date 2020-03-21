@@ -9,7 +9,6 @@ employees
             id: e.id,
             higherSalary: st.filter(se => se.salary > e.salary).count()
         }))
-    .toSql()
 ```
 
 SQL:

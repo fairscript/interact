@@ -4,7 +4,6 @@ TypeScript:
 ```typescript
 employees
     .select()
-    .toSql()
 ``` 
 
 SQL:

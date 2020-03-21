@@ -1,6 +1,6 @@
 # λSQL
 
-A (proof of concept for a) (more) type-safe and FP-oriented SQL builder for TypeScript
+A (relatively) type-safe object-relational mapper for TypeScript with SQLite support and a fluent API
 
 ## Features
 - [Selecting tables](doc/Selection.md)
@@ -48,13 +48,17 @@ const departments = defineTable(Department, 'departments')
 
 The `defineTable` function takes two parameters: a constructor and the database table name.
 
-### Step 3) Start building queries
+### Step 3) Create a database context and start running queries
 
 ```typescript
-employees
+const dbContext = createSqliteContext(filename)
+
+const query = employees
     .filter(e => e.id === 1)
     .map(e => ({ firstName: e.firstName, lastName: e.lastName }))
     .toSql()
+
+const employee = dbContext.get(query)
 ```
 
 This generates the following SQL query:
