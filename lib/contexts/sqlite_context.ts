@@ -1,67 +1,38 @@
-import * as sqlite3 from 'sqlite3'
+import {createSqliteClient, createSqliteInMemoryClient, SqliteClient} from './sqlite_client'
+import {
+    RowSelectGenerator,
+    ScalarSelectGenerator,
+    SingleRowSelectGenerator
+} from '../queries/select_generators'
 
-export class SqliteContext{
-    constructor (private db: sqlite3.Database) {}
+export class SqliteContext {
+    constructor(private client: SqliteClient) {}
 
-    run(sql: string) {
-        return new Promise((resolve, reject) => {
-            this.db.run(sql, (err, row) => {
-                if (err) {
-                    reject(err)
-                }
-                else {
-                    resolve(row)
-                }
-            })
-        })
+    get<T>(generator: ScalarSelectGenerator<T>): Promise<T>
+    get<T>(generator: SingleRowSelectGenerator<T>): Promise<T>
+    get<T>(generator: RowSelectGenerator<T>): Promise<T[]>
+    get<T>(generator: ScalarSelectGenerator<T>|SingleRowSelectGenerator<T>|RowSelectGenerator<T>): Promise<T>|Promise<T[]> {
+        const sql = generator.toSql()
+
+        switch (generator.kind) {
+            case 'row-select-generator':
+                return this.client.getRows<T>(sql)
+            case 'scalar-select-generator':
+                return this.client.getScalar<T>(sql)
+            case 'single-row-select-generator':
+                return this.client.getSingleRow<T>(sql)
+        }
     }
+}
 
-    runBatch(sql: string, batch: any[][]) {
-        const statement = this.db.prepare(sql)
+export function createSqliteContext(client: SqliteClient): SqliteContext
+export function createSqliteContext(filename: string): SqliteContext
+export function createSqliteContext(clientOrFilename: SqliteClient|string): SqliteContext {
+    const client = typeof clientOrFilename === 'string' ? createSqliteClient(clientOrFilename) : clientOrFilename
 
-        batch.forEach(item => {
-            statement.run(item)
-        })
+    return new SqliteContext(client)
+}
 
-        return new Promise((resolve, reject) => {
-            statement.finalize(err => {
-                if (err) {
-                    reject(err)
-                }
-                else {
-                    resolve()
-                }
-            })
-        })
-    }
-
-    getRows(sql: string) {
-        return new Promise((resolve, reject) => {
-            this.db.all(sql, (err, row) => {
-                if (err) {
-                    reject(err)
-                }
-                else {
-                    resolve(row)
-                }
-            })
-        })
-    }
-
-    getSingleRow(sql: string) {
-        return new Promise((resolve, reject) => {
-            this.db.get(sql, (err, row) => {
-                if (err) {
-                    reject(err)
-                }
-                else {
-                    resolve(row)
-                }
-            })
-        })
-    }
-
-    getScalar(sql: string) {
-        return this.getSingleRow(sql).then(row => Object.values(row)[0])
-    }
+export function createSqliteInMemoryContext() : SqliteContext{
+    return new SqliteContext(createSqliteInMemoryClient())
 }

@@ -11,7 +11,7 @@ import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {parseJoin} from '../../parsing/join_parsing'
-import {SelectSqlGenerator} from '../selection'
+import {RowSelectGenerator, ScalarSelectGenerator, SelectGenerator} from '../select_generators'
 import {parseMapS} from '../../parsing/selection/maps_parsing'
 import {createCountSelection} from '../../parsing/selection/count_parsing'
 import {parseSelectSingleTable} from '../../parsing/selection/single_table_selection_parsing'
@@ -54,43 +54,43 @@ export class Table<T> {
             })
     }
 
-    select(): SelectSqlGenerator<T> {
-        return new SelectSqlGenerator(
+    select(): RowSelectGenerator<T> {
+        return new RowSelectGenerator(
             {
                 ...this.statement,
                 selection: parseSelectSingleTable(this.constructor)
             })
     }
 
-    get<U extends Value>(f: (table: T) => U): SelectSqlGenerator<U> {
-        return new SelectSqlGenerator(
-            {
-                ...this.statement,
-                selection: parseGet(f)
-            })
-    }
-
-    count(): SelectSqlGenerator<number> {
-        return new SelectSqlGenerator(
-            {
-                ...this.statement,
-                selection: createCountSelection()
-            })
-    }
-
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectSqlGenerator<U> {
-        return new SelectSqlGenerator(
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
+        return new RowSelectGenerator(
             {
                 ...this.statement,
                 selection: parseMap(f)
             })
     }
 
-    mapS<S, U extends StringValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectSqlGenerator<U> {
-        return new SelectSqlGenerator(
+    mapS<S, U extends StringValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
+        return new RowSelectGenerator(
             {
                 ...this.statement,
                 selection: parseMapS(f, [tableInSubquery.tableName])
+            })
+    }
+
+    get<U extends Value>(f: (table: T) => U): ScalarSelectGenerator<U> {
+        return new ScalarSelectGenerator(
+            {
+                ...this.statement,
+                selection: parseGet(f)
+            })
+    }
+
+    count(): ScalarSelectGenerator<number> {
+        return new ScalarSelectGenerator<number>(
+            {
+                ...this.statement,
+                selection: createCountSelection()
             })
     }
 

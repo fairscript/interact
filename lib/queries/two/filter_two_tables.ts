@@ -8,11 +8,12 @@ import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseOrder} from '../../parsing/order_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {SelectSqlGenerator} from '../selection'
+import {RowSelectGenerator, ScalarSelectGenerator, SelectGenerator} from '../select_generators'
 import {parseSelectMultipleTables} from '../../parsing/selection/multi_table_selection_parsing'
 import {Table} from '../one/table'
 import {Subtable} from '../one/subtable'
 import {parseMapS} from '../../parsing/selection/maps_parsing'
+import {createCountSelection} from '../../parsing/selection/count_parsing'
 
 export class FilterTwoTables<T1, T2> {
     constructor(
@@ -50,8 +51,8 @@ export class FilterTwoTables<T1, T2> {
             })
     }
 
-    select<K extends string>(first: string, second: string): SelectSqlGenerator<{ [first in K]: T1 } & { [second in K]: T2 }> {
-        return new SelectSqlGenerator(
+    select<K extends string>(first: string, second: string): RowSelectGenerator<{ [first in K]: T1 } & { [second in K]: T2 }> {
+        return new RowSelectGenerator(
             {
                 ...this.statement,
                 selection: parseSelectMultipleTables([
@@ -61,16 +62,8 @@ export class FilterTwoTables<T1, T2> {
             })
     }
 
-    get<U extends Value>(f: (first: T1, second: T2) => U): SelectSqlGenerator<U> {
-        return new SelectSqlGenerator(
-            {
-                ...this.statement,
-                selection: parseGet(f)
-            })
-    }
-
-    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectSqlGenerator<U> {
-        return new SelectSqlGenerator(
+    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
+        return new RowSelectGenerator(
             {
                 ...this.statement,
                 selection: parseMap(f)
@@ -79,11 +72,27 @@ export class FilterTwoTables<T1, T2> {
 
     mapS<S, U extends StringValueRecord>(
         tableInSubquery: Table<S>,
-        f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectSqlGenerator<U> {
-        return new SelectSqlGenerator(
+        f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
+        return new RowSelectGenerator(
             {
                 ...this.statement,
                 selection: parseMapS(f, [tableInSubquery.tableName])
+            })
+    }
+
+    get<U extends Value>(f: (first: T1, second: T2) => U): ScalarSelectGenerator<U> {
+        return new ScalarSelectGenerator(
+            {
+                ...this.statement,
+                selection: parseGet(f)
+            })
+    }
+
+    count(): ScalarSelectGenerator<number> {
+        return new ScalarSelectGenerator(
+            {
+                ...this.statement,
+                selection: createCountSelection()
             })
     }
 
