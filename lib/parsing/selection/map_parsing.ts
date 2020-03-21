@@ -1,10 +1,10 @@
 import {createGetFromParameter, GetFromParameter, Subselect} from '../../column_operations'
 import {Selection} from '../selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
-import {parseLambdaFunction} from '../lambda_parsing'
+import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {
-    createRecordParser,
-    createKeyValuePairParser, createNamedObjectPropertyParser
+    createRecordInParenthesesParser,
+    createNamedObjectPropertyParser
 } from '../javascript/record_parsing'
 
 
@@ -33,13 +33,11 @@ export function createGetFromParameterParser(parameterNames: string[]) {
 function createMapParser(parameterNames: string[]) {
     const getFromParameterParser = createGetFromParameterParser(parameterNames)
 
-    const keyValuePair = createKeyValuePairParser(getFromParameterParser)
-
-    return createRecordParser(keyValuePair)
+    return createRecordInParenthesesParser(getFromParameterParser)
 }
 
 export function parseMap(f: Function): Selection {
-    const { parameters, expression } = parseLambdaFunction(f)
+    const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
     const parameterToTable = mapParameterNamesToTableAliases(parameters)
     const parser = createMapParser(parameters)

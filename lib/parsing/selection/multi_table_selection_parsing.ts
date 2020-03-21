@@ -1,5 +1,5 @@
-import {parseLambdaFunction} from '../lambda_parsing'
-import {parseConstructor} from '../constructor_parsing'
+import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
+import {parseConstructor} from '../javascript/constructor_parsing'
 
 export interface MultiTableSelection {
     kind: 'multi-table-selection'

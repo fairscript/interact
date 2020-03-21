@@ -1,8 +1,5 @@
 # Roadmap
 
-## v0.6.7
-- Unify lambda function parsing for inner and outer functions
-
 ## v0.7
 - ORM for SQLite
 

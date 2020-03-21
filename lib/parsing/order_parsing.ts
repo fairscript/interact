@@ -1,5 +1,5 @@
 import {Direction} from '../queries/one/sort_table'
-import {parseLambdaFunction} from './lambda_parsing'
+import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
 import {createNamedObjectPropertyParser} from './javascript/record_parsing'
 
 export interface OrderExpression {
@@ -9,7 +9,7 @@ export interface OrderExpression {
 }
 
 function parseSortBy(sortBy: Function): [string, string] {
-    const { parameters, expression } = parseLambdaFunction(sortBy)
+    const { parameters, expression } = extractLambdaParametersAndExpression(sortBy)
 
     const parser = createNamedObjectPropertyParser(parameters)
         .map(([object, property]) => {

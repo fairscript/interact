@@ -1,13 +1,13 @@
 import * as assert from 'assert'
-import {parseLambdaFunction} from '../../lib/parsing/lambda_parsing'
+import {extractLambdaParametersAndExpression} from '../../../lib/parsing/javascript/lambda_parsing'
 
-describe('parseLambdaFunction', () => {
+describe('extractLambdaParametersAndExpression', () => {
 
     it('can parse functions with no parameters', () => {
         const input = function() { return 1; }
 
         assert.deepEqual(
-            parseLambdaFunction(input),
+            extractLambdaParametersAndExpression(input),
             {
                 parameters: [],
                 expression: '1'
@@ -19,7 +19,7 @@ describe('parseLambdaFunction', () => {
         const input = function(a) { return 1; }
 
         assert.deepEqual(
-            parseLambdaFunction(input),
+            extractLambdaParametersAndExpression(input),
             {
                 parameters: ['a'],
                 expression: '1'
@@ -31,7 +31,7 @@ describe('parseLambdaFunction', () => {
         const input = function(a, b) { return 1; }
 
         assert.deepEqual(
-            parseLambdaFunction(input),
+            extractLambdaParametersAndExpression(input),
             {
                 parameters: ['a', 'b'],
                 expression: '1'

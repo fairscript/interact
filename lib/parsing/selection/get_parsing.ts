@@ -1,6 +1,6 @@
 import {createGetFromParameter} from '../../column_operations'
 import {Selection} from '../selection_parsing'
-import {parseLambdaFunction} from '../lambda_parsing'
+import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {createNamedObjectPropertyParser} from '../javascript/record_parsing'
 
 function createGetParser<T, U>(parameterNames: string[]) {
@@ -25,7 +25,7 @@ export function createGetSelection(table: string, property: string): GetSelectio
 }
 
 export function parseGet(f: Function): Selection {
-    const { parameters, expression } = parseLambdaFunction(f)
+    const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
     const parser = createGetParser(parameters)
 

@@ -1,14 +1,14 @@
 import * as A from 'arcsecond'
 import { createGetFromParameter, GetFromParameter } from '../../column_operations'
 import {Key} from '../get_key_parsing'
-import {parseLambdaFunction} from '../lambda_parsing'
+import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {
     createParameterlessFunctionInvocation,
     createParameterlessFunctionInvocationChoice
 } from '../javascript/invocation_parsing'
 import {
-    createRecordParser,
-    createKeyValuePairParser, createNamedObjectPropertyParser
+    createRecordInParenthesesParser,
+    createNamedObjectPropertyParser
 } from '../javascript/record_parsing'
 import {identifier} from '../javascript/identifier_parsing'
 import {dot} from '../javascript/single_character_parsing'
@@ -82,11 +82,7 @@ function createAggregationParser(keyParameterName: string, objectParameterNames:
 
     valueParsers.push(accessKeyParser, aggregateColumnParser)
 
-    const keyValuePairParsers = A.choice(valueParsers.map(valueParser => {
-        return createKeyValuePairParser(valueParser)
-    }))
-
-    return createRecordParser(keyValuePairParsers)
+    return createRecordInParenthesesParser(A.choice(valueParsers))
 }
 
 export type AggregationOperation = GetPartOfKey|AggregateColumn|CountRowsInGroup
@@ -113,7 +109,7 @@ export function createAggregation(
 }
 
 export function parseAggregation(f: Function, key: Key, numberOfTables: number): Aggregation {
-    const { parameters, expression } = parseLambdaFunction(f)
+    const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
     const partOfKeyToTableAndProperty = key.parts.reduce(
         (acc, part) => {

@@ -4,7 +4,7 @@ import {Comparison, createComparison, createComparisonParser} from './predicate/
 import {Concatenation, createConcatenation, createTailItem, createTailItemsParser} from './predicate/concatenation'
 import {createInsideParentheses, InsideParentheses} from './predicate/inside_parentheses'
 import normalizeQuotes from './quote_normalization'
-import {parseLambdaFunction} from './lambda_parsing'
+import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
 import {identifier} from './javascript/identifier_parsing'
 import {closingParenthesis, openingParenthesis} from './javascript/single_character_parsing'
 import {aNumber, aString, createValueParser} from './javascript/value_parsing'
@@ -38,7 +38,7 @@ export function createPredicateExpressionParser() {
 }
 
 export function parsePredicate(f: Function): PredicateExpression {
-    const { expression } = parseLambdaFunction(f)
+    const { expression } = extractLambdaParametersAndExpression(f)
 
     const predicateExpressionParser = createPredicateExpressionParser()
 

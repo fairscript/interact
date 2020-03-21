@@ -1,8 +1,8 @@
 import {createGetFromParameter, GetFromParameter} from '../column_operations'
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
-import {parseLambdaFunction} from './lambda_parsing'
+import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
 import {
-    createRecordParser,
+    createRecordInParenthesesParser,
     createKeyValuePairParser, createNamedObjectPropertyParser
 } from './javascript/record_parsing'
 
@@ -33,14 +33,14 @@ export function createKey(parameterToTable: {[parameter: string]: string}, parts
 function createGetKeyParser(parameterNames: string[]) {
     const objectProperty = createNamedObjectPropertyParser(parameterNames)
 
-    const keyValuePair = createKeyValuePairParser(objectProperty)
-        .map(([alias, [object, property]]) => createPartOfKey(alias, createGetFromParameter(object, property)))
-
-    return createRecordParser(keyValuePair)
+    return createRecordInParenthesesParser(objectProperty)
+        .map(keyValuePairs =>
+            keyValuePairs.map(([alias, [object, property]]) => createPartOfKey(alias, createGetFromParameter(object, property)))
+        )
 }
 
 export function parseGetKey(f: Function): Key {
-    const { parameters, expression } = parseLambdaFunction(f)
+    const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
     const parameterToTable = mapParameterNamesToTableAliases(parameters)
 

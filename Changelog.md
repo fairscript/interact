@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.6.7
+- Unified lambda function parsing for inner and outer functions
+
 ## v0.6.6
 
 - Fixed remaining references to get-parameter-names

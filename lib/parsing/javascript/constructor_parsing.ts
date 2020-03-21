@@ -1,7 +1,7 @@
 import * as A from 'arcsecond'
-import {identifier} from './javascript/identifier_parsing'
-import {openingParenthesis} from './javascript/single_character_parsing'
-import {parameterListParser} from './javascript/parameter_list_parsing'
+import {identifier} from './identifier_parsing'
+import {openingParenthesis} from './single_character_parsing'
+import {parameterListParser} from './parameter_list_parsing'
 
 const constructorParser = A.coroutine(function*() {
     yield A.str('function')

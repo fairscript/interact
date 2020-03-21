@@ -1,5 +1,5 @@
 import {createGetFromParameter, GetFromParameter} from '../column_operations'
-import {parseLambdaFunction} from './lambda_parsing'
+import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
 import {createNamedObjectPropertyParser} from './javascript/record_parsing'
 
 export interface JoinExpression {
@@ -18,7 +18,7 @@ function createOnParser(parameterNames: string[]) {
 }
 
 function parseSide(f: Function): GetFromParameter {
-    const { parameters, expression } = parseLambdaFunction(f)
+    const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
     const parser = createOnParser(parameters)
 

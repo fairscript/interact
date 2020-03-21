@@ -27,14 +27,36 @@ export function createKeyValuePairParser(valueParser) {
         .map(([key, ws1, colon, ws2, value]) => [key, value])
 }
 
-export function createRecordParser(keyValuePair) {
-    const keyValuePairs = A.sepBy(A.sequenceOf([A.optionalWhitespace, comma, A.optionalWhitespace]))(keyValuePair)
+export function createKeyValueArrayParser(valueParser) {
+    return A.sepBy(A.sequenceOf([A.optionalWhitespace, comma, A.optionalWhitespace]))(createKeyValuePairParser(valueParser))
+}
 
-    const record = A.sequenceOf([openingBracket, A.optionalWhitespace, keyValuePairs, A.optionalWhitespace, closingBracket])
-        .map(([o, ws1, pairs, ws2, c]) => pairs)
+export function createRecordParser(valueParser) {
+    return A.coroutine(function* () {
+        yield openingBracket
+        yield A.optionalWhitespace
 
-    const recordInParentheses = A.sequenceOf([openingParenthesis, record, closingParenthesis])
-        .map(([o, d, c]) => d)
+        const record = yield createKeyValueArrayParser(valueParser)
 
-    return recordInParentheses
+        yield A.optionalWhitespace
+        yield closingBracket
+
+        return record
+    })
+}
+
+export function createRecordInParenthesesParser(valueParser) {
+    return A.coroutine(function* () {
+        yield openingParenthesis
+        yield A.optionalWhitespace
+
+        const record = yield createRecordParser(valueParser)
+
+        yield A.optionalWhitespace
+        yield closingParenthesis
+
+        yield A.endOfInput
+
+        return record
+    })
 }
