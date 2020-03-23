@@ -1,5 +1,5 @@
 import * as A from 'arcsecond'
-import { createGetFromParameter, GetFromParameter } from '../../column_operations'
+import { createGetColumn, GetColumn } from '../../column_operations'
 import {Key} from '../get_key_parsing'
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {
@@ -30,10 +30,10 @@ type ColumnAggregationOperation = 'avg' | 'min' | 'max' | 'sum'
 export interface AggregateColumn {
     kind: 'aggregate-column'
     aggregation: ColumnAggregationOperation
-    get: GetFromParameter
+    get: GetColumn
 }
 
-export function createAggregateColumn(aggregation: ColumnAggregationOperation, get: GetFromParameter): AggregateColumn {
+export function createAggregateColumn(aggregation: ColumnAggregationOperation, get: GetColumn): AggregateColumn {
     return {
         kind: 'aggregate-column',
         aggregation,
@@ -66,7 +66,7 @@ function createAggregateColumnParser(objectParameterNames) {
         .map(([property, dot, operation]) => [property, operation])
 
     return createNamedObjectPropertyParser(objectParameterNames, columnAggregation)
-        .map(([object, [property, aggregation]]) => createAggregateColumn(aggregation, createGetFromParameter(object, property)))
+        .map(([object, [property, aggregation]]) => createAggregateColumn(aggregation, createGetColumn(object, property)))
 }
 
 function createAggregationParser(keyParameterName: string, objectParameterNames: string[], countParameter: string|null) {
@@ -113,7 +113,7 @@ export function parseAggregation(f: Function, key: Key, numberOfTables: number):
 
     const partOfKeyToTableAndProperty = key.parts.reduce(
         (acc, part) => {
-            acc[part.alias] = [key.parameterToTable[part.get.parameter], part.get.property]
+            acc[part.alias] = [key.parameterToTable[part.get.object], part.get.property]
 
             return acc
         },

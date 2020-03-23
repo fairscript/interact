@@ -6,15 +6,15 @@ import {
     parseAggregation
 } from '../../../lib/parsing/selection/aggregation_parsing'
 import {Employee} from '../../test_tables'
-import {createGetFromParameter} from '../../../lib/column_operations'
+import {createGetColumn} from '../../../lib/column_operations'
 import {AggregatableTable} from '../../../lib/queries/one/aggregatable_table'
 import {createKey, createPartOfKey} from '../../../lib/parsing/get_key_parsing'
 
 describe('parseAggregate', () => {
-    const firstKeyColumn = createGetFromParameter('e', 'departmentId')
+    const firstKeyColumn = createGetColumn('e', 'departmentId')
     const firstPartOfKey = createPartOfKey('departmentId', firstKeyColumn)
 
-    const secondKeyColumn = createGetFromParameter('e', 'title')
+    const secondKeyColumn = createGetColumn('e', 'title')
     const secondPartOfKey = createPartOfKey('title', secondKeyColumn)
 
     const keyOfOnePart = createKey({e: 't1'}, [firstPartOfKey])
@@ -63,7 +63,7 @@ describe('parseAggregate', () => {
             createAggregation(
                 {departmentId: ['t1', 'departmentId']},
                 {e: 't1'},
-                [['highestSalary', createAggregateColumn('max', createGetFromParameter('e', 'salary'))]]
+                [['highestSalary', createAggregateColumn('max', createGetColumn('e', 'salary'))]]
             )
         )
     })
@@ -87,7 +87,7 @@ describe('parseAggregate', () => {
                 {e: 't1'},
                 [
                     ['depId', createGetPartOfKey('departmentId')],
-                    ['highestSalary', createAggregateColumn('max', createGetFromParameter('e', 'salary'))],
+                    ['highestSalary', createAggregateColumn('max', createGetColumn('e', 'salary'))],
                     ['employees', createCountRowsInGroup()]
                 ]
             )

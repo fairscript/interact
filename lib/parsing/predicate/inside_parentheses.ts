@@ -1,4 +1,4 @@
-import {PredicateExpression} from '../predicate_parsing'
+import {PredicateExpression} from '../filter_parsing'
 
 export interface InsideParentheses {
     inside: PredicateExpression

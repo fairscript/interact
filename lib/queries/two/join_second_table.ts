@@ -7,7 +7,6 @@ import {Value} from '../../value'
 import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseOrder} from '../../parsing/order_parsing'
-import {parseFilter} from '../../parsing/filter_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {RowSelectGenerator, ScalarSelectGenerator, SelectGenerator} from '../select_generators'
 import {parseSelectMultipleTables} from '../../parsing/selection/multi_table_selection_parsing'
@@ -15,6 +14,8 @@ import {Subtable} from '../one/subtable'
 import {parseMapS} from '../../parsing/selection/maps_parsing'
 import {Table} from '../one/table'
 import {createCountSelection} from '../../parsing/selection/count_parsing'
+import {parseParameterlessFilter} from '../../parsing/filtering/parameterless_filter_parsing'
+import {parseParameterizedFilter} from '../../parsing/filtering/parameterized_filter_parsing'
 
 export class JoinSecondTable<T1, T2, K1> {
 
@@ -29,8 +30,20 @@ export class JoinSecondTable<T1, T2, K1> {
             this.secondConstructor,
             {
                 ...this.statement,
-                filters: this.statement.filters.concat(parseFilter(predicate))
-            })
+                filters: this.statement.filters.concat(parseParameterlessFilter(predicate))
+            },
+            1)
+    }
+
+    filterP<P>(parameter: P, predicate: (parameter: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
+        return new FilterTwoTables(
+            this.firstConstructor,
+            this.secondConstructor,
+            {
+                ...this.statement,
+                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, `ff`))
+            },
+            1)
     }
 
     sortBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {

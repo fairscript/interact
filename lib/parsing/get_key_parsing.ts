@@ -1,4 +1,4 @@
-import {createGetFromParameter, GetFromParameter} from '../column_operations'
+import {createGetColumn, GetColumn} from '../column_operations'
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
 import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
 import {
@@ -8,10 +8,10 @@ import {
 
 export interface PartOfKey {
     alias: string
-    get: GetFromParameter
+    get: GetColumn
 }
 
-export function createPartOfKey(alias: string, get: GetFromParameter): PartOfKey {
+export function createPartOfKey(alias: string, get: GetColumn): PartOfKey {
     return {
         alias,
         get
@@ -35,7 +35,7 @@ function createGetKeyParser(parameterNames: string[]) {
 
     return createRecordInParenthesesParser(objectProperty)
         .map(keyValuePairs =>
-            keyValuePairs.map(([alias, [object, property]]) => createPartOfKey(alias, createGetFromParameter(object, property)))
+            keyValuePairs.map(([alias, [object, property]]) => createPartOfKey(alias, createGetColumn(object, property)))
         )
 }
 

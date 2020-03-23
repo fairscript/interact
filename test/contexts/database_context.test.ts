@@ -5,7 +5,7 @@ import {createEmployeesTableSql, employees, insertEmployeeSql} from '../test_tab
 import {createSqliteInMemoryClient} from '../../lib/contexts/sqlite_client'
 import {createSqliteContext} from '../../lib'
 
-describe('SqliteContext', () => {
+describe('DatabaseContext', () => {
 
     const dbClient = createSqliteInMemoryClient()
     const ctx = createSqliteContext(dbClient)

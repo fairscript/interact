@@ -1,25 +1,65 @@
+import * as A from 'arcsecond'
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
-import {parsePredicate, PredicateExpression} from './predicate_parsing'
-import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
+import {createInsideParentheses, InsideParentheses} from './predicate/inside_parentheses'
+import {Concatenation, createConcatenation, createTailItem, createTailItemsParser} from './predicate/concatenation'
+import {Comparison, createComparison, createComparisonParser} from './predicate/comparison'
+import {aNumber, aString, createValueParser} from './javascript/value_parsing'
+import {createConstant, createGetColumn, createGetParameter} from '../column_operations'
+import {createNamedObjectPropertyParser} from './javascript/record_parsing'
+import {identifier} from './javascript/identifier_parsing'
+import {closingParenthesis, openingParenthesis} from './javascript/single_character_parsing'
+import normalizeQuotes from './quote_normalization'
+
+export function createConstantOrColumnSideParser(tableParameters: string[]) {
+    return A.choice([
+        createValueParser(aString.map(x => x.slice(1, x.length - 1)), aNumber)
+            .map(v => createConstant(v)),
+        createNamedObjectPropertyParser(tableParameters, identifier)
+            .map(([object, property]) => createGetColumn(object, property))
+    ])
+}
+
+export function createPredicateExpressionParser(sideParser) {
+    const comparisonParser = createComparisonParser(sideParser)
+        .map(([left, operator, right]) => createComparison(left, operator, right))
+
+    const insideParser = A.recursiveParser(() => A.choice([concatenationParser, insideParenthesesParser, comparisonParser]))
+    const insideParenthesesParser = A.sequenceOf([openingParenthesis, A.optionalWhitespace, insideParser, A.optionalWhitespace, closingParenthesis])
+        .map(([op, ws1, inside, ws2, cp]) => createInsideParentheses(inside))
+
+    const concatenationParser = A.sequenceOf([
+            A.choice([insideParenthesesParser, comparisonParser]),
+            createTailItemsParser(A.choice([insideParenthesesParser, comparisonParser]))
+                .map(items => items.map(([operator, expression]) => createTailItem(operator, expression)))
+        ])
+        .map(([head, tail]) => createConcatenation(head, tail))
+
+    const predicateExpressionParser = A.choice([concatenationParser, insideParenthesesParser, comparisonParser])
+
+    return predicateExpressionParser
+}
+
+export type PredicateExpression = InsideParentheses | Concatenation | Comparison
+
+export function parsePredicate(parser, expression: string): PredicateExpression {
+    // Replace double quotes around string with single quotes
+    const withNormalizedQuotes = normalizeQuotes(expression)
+
+    // Escape parentheses?
+    // Escape binary operators?
+    const predicateExpression = parser.run(withNormalizedQuotes).result
+
+    return predicateExpression
+}
 
 export interface Filter {
     parameterToTable: {[parameter: string]: string}
     predicate: PredicateExpression
 }
 
-export function createFilter(parameterToTable: {[parameter: string]: string}, predicate: PredicateExpression): Filter {
+export function createFilter(predicate: PredicateExpression, parameterToTable: {[parameter: string]: string}): Filter {
     return {
-        parameterToTable,
-        predicate
+        predicate,
+        parameterToTable
     }
-}
-
-export function parseFilter(f: Function): Filter {
-    const { parameters } = extractLambdaParametersAndExpression(f)
-
-    const parameterToTable = mapParameterNamesToTableAliases(parameters)
-
-    const predicate = parsePredicate(f)
-
-    return createFilter(parameterToTable, predicate)
 }

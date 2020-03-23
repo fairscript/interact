@@ -6,16 +6,17 @@ import {JoinSecondTable} from '../two/join_second_table'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseOrder} from '../../parsing/order_parsing'
-import {parseFilter} from '../../parsing/filter_parsing'
 import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {parseJoin} from '../../parsing/join_parsing'
-import {RowSelectGenerator, ScalarSelectGenerator, SelectGenerator} from '../select_generators'
+import {RowSelectGenerator, ScalarSelectGenerator} from '../select_generators'
 import {parseMapS} from '../../parsing/selection/maps_parsing'
 import {createCountSelection} from '../../parsing/selection/count_parsing'
 import {parseSelectSingleTable} from '../../parsing/selection/single_table_selection_parsing'
 import {Subtable} from './subtable'
+import {parseParameterlessFilter} from '../../parsing/filtering/parameterless_filter_parsing'
+import {parseParameterizedFilter} from '../../parsing/filtering/parameterized_filter_parsing'
 
 
 export class Table<T> {
@@ -33,11 +34,22 @@ export class Table<T> {
             this.constructor,
             {
                 ...this.statement,
-                filters: this.statement.filters.concat(parseFilter(predicate))
-            }
+                filters: this.statement.filters.concat(parseParameterlessFilter(predicate))
+            },
+            1
         )
     }
 
+    filterP<P>(parameters: P, predicate: (parameters: P, table: T) => boolean): FilterTable<T> {
+        return new FilterTable(
+            this.constructor,
+            {
+                ...this.statement,
+                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, 'f1'))
+            },
+            1
+        )
+    }
     sortBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
             {
@@ -62,19 +74,19 @@ export class Table<T> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
+    map<U extends StringValueRecord>(map: (table: T) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
         return new RowSelectGenerator(
             {
                 ...this.statement,
-                selection: parseMap(f)
+                selection: parseMap(map)
             })
     }
 
-    mapS<S, U extends StringValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
+    mapS<S, U extends StringValueRecord>(tableInSubquery: Table<S>, map: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
         return new RowSelectGenerator(
             {
                 ...this.statement,
-                selection: parseMapS(f, [tableInSubquery.tableName])
+                selection: parseMapS(map, [tableInSubquery.tableName])
             })
     }
 

@@ -1,5 +1,4 @@
 import {Constructor, SelectStatement} from '../../select_statement'
-import {parseFilter} from '../../parsing/filter_parsing'
 import {SortTwoTables} from './sort_two_tables'
 import {GroupTwoTables} from './group_two_tables'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
@@ -8,18 +7,21 @@ import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseOrder} from '../../parsing/order_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {RowSelectGenerator, ScalarSelectGenerator, SelectGenerator} from '../select_generators'
+import {RowSelectGenerator, ScalarSelectGenerator} from '../select_generators'
 import {parseSelectMultipleTables} from '../../parsing/selection/multi_table_selection_parsing'
 import {Table} from '../one/table'
 import {Subtable} from '../one/subtable'
 import {parseMapS} from '../../parsing/selection/maps_parsing'
 import {createCountSelection} from '../../parsing/selection/count_parsing'
+import {parseParameterlessFilter} from '../../parsing/filtering/parameterless_filter_parsing'
+import {parseParameterizedFilter} from '../../parsing/filtering/parameterized_filter_parsing'
 
 export class FilterTwoTables<T1, T2> {
     constructor(
         private readonly firstConstructor: Constructor<T1>,
         private readonly secondConstructor: Constructor<T2>,
-        private readonly statement: SelectStatement) {}
+        private readonly statement: SelectStatement,
+        private readonly filters: number) {}
 
     filter(predicate: (first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
         return new FilterTwoTables(
@@ -27,8 +29,20 @@ export class FilterTwoTables<T1, T2> {
             this.secondConstructor,
             {
                 ...this.statement,
-                filters: this.statement.filters.concat(parseFilter(predicate))
-            })
+                filters: this.statement.filters.concat(parseParameterlessFilter(predicate))
+            },
+            this.filters+1)
+    }
+
+    filterP<P>(parameter: P, predicate: (parameter: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
+        return new FilterTwoTables(
+            this.firstConstructor,
+            this.secondConstructor,
+            {
+                ...this.statement,
+                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, `f${this.filters+1}`))
+            },
+            this.filters+1)
     }
 
     sortBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {

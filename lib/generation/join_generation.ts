@@ -1,14 +1,14 @@
 import {JoinExpression} from '../parsing/join_parsing'
-import {generateGetFromParameter} from './get_from_parameter_generation'
+import {generateGetColumn} from './get_column_generation'
 
 function generateJoinExpression(expr: JoinExpression): string {
     const { tableName, left, right } = expr
 
-    const leftParameter = left.parameter
-    const rightParameter = right.parameter
+    const leftParameter = left.object
+    const rightParameter = right.object
 
-    const leftSql = `${generateGetFromParameter({[leftParameter]: 't1'}, left)}`
-    const rightSql = `${generateGetFromParameter({[rightParameter]: 't2'}, right)}`
+    const leftSql = `${generateGetColumn({[leftParameter]: 't1'}, left)}`
+    const rightSql = `${generateGetColumn({[rightParameter]: 't2'}, right)}`
 
     return `${tableName} t2 ON ${leftSql} = ${rightSql}`
 }

@@ -1,4 +1,4 @@
-import {createGetFromParameter, createSubselect} from '../../lib/column_operations'
+import {createGetColumn, createSubselect} from '../../lib/column_operations'
 import {generateSubselect} from '../../lib/generation/subselect_generation'
 import {createSubselectStatement} from '../../lib/select_statement'
 import {createFilter} from '../../lib/parsing/filter_parsing'
@@ -10,16 +10,13 @@ describe('generateSubselect', () => {
         const subselectStatement = createSubselectStatement(
             "employees",
             [
-                createFilter(
-                    {
-                        se: 's1',
-                        e: 't1'
-                    },
-                    createGreaterThan(
-                        createGetFromParameter('se', 'salary'),
-                        createGetFromParameter('e', 'salary')
-                    )
-                )
+                createFilter(createGreaterThan(
+                    createGetColumn('se', 'salary'),
+                    createGetColumn('e', 'salary')
+                ), {
+                    se: 's1',
+                    e: 't1'
+                })
             ]
         )
         const subselect = createSubselect(subselectStatement)

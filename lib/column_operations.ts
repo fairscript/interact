@@ -1,16 +1,32 @@
 import {SubselectStatement} from './select_statement'
 import {Value} from './value'
 
-export interface GetFromParameter {
-    kind: 'get-from-parameter'
-    parameter: string,
+export interface GetParameter {
+    kind: 'get-parameter',
+    prefix: string,
+    placeholder: string,
+    path: string|null
+}
+
+export function createGetParameter(prefix: string, placeholder: string, path: string|null): GetParameter {
+    return {
+        kind: 'get-parameter',
+        prefix,
+        placeholder,
+        path
+    }
+}
+
+export interface GetColumn {
+    kind: 'get-column'
+    object: string,
     property: string,
 }
 
-export function createGetFromParameter(parameter: string, property: string): GetFromParameter {
+export function createGetColumn(object: string, property: string): GetColumn {
     return {
-        kind: 'get-from-parameter',
-        parameter,
+        kind: 'get-column',
+        object,
         property
     }
 }

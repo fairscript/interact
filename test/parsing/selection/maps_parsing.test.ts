@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import {
-    createGetFromParameter,
+    createGetColumn,
     createSubselect
 } from '../../../lib/column_operations'
 import {parseMapS} from '../../../lib/parsing/selection/maps_parsing'
@@ -22,10 +22,7 @@ describe('parseMapS can parse a map with a subquery', function () {
         const expectedSubselectStatement = createSubselectStatement(
             'employees',
             [
-                createFilter(
-                    {se: 's1', e: 't1'},
-                    createGreaterThan(createGetFromParameter('se', 'salary'), createGetFromParameter('e', 'salary'))
-                )
+                createFilter(createGreaterThan(createGetColumn('se', 'salary'), createGetColumn('e', 'salary')), {se: 's1', e: 't1'})
             ])
 
         const expected = createMapSelection(
@@ -33,7 +30,7 @@ describe('parseMapS can parse a map with a subquery', function () {
                 e: 't1'
             },
             [
-                ['id', createGetFromParameter('e', 'id')],
+                ['id', createGetColumn('e', 'id')],
                 ['higherSalary', createSubselect(expectedSubselectStatement)]
             ])
 
@@ -51,14 +48,8 @@ describe('parseMapS can parse a map with a subquery', function () {
         const expectedSubselectStatement = createSubselectStatement(
             'employees',
             [
-                createFilter(
-                    {se: 's1', e: 't1'},
-                    createGreaterThan(createGetFromParameter('se', 'salary'), createGetFromParameter('e', 'salary'))
-                ),
-                createFilter(
-                    {se: 's1', e: 't1'},
-                    createEquality(createGetFromParameter('se', 'departmentId'), createGetFromParameter('e', 'departmentId'))
-                )
+                createFilter(createGreaterThan(createGetColumn('se', 'salary'), createGetColumn('e', 'salary')), {se: 's1', e: 't1'}),
+                createFilter(createEquality(createGetColumn('se', 'departmentId'), createGetColumn('e', 'departmentId')), {se: 's1', e: 't1'})
             ])
 
         const expected = createMapSelection(
@@ -66,7 +57,7 @@ describe('parseMapS can parse a map with a subquery', function () {
                 e: 't1'
             },
             [
-                ['id', createGetFromParameter('e', 'id')],
+                ['id', createGetColumn('e', 'id')],
                 ['higherSalary', createSubselect(expectedSubselectStatement)]
             ])
 

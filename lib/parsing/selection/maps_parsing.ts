@@ -2,7 +2,7 @@ import {createSubselect} from '../../column_operations'
 import * as A from 'arcsecond'
 import {createSubselectStatement} from '../../select_statement'
 import {createGetFromParameterParser, createMapSelection, MapSelection} from './map_parsing'
-import {createFilter} from '../filter_parsing'
+import {createConstantOrColumnSideParser, createFilter} from '../filter_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {
     createLambdaBodyParser,
@@ -13,34 +13,43 @@ import {createParameterlessFunctionInvocation} from '../javascript/invocation_pa
 import {createRecordInParenthesesParser} from '../javascript/record_parsing'
 import {closingParenthesis, dot, openingParenthesis} from '../javascript/single_character_parsing'
 import {createChoiceFromStrings} from '../parsing_helpers'
-import {createPredicateExpressionParser} from '../predicate_parsing'
+import {createPredicateExpressionParser} from '../filter_parsing'
 
 // filter(function (se) { return se.salary > e.salary; })
-const filterParser = A.coroutine(function *() {
-    yield A.str('filter')
+function createFilterParser(outerParameterNames) {
+    return A.coroutine(function* () {
+        yield A.str('filter')
 
-    yield openingParenthesis
+        yield openingParenthesis
 
-    const parameters = yield lambdaSignatureParser
+        const innerParameterName = (yield lambdaSignatureParser)[0]
 
-    yield A.optionalWhitespace
+        yield A.optionalWhitespace
 
-    const predicate = yield createLambdaBodyParser(createPredicateExpressionParser())
+        const sideParser = createConstantOrColumnSideParser(outerParameterNames.concat(innerParameterName))
+        const predicateParser = createPredicateExpressionParser(sideParser)
 
-    yield closingParenthesis
+        const predicate = yield createLambdaBodyParser(predicateParser)
 
-    return [parameters[0], predicate]
-})
+        yield closingParenthesis
+
+        return [innerParameterName, predicate]
+    })
+}
 
 // .filter(function (se) { return se.salary > e.salary; })
 // .filter(function (se) { return se => se.departmentId === e.departmentId; })
-const manyFiltersParser = A.many(
-    A.coroutine(function*() {
-        yield dot
+function createManyFiltersParser(outerParameterNames) {
+    const filterParser = createFilterParser(outerParameterNames)
 
-        return yield filterParser
-    })
-)
+    return A.many(
+        A.coroutine(function*() {
+            yield dot
+
+            return yield filterParser
+        })
+    )
+}
 
 const countParser = createParameterlessFunctionInvocation('count')
 
@@ -48,11 +57,12 @@ const countParser = createParameterlessFunctionInvocation('count')
 //     .filter(function (se) { return se.salary > e.salary; })
 //     .filter(function (se) { return se => se.departmentId === e.departmentId; })
 //     .count()
-function createSubselectParser(availableSubtableParameters: string[]) {
+function createSubselectParser(availableSubtableParameters: string[], outerParameterNames: string[]) {
+    
     return A.coroutine(function*() {
         const subtableParameter = yield createChoiceFromStrings(availableSubtableParameters)
-
-        const filters = yield manyFiltersParser
+        
+        const filters = yield createManyFiltersParser(outerParameterNames)
 
         yield dot
         yield countParser
@@ -71,7 +81,7 @@ export function parseMapS(f: Function, subtableNames: string[]): MapSelection {
     const outerParameterToTableAlias = mapParameterNamesToTableAliases(outerParameterNames, 't')
 
     const getParser = createGetFromParameterParser(outerParameterNames)
-    const subselectParser = createSubselectParser(subParameterNames)
+    const subselectParser = createSubselectParser(subParameterNames, outerParameterNames)
 
     const choiceBetweenValueParsers = A.choice([
         getParser,
@@ -88,12 +98,10 @@ export function parseMapS(f: Function, subtableNames: string[]): MapSelection {
                             [parameter]: subParameterToTableAlias[parsedSubtableParameter]
                         }
 
-                        return createFilter(
-                            {
-                                ...outerParameterToTableAlias,
-                                ...innerParameterToTableAlias
-                            },
-                            predicate)
+                        return createFilter(predicate, {
+                            ...outerParameterToTableAlias,
+                            ...innerParameterToTableAlias
+                        })
                     })
 
                 const statement = createSubselectStatement(subtableName, filters)

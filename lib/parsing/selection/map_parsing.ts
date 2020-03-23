@@ -1,4 +1,4 @@
-import {createGetFromParameter, GetFromParameter, Subselect} from '../../column_operations'
+import {createGetColumn, GetColumn, Subselect} from '../../column_operations'
 import {Selection} from '../selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
@@ -11,12 +11,12 @@ import {
 export interface MapSelection {
     kind: 'map-selection'
     parameterToTable: {[parameter: string]: string}
-    operations: [string, GetFromParameter|Subselect][]
+    operations: [string, GetColumn|Subselect][]
 }
 
 export function createMapSelection(
     parameterToTable: {[parameter: string]: string},
-    operations: [string, GetFromParameter|Subselect][]): MapSelection {
+    operations: [string, GetColumn|Subselect][]): MapSelection {
 
     return {
         kind: 'map-selection',
@@ -27,7 +27,7 @@ export function createMapSelection(
 
 export function createGetFromParameterParser(parameterNames: string[]) {
     return createNamedObjectPropertyParser(parameterNames)
-        .map(([object, property]) => createGetFromParameter(object, property))
+        .map(([object, property]) => createGetColumn(object, property))
 }
 
 function createMapParser(parameterNames: string[]) {

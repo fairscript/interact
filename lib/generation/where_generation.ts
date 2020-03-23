@@ -1,13 +1,11 @@
-import {generateGetFromParameter} from './get_from_parameter_generation'
+import {generateGetColumn} from './get_column_generation'
 import {Constant} from '../column_operations'
-import {
-    PredicateExpression
-} from '../parsing/predicate_parsing'
-import {Filter} from '../parsing/filter_parsing'
+import {Filter, PredicateExpression} from '../parsing/filter_parsing'
 import {Comparison, Side} from '../parsing/predicate/comparison'
 import {Concatenation, TailItem} from '../parsing/predicate/concatenation'
 import {InsideParentheses} from '../parsing/predicate/inside_parentheses'
 import {joinWithWhitespace} from '../parsing/parsing_helpers'
+import {generateGetParameter} from './get_parameter_generation'
 
 
 function generateConstant(constant: Constant): string {
@@ -40,10 +38,12 @@ function generateTailItem(parameterNameToTableAlias: { [parameterName: string]: 
 
 function generateSide(parameterNameToTableAlias: { [parameterName: string]: string }, side: Side): string {
     switch (side.kind) {
-        case 'get-from-parameter':
-            return generateGetFromParameter(parameterNameToTableAlias, side)
+        case 'get-column':
+            return generateGetColumn(parameterNameToTableAlias, side)
         case 'constant':
             return generateConstant(side)
+        case 'get-parameter':
+            return generateGetParameter(side)
     }
 }
 

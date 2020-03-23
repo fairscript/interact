@@ -32,8 +32,8 @@ function createGenerateAggregationOperation(
             case 'get-part-of-key':
                 return generateGetPartOfKey(partOfKeyToTableAndProperty, operation.part)
             case 'aggregate-column':
-                const {parameter, property} = operation.get
-                return generateAggregate(parameterToTable, operation.aggregation, parameter, property)
+                const {object, property} = operation.get
+                return generateAggregate(parameterToTable, operation.aggregation, object, property)
             case 'count-rows-in-group':
                 return generateCount()
         }

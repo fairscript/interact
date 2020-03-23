@@ -1,5 +1,5 @@
 import * as A from 'arcsecond'
-import {Constant, GetFromParameter} from '../../column_operations'
+import {Constant, GetColumn, GetParameter} from '../../column_operations'
 import {aComparisonOperator} from '../javascript/operator_parsing'
 
 export type SqlComparisonOperator = '=' | '>' | '>=' | '<' | '<='
@@ -14,7 +14,7 @@ function mapJsComparisonOperatorToSqlComparisonOperator(operator): SqlComparison
     }
 }
 
-export type Side = Constant | GetFromParameter
+export type Side = Constant | GetColumn | GetParameter
 
 export interface Comparison {
     left: Side,
@@ -52,16 +52,14 @@ export function createLessThanOrEqualTo(left: Side, right: Side): Comparison {
     return createComparison(left, '<=', right)
 }
 
-export function createComparisonParser(valueParser, objectPropertyParser) {
-    const valueOrObjectProperty = A.choice([valueParser, objectPropertyParser])
-
+export function createComparisonParser(sideParser) {
     return A.sequenceOf(
         [
-            valueOrObjectProperty,
+            sideParser,
             A.optionalWhitespace,
             aComparisonOperator,
             A.optionalWhitespace,
-            valueOrObjectProperty
+            sideParser
         ])
         .map(([left, ws1, operator, ws2, right]) => ([left, operator, right]))
 }

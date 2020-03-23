@@ -1,7 +1,7 @@
 import {createKey, createPartOfKey, parseGetKey} from '../../lib/parsing/get_key_parsing'
 import {Department, Employee} from '../test_tables'
 import * as assert from 'assert'
-import {createGetFromParameter} from '../../lib/column_operations'
+import {createGetColumn} from '../../lib/column_operations'
 
 describe('parseGetKey', () => {
 
@@ -12,7 +12,7 @@ describe('parseGetKey', () => {
                 parseGetKey((e: Employee) => ({departmentId: e.departmentId})),
                 createKey(
                     {e: 't1'},
-                    [createPartOfKey('departmentId', createGetFromParameter('e', 'departmentId'))]
+                    [createPartOfKey('departmentId', createGetColumn('e', 'departmentId'))]
                 )
             )
         })
@@ -23,8 +23,8 @@ describe('parseGetKey', () => {
                 createKey(
                     {e: 't1'},
                     [
-                        createPartOfKey('departmentId', createGetFromParameter('e', 'departmentId')),
-                        createPartOfKey('title', createGetFromParameter('e', 'title'))
+                        createPartOfKey('departmentId', createGetColumn('e', 'departmentId')),
+                        createPartOfKey('title', createGetColumn('e', 'title'))
                     ]
                 )
 
@@ -39,7 +39,7 @@ describe('parseGetKey', () => {
                 parseGetKey((e: Employee, d: Department) => ({departmentId: e.departmentId})),
                 createKey(
                     {e: 't1', d: 't2'},
-                    [ createPartOfKey('departmentId', createGetFromParameter('e', 'departmentId')) ]
+                    [ createPartOfKey('departmentId', createGetColumn('e', 'departmentId')) ]
                 )
             )
         })
@@ -49,7 +49,7 @@ describe('parseGetKey', () => {
                 parseGetKey((e: Employee, d: Department) => ({departmentId: d.id})),
                 createKey(
                     {e: 't1', d: 't2'},
-                    [ createPartOfKey('departmentId', createGetFromParameter('d', 'id')) ]
+                    [ createPartOfKey('departmentId', createGetColumn('d', 'id')) ]
                 )
 
             )
@@ -61,8 +61,8 @@ describe('parseGetKey', () => {
                 createKey(
                     {e: 't1', d: 't2'},
                     [
-                        createPartOfKey('title', createGetFromParameter('e', 'title')),
-                        createPartOfKey('departmentId', createGetFromParameter('d', 'id'))
+                        createPartOfKey('title', createGetColumn('e', 'title')),
+                        createPartOfKey('departmentId', createGetColumn('d', 'id'))
                     ]
                 )
 
