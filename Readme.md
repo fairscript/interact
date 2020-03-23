@@ -56,7 +56,6 @@ const dbContext = createSqliteContext(filename)
 const query = employees
     .filter(e => e.id === 1)
     .map(e => ({ firstName: e.firstName, lastName: e.lastName }))
-    .toSql()
 
 const employee = dbContext.get(query)
 ```

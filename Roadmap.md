@@ -1,19 +1,16 @@
 # Roadmap
 
-## v0.7.1
-- Parallel queries
-
 ## v0.8
 - Parameters
 
 ## v0.9
-- Joins of up to five tables (using code generation)
+- Basic dialect support (PostgreSQL, BigQuery)
 
 ## v0.10
-- Testing and, if necessary, increasing the robustness of the parser
+- Joins of up to five tables (using code generation)
 
 ## v0.11
-- Basic dialect support (PostgreSQL, BigQuery)
+- Testing and, if necessary, increasing the robustness of the parser
 
 ## v0.12
 - Booleans, NOT, not equal to

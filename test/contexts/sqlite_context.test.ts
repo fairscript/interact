@@ -1,15 +1,29 @@
 import * as sqlite3 from 'sqlite3'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {createSqliteInMemoryClient, SqliteClient} from '../../lib/contexts/sqlite_client'
 import {createEmployeesTableSql, employees, insertEmployeeSql} from '../test_tables'
-import {createSqliteContext, createSqliteInMemoryContext} from '../../lib/contexts/sqlite_context'
 import {SingleRowSelectGenerator} from '../../lib/queries/select_generators'
+import {createSqliteInMemoryClient} from '../../lib/contexts/sqlite_client'
+import {createSqliteContext} from '../../lib'
 
 describe('SqliteContext', () => {
 
     const dbClient = createSqliteInMemoryClient()
-    const dbContext = createSqliteContext(dbClient)
+    const ctx = createSqliteContext(dbClient)
+
+    const scalarQuery = employees.count()
+    const singleRowQuery = employees
+        .filter(e => e.id === 1)
+        .map(e => ({firstName: e.firstName, lastName: e.lastName}))
+        .single()
+    const rowsQuery = employees.map(e => ({firstName: e.firstName, lastName: e.lastName}))
+
+    const expectedScalarResult = 2
+    const expectedSingleRowResult = { firstName: 'John', lastName: 'Doe'}
+    const expectedRowsResult = [
+        { firstName: 'John', lastName: 'Doe'},
+        { firstName: 'Richard', lastName: 'Roe'}
+    ]
 
     before(async() => {
         chai.should()
@@ -27,32 +41,43 @@ describe('SqliteContext', () => {
     })
 
     it('can get a scalar', () => {
-        const promiseOfScalar: Promise<number> = dbContext
-            .get(employees.count())
+        const promiseOfScalar: Promise<number> = ctx
+            .get(scalarQuery)
 
         return promiseOfScalar
-            .should.eventually.equal(2)
+            .should.eventually.equal(expectedScalarResult)
     })
 
     it('can get a single row', () => {
         const query: SingleRowSelectGenerator<{ firstName: string; lastName: string }> =
-            employees.filter(e => e.id === 1).map(e => ({firstName: e.firstName, lastName: e.lastName})).single()
+            singleRowQuery
 
-        const promiseOfRow: Promise<{ firstName: string; lastName: string }> = dbContext
+        const promiseOfRow: Promise<{ firstName: string; lastName: string }> = ctx
             .get(query)
 
         return promiseOfRow
-            .should.eventually.eql({ firstName: 'John', lastName: 'Doe'})
+            .should.eventually.eql(expectedSingleRowResult)
     })
 
     it('can get multiple rows', () => {
-        const promiseOfRows: Promise<{ firstName: string; lastName: string }[]> = dbContext
-            .get(employees.map(e => ({firstName: e.firstName, lastName: e.lastName})))
+        const promiseOfRows: Promise<{ firstName: string; lastName: string }[]> = ctx
+            .get(rowsQuery)
 
         return promiseOfRows
-            .should.eventually.eql([
-                { firstName: 'John', lastName: 'Doe'},
-                { firstName: 'Richard', lastName: 'Roe'}
-            ])
+            .should.eventually.eql(expectedRowsResult)
+    })
+
+    it('can run queries in parallel', () => {
+        return ctx
+            .parallelGet({
+                scalar: scalarQuery,
+                singleRow: singleRowQuery,
+                rows: rowsQuery
+            })
+            .should.eventually.eql({
+                scalar: expectedScalarResult,
+                singleRow: expectedSingleRowResult,
+                rows: expectedRowsResult
+            })
     })
 })

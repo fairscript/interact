@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.7.1
+- Parallel queries
+
 ## v0.7
 - Basic object-relational mapping support for SQLite
 
