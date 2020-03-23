@@ -1,10 +1,11 @@
 import {createSqliteClient, createSqliteInMemoryClient, SqliteClient} from './sqlite_client'
 import {RowSelectGenerator, ScalarSelectGenerator, SingleRowSelectGenerator} from '../queries/select_generators'
+import {DatabaseClient} from './database_client'
 
 type ExtractTypeParameterFromSelectGenerator<T> = T extends ScalarSelectGenerator<infer V>|SingleRowSelectGenerator<infer V>|RowSelectGenerator<infer V> ? V : never
 
-export class SqliteContext {
-    constructor(private client: SqliteClient) {}
+export class DatabaseContext {
+    constructor(private client: DatabaseClient) {}
 
     get<T>(generator: ScalarSelectGenerator<T>): Promise<T>
     get<T>(generator: SingleRowSelectGenerator<T>): Promise<T>
@@ -43,14 +44,14 @@ export class SqliteContext {
     }
 }
 
-export function createSqliteContext(client: SqliteClient): SqliteContext
-export function createSqliteContext(filename: string): SqliteContext
-export function createSqliteContext(clientOrFilename: SqliteClient|string): SqliteContext {
+export function createSqliteContext(client: SqliteClient): DatabaseContext
+export function createSqliteContext(filename: string): DatabaseContext
+export function createSqliteContext(clientOrFilename: SqliteClient|string): DatabaseContext {
     const client = typeof clientOrFilename === 'string' ? createSqliteClient(clientOrFilename) : clientOrFilename
 
-    return new SqliteContext(client)
+    return new DatabaseContext(client)
 }
 
-export function createSqliteInMemoryContext() : SqliteContext{
-    return new SqliteContext(createSqliteInMemoryClient())
+export function createSqliteInMemoryContext() : DatabaseContext{
+    return new DatabaseContext(createSqliteInMemoryClient())
 }

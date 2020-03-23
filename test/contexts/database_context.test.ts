@@ -2,7 +2,6 @@ import * as sqlite3 from 'sqlite3'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import {createEmployeesTableSql, employees, insertEmployeeSql} from '../test_tables'
-import {SingleRowSelectGenerator} from '../../lib/queries/select_generators'
 import {createSqliteInMemoryClient} from '../../lib/contexts/sqlite_client'
 import {createSqliteContext} from '../../lib'
 
@@ -49,11 +48,8 @@ describe('SqliteContext', () => {
     })
 
     it('can get a single row', () => {
-        const query: SingleRowSelectGenerator<{ firstName: string; lastName: string }> =
-            singleRowQuery
-
         const promiseOfRow: Promise<{ firstName: string; lastName: string }> = ctx
-            .get(query)
+            .get(singleRowQuery)
 
         return promiseOfRow
             .should.eventually.eql(expectedSingleRowResult)
