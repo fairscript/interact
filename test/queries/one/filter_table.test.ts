@@ -29,7 +29,7 @@ describe('Filtering', () => {
                 joinWithNewLine([
                     'SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.salary, t1.department_id',
                     'FROM employees t1',
-                    'WHERE t1.id = :f1_id'
+                    'WHERE t1.id = $f1_id'
                 ])
             )
         })
@@ -46,7 +46,7 @@ describe('Filtering', () => {
                 joinWithNewLine([
                     'SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.salary, t1.department_id',
                     'FROM employees t1',
-                    'WHERE t1.first_name = :f1_name_firstName AND t1.last_name = :f1_name_lastName'
+                    'WHERE t1.first_name = $f1_name_firstName AND t1.last_name = $f1_name_lastName'
                 ])
             )
         })

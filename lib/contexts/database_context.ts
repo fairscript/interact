@@ -7,19 +7,20 @@ type ExtractTypeParameterFromSelectGenerator<T> = T extends ScalarSelectGenerato
 export class DatabaseContext {
     constructor(private client: DatabaseClient) {}
 
-    get<T>(generator: ScalarSelectGenerator<T>): Promise<T>
     get<T>(generator: SingleRowSelectGenerator<T>): Promise<T>
+    get<T>(generator: ScalarSelectGenerator<T>): Promise<T>
     get<T>(generator: RowSelectGenerator<T>): Promise<T[]>
     get<T>(generator: ScalarSelectGenerator<T>|SingleRowSelectGenerator<T>|RowSelectGenerator<T>): Promise<T>|Promise<T[]> {
         const sql = generator.toSql()
+        const parameters = generator.getParameters()
 
         switch (generator.kind) {
-            case 'row-select-generator':
-                return this.client.getRows<T>(sql)
             case 'scalar-select-generator':
-                return this.client.getScalar<T>(sql)
+                return this.client.getScalar<T>(sql, parameters)
             case 'single-row-select-generator':
-                return this.client.getSingleRow<T>(sql)
+                return this.client.getSingleRow<T>(sql, parameters)
+            case 'row-select-generator':
+                return this.client.getRows<T>(sql, parameters)
         }
     }
 

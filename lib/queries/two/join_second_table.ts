@@ -35,13 +35,13 @@ export class JoinSecondTable<T1, T2, K1> {
             1)
     }
 
-    filterP<P>(parameter: P, predicate: (parameter: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
+    filterP<P>(provided: P, predicate: (parameter: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
         return new FilterTwoTables(
             this.firstConstructor,
             this.secondConstructor,
             {
                 ...this.statement,
-                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, `ff`))
+                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, provided, `f1`))
             },
             1)
     }

@@ -2,7 +2,7 @@ import {createSubselect} from '../../column_operations'
 import * as A from 'arcsecond'
 import {createSubselectStatement} from '../../select_statement'
 import {createGetFromParameterParser, createMapSelection, MapSelection} from './map_parsing'
-import {createConstantOrColumnSideParser, createFilter} from '../filter_parsing'
+import {createConstantOrColumnSideParser} from '../filter_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {
     createLambdaBodyParser,
@@ -14,6 +14,7 @@ import {createRecordInParenthesesParser} from '../javascript/record_parsing'
 import {closingParenthesis, dot, openingParenthesis} from '../javascript/single_character_parsing'
 import {createChoiceFromStrings} from '../parsing_helpers'
 import {createPredicateExpressionParser} from '../filter_parsing'
+import {createParameterlessFilter} from '../filtering/parameterless_filter_parsing'
 
 // filter(function (se) { return se.salary > e.salary; })
 function createFilterParser(outerParameterNames) {
@@ -98,10 +99,12 @@ export function parseMapS(f: Function, subtableNames: string[]): MapSelection {
                             [parameter]: subParameterToTableAlias[parsedSubtableParameter]
                         }
 
-                        return createFilter(predicate, {
-                            ...outerParameterToTableAlias,
-                            ...innerParameterToTableAlias
-                        })
+                        return createParameterlessFilter(
+                            {
+                                ...outerParameterToTableAlias,
+                                ...innerParameterToTableAlias
+                            },
+                            predicate)
                     })
 
                 const statement = createSubselectStatement(subtableName, filters)

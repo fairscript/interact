@@ -1,5 +1,5 @@
 import {MapSelection} from '../../parsing/selection/map_parsing'
-import {GetColumn, GetParameter, Subselect} from '../../column_operations'
+import {GetColumn, Subselect} from '../../column_operations'
 import {generateGetColumn} from '../get_column_generation'
 import {generateSubselect} from '../subselect_generation'
 import {joinWithCommaWhitespace} from '../../parsing/parsing_helpers'

@@ -33,12 +33,12 @@ export class FilterTable<T> {
             this.filters + 1)
     }
 
-    filterP<P>(parameter: P, predicate: (parameter: P, table: T) => boolean): FilterTable<T> {
+    filterP<P>(provided: P, predicate: (parameter: P, table: T) => boolean): FilterTable<T> {
         return new FilterTable(
             this.constructor,
             {
                 ...this.statement,
-                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, `f${this.filters+1}`))
+                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, provided, `f${this.filters+1}`))
             },
             this.filters + 1)
     }

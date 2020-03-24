@@ -5,7 +5,7 @@ import {Comparison, Side} from '../parsing/predicate/comparison'
 import {Concatenation, TailItem} from '../parsing/predicate/concatenation'
 import {InsideParentheses} from '../parsing/predicate/inside_parentheses'
 import {joinWithWhitespace} from '../parsing/parsing_helpers'
-import {generateGetParameter} from './get_parameter_generation'
+import {generateGetProvided} from './get_provided_generation'
 
 
 function generateConstant(constant: Constant): string {
@@ -42,8 +42,8 @@ function generateSide(parameterNameToTableAlias: { [parameterName: string]: stri
             return generateGetColumn(parameterNameToTableAlias, side)
         case 'constant':
             return generateConstant(side)
-        case 'get-parameter':
-            return generateGetParameter(side)
+        case 'get-provided':
+            return generateGetProvided(side)
     }
 }
 
@@ -73,9 +73,9 @@ function generatePredicate(parameterNameToTableAlias: { [parameterName: string]:
 }
 
 export function generateFilter(filter: Filter): string {
-    const { parameterToTable, predicate } = filter
+    const { tableParameterToTableAlias, predicate } = filter
 
-    return generatePredicate(parameterToTable, predicate)
+    return generatePredicate(tableParameterToTableAlias, predicate)
 }
 
 export function generateFilters(filters: Filter[]): string {

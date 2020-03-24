@@ -4,10 +4,10 @@ import {
     createSubselect
 } from '../../../lib/column_operations'
 import {parseMapS} from '../../../lib/parsing/selection/maps_parsing'
-import {createFilter} from '../../../lib/parsing/filter_parsing'
 import {createSubselectStatement} from '../../../lib/select_statement'
 import {createMapSelection} from '../../../lib/parsing/selection/map_parsing'
 import {createEquality, createGreaterThan} from '../../../lib/parsing/predicate/comparison'
+import {createParameterlessFilter} from '../../../lib/parsing/filtering/parameterless_filter_parsing'
 
 describe('parseMapS can parse a map with a subquery', function () {
 
@@ -22,7 +22,10 @@ describe('parseMapS can parse a map with a subquery', function () {
         const expectedSubselectStatement = createSubselectStatement(
             'employees',
             [
-                createFilter(createGreaterThan(createGetColumn('se', 'salary'), createGetColumn('e', 'salary')), {se: 's1', e: 't1'})
+                createParameterlessFilter(
+                    {se: 's1', e: 't1'},
+                    createGreaterThan(createGetColumn('se', 'salary'), createGetColumn('e', 'salary'))
+                )
             ])
 
         const expected = createMapSelection(
@@ -45,11 +48,18 @@ describe('parseMapS can parse a map with a subquery', function () {
             }),
             ['employees'])
 
+        const tableParameterNameToTableAlias = {se: 's1', e: 't1'}
         const expectedSubselectStatement = createSubselectStatement(
             'employees',
             [
-                createFilter(createGreaterThan(createGetColumn('se', 'salary'), createGetColumn('e', 'salary')), {se: 's1', e: 't1'}),
-                createFilter(createEquality(createGetColumn('se', 'departmentId'), createGetColumn('e', 'departmentId')), {se: 's1', e: 't1'})
+                createParameterlessFilter(
+                    tableParameterNameToTableAlias,
+                    createGreaterThan(createGetColumn('se', 'salary'), createGetColumn('e', 'salary'))
+                ),
+                createParameterlessFilter(
+                    tableParameterNameToTableAlias,
+                    createEquality(createGetColumn('se', 'departmentId'), createGetColumn('e', 'departmentId'))
+                )
             ])
 
         const expected = createMapSelection(

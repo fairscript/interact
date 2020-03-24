@@ -1,5 +1,5 @@
 import * as A from 'arcsecond'
-import {Constant, GetColumn, GetParameter} from '../../column_operations'
+import {Constant, GetColumn, GetProvided} from '../../column_operations'
 import {aComparisonOperator} from '../javascript/operator_parsing'
 
 export type SqlComparisonOperator = '=' | '>' | '>=' | '<' | '<='
@@ -14,7 +14,7 @@ function mapJsComparisonOperatorToSqlComparisonOperator(operator): SqlComparison
     }
 }
 
-export type Side = Constant | GetColumn | GetParameter
+export type Side = Constant | GetColumn | GetProvided
 
 export interface Comparison {
     left: Side,

@@ -15,10 +15,25 @@ describe('DatabaseContext', () => {
         .filter(e => e.id === 1)
         .map(e => ({firstName: e.firstName, lastName: e.lastName}))
         .single()
+    const singleRowQueryUsingNumberParameter = employees
+        .filterP(
+            1,
+            (id, e) => e.id === id
+        )
+        .map(e => ({firstName: e.firstName, lastName: e.lastName}))
+        .single()
+    const singleRowQueryUsingObjectParameter = employees
+        .filterP(
+            {firstName: 'John', lastName: 'Doe'},
+            (name, e) => e.firstName === name.firstName && e.lastName === name.lastName)
+        .map(e => ({id: e.id}))
+        .single()
     const rowsQuery = employees.map(e => ({firstName: e.firstName, lastName: e.lastName}))
 
     const expectedScalarResult = 2
     const expectedSingleRowResult = { firstName: 'John', lastName: 'Doe'}
+    const expectedSingleRowUsingNumberParameterResult = { firstName: 'John', lastName: 'Doe'}
+    const expectedSingleRowUsingObjectParameterResult = { id: 1 }
     const expectedRowsResult = [
         { firstName: 'John', lastName: 'Doe'},
         { firstName: 'Richard', lastName: 'Roe'}
@@ -40,19 +55,38 @@ describe('DatabaseContext', () => {
     })
 
     it('can get a scalar', () => {
-        const promiseOfScalar: Promise<number> = ctx
+        const promiseOfScalar = ctx
             .get(scalarQuery)
 
         return promiseOfScalar
             .should.eventually.equal(expectedScalarResult)
     })
 
-    it('can get a single row', () => {
-        const promiseOfRow: Promise<{ firstName: string; lastName: string }> = ctx
-            .get(singleRowQuery)
+    describe('can get a single row', function () {
 
-        return promiseOfRow
-            .should.eventually.eql(expectedSingleRowResult)
+        it('without a parameter', () => {
+            const promiseOfRow: Promise<{ firstName: string; lastName: string }> = ctx
+                .get(singleRowQuery)
+
+            return promiseOfRow
+                .should.eventually.eql(expectedSingleRowResult)
+        })
+
+        it('with a number parameter', () => {
+            const promiseOfRow: Promise<{ firstName: string; lastName: string }> = ctx
+                .get(singleRowQueryUsingNumberParameter)
+
+            return promiseOfRow
+                .should.eventually.eql(expectedSingleRowUsingNumberParameterResult)
+        })
+
+        it('with an object parameter', () => {
+            const promiseOfRow: Promise<{ id: number }> = ctx
+                .get(singleRowQueryUsingObjectParameter)
+
+            return promiseOfRow
+                .should.eventually.eql(expectedSingleRowUsingObjectParameterResult)
+        })
     })
 
     it('can get multiple rows', () => {

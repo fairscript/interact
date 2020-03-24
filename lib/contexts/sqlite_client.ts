@@ -1,5 +1,6 @@
 import * as sqlite3 from 'sqlite3'
 import {DatabaseClient} from './database_client'
+import {StringValueRecord} from '../record'
 
 export class SqliteClient implements DatabaseClient {
     private db: sqlite3.Database
@@ -39,34 +40,46 @@ export class SqliteClient implements DatabaseClient {
         })
     }
 
-    getRows<T>(sql: string): Promise<T[]> {
-        return new Promise((resolve, reject) => {
-            this.db.all(sql, (err, rows) => {
-                if (err) {
-                    reject(err)
-                }
-                else {
-                    resolve(rows)
-                }
-            })
-        })
+    getScalar<T>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
+        return this.getSingleRow(sql, parameters)
+            .then(row => Object.values(row)[0])
     }
 
-    getSingleRow<T>(sql: string): Promise<T> {
-        return new Promise((resolve, reject) => {
-            this.db.get(sql, (err, row) => {
-                if (err) {
-                    reject(err)
-                }
-                else {
-                    resolve(row)
-                }
-            })
-        })
+    getSingleRow<T>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
+        return new Promise(
+            (resolve, reject) => {
+            this.db.get(
+                sql,
+                parameters,
+                (err, row) => {
+                    if (err) {
+                        reject(err)
+                    }
+                    else {
+                        resolve(row)
+                    }
+                })
+            }
+        )
     }
 
-    getScalar<T>(sql: string): Promise<T> {
-        return this.getSingleRow(sql).then(row => Object.values(row)[0])
+    getRows<T>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {
+        return new Promise(
+            (resolve, reject) => {
+                this.db.all(
+                    sql,
+                    parameters,
+                    (err, rows) => {
+                        if (err) {
+                            reject(err)
+                        }
+                        else {
+                            resolve(rows)
+                        }
+                    }
+                )
+            }
+        )
     }
 }
 

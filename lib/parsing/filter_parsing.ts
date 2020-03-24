@@ -1,14 +1,14 @@
 import * as A from 'arcsecond'
-import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
 import {createInsideParentheses, InsideParentheses} from './predicate/inside_parentheses'
 import {Concatenation, createConcatenation, createTailItem, createTailItemsParser} from './predicate/concatenation'
 import {Comparison, createComparison, createComparisonParser} from './predicate/comparison'
 import {aNumber, aString, createValueParser} from './javascript/value_parsing'
-import {createConstant, createGetColumn, createGetParameter} from '../column_operations'
+import {createConstant, createGetColumn} from '../column_operations'
 import {createNamedObjectPropertyParser} from './javascript/record_parsing'
 import {identifier} from './javascript/identifier_parsing'
 import {closingParenthesis, openingParenthesis} from './javascript/single_character_parsing'
 import normalizeQuotes from './quote_normalization'
+import {StringValueRecord} from '../record'
 
 export function createConstantOrColumnSideParser(tableParameters: string[]) {
     return A.choice([
@@ -53,13 +53,7 @@ export function parsePredicate(parser, expression: string): PredicateExpression 
 }
 
 export interface Filter {
-    parameterToTable: {[parameter: string]: string}
+    tableParameterToTableAlias: {[parameter: string]: string}
     predicate: PredicateExpression
-}
-
-export function createFilter(predicate: PredicateExpression, parameterToTable: {[parameter: string]: string}): Filter {
-    return {
-        predicate,
-        parameterToTable
-    }
+    parameters: StringValueRecord
 }
