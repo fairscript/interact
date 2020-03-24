@@ -102,11 +102,15 @@ describe('DatabaseContext', () => {
             .parallelGet({
                 scalar: scalarQuery,
                 singleRow: singleRowQuery,
+                singleRowUsingNumberParameter: singleRowQueryUsingNumberParameter,
+                singleRowUsingObjectParameter: singleRowQueryUsingObjectParameter,
                 rows: rowsQuery
             })
             .should.eventually.eql({
                 scalar: expectedScalarResult,
                 singleRow: expectedSingleRowResult,
+                singleRowUsingNumberParameter: expectedSingleRowUsingNumberParameterResult,
+                singleRowUsingObjectParameter: expectedSingleRowUsingObjectParameterResult,
                 rows: expectedRowsResult
             })
     })

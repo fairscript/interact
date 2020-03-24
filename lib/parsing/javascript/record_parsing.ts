@@ -10,7 +10,7 @@ import {
     openingBracket,
     openingParenthesis
 } from './single_character_parsing'
-import {createChoiceFromStrings} from '../parsing_helpers'
+import {createChoiceFromStrings, join} from '../parsing_helpers'
 
 
 export function createObjectPropertyParser(objectParser, propertyParser) {
@@ -20,6 +20,17 @@ export function createObjectPropertyParser(objectParser, propertyParser) {
 
 export function createNamedObjectPropertyParser(objectNames: string[], propertyParser = identifier) {
     return createObjectPropertyParser(createChoiceFromStrings(objectNames), propertyParser)
+}
+
+export function createNestedObjectPropertyParser(objectParser, propertyParser) {
+    const deepPropertyParser = A.many1(
+            A.sequenceOf([dot, propertyParser])
+                .map(join)
+        )
+        .map(join)
+        .map(x => x.slice(1).split('.'))
+
+    return A.sequenceOf([objectParser, deepPropertyParser])
 }
 
 export function createKeyValuePairParser(valueParser) {

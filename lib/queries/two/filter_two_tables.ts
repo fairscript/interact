@@ -1,7 +1,7 @@
 import {Constructor, SelectStatement} from '../../select_statement'
 import {SortTwoTables} from './sort_two_tables'
 import {GroupTwoTables} from './group_two_tables'
-import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
+import {EnforceNonEmptyRecord, StringValueRecord, ValueOrNestedStringValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
@@ -34,7 +34,7 @@ export class FilterTwoTables<T1, T2> {
             this.filters+1)
     }
 
-    filterP<P>(provided: P, predicate: (parameter: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
+    filterP<P extends ValueOrNestedStringValueRecord>(provided: P, predicate: (parameter: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
         return new FilterTwoTables(
             this.firstConstructor,
             this.secondConstructor,

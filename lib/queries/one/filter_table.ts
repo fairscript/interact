@@ -1,7 +1,7 @@
 import {Constructor, SelectStatement} from '../../select_statement'
 import {SortTable} from './sort_table'
 import {GroupTable} from './group_table'
-import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
+import {EnforceNonEmptyRecord, StringValueRecord, ValueOrNestedStringValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseOrder} from '../../parsing/order_parsing'
 import {parseGet} from '../../parsing/selection/get_parsing'
@@ -33,7 +33,7 @@ export class FilterTable<T> {
             this.filters + 1)
     }
 
-    filterP<P>(provided: P, predicate: (parameter: P, table: T) => boolean): FilterTable<T> {
+    filterP<P extends ValueOrNestedStringValueRecord>(provided: P, predicate: (parameter: P, table: T) => boolean): FilterTable<T> {
         return new FilterTable(
             this.constructor,
             {

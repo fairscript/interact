@@ -1,13 +1,45 @@
 import * as assert from 'assert'
 import * as A from 'arcsecond'
 import {
+    createNestedObjectPropertyParser,
     createKeyValueArrayParser,
-    createKeyValuePairParser,
+    createKeyValuePairParser, createObjectPropertyParser,
     createRecordInParenthesesParser,
     createRecordParser
 } from '../../../lib/parsing/javascript/record_parsing'
+import {identifier} from '../../../lib/parsing/javascript/identifier_parsing'
 
 const someValueParser = A.str('some value')
+
+describe('createObjectPropertyParser', () => {
+    it('creates a parser that matches identifier.identifier', () => {
+        assert.deepEqual(
+            createObjectPropertyParser(identifier, identifier).run('object.property').result,
+            ['object', 'property'])
+    })
+})
+
+describe('createNestedObjectPropertyParser creates a parser', () => {
+    const nestedObjectPropertyParser = createNestedObjectPropertyParser(identifier, identifier)
+
+    it('that can match a property on the first level', () => {
+        assert.deepEqual(
+            nestedObjectPropertyParser.run('object.first').result,
+            ['object', ['first']])
+    })
+
+    it('that can match a property on the second level', () => {
+        assert.deepEqual(
+            nestedObjectPropertyParser.run('object.first.second').result,
+            ['object', ['first', 'second']])
+    })
+
+    it('that can match a property on the third level', () => {
+        assert.deepEqual(
+            nestedObjectPropertyParser.run('object.first.second.third').result,
+            ['object', ['first', 'second', 'third']])
+    })
+})
 
 describe('createKeyValuePairParser', () => {
     it('creates a parser that returns [identifier, value] for "identifier: value"', () => {

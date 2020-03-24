@@ -5,17 +5,21 @@ import {
     createPredicateExpressionParser, Filter, parsePredicate,
     PredicateExpression
 } from '../filter_parsing'
-import {createNamedObjectPropertyParser} from '../javascript/record_parsing'
+import {
+    createNestedObjectPropertyParser
+} from '../javascript/record_parsing'
 import {identifier} from '../javascript/identifier_parsing'
 import {createGetProvided, GetProvided} from '../../column_operations'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
+import {ValueOrNestedStringValueRecord} from '../../record'
+import {joinWithUnderscore} from '../parsing_helpers'
 
 function createParameterSideParser(prefix: string, placeholderParameter: string) {
     return A.choice([
-        createNamedObjectPropertyParser([placeholderParameter], identifier)
-            .map(([object, property]) => createGetProvided(prefix, object, property)),
+        createNestedObjectPropertyParser(A.str(placeholderParameter), identifier)
+            .map(([object, path]) => createGetProvided(prefix, object, path)),
         A.str(placeholderParameter)
-            .map(() => createGetProvided(prefix, placeholderParameter, null)),
+            .map(() => createGetProvided(prefix, placeholderParameter, [])),
     ])
 }
 
@@ -56,7 +60,18 @@ function findGetProvided(expression: PredicateExpression, collection: GetProvide
     }
 }
 
-export function parseParameterizedFilter<P>(f: Function, userProvidedParameter: P, prefix: string): Filter {
+function getByPath(obj: {}, remainingPath: string[]): any {
+    const current = obj[remainingPath[0]]
+
+    if (remainingPath.length == 1) {
+        return current
+    }
+    else {
+        return getByPath(current, remainingPath.slice(1))
+    }
+}
+
+export function parseParameterizedFilter<P extends ValueOrNestedStringValueRecord>(f: Function, userProvidedParameter: P, prefix: string): Filter {
     const {parameters, expression} = extractLambdaParametersAndExpression(f)
 
     const placeholderParameter = parameters[0]
@@ -71,11 +86,11 @@ export function parseParameterizedFilter<P>(f: Function, userProvidedParameter: 
 
             const { prefix, path } = item
 
-            if (path === null) {
+            if (path.length === 0) {
                 acc[`$${prefix}_${placeholderParameter}`] = userProvidedParameter
             }
             else {
-                acc[`$${prefix}_${placeholderParameter}_${path}`] = userProvidedParameter[path]
+                acc[`$${prefix}_${placeholderParameter}_${joinWithUnderscore(path)}`] = getByPath(userProvidedParameter, path)
             }
 
             return acc

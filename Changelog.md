@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.8
+- Parameterized filters
+
 ## v0.7.1
 - Parallel queries
 

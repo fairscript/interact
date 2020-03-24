@@ -1,18 +1,18 @@
 import * as assert from 'assert'
-import {createConstant, createGetColumn} from '../../lib/column_operations'
-import {Department, Employee} from '../test_tables'
+import {createConstant, createGetColumn} from '../../../lib/column_operations'
+import {Department, Employee} from '../../test_tables'
 import {
     createEquality,
     createGreaterThan,
     createGreaterThanOrEqualTo,
     createLessThan,
     createLessThanOrEqualTo
-} from '../../lib/parsing/predicate/comparison'
-import {createAnd, createConcatenation, createOr} from '../../lib/parsing/predicate/concatenation'
-import {createInsideParentheses} from '../../lib/parsing/predicate/inside_parentheses'
-import {extractLambdaParametersAndExpression} from '../../lib/parsing/javascript/lambda_parsing'
-import {PredicateExpression} from '../../lib/parsing/filter_parsing'
-import {parseParameterlessPredicate} from '../../lib/parsing/filtering/parameterless_filter_parsing'
+} from '../../../lib/parsing/predicate/comparison'
+import {createAnd, createConcatenation, createOr} from '../../../lib/parsing/predicate/concatenation'
+import {createInsideParentheses} from '../../../lib/parsing/predicate/inside_parentheses'
+import {extractLambdaParametersAndExpression} from '../../../lib/parsing/javascript/lambda_parsing'
+import {PredicateExpression} from '../../../lib/parsing/filter_parsing'
+import {parseParameterlessPredicate} from '../../../lib/parsing/filtering/parameterless_filter_parsing'
 
 
 describe('parseFilter', () => {

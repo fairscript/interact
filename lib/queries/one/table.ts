@@ -3,7 +3,7 @@ import {FilterTable} from './filter_table'
 import {SortTable} from './sort_table'
 import {GroupTable} from './group_table'
 import {JoinSecondTable} from '../two/join_second_table'
-import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
+import {EnforceNonEmptyRecord, StringValueRecord, ValueOrNestedStringValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseOrder} from '../../parsing/order_parsing'
 import {parseGet} from '../../parsing/selection/get_parsing'
@@ -40,7 +40,7 @@ export class Table<T> {
         )
     }
 
-    filterP<P>(provided: P, predicate: (parameters: P, table: T) => boolean): FilterTable<T> {
+    filterP<P extends ValueOrNestedStringValueRecord>(provided: P, predicate: (parameters: P, table: T) => boolean): FilterTable<T> {
         return new FilterTable(
             this.constructor,
             {

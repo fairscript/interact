@@ -1,10 +1,10 @@
 # Roadmap
 
-## v0.8
-- Parameters
-
 ## v0.9
-- Basic dialect support (PostgreSQL, BigQuery)
+- PostgreSQL support
+
+## v0.9.1
+- BigQuery support
 
 ## v0.10
 - Joins of up to five tables (using code generation)
