@@ -1,6 +1,5 @@
-import * as assert from 'assert'
 import {departments, employees} from '../../test_tables'
-import {joinWithNewLine} from '../../../lib/parsing/parsing_helpers'
+import {checkSql} from '../sql_assertion'
 
 describe('Sorting two tables', () => {
     const join = employees
@@ -8,50 +7,47 @@ describe('Sorting two tables', () => {
 
     describe('works using a order', () => {
         it('in ascending direction', () => {
-            assert.equal(
+            checkSql(
                 join
                     .sortBy(e => e.salary)
-                    .get(e => e.id)
-                    .toSql()[0],
-                joinWithNewLine([
+                    .get(e => e.id),
+                [
                     'SELECT t1.id',
                     'FROM employees t1',
                     'INNER JOIN departments t2 ON t1.department_id = t2.id',
                     'ORDER BY t1.salary ASC'
-                ])
+                ]
             )
         })
 
         it('in descending direction', () => {
-            assert.equal(
+            checkSql(
                 join
                     .sortDescendinglyBy(e => e.salary)
-                    .get(e => e.id)
-                    .toSql()[0],
-                joinWithNewLine([
+                    .get(e => e.id),
+                [
                     'SELECT t1.id',
                     'FROM employees t1',
                     'INNER JOIN departments t2 ON t1.department_id = t2.id',
                     'ORDER BY t1.salary DESC'
-                ])
+                ]
             )
         })
     })
 
     it('works using multiple orders', () => {
-        assert.equal(
+        checkSql(
             join
                 .sortBy((e, d) => d.name)
                 .thenBy(e => e.firstName)
                 .thenBy(e => e.lastName)
-                .get(e => e.id)
-                .toSql()[0],
-            joinWithNewLine([
+                .get(e => e.id),
+            [
                 'SELECT t1.id',
                 'FROM employees t1',
                 'INNER JOIN departments t2 ON t1.department_id = t2.id',
                 'ORDER BY t2.name ASC, t1.first_name ASC, t1.last_name ASC'
-            ])
+            ]
         )
     })
 
