@@ -10,31 +10,41 @@
 - Joins of up to five tables (using code generation)
 
 ## v0.11
-- Testing and, if necessary, increasing the robustness of the parser
-
-## v0.12
 - Booleans, NOT, not equal to
 
-## v0.13
+## v0.12
 - Dates
 
-## v0.14
+## v0.13
 - Byte arrays
 
+## v0.14
+- LIMIT, OFFSET
+- DISTINCT
+
 ## v0.15
-- LIMIT, OFFSET, DISTINCT
+- HAVING
+- Aggregation without grouping
 
 ## v0.16
-- HAVING, aggregation without grouping
+- Publication to NPM
 
 ## v0.17
-- String operations
+- Set up and increase test coverage
 
 ## v0.18
-- Date operations
+- INSERT
+- DELETE
+- UPDATE
 
 ## v0.19
-- Mathematical operations
+- String operations
 
 ## v0.20
+- Date operations
+
+## v0.21
+- Mathematical operations
+
+## v0.22
 - Array operations

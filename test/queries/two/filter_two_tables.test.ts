@@ -12,7 +12,7 @@ describe('Filtering a join of two tables works for a predicate', () => {
             join
                 .filter((e, d) => e.id === 1)
                 .get((e, d) => d.name)
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 'SELECT t2.name',
                 'FROM employees t1',
@@ -27,7 +27,7 @@ describe('Filtering a join of two tables works for a predicate', () => {
             join
                 .filter((e, d) => d.id === 1)
                 .get((e, d) => e.id)
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 'SELECT t1.id',
                 'FROM employees t1',
@@ -42,7 +42,7 @@ describe('Filtering a join of two tables works for a predicate', () => {
             join
                 .filter((e, d) => e.lastName === 'Doe' && d.id === 1)
                 .get((e, d) => e.id)
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 'SELECT t1.id',
                 'FROM employees t1',

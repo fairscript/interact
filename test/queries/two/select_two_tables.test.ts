@@ -8,7 +8,7 @@ describe('Selecting', () => {
             employees
                 .join(departments, e => e.departmentId, d => d.id)
                 .select('employee', 'department')
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 'SELECT t1.id AS employee_id, t1.first_name AS employee_firstName, t1.last_name AS employee_lastName, t1.title AS employee_title, t1.salary AS employee_salary, t1.department_id AS employee_departmentId, t2.id AS department_id, t2.name AS department_name',
                 'FROM employees t1',

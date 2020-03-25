@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.8.1
+- Escaped underscores in property names of user-provided filter parameters
+
 ## v0.8
 - Parameterized filters
 

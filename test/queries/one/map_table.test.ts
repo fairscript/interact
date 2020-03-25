@@ -7,7 +7,7 @@ describe('Mapping on a single table', () => {
         assert.equal(
             employees
                 .map(e => ({ firstName: e.firstName, lastName: e.lastName }))
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 'SELECT t1.first_name AS firstName, t1.last_name AS lastName',
                 'FROM employees t1'

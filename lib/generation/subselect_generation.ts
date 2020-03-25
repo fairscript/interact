@@ -16,7 +16,7 @@ export function generateSubselect(subselect: Subselect): string {
     parts.push(FROM)
 
     if (filters.length > 0) {
-        const WHERE = generateWhere(filters)
+        const WHERE = generateWhere(filters)[0]
         parts.push(WHERE)
     }
 

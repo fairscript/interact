@@ -9,7 +9,7 @@ describe('Aggregation of a join of two tables', () => {
                 .join(departments, e => e.departmentId, d => d.id)
                 .groupBy((e, d) => ({departmentId: d.id}))
                 .aggregate((k, e, d) => ({departmentId: k.departmentId, average: e.salary.avg()}))
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 `SELECT t2.id AS departmentId, AVG(t1.salary) AS average`,
                 'FROM employees t1',
@@ -25,7 +25,7 @@ describe('Aggregation of a join of two tables', () => {
                 .join(employees, d => d.id, e => e.departmentId)
                 .groupBy((d, e) => ({departmentId: d.id}))
                 .aggregate((k, d, e) => ({departmentId: k.departmentId, average: e.salary.avg()}))
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 `SELECT t1.id AS departmentId, AVG(t2.salary) AS average`,
                 'FROM departments t1',
@@ -41,7 +41,7 @@ describe('Aggregation of a join of two tables', () => {
                 .join(departments, e => e.departmentId, d => d.id)
                 .groupBy((e, d) => ({departmentId: d.id, employeeTitle: e.title}))
                 .aggregate((k, e, d) => ({departmentId: k.departmentId, employeeTitle: k.employeeTitle, average: e.salary.avg()}))
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 `SELECT t2.id AS departmentId, t1.title AS employeeTitle, AVG(t1.salary) AS average`,
                 'FROM employees t1',
@@ -57,7 +57,7 @@ describe('Aggregation of a join of two tables', () => {
                 .join(employees, d => d.id, e => e.departmentId)
                 .groupBy((d, e) => ({departmentId: d.id, employeeTitle: e.title}))
                 .aggregate((k, d, e) => ({departmentId: k.departmentId, employeeTitle: k.employeeTitle, average: e.salary.avg()}))
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 `SELECT t1.id AS departmentId, t2.title AS employeeTitle, AVG(t2.salary) AS average`,
                 'FROM departments t1',

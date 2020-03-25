@@ -1,11 +1,12 @@
 import {generateGetColumn} from './get_column_generation'
-import {Constant} from '../column_operations'
+import {Constant, GetProvided} from '../column_operations'
 import {Filter, PredicateExpression} from '../parsing/filter_parsing'
 import {Comparison, Side} from '../parsing/predicate/comparison'
 import {Concatenation, TailItem} from '../parsing/predicate/concatenation'
 import {InsideParentheses} from '../parsing/predicate/inside_parentheses'
 import {joinWithWhitespace} from '../parsing/parsing_helpers'
 import {generateGetProvided} from './get_provided_generation'
+import {StringValueRecord, ValueOrNestedStringValueRecord} from '../record'
 
 
 function generateConstant(constant: Constant): string {
@@ -72,21 +73,103 @@ function generatePredicate(parameterNameToTableAlias: { [parameterName: string]:
     }
 }
 
-export function generateFilter(filter: Filter): string {
-    const { tableParameterToTableAlias, predicate } = filter
+function getByPath(obj: {}, remainingPath: string[]): any {
+    const current = obj[remainingPath[0]]
 
-    return generatePredicate(tableParameterToTableAlias, predicate)
+    if (remainingPath.length == 1) {
+        return current
+    }
+    else {
+        return getByPath(current, remainingPath.slice(1))
+    }
 }
 
-export function generateFilters(filters: Filter[]): string {
+function findGetProvided(expression: PredicateExpression, collection: GetProvided[] = []): GetProvided[] {
+    switch (expression.kind) {
+        case 'concatenation':
+            const { head, tail } = expression
+
+            return tail.reduce(
+                (acc, tailItem) => findGetProvided(tailItem.expression, acc),
+                findGetProvided(head, collection))
+
+        case 'inside':
+            return findGetProvided(expression.inside, collection)
+        case 'comparison':
+            const { left, right } = expression
+
+            const comparisonItems = []
+
+            if (left.kind === 'get-provided') {
+                comparisonItems.push(left)
+            }
+
+            if (right.kind === 'get-provided') {
+                comparisonItems.push(right)
+            }
+
+            return collection.concat(comparisonItems)
+    }
+}
+
+function recordFilterParameters(
+    predicate: PredicateExpression,
+    userProvidedParameter: ValueOrNestedStringValueRecord): StringValueRecord {
+
+    return findGetProvided(predicate).reduce(
+        (acc, item) => {
+            const key = generateGetProvided(item)
+            const value = item.path.length === 0 ? userProvidedParameter: getByPath(userProvidedParameter, item.path)
+
+            acc[key] = value
+
+            return acc
+        },
+        {})
+}
+
+export function generateFilter(filter: Filter): [string, StringValueRecord] {
+    const { tableParameterToTableAlias, predicate } = filter
+
+    const sql = generatePredicate(tableParameterToTableAlias, predicate)
+
+    const parameters = filter.kind === 'parameterless-filter'
+        ? {}
+        : recordFilterParameters(predicate, filter.userProvided)
+
+    return [sql, parameters]
+}
+
+export function generateFilters(filters: Filter[]): [string, StringValueRecord] {
     if (filters.length == 1) {
         return generateFilter(filters[0])
     }
     else {
-        return filters.map(generateFilter).map(sql => '(' + sql + ')').join(' AND ')
+        const generatedFilters = filters.map(generateFilter)
+
+        const combinedSql = generatedFilters
+            .map(([sql, _]) => sql)
+            .map(sql => '(' + sql + ')')
+            .join(' AND ')
+
+        const combinedParameters = generatedFilters
+            .map(([_, parameters]) => parameters)
+            .reduce(
+                (acc, item) => {
+                    return {
+                        ...acc,
+                        ...item
+                    }
+                },
+                {}
+            )
+
+        return [combinedSql, combinedParameters]
     }
 }
 
-export function generateWhere(filters: Filter[]): string {
-    return `WHERE ${generateFilters(filters)}`
+export function generateWhere(filters: Filter[]): [string, StringValueRecord] {
+    const [predicateSql, parameters] = generateFilters(filters)
+
+    return [`WHERE ${predicateSql}`, parameters]
 }

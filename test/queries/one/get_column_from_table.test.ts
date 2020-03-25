@@ -7,7 +7,7 @@ describe('Getting', () => {
         assert.equal(
             employees
                 .get(e => e.id)
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 'SELECT t1.id',
                 'FROM employees t1'
@@ -19,7 +19,7 @@ describe('Getting', () => {
         assert.equal(
             employees
                 .get(e => e.title)
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 'SELECT t1.title',
                 'FROM employees t1'

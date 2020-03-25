@@ -8,7 +8,7 @@ describe('Getting a single column from a join of table', () => {
             employees
                 .join(departments, e => e.departmentId, d => d.id)
                 .get(e => e.id)
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 'SELECT t1.id',
                 'FROM employees t1',

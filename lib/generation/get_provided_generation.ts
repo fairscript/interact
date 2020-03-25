@@ -1,14 +1,25 @@
 import {GetProvided,} from '../column_operations'
 import {joinWithUnderscore} from '../parsing/parsing_helpers'
 
-export function generateGetProvided(get: GetProvided): string {
-    let parts = [get.prefix]
+export function escapeUnderscore(input: string): string {
+    return input.replace(/_/g, '__')
+}
 
-    if (get.path.length === 0) {
-        parts.push(get.placeholder)
-    }
-    else {
-        parts.push(get.placeholder + '_' + joinWithUnderscore(get.path))
+export function generatePath(path: string[]): string {
+    const escapedPath = path.map(escapeUnderscore)
+
+    return joinWithUnderscore(escapedPath)
+}
+
+export function generateGetProvided(get: GetProvided): string {
+    let parts = []
+
+    parts.push(get.prefix)
+
+    parts.push(get.placeholder)
+
+    if (get.path.length > 0) {
+        parts.push(generatePath(get.path))
     }
 
     return '$' + parts.join('_')

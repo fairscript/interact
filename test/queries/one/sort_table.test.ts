@@ -10,7 +10,7 @@ describe('Sorting one table', () => {
                 employees
                     .sortBy(e => e.salary)
                     .get(e => e.id)
-                    .toSql(),
+                    .toSql()[0],
                 joinWithNewLine([
                     'SELECT t1.id',
                     'FROM employees t1',
@@ -24,7 +24,7 @@ describe('Sorting one table', () => {
                 employees
                     .sortDescendinglyBy(e => e.salary)
                     .get(e => e.id)
-                    .toSql(),
+                    .toSql()[0],
                 joinWithNewLine([
                     'SELECT t1.id',
                     'FROM employees t1',
@@ -40,7 +40,7 @@ describe('Sorting one table', () => {
                 .sortBy(e => e.lastName)
                 .thenBy(e => e.firstName)
                 .get(e => e.id)
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 'SELECT t1.id',
                 'FROM employees t1',

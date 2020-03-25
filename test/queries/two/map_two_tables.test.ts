@@ -12,7 +12,7 @@ describe('Mapping on a join of two tables', () => {
                     lastName: e.lastName,
                     department: d.name
                 }))
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 'SELECT t1.first_name AS firstName, t1.last_name AS lastName, t2.name AS department',
                 'FROM employees t1',

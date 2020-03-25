@@ -5,19 +5,8 @@ import {StringValueRecord} from '../record'
 export abstract class SelectGenerator<T> {
     protected constructor(protected statement: SelectStatement) {}
 
-    toSql() {
+    toSql(): [string, StringValueRecord] {
         return generateSql(this.statement)
-    }
-
-    getParameters(): StringValueRecord {
-        return this.statement.filters.reduce(
-            (acc, filter) => {
-                return {
-                    acc,
-                    ...filter.parameters
-                }
-            },
-            {})
     }
 }
 

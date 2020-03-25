@@ -9,6 +9,8 @@ import {identifier} from './javascript/identifier_parsing'
 import {closingParenthesis, openingParenthesis} from './javascript/single_character_parsing'
 import normalizeQuotes from './quote_normalization'
 import {StringValueRecord} from '../record'
+import {ParameterizedFilter} from './filtering/parameterized_filter_parsing'
+import {ParameterlessFilter} from './filtering/parameterless_filter_parsing'
 
 export function createConstantOrColumnSideParser(tableParameters: string[]) {
     return A.choice([
@@ -52,8 +54,4 @@ export function parsePredicate(parser, expression: string): PredicateExpression 
     return predicateExpression
 }
 
-export interface Filter {
-    tableParameterToTableAlias: {[parameter: string]: string}
-    predicate: PredicateExpression
-    parameters: StringValueRecord
-}
+export type Filter = ParameterlessFilter|ParameterizedFilter

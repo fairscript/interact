@@ -7,7 +7,7 @@ describe('Counting on a single table', () => {
         assert.equal(
             employees
                 .count()
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 'SELECT COUNT(*)',
                 'FROM employees t1'
@@ -20,7 +20,7 @@ describe('Counting on a single table', () => {
             employees
                 .filter(e => e.departmentId === 1)
                 .count()
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 'SELECT COUNT(*)',
                 'FROM employees t1',

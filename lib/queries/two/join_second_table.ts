@@ -41,7 +41,7 @@ export class JoinSecondTable<T1, T2, K1> {
             this.secondConstructor,
             {
                 ...this.statement,
-                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, provided, `f1`))
+                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, `f1`, provided))
             },
             1)
     }

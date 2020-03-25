@@ -11,7 +11,7 @@ describe('mapS works', () => {
                     id: e.id,
                     count: st.count()
                 }))
-            .toSql()
+            .toSql()[0]
 
         const expected = joinWithNewLine([
             'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1) AS count',
@@ -31,7 +31,7 @@ describe('mapS works', () => {
                         id: e.id,
                         higherSalary: st.filter(se => se.salary > e.salary).count()
                     }))
-                .toSql()
+                .toSql()[0]
 
             const expected = joinWithNewLine([
                 'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1 WHERE s1.salary > t1.salary) AS higherSalary',
@@ -50,7 +50,7 @@ describe('mapS works', () => {
                         id: e.id,
                         higherSalary: st.filter(se => se.salary > e.salary).count()
                     }))
-                .toSql()
+                .toSql()[0]
 
             const expected = joinWithNewLine([
                 'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1 WHERE s1.salary > t1.salary) AS higherSalary',
@@ -70,7 +70,7 @@ describe('mapS works', () => {
                         id: e.id,
                         higherSalary: st.filter(se => se.salary > e.salary).count()
                     }))
-                .toSql()
+                .toSql()[0]
 
             const expected = joinWithNewLine([
                 'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1 WHERE s1.salary > t1.salary) AS higherSalary',
@@ -90,7 +90,7 @@ describe('mapS works', () => {
                     id: e.id,
                     higherSalary: st.filter(se => se.departmentId === e.departmentId).filter(se => se.salary > e.salary).count()
                 }))
-            .toSql()
+            .toSql()[0]
 
         const expected = joinWithNewLine([
             'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1 WHERE (s1.department_id = t1.department_id) AND (s1.salary > t1.salary)) AS higherSalary',

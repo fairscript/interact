@@ -45,7 +45,7 @@ export class Table<T> {
             this.constructor,
             {
                 ...this.statement,
-                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, provided, 'f1'))
+                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, 'f1', provided))
             },
             1
         )

@@ -1,5 +1,8 @@
 import * as assert from 'assert'
-import {parseParameterizedFilter} from '../../../lib/parsing/filtering/parameterized_filter_parsing'
+import {
+    createParameterizedFilter,
+    parseParameterizedFilter
+} from '../../../lib/parsing/filtering/parameterized_filter_parsing'
 import {createComparison} from '../../../lib/parsing/predicate/comparison'
 import {createGetColumn, createGetProvided} from '../../../lib/column_operations'
 import {createConcatenation, createTailItem} from '../../../lib/parsing/predicate/concatenation'
@@ -7,58 +10,54 @@ import {createConcatenation, createTailItem} from '../../../lib/parsing/predicat
 describe('parseParameterizedFilter can parse a filter', () => {
     it('with a number parameter', () => {
         assert.deepEqual(
-            parseParameterizedFilter((id, e) => e.id == id, 1, 'f1'),
-            {
-                tableParameterToTableAlias: {'e': 't1'},
-                predicate: createComparison(createGetColumn('e', 'id'), '=', createGetProvided('f1', 'id', [])),
-                parameters: {
-                    '$f1_id': 1
-                }
-            }
+            parseParameterizedFilter((id, e) => e.id == id, 'f1', 1),
+            createParameterizedFilter(
+                {'e': 't1'},
+                createComparison(createGetColumn('e', 'id'), '=', createGetProvided('f1', 'id', [])),
+                1
+            )
         )
     })
 
     it('with an object parameter', () => {
         assert.deepEqual(
-            parseParameterizedFilter(
-                (name, e) => e.firstName == name.firstName && e.lastName == name.lastName,
-                {firstName: 'John', lastName: 'Doe'},
-                'f1'),
-            {
-                tableParameterToTableAlias: {'e': 't1'},
-                predicate: createConcatenation(
+            parseParameterizedFilter((name, e) => e.firstName == name.firstName && e.lastName == name.lastName, 'f1', {firstName: 'John', lastName: 'Doe'}),
+            createParameterizedFilter(
+                {'e': 't1'},
+                createConcatenation(
                     createComparison(createGetColumn('e', 'firstName'), '=', createGetProvided('f1', 'name', ['firstName'])),
                     [
                         createTailItem('&&', createComparison(createGetColumn('e', 'lastName'), '=', createGetProvided('f1', 'name', ['lastName'])))
                     ]
                 ),
-                parameters: {
-                    '$f1_name_firstName': 'John',
-                    '$f1_name_lastName': 'Doe'
-                }
-            }
+                {firstName: 'John', lastName: 'Doe'}
+            )
         )
     })
 
     it('with a nested object parameter', () => {
         assert.deepEqual(
-            parseParameterizedFilter(
-                (search, e) => e.firstName == search.name.firstName && e.lastName == search.name.lastName,
-                {name:{firstName: 'John', lastName: 'Doe'}},
-                'f1'),
-            {
-                tableParameterToTableAlias: {'e': 't1'},
-                predicate: createConcatenation(
+            parseParameterizedFilter((search, e) => e.firstName == search.name.firstName && e.lastName == search.name.lastName, 'f1', {
+                name: {
+                    firstName: 'John',
+                    lastName: 'Doe'
+                }
+            }),
+            createParameterizedFilter(
+                {'e': 't1'},
+                createConcatenation(
                     createComparison(createGetColumn('e', 'firstName'), '=', createGetProvided('f1', 'search', ['name', 'firstName'])),
                     [
                         createTailItem('&&', createComparison(createGetColumn('e', 'lastName'), '=', createGetProvided('f1', 'search', ['name', 'lastName'])))
                     ]
                 ),
-                parameters: {
-                    '$f1_search_name_firstName': 'John',
-                    '$f1_search_name_lastName': 'Doe'
+                {
+                    name: {
+                        firstName: 'John',
+                        lastName: 'Doe'
+                    }
                 }
-            }
+            )
         )
     })
 

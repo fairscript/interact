@@ -40,7 +40,7 @@ export class FilterTwoTables<T1, T2> {
             this.secondConstructor,
             {
                 ...this.statement,
-                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, provided, `f${this.filters+1}`))
+                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, `f${this.filters + 1}`, provided))
             },
             this.filters+1)
     }

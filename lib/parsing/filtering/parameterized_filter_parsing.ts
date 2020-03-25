@@ -9,10 +9,9 @@ import {
     createNestedObjectPropertyParser
 } from '../javascript/record_parsing'
 import {identifier} from '../javascript/identifier_parsing'
-import {createGetProvided, GetProvided} from '../../column_operations'
+import {createGetProvided} from '../../column_operations'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {ValueOrNestedStringValueRecord} from '../../record'
-import {joinWithUnderscore} from '../parsing_helpers'
 
 function createParameterSideParser(prefix: string, placeholderParameter: string) {
     return A.choice([
@@ -32,74 +31,35 @@ function parseParameterizedPredicate(prefix: string, placeholderParameter: strin
     return parsePredicate(parser, expression)
 }
 
-function findGetProvided(expression: PredicateExpression, collection: GetProvided[] = []): GetProvided[] {
-    switch (expression.kind) {
-        case 'concatenation':
-            const { head, tail } = expression
-
-            return tail.reduce(
-                (acc, tailItem) => findGetProvided(tailItem.expression, acc),
-                findGetProvided(head, collection))
-
-        case 'inside':
-            return findGetProvided(expression.inside, collection)
-        case 'comparison':
-            const { left, right } = expression
-
-            const comparisonItems = []
-
-            if (left.kind === 'get-provided') {
-                comparisonItems.push(left)
-            }
-
-            if (right.kind === 'get-provided') {
-                comparisonItems.push(right)
-            }
-
-            return collection.concat(comparisonItems)
-    }
+export interface ParameterizedFilter {
+    tableParameterToTableAlias: {[parameter: string]: string}
+    predicate: PredicateExpression
+    userProvided: ValueOrNestedStringValueRecord
+    kind: 'parameterized-filter'
 }
 
-function getByPath(obj: {}, remainingPath: string[]): any {
-    const current = obj[remainingPath[0]]
-
-    if (remainingPath.length == 1) {
-        return current
-    }
-    else {
-        return getByPath(current, remainingPath.slice(1))
-    }
-}
-
-export function parseParameterizedFilter<P extends ValueOrNestedStringValueRecord>(f: Function, userProvidedParameter: P, prefix: string): Filter {
-    const {parameters, expression} = extractLambdaParametersAndExpression(f)
-
-    const placeholderParameter = parameters[0]
-    const tableParameters = parameters.slice(1)
-
-    const predicate = parseParameterizedPredicate(prefix, placeholderParameter, tableParameters, expression)
-
-    const getProvided = findGetProvided(predicate)
-
-    const filterParameters = getProvided.reduce(
-        (acc, item) => {
-
-            const { prefix, path } = item
-
-            if (path.length === 0) {
-                acc[`$${prefix}_${placeholderParameter}`] = userProvidedParameter
-            }
-            else {
-                acc[`$${prefix}_${placeholderParameter}_${joinWithUnderscore(path)}`] = getByPath(userProvidedParameter, path)
-            }
-
-            return acc
-        },
-        {})
+export function createParameterizedFilter(
+    tableParameterToTableAlias: { [p: string]: string },
+    predicate: PredicateExpression,
+    userProvided: ValueOrNestedStringValueRecord): ParameterizedFilter {
 
     return {
-        tableParameterToTableAlias: mapParameterNamesToTableAliases(tableParameters),
-        predicate: predicate,
-        parameters: filterParameters
+        tableParameterToTableAlias,
+        predicate,
+        userProvided,
+        kind: 'parameterized-filter'
     }
+}
+
+
+export function parseParameterizedFilter(f: Function, prefix: string, userProvided: ValueOrNestedStringValueRecord): ParameterizedFilter {
+    const {parameters, expression} = extractLambdaParametersAndExpression(f)
+
+    const userProvidedParameter = parameters[0]
+    const tableParameters = parameters.slice(1)
+
+    const tableParameterToTableAlias = mapParameterNamesToTableAliases(tableParameters)
+    const predicate = parseParameterizedPredicate(prefix, userProvidedParameter, tableParameters, expression)
+
+    return createParameterizedFilter(tableParameterToTableAlias, predicate, userProvided)
 }

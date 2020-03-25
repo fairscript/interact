@@ -9,7 +9,7 @@ describe('Filtering', () => {
             employees
                 .filter(e => e.id == 1)
                 .select()
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 'SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.salary, t1.department_id',
                 'FROM employees t1',
@@ -25,7 +25,7 @@ describe('Filtering', () => {
                 employees
                     .filterP(2, (id, e) => e.id == id)
                     .select()
-                    .toSql(),
+                    .toSql()[0],
                 joinWithNewLine([
                     'SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.salary, t1.department_id',
                     'FROM employees t1',
@@ -42,7 +42,7 @@ describe('Filtering', () => {
                         (name, e) => e.firstName === name.firstName && e.lastName === name.lastName
                     )
                     .select()
-                    .toSql(),
+                    .toSql()[0],
                 joinWithNewLine([
                     'SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.salary, t1.department_id',
                     'FROM employees t1',
@@ -60,7 +60,7 @@ describe('Filtering', () => {
             employees
                 .filter(e => e.firstName == 'John' && e.lastName == 'Doe')
                 .select()
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 expectedSelect,
                 expectedFrom,
@@ -73,7 +73,7 @@ describe('Filtering', () => {
                 .filter(e => e.firstName == 'John')
                 .filter(e => e.lastName == 'Doe')
                 .select()
-                .toSql(),
+                .toSql()[0],
             joinWithNewLine([
                 expectedSelect,
                 expectedFrom,

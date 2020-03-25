@@ -18,7 +18,7 @@ describe('Aggregation', () => {
         assert.equal(
             groupedByDepartmentId
                 .aggregate((k, e) => ({departmentId: k.departmentId, average: e.salary.avg()}))
-                .toSql(),
+                .toSql()[0],
             computeExpectedSql('AVG(t1.salary) AS average')
         )
     })
@@ -27,7 +27,7 @@ describe('Aggregation', () => {
         assert.equal(
             groupedByDepartmentId
                 .aggregate((k, e) => ({departmentId: k.departmentId, maximum: e.salary.max()}))
-                .toSql(),
+                .toSql()[0],
             computeExpectedSql('MAX(t1.salary) AS maximum')
         )
     })
@@ -36,7 +36,7 @@ describe('Aggregation', () => {
         assert.equal(
             groupedByDepartmentId
                 .aggregate((k, e) => ({departmentId: k.departmentId, minimum: e.salary.min()}))
-                .toSql(),
+                .toSql()[0],
             computeExpectedSql('MIN(t1.salary) AS minimum')
         )
     })
@@ -45,7 +45,7 @@ describe('Aggregation', () => {
         assert.equal(
             groupedByDepartmentId
                 .aggregate((k, e) => ({departmentId: k.departmentId, sum: e.salary.sum()}))
-                .toSql(),
+                .toSql()[0],
             computeExpectedSql('SUM(t1.salary) AS sum')
         )
     })
@@ -54,7 +54,7 @@ describe('Aggregation', () => {
         assert.equal(
             groupedByDepartmentId
                 .aggregate((k, e, count) => ({departmentId: k.departmentId, count: count()}))
-                .toSql(),
+                .toSql()[0],
             computeExpectedSql('COUNT(*) AS count')
         )
     })
@@ -70,7 +70,7 @@ describe('Aggregation', () => {
                     sum: e.salary.sum(),
                     count: count()
                 }))
-                .toSql(),
+                .toSql()[0],
             computeExpectedSql('AVG(t1.salary) AS average, MAX(t1.salary) AS maximum, MIN(t1.salary) AS minimum, SUM(t1.salary) AS sum, COUNT(*) AS count')
         )
     })

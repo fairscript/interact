@@ -11,8 +11,7 @@ export class DatabaseContext {
     get<T>(generator: ScalarSelectGenerator<T>): Promise<T>
     get<T>(generator: RowSelectGenerator<T>): Promise<T[]>
     get<T>(generator: ScalarSelectGenerator<T>|SingleRowSelectGenerator<T>|RowSelectGenerator<T>): Promise<T>|Promise<T[]> {
-        const sql = generator.toSql()
-        const parameters = generator.getParameters()
+        const [sql, parameters] = generator.toSql()
 
         switch (generator.kind) {
             case 'scalar-select-generator':
