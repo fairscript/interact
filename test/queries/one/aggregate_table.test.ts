@@ -1,66 +1,60 @@
-import * as assert from 'assert'
 import {employees} from '../../test_tables'
-import {joinWithNewLine} from '../../../lib/parsing/parsing_helpers'
+import {checkSql} from '../sql_assertion'
 
 describe('Aggregation', () => {
     const groupedByDepartmentId = employees
         .groupBy(e => ({departmentId: e.departmentId}))
 
-    function computeExpectedSql(aggregationPart: string) {
-        return joinWithNewLine([
+    function computeExpectedLines(aggregationPart: string): string[] {
+        return [
             `SELECT t1.department_id AS departmentId, ${aggregationPart}`,
             'FROM employees t1',
             'GROUP BY t1.department_id'
-        ])
+        ]
     }
 
     it('using averaging works', () => {
-        assert.equal(
+        checkSql(
             groupedByDepartmentId
-                .aggregate((k, e) => ({departmentId: k.departmentId, average: e.salary.avg()}))
-                .toSql()[0],
-            computeExpectedSql('AVG(t1.salary) AS average')
+                .aggregate((k, e) => ({departmentId: k.departmentId, average: e.salary.avg()})),
+            computeExpectedLines('AVG(t1.salary) AS average')
         )
     })
 
     it('using maximization works', () => {
-        assert.equal(
+        checkSql(
             groupedByDepartmentId
-                .aggregate((k, e) => ({departmentId: k.departmentId, maximum: e.salary.max()}))
-                .toSql()[0],
-            computeExpectedSql('MAX(t1.salary) AS maximum')
+                .aggregate((k, e) => ({departmentId: k.departmentId, maximum: e.salary.max()})),
+            computeExpectedLines('MAX(t1.salary) AS maximum')
         )
     })
 
     it('using minimization works', () => {
-        assert.equal(
+        checkSql(
             groupedByDepartmentId
-                .aggregate((k, e) => ({departmentId: k.departmentId, minimum: e.salary.min()}))
-                .toSql()[0],
-            computeExpectedSql('MIN(t1.salary) AS minimum')
+                .aggregate((k, e) => ({departmentId: k.departmentId, minimum: e.salary.min()})),
+            computeExpectedLines('MIN(t1.salary) AS minimum')
         )
     })
 
     it('using summation works', () => {
-        assert.equal(
+        checkSql(
             groupedByDepartmentId
-                .aggregate((k, e) => ({departmentId: k.departmentId, sum: e.salary.sum()}))
-                .toSql()[0],
-            computeExpectedSql('SUM(t1.salary) AS sum')
+                .aggregate((k, e) => ({departmentId: k.departmentId, sum: e.salary.sum()})),
+            computeExpectedLines('SUM(t1.salary) AS sum')
         )
     })
 
     it('using counting works', () => {
-        assert.equal(
+        checkSql(
             groupedByDepartmentId
-                .aggregate((k, e, count) => ({departmentId: k.departmentId, count: count()}))
-                .toSql()[0],
-            computeExpectedSql('COUNT(*) AS count')
+                .aggregate((k, e, count) => ({departmentId: k.departmentId, count: count()})),
+            computeExpectedLines('COUNT(*) AS count')
         )
     })
 
     it('using averaging counting, minimization, maximization and summation works', () => {
-        assert.equal(
+        checkSql(
             groupedByDepartmentId
                 .aggregate((key, e, count) => ({
                     departmentId: key.departmentId,
@@ -69,9 +63,8 @@ describe('Aggregation', () => {
                     minimum: e.salary.min(),
                     sum: e.salary.sum(),
                     count: count()
-                }))
-                .toSql()[0],
-            computeExpectedSql('AVG(t1.salary) AS average, MAX(t1.salary) AS maximum, MIN(t1.salary) AS minimum, SUM(t1.salary) AS sum, COUNT(*) AS count')
+                })),
+            computeExpectedLines('AVG(t1.salary) AS average, MAX(t1.salary) AS maximum, MIN(t1.salary) AS minimum, SUM(t1.salary) AS sum, COUNT(*) AS count')
         )
     })
 })

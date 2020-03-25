@@ -1,53 +1,49 @@
 import {employees} from '../../test_tables'
-import * as assert from 'assert'
-import {joinWithNewLine} from '../../../lib/parsing/parsing_helpers'
+import {checkSql} from '../sql_assertion'
 
 describe('Filtering', () => {
 
     it('works for a single predicate', () => {
-        assert.equal(
+        checkSql(
             employees
                 .filter(e => e.id == 1)
-                .select()
-                .toSql()[0],
-            joinWithNewLine([
+                .select(),
+            [
                 'SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.salary, t1.department_id',
                 'FROM employees t1',
                 'WHERE t1.id = 1'
-            ])
+            ]
         )
     })
 
     describe('works for a single parameterized predicate', () => {
 
         it('with a value paramter', () => {
-            assert.equal(
+            checkSql(
                 employees
                     .filterP(2, (id, e) => e.id == id)
-                    .select()
-                    .toSql()[0],
-                joinWithNewLine([
+                    .select(),
+                [
                     'SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.salary, t1.department_id',
                     'FROM employees t1',
                     'WHERE t1.id = $f1_id'
-                ])
+                ]
             )
         })
 
         it('with an object parameter', () => {
-            assert.equal(
+            checkSql(
                 employees
                     .filterP(
                         { firstName: 'John', lastName: 'Doe' },
                         (name, e) => e.firstName === name.firstName && e.lastName === name.lastName
                     )
-                    .select()
-                    .toSql()[0],
-                joinWithNewLine([
+                    .select(),
+                [
                     'SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.salary, t1.department_id',
                     'FROM employees t1',
                     'WHERE t1.first_name = $f1_name_firstName AND t1.last_name = $f1_name_lastName'
-                ])
+                ]
             )
         })
     })
@@ -56,29 +52,27 @@ describe('Filtering', () => {
         const expectedSelect = "SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.salary, t1.department_id"
         const expectedFrom = "FROM employees t1"
 
-        assert.equal(
+        checkSql(
             employees
                 .filter(e => e.firstName == 'John' && e.lastName == 'Doe')
-                .select()
-                .toSql()[0],
-            joinWithNewLine([
+                .select(),
+            [
                 expectedSelect,
                 expectedFrom,
                 "WHERE t1.first_name = 'John' AND t1.last_name = 'Doe'"
-            ])
+            ]
         )
 
-        assert.equal(
+        checkSql(
             employees
                 .filter(e => e.firstName == 'John')
                 .filter(e => e.lastName == 'Doe')
-                .select()
-                .toSql()[0],
-            joinWithNewLine([
+                .select(),
+            [
                 expectedSelect,
                 expectedFrom,
                 "WHERE (t1.first_name = 'John') AND (t1.last_name = 'Doe')"
-            ])
+            ]
         )
     })
 })
