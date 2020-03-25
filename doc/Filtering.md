@@ -54,3 +54,47 @@ WHERE (t1.first_name = 'John') AND (t1.last_name = 'Doe')
 ```
 
 Predicates are put into parentheses and concatenated with the `AND` operator when the `filter` method is invoked multiple times.
+
+## Parameters
+
+Filters with user-provided parameters can be set using the `filterP` method.
+
+Its first parameter accepts a value or an object that is made available in the predicate.
+
+*Providing a value*
+
+TypeScript:
+```typescript
+employees
+    .filterP(
+        1,
+        (id, e) => e.id === id)
+    .select()
+    .toSql()
+````
+
+SQL:
+```sql
+SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.department_id
+FROM employees t1
+WHERE (t1.id = $f1_name_firstName) AND (t1.last_name = $f1_name_lastName)
+```
+
+*Providing an object*
+
+TypeScript:
+```typescript
+employees
+    .filterP(
+        {firstName: 'John', lastName: 'Doe'},
+        (name, e) => e.firstName === name.firstName && e.lastName === name.lastName)
+    .select()
+    .toSql()
+````
+
+SQL:
+```sql
+SELECT t1.id, t1.first_name, t1.last_name, t1.title, t1.department_id
+FROM employees t1
+WHERE t1.first_name = $f1_name_firstName AND t1.last_name = $f1_name_lastName
+```
