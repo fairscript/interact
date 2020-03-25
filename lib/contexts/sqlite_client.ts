@@ -1,12 +1,10 @@
-import * as sqlite3 from 'sqlite3'
+import { Database } from 'sqlite3'
 import {DatabaseClient} from './database_client'
 import {StringValueRecord} from '../record'
 
 export class SqliteClient implements DatabaseClient {
-    private db: sqlite3.Database
-    constructor (filename: string) {
-        this.db = new sqlite3.Database(filename)
-    }
+
+    constructor (private db: Database) {}
 
     run(sql: string): Promise<void> {
         return new Promise((resolve, reject) => {
@@ -15,7 +13,7 @@ export class SqliteClient implements DatabaseClient {
                     reject(err)
                 }
                 else {
-                    resolve(row)
+                    resolve()
                 }
             })
         })
@@ -83,10 +81,14 @@ export class SqliteClient implements DatabaseClient {
     }
 }
 
-export function createSqliteInMemoryClient() {
-    return new SqliteClient(':memory:')
+export function createSqliteInMemoryClient(): SqliteClient {
+    return new SqliteClient(new Database(':memory:'))
 }
 
-export function createSqliteClient(filename: string) {
-    return new SqliteClient(filename)
+export function createSqliteInFileClient(filename: string): SqliteClient {
+    return new SqliteClient(new Database(filename))
+}
+
+export function createSqliteClient(db: Database): SqliteClient {
+    return new SqliteClient(db)
 }

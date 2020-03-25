@@ -2,9 +2,10 @@ import * as sqlite3 from 'sqlite3'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import {createSqliteInMemoryClient} from '../../lib/contexts/sqlite_client'
-import {createEmployeesTableSql, insertEmployeeSql} from '../test_tables'
+import {employeeRows} from '../test_tables'
+import {sqliteSetup} from './db_test_setup'
 
-describe('SqliteContext', () => {
+describe('SqliteClient', () => {
     const dbClient = createSqliteInMemoryClient()
 
     before(async() => {
@@ -12,14 +13,9 @@ describe('SqliteContext', () => {
         chai.use(chaiAsPromised)
         sqlite3.verbose()
 
-        await dbClient.run(createEmployeesTableSql)
+        await dbClient.run(sqliteSetup.createEmployeesTable)
 
-        await dbClient.runBatch(
-            insertEmployeeSql,
-            [
-                ['John', 'Doe', 'CEO', 10_000, 1],
-                ['Richard', 'Roe', 'CFO', 8_000, 1]
-            ])
+        await dbClient.runBatch(sqliteSetup.insertIntoEmployees, employeeRows)
     })
 
     it('can get a scalar', () => {

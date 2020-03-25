@@ -25,16 +25,20 @@
   "dependencies": {
     "arcsecond": "2.0.4",
     "js-snakecase": "1.2.0",
-    "sqlite3": "4.1.1"
+    "pg": "7.18.2",
+    "sqlite3": "4.1.1",
+    "yesql": "4.1.1"
   },
   "devDependencies": {
     "@types/chai": "4.2.11",
     "@types/chai-as-promised": "7.1.2",
     "@types/mocha": "7.0.1",
     "@types/node": "13.7.7",
+    "@types/pg": "7.14.3",
     "@types/sqlite3": "3.1.6",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
+    "dotenv": "8.2.0",
     "mocha": "7.1.0",
     "ts-node": "8.6.2",
     "typescript": "3.8.3"

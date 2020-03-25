@@ -1,9 +1,10 @@
 import * as sqlite3 from 'sqlite3'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {createEmployeesTableSql, employees, insertEmployeeSql} from '../test_tables'
 import {createSqliteInMemoryClient} from '../../lib/contexts/sqlite_client'
 import {createSqliteContext} from '../../lib'
+import {employees} from '../test_tables'
+import {sqliteSetup} from './db_test_setup'
 
 describe('DatabaseContext', () => {
 
@@ -44,10 +45,10 @@ describe('DatabaseContext', () => {
         chai.use(chaiAsPromised)
         sqlite3.verbose()
 
-        await dbClient.run(createEmployeesTableSql)
+        await dbClient.run(sqliteSetup.createEmployeesTable)
 
         await dbClient.runBatch(
-            insertEmployeeSql,
+            sqliteSetup.insertIntoEmployees,
             [
                 ['John', 'Doe', 'CEO', 10_000, 1],
                 ['Richard', 'Roe', 'CFO', 8_000, 1]
