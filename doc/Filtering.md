@@ -25,7 +25,6 @@ TypeScript:
 employees
    .filter(e => e.firstName == 'John' && e.lastName == 'Doe')
    .select()
-   .toSql()
 ```
 
 SQL:
@@ -43,7 +42,6 @@ employees
     .filter(e => e.firstName == 'John')
     .filter(e => e.lastName == 'Doe')
     .select()
-    .toSql()
 ````
 
 SQL:
@@ -70,7 +68,6 @@ employees
         1,
         (id, e) => e.id === id)
     .select()
-    .toSql()
 ````
 
 SQL:
@@ -89,7 +86,6 @@ employees
         {firstName: 'John', lastName: 'Doe'},
         (name, e) => e.firstName === name.firstName && e.lastName === name.lastName)
     .select()
-    .toSql()
 ````
 
 SQL:
