@@ -1,5 +1,5 @@
-import {DatabaseClient} from './database_client'
-import {StringValueRecord} from '../record'
+import {DatabaseClient} from '../database_client'
+import {StringValueRecord} from '../../record'
 import {BigQuery, Dataset, Query} from '@google-cloud/bigquery'
 
 export class BigQueryClient implements DatabaseClient {

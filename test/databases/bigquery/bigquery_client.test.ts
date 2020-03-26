@@ -1,4 +1,4 @@
-import {BigQueryClient, createBigQueryClient} from '../../lib/clients/bigquery_client'
+import {BigQueryClient, createBigQueryClient} from '../../../lib/databases/bigquery/bigquery_client'
 
 require('dotenv').config()
 import * as assert from 'assert'
@@ -7,7 +7,7 @@ import {
     computeBigQueryTestTableName,
     setupBigQueryTestData,
     tearDownBigQueryTestData
-} from '../setup/bigquery_setup'
+} from './bigquery_setup'
 
 describe('BigQueryClient', () => {
 

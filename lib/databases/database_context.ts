@@ -1,6 +1,6 @@
 import {RowSelectGenerator, ScalarSelectGenerator, SingleRowSelectGenerator} from '../queries/select_generators'
-import {DatabaseClient} from '../clients/database_client'
-import {Dialect} from '../dialects/dialects'
+import {DatabaseClient} from './database_client'
+import {Dialect} from './dialects'
 
 type ExtractTypeParameterFromSelectGenerator<T> = T extends ScalarSelectGenerator<infer V>|SingleRowSelectGenerator<infer V>|RowSelectGenerator<infer V> ? V : never
 

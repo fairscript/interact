@@ -7,7 +7,7 @@ import {generateGroupBy} from './group_by_generation'
 import {generateInnerJoin} from './join_generation'
 import {joinWithNewLine} from '../parsing/parsing_helpers'
 import {StringValueRecord} from '../record'
-import {Dialect} from '../dialects/dialects'
+import {Dialect} from '../databases/dialects'
 
 export function generateSql(dialect: Dialect, statement: SelectStatement): [string, StringValueRecord] {
     const {selection, tableName, filters, key, orders, join} = statement

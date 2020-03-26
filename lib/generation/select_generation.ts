@@ -5,7 +5,7 @@ import {generateMapSelection} from './selection/map_selection_generation'
 import {generateAggregationSelection} from './selection/aggregation_selection_generation'
 import {generateSingleTableSelection} from './selection/single_table_selection_generation'
 import {generateMultiTableSelection} from './selection/multi_table_selection_generation'
-import {Dialect} from '../dialects/dialects'
+import {Dialect} from '../databases/dialects'
 
 
 function generateSelection(dialect: Dialect, selection: Selection): string {

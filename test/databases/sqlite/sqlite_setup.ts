@@ -1,5 +1,5 @@
-import {testEmployeeRowsWithoutId} from '../test_tables'
-import {SqliteClient} from '../../lib/clients/sqlite_client'
+import {testEmployeeRowsWithoutId} from '../../test_tables'
+import {SqliteClient} from '../../../lib/databases/sqlite/sqlite_client'
 
 export async function setUpSqliteTestData(client: SqliteClient) {
     await client.run(`

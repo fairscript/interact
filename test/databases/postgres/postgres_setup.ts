@@ -1,5 +1,5 @@
-import {PostgresClient} from '../../lib/clients/postgres_client'
-import {testEmployeeRowsWithoutId} from '../test_tables'
+import {PostgresClient} from '../../../lib/databases/postgres/postgres_client'
+import {testEmployeeRowsWithoutId} from '../../test_tables'
 import {Client} from 'pg'
 
 export function createPgTestClient(): Client {

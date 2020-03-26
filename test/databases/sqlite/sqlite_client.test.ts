@@ -1,8 +1,8 @@
 import * as sqlite3 from 'sqlite3'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {createSqliteInMemoryClient} from '../../lib/clients/sqlite_client'
-import {setUpSqliteTestData} from '../setup/sqlite_setup'
+import {createSqliteInMemoryClient} from '../../../lib/databases/sqlite/sqlite_client'
+import {setUpSqliteTestData} from './sqlite_setup'
 
 describe('SqliteClient', () => {
     const sqliteClient = createSqliteInMemoryClient()

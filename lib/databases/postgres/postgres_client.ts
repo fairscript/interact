@@ -1,6 +1,6 @@
 import {Client, QueryConfig, types} from 'pg'
-import {DatabaseClient} from './database_client'
-import {StringValueRecord} from '../record'
+import {DatabaseClient} from '../database_client'
+import {StringValueRecord} from '../../record'
 const named = require('yesql').pg
 
 export class PostgresClient implements DatabaseClient {

@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.9.2
+- Exported factory functions for PostgreSQL/BigQuery contexts
+
 ## v0.9.1
 - BigQuery support
 - Fixed column names in single table selections

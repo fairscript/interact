@@ -1,12 +1,12 @@
 require('dotenv').config()
 
-import {createPgTestClient, setUpPostgresTestData} from '../setup/postgres_setup'
-import {createPostgresContext} from '../../lib/contexts/postgres_context'
+import {createPgTestClient, setUpPostgresTestData} from './postgres_setup'
+import {createPostgresContext} from '../../../lib/databases/postgres/postgres_context'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {createDatabaseContextTestSuite} from './database_context_tests'
-import {createPostgresClient} from '../../lib/clients/postgres_client'
-import {employees} from '../test_tables'
+import {createDatabaseContextTestSuite} from '../database_context_test_suite'
+import {createPostgresClient} from '../../../lib/databases/postgres/postgres_client'
+import {employees} from '../../test_tables'
 
 describe('Postgres context', () => {
 

@@ -4,7 +4,7 @@ import {createSubselectStatement} from '../../lib/select_statement'
 import * as assert from 'assert'
 import {createGreaterThan} from '../../lib/parsing/predicate/comparison'
 import {createParameterlessFilter} from '../../lib/parsing/filtering/parameterless_filter_parsing'
-import {sqliteDialect} from '../../lib/dialects/dialects'
+import {sqliteDialect} from '../../lib/databases/sqlite/sqlite_dialect'
 
 describe('generateSubselect', () => {
     it('works for a subselect statement with one filter', () => {

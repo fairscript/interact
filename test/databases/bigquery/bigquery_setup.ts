@@ -1,7 +1,7 @@
 import {BigQuery, Dataset, Table} from '@google-cloud/bigquery'
-import {testEmployees} from '../test_tables'
+import {testEmployees} from '../../test_tables'
 import * as assert from 'assert'
-import {join} from '../../lib/parsing/parsing_helpers'
+import {join} from '../../../lib/parsing/parsing_helpers'
 import * as toSnakeCase from 'js-snakecase'
 
 export function createBigQueryForTests(): BigQuery {

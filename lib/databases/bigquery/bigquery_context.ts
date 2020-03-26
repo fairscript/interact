@@ -1,7 +1,7 @@
-import {DatabaseContext} from './database_context'
-import {createBigQueryClient} from '../clients/bigquery_client'
+import {DatabaseContext} from '../database_context'
+import {createBigQueryClient} from './bigquery_client'
 import {BigQuery} from '@google-cloud/bigquery'
-import {bigQueryDialect} from '../dialects/dialects'
+import {bigQueryDialect} from './bigquery_dialect'
 
 export function createBigQueryContext(bigQuery: BigQuery, dataset: string): DatabaseContext{
     const client = createBigQueryClient(bigQuery, dataset)

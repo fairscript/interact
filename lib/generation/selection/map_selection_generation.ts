@@ -4,7 +4,7 @@ import {generateGetColumn} from '../get_column_generation'
 import {generateSubselect} from '../subselect_generation'
 import {joinWithCommaWhitespace} from '../../parsing/parsing_helpers'
 import {generateAlias} from '../alias_generation'
-import {Dialect} from '../../dialects/dialects'
+import {Dialect} from '../../databases/dialects'
 
 function generateMapPropertyOperation(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, parameterToTable: { [parameter: string]: string }, operation: GetColumn | Subselect): string {
     switch (operation.kind) {

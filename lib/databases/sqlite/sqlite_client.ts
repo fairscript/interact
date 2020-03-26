@@ -1,6 +1,6 @@
 import { Database } from 'sqlite3'
-import {DatabaseClient} from './database_client'
-import {StringValueRecord} from '../record'
+import {DatabaseClient} from '../database_client'
+import {StringValueRecord} from '../../record'
 
 export class SqliteClient implements DatabaseClient {
 

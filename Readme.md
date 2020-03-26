@@ -1,6 +1,6 @@
 # λSQL
 
-A (relatively) type-safe object-relational mapper for Node.js+TypeScript with a fluent API. Supports SQLite and PostgreSQL.
+An object-relational mapper for Node.js/TypeScript designed to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.
 
 ## Features
 - [Selecting tables](doc/Selection.md)

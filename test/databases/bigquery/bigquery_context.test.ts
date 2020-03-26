@@ -1,17 +1,17 @@
 require('dotenv').config()
 
-import {createDatabaseContextTestSuite} from './database_context_tests'
+import {createDatabaseContextTestSuite} from '../database_context_test_suite'
 import {
     computeBigQueryTestTableName,
     createBigQueryForTests,
     setupBigQueryTestData,
     tearDownBigQueryTestData
-} from '../setup/bigquery_setup'
-import {createBigQueryContext} from '../../lib/contexts/bigquery_context'
-import {Employee} from '../test_tables'
+} from './bigquery_setup'
+import {createBigQueryContext} from '../../../lib/databases/bigquery/bigquery_context'
+import {Employee} from '../../test_tables'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {defineTable} from '../../lib'
+import {defineTable} from '../../../lib'
 
 describe('BigQuery context', () => {
 

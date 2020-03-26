@@ -1,5 +1,5 @@
 import {Employee} from '../test_tables'
-import {DatabaseContext} from '../../lib/contexts/database_context'
+import {DatabaseContext} from '../../lib/databases/database_context'
 import {Table} from '../../lib/queries/one/table'
 
 export function createDatabaseContextTestSuite(ctx: DatabaseContext, employees: Table<Employee>) {

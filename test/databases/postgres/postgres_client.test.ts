@@ -1,9 +1,9 @@
-import {createPgTestClient, setUpPostgresTestData} from '../setup/postgres_setup'
+import {createPgTestClient, setUpPostgresTestData} from './postgres_setup'
 
 require('dotenv').config()
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {createPostgresClient} from '../../lib/clients/postgres_client'
+import {createPostgresClient} from '../../../lib/databases/postgres/postgres_client'
 
 describe('PostgresClient', () => {
 
