@@ -3,7 +3,7 @@ import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import {createSqliteInMemoryClient} from '../../lib/clients/sqlite_client'
 import {createSqliteContext} from '../../lib'
-import {setupSqliteTestData} from '../clients/db_test_setup'
+import {setUpSqliteTestData} from '../setup/sqlite_setup'
 import {
     testParallelQueries,
     testRowQuery,
@@ -23,7 +23,7 @@ describe('Sqlite context', () => {
         chai.use(chaiAsPromised)
         sqlite3.verbose()
 
-        await setupSqliteTestData(sqliteClient)
+        await setUpSqliteTestData(sqliteClient)
     })
 
     it('can get a scalar', () => testScalarQuery(ctx))

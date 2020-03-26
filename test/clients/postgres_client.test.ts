@@ -1,8 +1,9 @@
+import {createPgTestClient, setUpPostgresTestData} from '../setup/postgres_setup'
+
 require('dotenv').config()
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import {createPostgresClient} from '../../lib/clients/postgres_client'
-import {createPgTestClient, setupPostgresTestData} from './db_test_setup'
 
 describe('PostgresClient', () => {
 
@@ -15,7 +16,7 @@ describe('PostgresClient', () => {
 
         await pg.connect()
 
-        await setupPostgresTestData(client)
+        await setUpPostgresTestData(client)
     })
 
     it('can get a scalar', async() => {

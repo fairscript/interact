@@ -1,8 +1,9 @@
+import {createPgTestClient, setUpPostgresTestData} from '../setup/postgres_setup'
+
 require('dotenv').config()
 import {createPostgresContext} from '../../lib/contexts/postgres_context'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {createPgTestClient, setupPostgresTestData} from '../clients/db_test_setup'
 import {
     testParallelQueries,
     testRowQuery,
@@ -25,7 +26,7 @@ describe('Postgres client', () => {
 
         await pg.connect()
 
-        await setupPostgresTestData(client)
+        await setUpPostgresTestData(client)
     })
 
     it('can get a scalar', () => testScalarQuery(ctx))

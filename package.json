@@ -1,7 +1,7 @@
 {
   "name": "lambda-sql",
   "version": "0.9.0",
-  "description": "A (relatively) type-safe object-relational mapper for Node.js+TypeScript with a fluent API. Supports SQLite and PostgreSQL.",
+  "description": "An object-relational mapper for Node.js/TypeScript designed to maximize type safety and minimize friction. Supports SQLite and PostgreSQL.",
   "keywords": [
     "lambda",
     "sql",
@@ -23,6 +23,7 @@
     "test": "mocha -r ts-node/register test/**/*.ts"
   },
   "dependencies": {
+    "@google-cloud/bigquery": "4.7.0",
     "arcsecond": "2.0.4",
     "js-snakecase": "1.2.0",
     "pg": "7.18.2",

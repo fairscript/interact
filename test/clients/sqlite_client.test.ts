@@ -2,7 +2,7 @@ import * as sqlite3 from 'sqlite3'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import {createSqliteInMemoryClient} from '../../lib/clients/sqlite_client'
-import {setupSqliteTestData} from './db_test_setup'
+import {setUpSqliteTestData} from '../setup/sqlite_setup'
 
 describe('SqliteClient', () => {
     const sqliteClient = createSqliteInMemoryClient()
@@ -12,7 +12,7 @@ describe('SqliteClient', () => {
         chai.use(chaiAsPromised)
         sqlite3.verbose()
 
-        await setupSqliteTestData(sqliteClient)
+        await setUpSqliteTestData(sqliteClient)
     })
 
     it('can get a scalar', () => {

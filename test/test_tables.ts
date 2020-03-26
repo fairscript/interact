@@ -21,8 +21,12 @@ export class Department {
 export const employees = defineTable(Employee, 'employees')
 export const departments = defineTable(Department, 'departments')
 
-export const testEmployeeRows =
+export const testEmployees =
     [
-        ['John', 'Doe', 'CEO', 10_000, 1],
-        ['Richard', 'Roe', 'CFO', 8_000, 1]
+        {id: 1, firstName: 'John', lastName: 'Doe', title: 'CEO', salary: 10_000, departmentId: 1},
+        {id: 2, firstName: 'Richard', lastName: 'Roe', title: 'CFO', salary: 8_000, departmentId: 1}
     ]
+
+export const testEmployeeRowsWithoutId = testEmployees.map(e =>
+    [e.firstName, e.lastName, e.title, e.salary, e.departmentId]
+)

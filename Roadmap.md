@@ -13,35 +13,41 @@
 - Dates
 
 ## v0.13
-- Byte arrays
-
-## v0.14
 - LIMIT, OFFSET
 - DISTINCT
 
-## v0.15
+## v0.14
 - HAVING
 - Aggregation without grouping
 
-## v0.16
+## v0.15
 - Publication to NPM
 
-## v0.17
+## v0.16
 - Set up and increase test coverage
 
+## v0.17.
+- Enable TypeScript strict mode
+
 ## v0.18
+- Move database-specific code to separate modules
+
+## v0.19
 - INSERT
 - DELETE
 - UPDATE
 
-## v0.19
-- String operations
-
 ## v0.20
-- Date operations
+- Byte arrays
 
 ## v0.21
-- Mathematical operations
+- String operations
 
 ## v0.22
+- Date operations
+
+## v0.23
+- Mathematical operations
+
+## v0.24
 - Array operations
