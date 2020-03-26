@@ -8,7 +8,7 @@ export class SqliteClient implements DatabaseClient {
 
     run(sql: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.db.run(sql, (err, row) => {
+            this.db.run(sql, err => {
                 if (err) {
                     reject(err)
                 }

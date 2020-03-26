@@ -1,8 +1,5 @@
 # Roadmap
 
-## v0.9
-- PostgreSQL support
-
 ## v0.9.1
 - BigQuery support
 

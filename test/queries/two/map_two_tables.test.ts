@@ -12,7 +12,7 @@ describe('Mapping on a join of two tables', () => {
                     department: d.name
                 })),
             [
-                'SELECT t1.first_name AS firstName, t1.last_name AS lastName, t2.name AS department',
+                'SELECT t1.first_name AS "firstName", t1.last_name AS "lastName", t2.name AS "department"',
                 'FROM employees t1',
                 'INNER JOIN departments t2 ON t1.department_id = t2.id'
             ]

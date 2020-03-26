@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.9.0
+- PostgreSQL support
+
 ## v0.8.1
 - Escaped underscores in property names of user-provided filter parameters
 

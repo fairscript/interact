@@ -1,7 +1,7 @@
 {
   "name": "lambda-sql",
-  "version": "0.8.1",
-  "description": "A (relatively) type-safe object-relational mapper for TypeScript with SQLite support and a fluent API",
+  "version": "0.9.0",
+  "description": "A (relatively) type-safe object-relational mapper for Node.js+TypeScript with a fluent API. Supports SQLite and PostgreSQL.",
   "keywords": [
     "lambda",
     "sql",

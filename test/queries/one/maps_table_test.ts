@@ -12,7 +12,7 @@ describe('mapS works', () => {
                 }))
 
         const expectedLines = [
-            'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1) AS count',
+            'SELECT t1.id AS "id", (SELECT COUNT(*) FROM employees s1) AS "count"',
             'FROM employees t1'
         ]
 
@@ -31,7 +31,7 @@ describe('mapS works', () => {
                     }))
 
             const expectedLines = [
-                'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1 WHERE s1.salary > t1.salary) AS higherSalary',
+                'SELECT t1.id AS "id", (SELECT COUNT(*) FROM employees s1 WHERE s1.salary > t1.salary) AS "higherSalary"',
                 'FROM employees t1'
             ]
 
@@ -49,7 +49,7 @@ describe('mapS works', () => {
                     }))
 
             const expectedLines = [
-                'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1 WHERE s1.salary > t1.salary) AS higherSalary',
+                'SELECT t1.id AS "id", (SELECT COUNT(*) FROM employees s1 WHERE s1.salary > t1.salary) AS "higherSalary"',
                 'FROM employees t1',
                 'WHERE t1.salary >= 5000'
             ]
@@ -68,7 +68,7 @@ describe('mapS works', () => {
                     }))
 
             const expectedLines = [
-                'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1 WHERE s1.salary > t1.salary) AS higherSalary',
+                'SELECT t1.id AS "id", (SELECT COUNT(*) FROM employees s1 WHERE s1.salary > t1.salary) AS "higherSalary"',
                 'FROM employees t1',
                 'ORDER BY t1.salary DESC'
             ]
@@ -87,7 +87,7 @@ describe('mapS works', () => {
                 }))
 
         const expectedLines = [
-            'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1 WHERE (s1.department_id = t1.department_id) AND (s1.salary > t1.salary)) AS higherSalary',
+            'SELECT t1.id AS "id", (SELECT COUNT(*) FROM employees s1 WHERE (s1.department_id = t1.department_id) AND (s1.salary > t1.salary)) AS "higherSalary"',
             'FROM employees t1'
         ]
 

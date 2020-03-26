@@ -22,6 +22,6 @@ export function generateGetProvided(get: GetProvided): string {
         parts.push(generatePath(get.path))
     }
 
-    return '$' + parts.join('_')
+    return ':' + parts.join('_')
 }
 

@@ -5,6 +5,7 @@ import {
 import {generateCount} from '../count_generation'
 import {generateColumnAccess} from '../column_access_generation'
 import {joinWithCommaWhitespace} from '../../parsing/parsing_helpers'
+import {generateAlias} from '../alias_generation'
 
 function generateGetPartOfKey(partOfKeyToTableAndProperty: { [part: string]: [string, string] }, part: string): string {
     const [tableAlias, property] = partOfKeyToTableAndProperty[part]
@@ -46,7 +47,7 @@ export function generateAggregationSelection(aggregation: Aggregation): string {
     const generateAggregationOperation = createGenerateAggregationOperation(partOfKeyToTableAndProperty, parameterToTable)
 
     const columnOperations = operations.map(([alias, operation]) =>
-        `${generateAggregationOperation(operation)} AS ${alias}`
+        generateAlias(generateAggregationOperation(operation), alias)
     )
 
     return joinWithCommaWhitespace(columnOperations)
