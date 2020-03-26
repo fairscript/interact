@@ -1,4 +1,4 @@
-import {createSqliteInFileClient, createSqliteInMemoryClient, SqliteClient} from './sqlite_client'
+import {createSqliteInFileClient, createSqliteInMemoryClient, SqliteClient} from '../clients/sqlite_client'
 import {DatabaseContext} from './database_context'
 
 export function createSqliteContext(client: SqliteClient): DatabaseContext {

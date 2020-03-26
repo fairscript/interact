@@ -21,7 +21,7 @@ export class Department {
 export const employees = defineTable(Employee, 'employees')
 export const departments = defineTable(Department, 'departments')
 
-export const employeeRows =
+export const testEmployeeRows =
     [
         ['John', 'Doe', 'CEO', 10_000, 1],
         ['Richard', 'Roe', 'CFO', 8_000, 1]

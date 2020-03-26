@@ -3,17 +3,9 @@ import {DatabaseClient} from './database_client'
 import {StringValueRecord} from '../record'
 const named = require('yesql').pg
 
-class PostgresClient implements DatabaseClient {
+export class PostgresClient implements DatabaseClient {
     constructor(private pg: Client) {
         types.setTypeParser(20, value => parseInt(value))
-    }
-
-    connect(): Promise<void> {
-        return this.pg.connect()
-    }
-
-    end(): Promise<void> {
-        return this.pg.end()
     }
 
     getRows<T>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {

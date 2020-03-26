@@ -1,35 +1,21 @@
 require('dotenv').config()
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {Client} from 'pg'
-import {createPostgresClient} from '../../lib/contexts/postgres_client'
-import {employeeRows} from '../test_tables'
-import {postgresSetup} from './db_test_setup'
+import {createPostgresClient} from '../../lib/clients/postgres_client'
+import {createPgTestClient, setupPostgresTestData} from './db_test_setup'
 
 describe('PostgresClient', () => {
 
-    const pg = new Client({
-        connectionString: process.env.POSTGRES_URL,
-        ssl: {
-            rejectUnauthorized: false
-        }
-    })
-
+    const pg = createPgTestClient()
     const client = createPostgresClient(pg)
 
     before(async() => {
         chai.should()
         chai.use(chaiAsPromised)
 
-        await client.connect()
+        await pg.connect()
 
-        await client.run(postgresSetup.truncateEmployeesTable)
-
-        await client.runBatch(
-            postgresSetup.insertTwoEmployees,
-            employeeRows)
-
-        createPostgresClient(pg)
+        await setupPostgresTestData(client)
     })
 
     it('can get a scalar', async() => {
@@ -51,7 +37,7 @@ describe('PostgresClient', () => {
     })
 
     after(async() => {
-        await client.end()
+        await pg.end()
     })
 
 })
