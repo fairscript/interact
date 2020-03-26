@@ -11,7 +11,7 @@ export function generatePath(path: string[]): string {
     return joinWithUnderscore(escapedPath)
 }
 
-export function generateGetProvided(get: GetProvided): string {
+export function computePlaceholderName(get: GetProvided) {
     let parts = []
 
     parts.push(get.prefix)
@@ -22,6 +22,12 @@ export function generateGetProvided(get: GetProvided): string {
         parts.push(generatePath(get.path))
     }
 
-    return ':' + parts.join('_')
+    const placeholderName = parts.join('_')
+
+    return placeholderName
+}
+
+export function generateGetProvided(namedParameterPrefix: string, get: GetProvided): string {
+    return namedParameterPrefix + computePlaceholderName(get)
 }
 

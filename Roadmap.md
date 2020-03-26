@@ -1,8 +1,5 @@
 # Roadmap
 
-## v0.9.1
-- BigQuery support
-
 ## v0.10
 - Joins of up to five tables (using code generation)
 

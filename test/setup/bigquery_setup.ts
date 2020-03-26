@@ -4,7 +4,7 @@ import * as assert from 'assert'
 import {join} from '../../lib/parsing/parsing_helpers'
 import * as toSnakeCase from 'js-snakecase'
 
-export function createBigQueryTestClient(): BigQuery {
+export function createBigQueryForTests(): BigQuery {
     return new BigQuery({
         projectId: 'lambda-sql',
         keyFilename: process.env.BIGQUERY_SERVICE_ACCOUNT
@@ -43,8 +43,8 @@ function generateTimestamp(): string {
     return `${dateParts}_${timeParts}`
 }
 
-export function computeBigQueryTestTableName(): string {
-    return `employees_${generateTimestamp()}`
+export function computeBigQueryTestTableName(prefix: string): string {
+    return `${prefix}_employees_${generateTimestamp()}`
 }
 
 export async function setupBigQueryTestData(client: BigQuery, datasetName: string, tableName: string) {
@@ -89,7 +89,7 @@ export async function setupBigQueryTestData(client: BigQuery, datasetName: strin
 
 }
 
-export async function tearDownBigQuery(client: BigQuery, datasetName: string, tableName: string) {
+export async function tearDownBigQueryTestData(client: BigQuery, datasetName: string, tableName: string) {
     const dataset = client.dataset(datasetName)
     const table = dataset.table(tableName)
 

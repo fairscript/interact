@@ -7,12 +7,13 @@ import {generateGroupBy} from './group_by_generation'
 import {generateInnerJoin} from './join_generation'
 import {joinWithNewLine} from '../parsing/parsing_helpers'
 import {StringValueRecord} from '../record'
+import {Dialect} from '../dialects/dialects'
 
-export function generateSql(statement: SelectStatement): [string, StringValueRecord] {
+export function generateSql(dialect: Dialect, statement: SelectStatement): [string, StringValueRecord] {
     const {selection, tableName, filters, key, orders, join} = statement
 
     const clauses = [
-        generateSelect(selection),
+        generateSelect(dialect, selection),
         generateFrom(tableName)
     ]
     let parameters = {}
@@ -22,7 +23,7 @@ export function generateSql(statement: SelectStatement): [string, StringValueRec
     }
 
     if (filters.length > 0) {
-        const [whereSql, whereParameters] = generateWhere(filters)
+        const [whereSql, whereParameters] = generateWhere(dialect.namedParameterPrefix, dialect.useNamedParameterPrefixInRecord, filters)
         clauses.push(whereSql)
         parameters = {
             ...parameters,

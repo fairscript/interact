@@ -6,7 +6,7 @@ describe('Mapping on a single table', () => {
         checkSql(
             employees.map(e => ({ firstName: e.firstName, lastName: e.lastName })),
             [
-                'SELECT t1.first_name AS "firstName", t1.last_name AS "lastName"',
+                'SELECT t1.first_name AS firstName, t1.last_name AS lastName',
                 'FROM employees t1'
             ]
         )

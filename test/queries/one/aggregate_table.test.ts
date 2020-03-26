@@ -7,7 +7,7 @@ describe('Aggregation', () => {
 
     function computeExpectedLines(aggregationPart: string): string[] {
         return [
-            `SELECT t1.department_id AS "departmentId", ${aggregationPart}`,
+            `SELECT t1.department_id AS departmentId, ${aggregationPart}`,
             'FROM employees t1',
             'GROUP BY t1.department_id'
         ]
@@ -17,7 +17,7 @@ describe('Aggregation', () => {
         checkSql(
             groupedByDepartmentId
                 .aggregate((k, e) => ({departmentId: k.departmentId, average: e.salary.avg()})),
-            computeExpectedLines('AVG(t1.salary) AS "average"')
+            computeExpectedLines('AVG(t1.salary) AS average')
         )
     })
 
@@ -25,7 +25,7 @@ describe('Aggregation', () => {
         checkSql(
             groupedByDepartmentId
                 .aggregate((k, e) => ({departmentId: k.departmentId, maximum: e.salary.max()})),
-            computeExpectedLines('MAX(t1.salary) AS "maximum"')
+            computeExpectedLines('MAX(t1.salary) AS maximum')
         )
     })
 
@@ -33,7 +33,7 @@ describe('Aggregation', () => {
         checkSql(
             groupedByDepartmentId
                 .aggregate((k, e) => ({departmentId: k.departmentId, minimum: e.salary.min()})),
-            computeExpectedLines('MIN(t1.salary) AS "minimum"')
+            computeExpectedLines('MIN(t1.salary) AS minimum')
         )
     })
 
@@ -41,7 +41,7 @@ describe('Aggregation', () => {
         checkSql(
             groupedByDepartmentId
                 .aggregate((k, e) => ({departmentId: k.departmentId, sum: e.salary.sum()})),
-            computeExpectedLines('SUM(t1.salary) AS "sum"')
+            computeExpectedLines('SUM(t1.salary) AS sum')
         )
     })
 
@@ -49,7 +49,7 @@ describe('Aggregation', () => {
         checkSql(
             groupedByDepartmentId
                 .aggregate((k, e, count) => ({departmentId: k.departmentId, count: count()})),
-            computeExpectedLines('COUNT(*) AS "count"')
+            computeExpectedLines('COUNT(*) AS count')
         )
     })
 
@@ -64,7 +64,7 @@ describe('Aggregation', () => {
                     sum: e.salary.sum(),
                     count: count()
                 })),
-            computeExpectedLines('AVG(t1.salary) AS "average", MAX(t1.salary) AS "maximum", MIN(t1.salary) AS "minimum", SUM(t1.salary) AS "sum", COUNT(*) AS "count"')
+            computeExpectedLines('AVG(t1.salary) AS average, MAX(t1.salary) AS maximum, MIN(t1.salary) AS minimum, SUM(t1.salary) AS sum, COUNT(*) AS count')
         )
     })
 })

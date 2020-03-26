@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.9.1
+- BigQuery support
+- Fixed column names in single table selections
+
 ## v0.9.0
 - PostgreSQL support
 

@@ -1,24 +1,19 @@
-import {createPgTestClient, setUpPostgresTestData} from '../setup/postgres_setup'
-
 require('dotenv').config()
+
+import {createPgTestClient, setUpPostgresTestData} from '../setup/postgres_setup'
 import {createPostgresContext} from '../../lib/contexts/postgres_context'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {
-    testParallelQueries,
-    testRowQuery,
-    testScalarQuery,
-    testSingleRowQuery,
-    testSingleRowQueryWithNumberParameter,
-    testSingleRowQueryWithObjectParameter
-} from './database_context_tests'
+import {createDatabaseContextTestSuite} from './database_context_tests'
 import {createPostgresClient} from '../../lib/clients/postgres_client'
+import {employees} from '../test_tables'
 
-describe('Postgres client', () => {
+describe('Postgres context', () => {
 
     const pg = createPgTestClient()
     const client = createPostgresClient(pg)
     const ctx = createPostgresContext(client)
+    const suite = createDatabaseContextTestSuite(ctx, employees)
 
     before(async() => {
         chai.should()
@@ -29,29 +24,29 @@ describe('Postgres client', () => {
         await setUpPostgresTestData(client)
     })
 
-    it('can get a scalar', () => testScalarQuery(ctx))
+    it('can get a scalar', () => suite.testScalarQuery())
 
     describe('can get a single row', () => {
         it(
             'without a parameter',
-            () =>  testSingleRowQuery(ctx))
+            () => suite.testSingleRowQuery())
 
         it(
             'with a number parameter',
-            () => testSingleRowQueryWithNumberParameter(ctx))
+            () => suite.testSingleRowQueryWithNumberParameter())
 
         it(
             'with an object parameter',
-            () => testSingleRowQueryWithObjectParameter(ctx))
+            () => suite.testSingleRowQueryWithObjectParameter())
     })
 
     it(
         'can get multiple rows',
-        () => testRowQuery(ctx))
+        () => suite.testRowQuery())
 
     it(
         'can run queries in parallel',
-        () => testParallelQueries(ctx))
+        () => suite.testParallelQueries())
 
     after(async() => {
         await pg.end()

@@ -1,12 +1,13 @@
 import {SelectStatement} from '../select_statement'
 import {generateSql} from '../generation/sql_generation'
 import {StringValueRecord} from '../record'
+import {Dialect} from '../dialects/dialects'
 
 export abstract class SelectGenerator<T> {
     protected constructor(protected statement: SelectStatement) {}
 
-    toSql(): [string, StringValueRecord] {
-        return generateSql(this.statement)
+    toSql(dialect: Dialect): [string, StringValueRecord] {
+        return generateSql(dialect, this.statement)
     }
 }
 

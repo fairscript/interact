@@ -8,21 +8,8 @@ export class PostgresClient implements DatabaseClient {
         types.setTypeParser(20, value => parseInt(value))
     }
 
-    private supportNamedParameters(sql: string, parameters: StringValueRecord = {}): QueryConfig {
-        // sqlite3 expects an object with the prefix (":"), yesql expects an object without the prefix.
-        const parametersWithoutPrefix = Object.keys(parameters).reduce(
-            (acc, key) => {
-                acc[key.slice(1)] = parameters[key]
-                return acc
-            },
-            {}
-        )
-
-        return named(sql)(parametersWithoutPrefix)
-    }
-
     getRows<T>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {
-        return this.pg.query(this.supportNamedParameters(sql, parameters))
+        return this.pg.query(named(sql)(parameters))
             .then(res => res.rows)
     }
 

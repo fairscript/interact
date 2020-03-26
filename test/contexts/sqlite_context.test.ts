@@ -4,19 +4,14 @@ import * as chaiAsPromised from 'chai-as-promised'
 import {createSqliteInMemoryClient} from '../../lib/clients/sqlite_client'
 import {createSqliteContext} from '../../lib'
 import {setUpSqliteTestData} from '../setup/sqlite_setup'
-import {
-    testParallelQueries,
-    testRowQuery,
-    testScalarQuery,
-    testSingleRowQuery,
-    testSingleRowQueryWithNumberParameter,
-    testSingleRowQueryWithObjectParameter
-} from './database_context_tests'
+import {createDatabaseContextTestSuite} from './database_context_tests'
+import {employees} from '../test_tables'
 
-describe('Sqlite context', () => {
+describe('SQLite context', () => {
 
     const sqliteClient = createSqliteInMemoryClient()
     const ctx = createSqliteContext(sqliteClient)
+    const suite = createDatabaseContextTestSuite(ctx, employees)
 
     before(async() => {
         chai.should()
@@ -26,28 +21,28 @@ describe('Sqlite context', () => {
         await setUpSqliteTestData(sqliteClient)
     })
 
-    it('can get a scalar', () => testScalarQuery(ctx))
+    it('can get a scalar', () => suite.testScalarQuery())
 
     describe('can get a single row', () => {
 
         it(
             'without a parameter',
-            () =>  testSingleRowQuery(ctx))
+            () =>  suite.testSingleRowQuery())
 
         it(
             'with a number parameter',
-            () => testSingleRowQueryWithNumberParameter(ctx))
+            () => suite.testSingleRowQueryWithNumberParameter())
 
         it(
             'with an object parameter',
-            () => testSingleRowQueryWithObjectParameter(ctx))
+            () => suite.testSingleRowQueryWithObjectParameter())
     })
 
     it(
         'can get multiple rows',
-        () => testRowQuery(ctx))
+        () => suite.testRowQuery())
 
     it(
         'can run queries in parallel',
-        () => testParallelQueries(ctx))
+        () => suite.testParallelQueries())
 })

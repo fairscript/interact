@@ -1,31 +1,31 @@
-import {BigQueryClient} from '../../lib/clients/bigquery_client'
+import {BigQueryClient, createBigQueryClient} from '../../lib/clients/bigquery_client'
 
 require('dotenv').config()
 import * as assert from 'assert'
 import {
-    createBigQueryTestClient,
+    createBigQueryForTests,
     computeBigQueryTestTableName,
     setupBigQueryTestData,
-    tearDownBigQuery
+    tearDownBigQueryTestData
 } from '../setup/bigquery_setup'
 
 describe('BigQueryClient', () => {
 
-    const bigQuery = createBigQueryTestClient()
-    const datasetName = 'testdataset'
-    const tableName = computeBigQueryTestTableName()
+    const bigQuery = createBigQueryForTests()
+    const datasetId = 'testdataset'
+    const tableName = computeBigQueryTestTableName('client_tests')
 
-    const client = new BigQueryClient(bigQuery)
+    const client = createBigQueryClient(bigQuery, datasetId)
 
     before(async() => {
-        await setupBigQueryTestData(bigQuery, datasetName, tableName)
+        await setupBigQueryTestData(bigQuery, datasetId, tableName)
     })
 
     it('can get a scalar', async() => {
         const count = await client.getScalar(
             `
                 SELECT COUNT(*)
-                FROM \`${datasetName}.${tableName}\`;
+                FROM ${tableName};
             `,
             {})
 
@@ -36,7 +36,7 @@ describe('BigQueryClient', () => {
         const row = await client.getSingleRow(
             `
                 SELECT first_name AS firstName, last_name AS lastName
-                FROM \`${datasetName}.${tableName}\`
+                FROM ${tableName}
                 WHERE id = 1;
             `,
             {})
@@ -48,7 +48,7 @@ describe('BigQueryClient', () => {
         const rows = await client.getRows(
             `
                 SELECT first_name AS firstName, last_name AS lastName
-                FROM \`${datasetName}.${tableName}\`
+                FROM ${tableName}
                 ORDER BY id ASC
             `,
             {})
@@ -62,7 +62,7 @@ describe('BigQueryClient', () => {
     })
 
     after(async() => {
-        await tearDownBigQuery(bigQuery, datasetName, tableName)
+        await tearDownBigQueryTestData(bigQuery, datasetId, tableName)
     })
 
 })

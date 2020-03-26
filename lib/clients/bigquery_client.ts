@@ -1,23 +1,21 @@
 import {DatabaseClient} from './database_client'
 import {StringValueRecord} from '../record'
-import {BigQuery} from '@google-cloud/bigquery'
+import {BigQuery, Dataset, Query} from '@google-cloud/bigquery'
 
 export class BigQueryClient implements DatabaseClient {
-    constructor(private client: BigQuery) {}
+    private dataset: Dataset
+
+    constructor(private bigQuery: BigQuery, datasetId: string) {
+        this.dataset = this.bigQuery.dataset(datasetId)
+    }
 
     getRows<T>(sql: string, parameters: StringValueRecord): Promise<T[]> {
-        return new Promise<T[]>((res, rej) => {
-            this.client
-                .createQueryJob(sql)
-                .then(([job]) => {
-
-                    job.getQueryResults()
-                        .then(([rows]) => res(rows))
-                        .catch(err => rej(err))
-
-                })
-                .catch(err => rej(err))
-        })
+        return this.dataset
+            .query({
+                query: sql,
+                params: parameters
+            })
+            .then(([rows]) => rows)
     }
 
     getSingleRow<T>(sql: string, parameters: StringValueRecord): Promise<T> {
@@ -28,4 +26,8 @@ export class BigQueryClient implements DatabaseClient {
         return this.getSingleRow<T>(sql, parameters).then(row => Object.values(row)[0])
     }
 
+}
+
+export function createBigQueryClient(bigQuery: BigQuery, datasetId: string): BigQueryClient {
+    return new BigQueryClient(bigQuery, datasetId)
 }

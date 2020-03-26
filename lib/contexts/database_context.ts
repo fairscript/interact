@@ -1,16 +1,17 @@
 import {RowSelectGenerator, ScalarSelectGenerator, SingleRowSelectGenerator} from '../queries/select_generators'
 import {DatabaseClient} from '../clients/database_client'
+import {Dialect} from '../dialects/dialects'
 
 type ExtractTypeParameterFromSelectGenerator<T> = T extends ScalarSelectGenerator<infer V>|SingleRowSelectGenerator<infer V>|RowSelectGenerator<infer V> ? V : never
 
 export class DatabaseContext {
-    constructor(private client: DatabaseClient) {}
+    constructor(private client: DatabaseClient, private dialect: Dialect) {}
 
     get<T>(generator: SingleRowSelectGenerator<T>): Promise<T>
     get<T>(generator: ScalarSelectGenerator<T>): Promise<T>
     get<T>(generator: RowSelectGenerator<T>): Promise<T[]>
     get<T>(generator: ScalarSelectGenerator<T>|SingleRowSelectGenerator<T>|RowSelectGenerator<T>): Promise<T>|Promise<T[]> {
-        const [sql, parameters] = generator.toSql()
+        const [sql, parameters] = generator.toSql(this.dialect)
 
         switch (generator.kind) {
             case 'scalar-select-generator':

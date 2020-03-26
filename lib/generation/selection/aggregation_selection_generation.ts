@@ -41,13 +41,13 @@ function createGenerateAggregationOperation(
     }
 }
 
-export function generateAggregationSelection(aggregation: Aggregation): string {
+export function generateAggregationSelection(aliasEscape: string, aggregation: Aggregation): string {
     const {partOfKeyToTableAndProperty, parameterToTable, operations} = aggregation
 
     const generateAggregationOperation = createGenerateAggregationOperation(partOfKeyToTableAndProperty, parameterToTable)
 
     const columnOperations = operations.map(([alias, operation]) =>
-        generateAlias(generateAggregationOperation(operation), alias)
+        generateAlias(aliasEscape, generateAggregationOperation(operation), alias)
     )
 
     return joinWithCommaWhitespace(columnOperations)

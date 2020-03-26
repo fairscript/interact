@@ -5,7 +5,7 @@ import {Comparison, Side} from '../parsing/predicate/comparison'
 import {Concatenation, TailItem} from '../parsing/predicate/concatenation'
 import {InsideParentheses} from '../parsing/predicate/inside_parentheses'
 import {joinWithWhitespace} from '../parsing/parsing_helpers'
-import {generateGetProvided} from './get_provided_generation'
+import {computePlaceholderName, generateGetProvided} from './get_provided_generation'
 import {StringValueRecord, ValueOrNestedStringValueRecord} from '../record'
 
 
@@ -28,48 +28,48 @@ function generateBinaryLogicalOperator(operator: '&&' | '||'): string {
     }
 }
 
-function generateTailItem(parameterNameToTableAlias: { [parameterName: string]: string }): (item: TailItem) => string {
+function generateTailItem(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }): (item: TailItem) => string {
     return item => {
         const binaryOperator = generateBinaryLogicalOperator(item.operator)
-        const predicate = generatePredicate(parameterNameToTableAlias, item.expression)
+        const predicate = generatePredicate(namedParameterPrefix, parameterNameToTableAlias, item.expression)
 
         return `${binaryOperator} ${predicate}`
     }
 }
 
-function generateSide(parameterNameToTableAlias: { [parameterName: string]: string }, side: Side): string {
+function generateSide(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, side: Side): string {
     switch (side.kind) {
         case 'get-column':
             return generateGetColumn(parameterNameToTableAlias, side)
         case 'constant':
             return generateConstant(side)
         case 'get-provided':
-            return generateGetProvided(side)
+            return generateGetProvided(namedParameterPrefix, side)
     }
 }
 
-function generateComparison(parameterNameToTableAlias: { [parameterName: string]: string }, predicate: Comparison): string {
-    return `${generateSide(parameterNameToTableAlias, predicate.left)} ${predicate.operator} ${generateSide(parameterNameToTableAlias, predicate.right)}`
+function generateComparison(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, predicate: Comparison): string {
+    return `${generateSide(namedParameterPrefix, parameterNameToTableAlias, predicate.left)} ${predicate.operator} ${generateSide(namedParameterPrefix, parameterNameToTableAlias, predicate.right)}`
 }
 
-function generateInsideParentheses(parameterNameToTableAlias: { [parameterName: string]: string }, predicate: InsideParentheses): string {
-    return '(' + generatePredicate(parameterNameToTableAlias, predicate.inside) + ')'
+function generateInsideParentheses(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, predicate: InsideParentheses): string {
+    return '(' + generatePredicate(namedParameterPrefix, parameterNameToTableAlias, predicate.inside) + ')'
 }
 
-function generateConcatenation(parameterNameToTableAlias: { [parameterName: string]: string }, predicate: Concatenation): string {
-    const head = generatePredicate(parameterNameToTableAlias, predicate.head)
+function generateConcatenation(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, predicate: Concatenation): string {
+    const head = generatePredicate(namedParameterPrefix, parameterNameToTableAlias, predicate.head)
 
-    return joinWithWhitespace([head].concat(predicate.tail.map(generateTailItem(parameterNameToTableAlias))))
+    return joinWithWhitespace([head].concat(predicate.tail.map(generateTailItem(namedParameterPrefix, parameterNameToTableAlias))))
 }
 
-function generatePredicate(parameterNameToTableAlias: { [parameterName: string]: string }, predicate: PredicateExpression): string {
+function generatePredicate(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, predicate: PredicateExpression): string {
     switch (predicate.kind) {
         case 'comparison':
-            return generateComparison(parameterNameToTableAlias, predicate)
+            return generateComparison(namedParameterPrefix, parameterNameToTableAlias, predicate)
         case 'inside':
-            return generateInsideParentheses(parameterNameToTableAlias, predicate)
+            return generateInsideParentheses(namedParameterPrefix, parameterNameToTableAlias, predicate)
         case 'concatenation':
-            return generateConcatenation(parameterNameToTableAlias, predicate)
+            return generateConcatenation(namedParameterPrefix, parameterNameToTableAlias, predicate)
     }
 }
 
@@ -113,12 +113,14 @@ function findGetProvided(expression: PredicateExpression, collection: GetProvide
 }
 
 function recordFilterParameters(
+    namedParameterPrefix: string,
+    useNamedParameterPrefixInRecord: boolean,
     predicate: PredicateExpression,
     userProvidedParameter: ValueOrNestedStringValueRecord): StringValueRecord {
 
     return findGetProvided(predicate).reduce(
         (acc, item) => {
-            const key = generateGetProvided(item)
+            const key = (useNamedParameterPrefixInRecord ? namedParameterPrefix : '') + computePlaceholderName(item)
             const value = item.path.length === 0 ? userProvidedParameter: getByPath(userProvidedParameter, item.path)
 
             acc[key] = value
@@ -128,24 +130,24 @@ function recordFilterParameters(
         {})
 }
 
-export function generateFilter(filter: Filter): [string, StringValueRecord] {
+export function generateFilter(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, filter: Filter): [string, StringValueRecord] {
     const { tableParameterToTableAlias, predicate } = filter
 
-    const sql = generatePredicate(tableParameterToTableAlias, predicate)
+    const sql = generatePredicate(namedParameterPrefix, tableParameterToTableAlias, predicate)
 
     const parameters = filter.kind === 'parameterless-filter'
         ? {}
-        : recordFilterParameters(predicate, filter.userProvided)
+        : recordFilterParameters(namedParameterPrefix, useNamedParameterPrefixInRecord, predicate, filter.userProvided)
 
     return [sql, parameters]
 }
 
-export function generateFilters(filters: Filter[]): [string, StringValueRecord] {
+export function generateFilters(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, filters: Filter[]): [string, StringValueRecord] {
     if (filters.length == 1) {
-        return generateFilter(filters[0])
+        return generateFilter(namedParameterPrefix, useNamedParameterPrefixInRecord, filters[0])
     }
     else {
-        const generatedFilters = filters.map(generateFilter)
+        const generatedFilters = filters.map(f => generateFilter(namedParameterPrefix, useNamedParameterPrefixInRecord, f))
 
         const combinedSql = generatedFilters
             .map(([sql, _]) => sql)
@@ -168,8 +170,8 @@ export function generateFilters(filters: Filter[]): [string, StringValueRecord] 
     }
 }
 
-export function generateWhere(filters: Filter[]): [string, StringValueRecord] {
-    const [predicateSql, parameters] = generateFilters(filters)
+export function generateWhere(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, filters: Filter[]): [string, StringValueRecord] {
+    const [predicateSql, parameters] = generateFilters(namedParameterPrefix, useNamedParameterPrefixInRecord, filters)
 
     return [`WHERE ${predicateSql}`, parameters]
 }
