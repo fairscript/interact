@@ -9,10 +9,11 @@ import {joinWithNewLine} from '../parsing/parsing_helpers'
 import {Dialect} from '../databases/dialects'
 import {StringValueRecord} from '../record'
 import {generateLimit} from './limit_generation'
+import {generateOffset} from './offset_generation'
 
 
 export function generateSelectStatementSql(dialect: Dialect, statement: SelectStatement): string {
-    const {selection, tableName, filters, key, orders, join, limit} = statement
+    const {selection, tableName, filters, key, orders, join, limit, offset} = statement
 
     const clauses = [
         generateSelect(dialect.aliasEscape, dialect.namedParameterPrefix, selection!),
@@ -37,6 +38,10 @@ export function generateSelectStatementSql(dialect: Dialect, statement: SelectSt
 
     if (limit !== 'all') {
         clauses.push(generateLimit(limit))
+    }
+
+    if (offset > 0) {
+        clauses.push(generateOffset(offset))
     }
 
     return joinWithNewLine(clauses)

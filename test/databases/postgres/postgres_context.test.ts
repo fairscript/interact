@@ -48,6 +48,10 @@ describe('Postgres context', () => {
         it(
             'with a limit',
             () => suite.testLimitedQuery())
+
+        it(
+            'with a limited offset',
+            () => suite.testLimitedOffsetQuery())
     })
 
     it(

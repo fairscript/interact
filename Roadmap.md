@@ -1,10 +1,7 @@
 # Roadmap
 
-## v0.10.1
-- OFFSET
-
 ## v0.10.2
-- DISTINCT
+- DISTINCT setting
 
 ## v0.11
 - Joins of up to five tables
@@ -37,13 +34,16 @@
 - Byte arrays
 
 ## v0.20
-- String operations
+- Set clauses
 
 ## v0.21
-- Date operations
+- String operations
 
 ## v0.22
-- Mathematical operations
+- Date operations
 
 ## v0.23
+- Mathematical operations
+
+## v0.24
 - Array operations

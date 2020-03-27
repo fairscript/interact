@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.10.1
+- OFFSET setting
+
 ## v0.10.0
 - LIMIT clause
 

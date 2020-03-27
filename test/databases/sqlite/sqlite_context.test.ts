@@ -24,7 +24,6 @@ describe('SQLite context', () => {
     it('can get a scalar', () => suite.testScalarQuery())
 
     describe('can get a single row', () => {
-
         it(
             'without a parameter',
             () =>  suite.testSingleRowQuery())
@@ -46,6 +45,10 @@ describe('SQLite context', () => {
         it(
             'with a limit',
             () => suite.testLimitedQuery())
+
+        it(
+            'with a limited offset',
+            () => suite.testLimitedOffsetQuery())
     })
 
     it(

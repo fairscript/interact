@@ -15,7 +15,8 @@ export interface SelectStatement {
     orders: OrderExpression[]
     join: JoinExpression|null
     key: Key|null
-    limit: number|'all'
+    limit: number|'all',
+    offset: number,
 
     kind: 'select-statement'
 }
@@ -29,6 +30,7 @@ export function createEmptySelectStatement(tableName: string): SelectStatement {
         join: null,
         key: null,
         limit: 'all',
+        offset: 0,
         kind: 'select-statement'
     }
 }

@@ -42,6 +42,11 @@ export function createDatabaseContextTestSuite(ctx: DatabaseContext, employees: 
         { firstName: 'Richard', lastName: 'Roe'}
     ]
 
+    const limitedOffsetQuery = rowsQuery.limit(1).offset(1)
+    const expectedLimitedOffsetResult = [
+        { firstName: 'Richard', lastName: 'Roe'}
+    ]
+
     return {
         testScalarQuery: () => {
             const promiseOfScalar = ctx
@@ -89,6 +94,14 @@ export function createDatabaseContextTestSuite(ctx: DatabaseContext, employees: 
 
             return promiseOfLimitedRows
                 .should.eventually.eql(expectedLimitedResult)
+        },
+
+        testLimitedOffsetQuery: () => {
+            const promiseOfLimitedOffsetRows = ctx
+                .run(limitedOffsetQuery)
+
+            return promiseOfLimitedOffsetRows
+                .should.eventually.eql(expectedLimitedOffsetResult)
         },
 
         testParallelQueries: () => {
