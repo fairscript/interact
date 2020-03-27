@@ -1,6 +1,7 @@
 import {DatabaseClient} from '../database_client'
 import {StringValueRecord} from '../../record'
 import {BigQuery, Dataset, Query} from '@google-cloud/bigquery'
+import {Value} from '../../value'
 
 export class BigQueryClient implements DatabaseClient {
     private dataset: Dataset
@@ -9,7 +10,7 @@ export class BigQueryClient implements DatabaseClient {
         this.dataset = this.bigQuery.dataset(datasetId)
     }
 
-    getRows<T>(sql: string, parameters: StringValueRecord): Promise<T[]> {
+    getRows<T extends StringValueRecord>(sql: string, parameters: StringValueRecord): Promise<T[]> {
         return this.dataset
             .query({
                 query: sql,
@@ -18,12 +19,12 @@ export class BigQueryClient implements DatabaseClient {
             .then(([rows]) => rows)
     }
 
-    getSingleRow<T>(sql: string, parameters: StringValueRecord): Promise<T> {
+    getSingleRow<T extends StringValueRecord>(sql: string, parameters: StringValueRecord): Promise<T> {
         return this.getRows<T>(sql, parameters).then(rows => rows[0])
     }
 
-    getScalar<T>(sql: string, parameters: StringValueRecord): Promise<T> {
-        return this.getSingleRow<T>(sql, parameters).then(row => Object.values(row)[0])
+    getScalar<T extends Value>(sql: string, parameters: StringValueRecord): Promise<T> {
+        return this.getSingleRow<StringValueRecord>(sql, parameters).then(row => Object.values(row)[0] as T)
     }
 
 }

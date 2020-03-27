@@ -29,7 +29,7 @@ describe('BigQueryClient', () => {
             `,
             {})
 
-        assert.equal(count, 2)
+        assert.equal(count, 3)
     })
 
     it('can get a single row', async() => {
@@ -57,7 +57,8 @@ describe('BigQueryClient', () => {
             rows,
             [
                 { firstName: 'John', lastName: 'Doe'},
-                { firstName: 'Richard', lastName: 'Roe'}
+                { firstName: 'Richard', lastName: 'Roe'},
+                { firstName: 'Bob', lastName: 'Smith'}
             ])
     })
 

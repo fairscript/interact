@@ -1,37 +1,37 @@
 import {DatabaseClient} from './database_client'
 import {Dialect} from './dialects'
-import {SelectScalar} from '../queries/selections/select_scalar'
-import {SelectSingleRow} from '../queries/selections/select_single_row'
-import {SelectRows} from '../queries/selections/select_rows'
+import {SelectStatement} from '../select_statement'
 import {generateSelectStatementParameters, generateSelectStatementSql} from '../generation/select_statement_generation'
 
-type ExtractTypeParameterFromSelection<T> = T extends SelectScalar<infer V>|SelectSingleRow<infer V>|SelectRows<infer V> ? V : never
+export interface Runnable<T> {
+    statement: SelectStatement
+    client: 'scalar'|'single-row'|'rows'
+}
+
+type ExtractTypeParameterFromRunnable<T> = T extends Runnable<infer V> ? V : never
 
 export class DatabaseContext {
     constructor(private client: DatabaseClient, private dialect: Dialect) {}
 
-    get<T>(select: SelectSingleRow<T>): Promise<T>
-    get<T>(select: SelectScalar<T>): Promise<T>
-    get<T>(select: SelectRows<T>): Promise<T[]>
-    get<T>(select: SelectScalar<T>|SelectSingleRow<T>|SelectRows<T>): Promise<T>|Promise<T[]> {
-        const sql = generateSelectStatementSql(this.dialect, select.statement)
-        const parameters = generateSelectStatementParameters(this.dialect, select.statement)
+    run<T>({ statement, client }: Runnable<T>): Promise<T> {
+        const sql = generateSelectStatementSql(this.dialect, statement)
+        const parameters = generateSelectStatementParameters(this.dialect, statement)
 
-        switch (select.kind) {
-            case 'scalar-select-generator':
-                return this.client.getScalar<T>(sql, parameters)
-            case 'single-row-select-generator':
-                return this.client.getSingleRow<T>(sql, parameters)
-            case 'row-select-generator':
-                return this.client.getRows<T>(sql, parameters)
+        switch (client) {
+            case 'scalar':
+                return this.client.getScalar(sql, parameters) as Promise<any>
+            case 'single-row':
+                return this.client.getSingleRow(sql, parameters) as Promise<any>
+            case 'rows':
+                return this.client.getRows(sql, parameters) as Promise<any>
         }
     }
 
-    parallelGet<T extends {[K in keyof T]: SelectScalar<any>|SelectSingleRow<any>|SelectRows<any>}, K extends string>(queries: T): Promise<{ [K in keyof T]: ExtractTypeParameterFromSelection<T[K]> }> {
+    parallelRun<T extends {[K in keyof T]: Runnable<any>}, K extends string>(queries: T): Promise<{ [K in keyof T]: ExtractTypeParameterFromRunnable<T[K]> }> {
         const promises = Object.keys(queries)
             .map(key =>
                 this
-                    .get(queries[key])
+                    .run(queries[key])
                     .then(result => [key, result] as [string, any])
             )
 
@@ -43,7 +43,7 @@ export class DatabaseContext {
                         acc[key] = result
                         return acc
                     },
-                    {} as { [K in keyof T]: ExtractTypeParameterFromSelection<T[K]> })
+                    {} as { [K in keyof T]: ExtractTypeParameterFromRunnable<T[K]> })
             )
     }
 }

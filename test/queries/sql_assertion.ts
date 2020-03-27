@@ -1,9 +1,9 @@
 import * as assert from 'assert'
 import {joinWithNewLine} from '../../lib/parsing/parsing_helpers'
 import {sqliteDialect} from '../../lib/databases/sqlite/sqlite_dialect'
-import {SelectScalar} from '../../lib/queries/selections/select_scalar'
-import {SelectSingleRow} from '../../lib/queries/selections/select_single_row'
-import {SelectRows} from '../../lib/queries/selections/select_rows'
+import {SelectScalar} from '../../lib/queries/selection/select_scalar'
+import {SelectSingleRow} from '../../lib/queries/selection/select_single_row'
+import {SelectRows} from '../../lib/queries/selection/select_rows'
 import {generateSelectStatementSql} from '../../lib/generation/select_statement_generation'
 
 export function checkSql<T>(

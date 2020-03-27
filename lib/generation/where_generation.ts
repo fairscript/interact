@@ -115,7 +115,7 @@ function findGetProvided(expression: PredicateExpression, collection: GetProvide
         case 'comparison':
             const { left, right } = expression
 
-            const comparisonItems = []
+            const comparisonItems: GetProvided[] = []
 
             if (left.kind === 'get-provided') {
                 comparisonItems.push(left)

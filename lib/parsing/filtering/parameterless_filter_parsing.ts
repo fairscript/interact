@@ -6,7 +6,6 @@ import {
     PredicateExpression
 } from '../filter_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
-import {StringValueRecord} from '../../record'
 
 export function parseParameterlessPredicate(tableParameters: string[], expression: string): PredicateExpression {
     const sideParser = createConstantOrColumnSideParser(tableParameters)

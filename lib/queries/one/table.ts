@@ -16,8 +16,8 @@ import {parseSelectSingleTable} from '../../parsing/selection/single_table_selec
 import {Subtable} from './subtable'
 import {parseParameterlessFilter} from '../../parsing/filtering/parameterless_filter_parsing'
 import {parseParameterizedFilter} from '../../parsing/filtering/parameterized_filter_parsing'
-import {SelectScalar} from '../selections/select_scalar'
-import {SelectRows} from '../selections/select_rows'
+import {SelectScalar} from '../selection/select_scalar'
+import {SelectRows} from '../selection/select_rows'
 
 
 export class Table<T> {

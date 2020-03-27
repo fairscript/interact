@@ -1,6 +1,7 @@
 import {Client, QueryConfig, types} from 'pg'
 import {DatabaseClient} from '../database_client'
 import {StringValueRecord} from '../../record'
+import {Value} from '../../value'
 const named = require('yesql').pg
 
 export class PostgresClient implements DatabaseClient {
@@ -8,19 +9,19 @@ export class PostgresClient implements DatabaseClient {
         types.setTypeParser(20, value => parseInt(value))
     }
 
-    getRows<T>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {
+    getRows<T extends StringValueRecord>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {
         return this.pg.query(named(sql)(parameters))
             .then(res => res.rows)
     }
 
-    getSingleRow<T>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
-        return this.getRows(sql, parameters)
+    getSingleRow<T extends StringValueRecord>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
+        return this.getRows<T>(sql, parameters)
             .then((rows: T[]) => rows[0])
     }
 
-    getScalar<T>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
-        return this.getSingleRow(sql, parameters)
-            .then(rows => Object.values(rows)[0])
+    getScalar<T extends Value>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
+        return this.getSingleRow<StringValueRecord>(sql, parameters)
+            .then(row => Object.values(row)[0] as T)
     }
 
     run(sql: string): Promise<void> {

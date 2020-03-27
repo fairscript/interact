@@ -24,7 +24,8 @@ export const departments = defineTable(Department, 'departments')
 export const testEmployees =
     [
         {id: 1, firstName: 'John', lastName: 'Doe', title: 'CEO', salary: 10_000, departmentId: 1},
-        {id: 2, firstName: 'Richard', lastName: 'Roe', title: 'CFO', salary: 8_000, departmentId: 1}
+        {id: 2, firstName: 'Richard', lastName: 'Roe', title: 'CFO', salary: 8_000, departmentId: 1},
+        {id: 3, firstName: 'Bob', lastName: 'Smith', title: 'Researcher', salary: 6_000, departmentId: 2}
     ]
 
 export const testEmployeeRowsWithoutId = testEmployees.map(e =>

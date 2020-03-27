@@ -2,7 +2,7 @@ import {SelectStatement} from '../../select_statement'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {parseAggregation} from '../../parsing/selection/aggregation_parsing'
 import {AggregatableTable} from './aggregatable_table'
-import {SelectRows} from '../selections/select_rows'
+import {SelectRows} from '../selection/select_rows'
 
 export class GroupTable<T, K extends StringValueRecord> {
     constructor(private readonly statement: SelectStatement) {}
@@ -13,7 +13,7 @@ export class GroupTable<T, K extends StringValueRecord> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseAggregation(aggregation, this.statement.key, 1)
+                selection: parseAggregation(aggregation, this.statement.key!, 1)
             })
     }
 }

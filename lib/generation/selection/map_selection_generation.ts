@@ -14,7 +14,7 @@ function generateMapPropertyOperation(namedParameterPrefix: string, parameterToT
     }
 }
 
-export function generateMapSelection(aliasEscape: string, namedParameterPrefix: string, selection: MapSelection): string {
+export function generateMapSelection(aliasEscape: string|null, namedParameterPrefix: string, selection: MapSelection): string {
     const {parameterToTable, operations} = selection
 
     return joinWithCommaWhitespace(operations.map(([alias, operation]) =>

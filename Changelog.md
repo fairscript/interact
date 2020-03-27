@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.10.0
+- LIMIT clause
+
 ## v0.9.2
 - Exported factory functions for PostgreSQL/BigQuery contexts
 

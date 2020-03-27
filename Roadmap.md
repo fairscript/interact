@@ -1,17 +1,19 @@
 # Roadmap
 
-## v0.10
-- Joins of up to five tables (using code generation)
+## v0.10.1
+- OFFSET
+
+## v0.10.2
+- DISTINCT
 
 ## v0.11
-- Booleans, NOT, not equal to
+- Joins of up to five tables
 
 ## v0.12
-- Dates
+- Booleans, NOT, not equal to
 
 ## v0.13
-- LIMIT, OFFSET
-- DISTINCT
+- Dates
 
 ## v0.14
 - HAVING
@@ -23,28 +25,25 @@
 ## v0.16
 - Set up and increase test coverage
 
-## v0.17.
-- Enable TypeScript strict mode
-
-## v0.18
+## v0.17
 - Move database-specific code to separate modules
 
-## v0.19
+## v0.18
 - INSERT
 - DELETE
 - UPDATE
 
-## v0.20
+## v0.19
 - Byte arrays
 
-## v0.21
+## v0.20
 - String operations
 
-## v0.22
+## v0.21
 - Date operations
 
-## v0.23
+## v0.22
 - Mathematical operations
 
-## v0.24
+## v0.23
 - Array operations

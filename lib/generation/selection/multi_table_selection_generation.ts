@@ -3,7 +3,7 @@ import {generateColumnAccess} from '../column_access_generation'
 import {joinWithCommaWhitespace} from '../../parsing/parsing_helpers'
 import {generateAlias} from '../alias_generation'
 
-export function generateMultiTableSelection(aliasEscape: string, selection: MultiTableSelection): string {
+export function generateMultiTableSelection(aliasEscape: string|null, selection: MultiTableSelection): string {
     const {nameToTable, properties} = selection
 
     return joinWithCommaWhitespace(properties

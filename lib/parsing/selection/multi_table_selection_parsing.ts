@@ -1,4 +1,3 @@
-import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {parseConstructor} from '../javascript/constructor_parsing'
 
 export interface MultiTableSelection {
@@ -27,12 +26,12 @@ export function parseSelectMultipleTables(pairs: [string, Function][]): MultiTab
         (acc, [name, table]) => {
             const properties = parseConstructor(table)
 
-            const tableAliases = properties
+            const tableAliases: [string, [string, string]][] = properties
                 .map(property => [`${name}_${property}`, [name, property]])
 
             return acc.concat(tableAliases)
         },
-        []
+        [] as [string, [string, string]][]
     )
 
     return createMultiTableSelection(nameToTable, operations)

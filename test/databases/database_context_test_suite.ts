@@ -4,7 +4,7 @@ import {Table} from '../../lib/queries/one/table'
 
 export function createDatabaseContextTestSuite(ctx: DatabaseContext, employees: Table<Employee>) {
     const scalarQuery = employees.count()
-    const expectedScalarResult = 2
+    const expectedScalarResult = 3
 
     const singleRowQuery = employees
         .filter(e => e.id === 1)
@@ -32,21 +32,28 @@ export function createDatabaseContextTestSuite(ctx: DatabaseContext, employees: 
     const rowsQuery = employees.sortBy(e => e.id).map(e => ({firstName: e.firstName, lastName: e.lastName}))
     const expectedRowsResult = [
         { firstName: 'John', lastName: 'Doe'},
+        { firstName: 'Richard', lastName: 'Roe'},
+        { firstName: 'Bob', lastName: 'Smith'}
+    ]
+
+    const limitedQuery = rowsQuery.limit(2)
+    const expectedLimitedResult = [
+        { firstName: 'John', lastName: 'Doe'},
         { firstName: 'Richard', lastName: 'Roe'}
     ]
 
     return {
         testScalarQuery: () => {
             const promiseOfScalar = ctx
-                .get(scalarQuery)
+                .run(scalarQuery)
 
             return promiseOfScalar
                 .should.eventually.equal(expectedScalarResult)
         },
 
         testSingleRowQuery: () => {
-            const promiseOfRow: Promise<{ firstName: string; lastName: string }> = ctx
-                .get(singleRowQuery)
+            const promiseOfRow = ctx
+                .run(singleRowQuery)
 
             return promiseOfRow
                 .should.eventually.eql(expectedSingleRowResult)
@@ -54,7 +61,7 @@ export function createDatabaseContextTestSuite(ctx: DatabaseContext, employees: 
 
         testSingleRowQueryWithNumberParameter: () => {
             const promiseOfRow: Promise<{ firstName: string; lastName: string }> = ctx
-                .get(singleRowQueryWithNumberParameter)
+                .run(singleRowQueryWithNumberParameter)
 
             return promiseOfRow
                 .should.eventually.eql(expectedSingleRowWithNumberParameterResult)
@@ -62,23 +69,31 @@ export function createDatabaseContextTestSuite(ctx: DatabaseContext, employees: 
 
         testSingleRowQueryWithObjectParameter: () => {
             const promiseOfRow: Promise<{ id: number }> = ctx
-                .get(singleRowQueryWithObjectParameter)
+                .run(singleRowQueryWithObjectParameter)
 
             return promiseOfRow
                 .should.eventually.eql(expectedSingleRowWithObjectParameterResult)
         },
 
         testRowQuery: () => {
-            const promiseOfRows: Promise<{ firstName: string; lastName: string }[]> = ctx
-                .get(rowsQuery)
+            const promiseOfRows = ctx
+                .run(rowsQuery)
 
             return promiseOfRows
                 .should.eventually.eql(expectedRowsResult)
         },
 
+        testLimitedQuery: () => {
+            const promiseOfLimitedRows = ctx
+                .run(limitedQuery)
+
+            return promiseOfLimitedRows
+                .should.eventually.eql(expectedLimitedResult)
+        },
+
         testParallelQueries: () => {
             return ctx
-                .parallelGet({
+                .parallelRun({
                     scalar: scalarQuery,
                     singleRow: singleRowQuery,
                     singleRowUsingNumberParameter: singleRowQueryWithNumberParameter,

@@ -10,8 +10,8 @@ import {parseSelectMultipleTables} from '../../parsing/selection/multi_table_sel
 import {Table} from '../one/table'
 import {Subtable} from '../one/subtable'
 import {parseMapS} from '../../parsing/selection/maps_parsing'
-import {SelectScalar} from '../selections/select_scalar'
-import {SelectRows} from '../selections/select_rows'
+import {SelectScalar} from '../selection/select_scalar'
+import {SelectRows} from '../selection/select_rows'
 
 export class SortTwoTables<T1, T2> {
 

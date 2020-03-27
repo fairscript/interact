@@ -41,7 +41,7 @@ function createGenerateAggregationOperation(
     }
 }
 
-export function generateAggregationSelection(aliasEscape: string, aggregation: Aggregation): string {
+export function generateAggregationSelection(aliasEscape: string|null, aggregation: Aggregation): string {
     const {partOfKeyToTableAndProperty, parameterToTable, operations} = aggregation
 
     const generateAggregationOperation = createGenerateAggregationOperation(partOfKeyToTableAndProperty, parameterToTable)

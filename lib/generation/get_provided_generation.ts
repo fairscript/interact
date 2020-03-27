@@ -12,7 +12,7 @@ export function generatePath(path: string[]): string {
 }
 
 export function computePlaceholderName(get: GetProvided) {
-    let parts = []
+    const parts: string[] = []
 
     parts.push(get.prefix)
 

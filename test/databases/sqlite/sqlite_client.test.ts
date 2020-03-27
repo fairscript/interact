@@ -16,7 +16,7 @@ describe('SqliteClient', () => {
     })
 
     it('can get a scalar', () => {
-        return sqliteClient.getScalar('SELECT COUNT(*) FROM employees').should.eventually.equal(2)
+        return sqliteClient.getScalar('SELECT COUNT(*) FROM employees').should.eventually.equal(3)
     })
 
     it('can get a single row', () => {
@@ -28,7 +28,8 @@ describe('SqliteClient', () => {
         return sqliteClient.getRows('SELECT first_name AS firstName, last_name AS lastName FROM employees')
             .should.eventually.eql([
                 { firstName: 'John', lastName: 'Doe'},
-                { firstName: 'Richard', lastName: 'Roe'}
+                { firstName: 'Richard', lastName: 'Roe'},
+                { firstName: 'Bob', lastName: 'Smith'}
             ])
     })
 })

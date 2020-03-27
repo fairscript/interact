@@ -20,8 +20,8 @@ describe('PostgresClient', () => {
     })
 
     it('can get a scalar', async() => {
-        return client.getScalar<number>('SELECT COUNT(*) FROM employees', {})
-            .should.eventually.equal(2)
+        return client.getScalar('SELECT COUNT(*) FROM employees', {})
+            .should.eventually.equal(3)
     })
 
     it('can get a single row', () => {
@@ -33,7 +33,8 @@ describe('PostgresClient', () => {
         return client.getRows('SELECT first_name AS "firstName", last_name AS "lastName" FROM employees')
             .should.eventually.eql([
                 { firstName: 'John', lastName: 'Doe'},
-                { firstName: 'Richard', lastName: 'Roe'}
+                { firstName: 'Richard', lastName: 'Roe'},
+                { firstName: 'Bob', lastName: 'Smith'}
             ])
     })
 

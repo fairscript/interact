@@ -22,7 +22,7 @@ function createParameterSideParser(prefix: string, placeholderParameter: string)
     ])
 }
 
-function parseParameterizedPredicate(prefix: string, placeholderParameter: string|null, tableParameters: string[], expression: string): PredicateExpression {
+function parseParameterizedPredicate(prefix: string, placeholderParameter: string, tableParameters: string[], expression: string): PredicateExpression {
     const parameterSideParser = createParameterSideParser(prefix, placeholderParameter)
     const constantOrColumnSideParser = createConstantOrColumnSideParser(tableParameters)
 

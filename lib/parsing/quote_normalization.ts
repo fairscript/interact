@@ -1,7 +1,7 @@
 export default function normalizeQuotes(unnormalized: string): string {
     let normalized = ''
 
-    let insideString = null
+    let insideString: string|null = null
 
     for (let i = 0; i < unnormalized.length; i++) {
         let character = unnormalized.charAt(i)

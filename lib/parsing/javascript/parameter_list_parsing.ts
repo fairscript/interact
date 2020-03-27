@@ -4,7 +4,7 @@ import {identifier} from './identifier_parsing'
 import {comma} from './single_character_parsing'
 
 export const parameterListParser = A.coroutine(function* () {
-    const parameters = []
+    const parameters: any = []
 
     const head = yield A.possibly(identifier)
 

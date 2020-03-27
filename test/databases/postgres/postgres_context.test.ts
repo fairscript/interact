@@ -40,9 +40,15 @@ describe('Postgres context', () => {
             () => suite.testSingleRowQueryWithObjectParameter())
     })
 
-    it(
-        'can get multiple rows',
-        () => suite.testRowQuery())
+    describe('can get multiple rows', () => {
+        it(
+            'without limit',
+            () => suite.testRowQuery())
+
+        it(
+            'with a limit',
+            () => suite.testLimitedQuery())
+    })
 
     it(
         'can run queries in parallel',

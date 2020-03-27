@@ -10,11 +10,12 @@ export interface Constructor<T> {
 
 export interface SelectStatement {
     tableName: string
-    selection: Selection
+    selection: Selection|null
     filters: Filter[]
     orders: OrderExpression[]
-    join: JoinExpression
-    key: Key|null,
+    join: JoinExpression|null
+    key: Key|null
+    limit: number|'all'
 
     kind: 'select-statement'
 }
@@ -27,6 +28,7 @@ export function createEmptySelectStatement(tableName: string): SelectStatement {
         orders: [],
         join: null,
         key: null,
+        limit: 'all',
         kind: 'select-statement'
     }
 }

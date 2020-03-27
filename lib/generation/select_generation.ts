@@ -7,7 +7,7 @@ import {generateSingleTableSelection} from './selection/single_table_selection_g
 import {generateMultiTableSelection} from './selection/multi_table_selection_generation'
 
 
-function generateSelection(aliasEscape: string, namedParameterPrefix: string, selection: Selection): string {
+function generateSelection(aliasEscape: string|null, namedParameterPrefix: string, selection: Selection): string {
     switch (selection.kind) {
         case 'count-selection':
             return generateCountSelection()
@@ -24,6 +24,6 @@ function generateSelection(aliasEscape: string, namedParameterPrefix: string, se
     }
 }
 
-export function generateSelect (aliasEscape: string, namedParameterPrefix: string, selection: Selection): string {
+export function generateSelect (aliasEscape: string|null, namedParameterPrefix: string, selection: Selection): string {
     return 'SELECT ' + generateSelection(aliasEscape, namedParameterPrefix, selection)
 }

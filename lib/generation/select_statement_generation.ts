@@ -8,12 +8,14 @@ import {generateInnerJoin} from './join_generation'
 import {joinWithNewLine} from '../parsing/parsing_helpers'
 import {Dialect} from '../databases/dialects'
 import {StringValueRecord} from '../record'
+import {generateLimit} from './limit_generation'
+
 
 export function generateSelectStatementSql(dialect: Dialect, statement: SelectStatement): string {
-    const {selection, tableName, filters, key, orders, join} = statement
+    const {selection, tableName, filters, key, orders, join, limit} = statement
 
     const clauses = [
-        generateSelect(dialect.aliasEscape, dialect.namedParameterPrefix, selection),
+        generateSelect(dialect.aliasEscape, dialect.namedParameterPrefix, selection!),
         generateFrom(tableName)
     ]
 
@@ -25,12 +27,16 @@ export function generateSelectStatementSql(dialect: Dialect, statement: SelectSt
         clauses.push(generateWhereSql(dialect.namedParameterPrefix, filters))
     }
 
-    if (key != null) {
+    if (key !== null) {
         clauses.push(generateGroupBy(key))
     }
 
     if (orders.length > 0) {
         clauses.push(generateOrderBy(orders))
+    }
+
+    if (limit !== 'all') {
+        clauses.push(generateLimit(limit))
     }
 
     return joinWithNewLine(clauses)

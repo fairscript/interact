@@ -6,7 +6,7 @@ import {generateCountSelection} from './selection/count_selection_generation'
 export function generateSubselect(namedParameterPrefix: string, subselect: Subselect): string {
     const {tableName, filters} = subselect.statement
 
-    const parts = []
+    const parts: string[] = []
 
     const SELECT = 'SELECT ' + generateCountSelection()
     parts.push(SELECT)

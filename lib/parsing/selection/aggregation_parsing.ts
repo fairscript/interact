@@ -70,7 +70,7 @@ function createAggregateColumnParser(objectParameterNames) {
 }
 
 function createAggregationParser(keyParameterName: string, objectParameterNames: string[], countParameter: string|null) {
-    const valueParsers = []
+    const valueParsers: any[] = []
 
     if (countParameter != null) {
         const countParser = createCountParser(countParameter)

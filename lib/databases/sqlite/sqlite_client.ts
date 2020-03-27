@@ -1,6 +1,7 @@
 import { Database } from 'sqlite3'
 import {DatabaseClient} from '../database_client'
 import {StringValueRecord} from '../../record'
+import {Value} from '../../value'
 
 export class SqliteClient implements DatabaseClient {
 
@@ -38,12 +39,12 @@ export class SqliteClient implements DatabaseClient {
         })
     }
 
-    getScalar<T>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
-        return this.getSingleRow(sql, parameters)
-            .then(row => Object.values(row)[0])
+    getScalar<T extends Value>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
+        return this.getSingleRow<StringValueRecord>(sql, parameters)
+            .then(row => Object.values(row)[0] as T)
     }
 
-    getSingleRow<T>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
+    getSingleRow<T extends StringValueRecord>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
         return new Promise(
             (resolve, reject) => {
             this.db.get(
@@ -61,7 +62,7 @@ export class SqliteClient implements DatabaseClient {
         )
     }
 
-    getRows<T>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {
+    getRows<T extends StringValueRecord>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {
         return new Promise(
             (resolve, reject) => {
                 this.db.all(
