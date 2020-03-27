@@ -73,6 +73,23 @@ function generatePredicate(namedParameterPrefix: string, parameterNameToTableAli
     }
 }
 
+function generateWhereClause(namedParameterPrefix: string, filters: Filter[]): string {
+    if (filters.length == 1) {
+        const { tableParameterToTableAlias, predicate } = filters[0]
+
+        return generatePredicate(namedParameterPrefix, tableParameterToTableAlias, predicate)
+    }
+    else {
+        return filters.map(f => generatePredicate(namedParameterPrefix, f.tableParameterToTableAlias, f.predicate))
+            .map(sql => '(' + sql + ')')
+            .join(' AND ')
+    }
+}
+
+export function generateWhereSql(namedParameterPrefix: string, filters: Filter[]): string {
+    return `WHERE ${generateWhereClause(namedParameterPrefix, filters)}`
+}
+
 function getByPath(obj: {}, remainingPath: string[]): any {
     const current = obj[remainingPath[0]]
 
@@ -130,48 +147,22 @@ function recordFilterParameters(
         {})
 }
 
-export function generateFilter(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, filter: Filter): [string, StringValueRecord] {
-    const { tableParameterToTableAlias, predicate } = filter
-
-    const sql = generatePredicate(namedParameterPrefix, tableParameterToTableAlias, predicate)
-
-    const parameters = filter.kind === 'parameterless-filter'
+function generateFilterParameters(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, filter: Filter): StringValueRecord {
+    return filter.kind === 'parameterless-filter'
         ? {}
-        : recordFilterParameters(namedParameterPrefix, useNamedParameterPrefixInRecord, predicate, filter.userProvided)
-
-    return [sql, parameters]
+        : recordFilterParameters(namedParameterPrefix, useNamedParameterPrefixInRecord, filter.predicate, filter.userProvided)
 }
 
-export function generateFilters(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, filters: Filter[]): [string, StringValueRecord] {
-    if (filters.length == 1) {
-        return generateFilter(namedParameterPrefix, useNamedParameterPrefixInRecord, filters[0])
-    }
-    else {
-        const generatedFilters = filters.map(f => generateFilter(namedParameterPrefix, useNamedParameterPrefixInRecord, f))
-
-        const combinedSql = generatedFilters
-            .map(([sql, _]) => sql)
-            .map(sql => '(' + sql + ')')
-            .join(' AND ')
-
-        const combinedParameters = generatedFilters
-            .map(([_, parameters]) => parameters)
-            .reduce(
-                (acc, item) => {
-                    return {
-                        ...acc,
-                        ...item
-                    }
-                },
-                {}
-            )
-
-        return [combinedSql, combinedParameters]
-    }
-}
-
-export function generateWhere(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, filters: Filter[]): [string, StringValueRecord] {
-    const [predicateSql, parameters] = generateFilters(namedParameterPrefix, useNamedParameterPrefixInRecord, filters)
-
-    return [`WHERE ${predicateSql}`, parameters]
+export function generateWhereParameters(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, filters: Filter[]): StringValueRecord {
+    return filters
+        .map(f => generateFilterParameters(namedParameterPrefix, useNamedParameterPrefixInRecord, f))
+        .reduce(
+            (acc, item) => {
+                return {
+                    ...acc,
+                    ...item
+                }
+            },
+            {}
+        )
 }

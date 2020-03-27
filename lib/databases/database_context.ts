@@ -3,19 +3,21 @@ import {Dialect} from './dialects'
 import {SelectScalar} from '../queries/selections/select_scalar'
 import {SelectSingleRow} from '../queries/selections/select_single_row'
 import {SelectRows} from '../queries/selections/select_rows'
+import {generateSelectStatementParameters, generateSelectStatementSql} from '../generation/select_statement_generation'
 
 type ExtractTypeParameterFromSelection<T> = T extends SelectScalar<infer V>|SelectSingleRow<infer V>|SelectRows<infer V> ? V : never
 
 export class DatabaseContext {
     constructor(private client: DatabaseClient, private dialect: Dialect) {}
 
-    get<T>(generator: SelectSingleRow<T>): Promise<T>
-    get<T>(generator: SelectScalar<T>): Promise<T>
-    get<T>(generator: SelectRows<T>): Promise<T[]>
-    get<T>(generator: SelectScalar<T>|SelectSingleRow<T>|SelectRows<T>): Promise<T>|Promise<T[]> {
-        const [sql, parameters] = generator.toSql(this.dialect)
+    get<T>(select: SelectSingleRow<T>): Promise<T>
+    get<T>(select: SelectScalar<T>): Promise<T>
+    get<T>(select: SelectRows<T>): Promise<T[]>
+    get<T>(select: SelectScalar<T>|SelectSingleRow<T>|SelectRows<T>): Promise<T>|Promise<T[]> {
+        const sql = generateSelectStatementSql(this.dialect, select.statement)
+        const parameters = generateSelectStatementParameters(this.dialect, select.statement)
 
-        switch (generator.kind) {
+        switch (select.kind) {
             case 'scalar-select-generator':
                 return this.client.getScalar<T>(sql, parameters)
             case 'single-row-select-generator':

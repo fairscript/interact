@@ -1,10 +1,7 @@
 import {SelectStatement} from '../../select_statement'
-import {SelectGenerator} from '../select_generator'
 
-export class SelectScalar<T> extends SelectGenerator {
-    constructor(statement: SelectStatement) {
-        super(statement)
-    }
+export class SelectScalar<T> {
+    constructor(public statement: SelectStatement) {}
 
     kind = 'scalar-select-generator'
 }

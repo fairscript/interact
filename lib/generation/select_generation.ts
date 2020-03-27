@@ -5,12 +5,9 @@ import {generateMapSelection} from './selection/map_selection_generation'
 import {generateAggregationSelection} from './selection/aggregation_selection_generation'
 import {generateSingleTableSelection} from './selection/single_table_selection_generation'
 import {generateMultiTableSelection} from './selection/multi_table_selection_generation'
-import {Dialect} from '../databases/dialects'
 
 
-function generateSelection(dialect: Dialect, selection: Selection): string {
-    const { aliasEscape } = dialect
-
+function generateSelection(aliasEscape: string, namedParameterPrefix: string, selection: Selection): string {
     switch (selection.kind) {
         case 'count-selection':
             return generateCountSelection()
@@ -23,10 +20,10 @@ function generateSelection(dialect: Dialect, selection: Selection): string {
         case 'aggregation':
             return generateAggregationSelection(aliasEscape, selection)
         case 'map-selection':
-            return generateMapSelection(dialect, selection)
+            return generateMapSelection(aliasEscape, namedParameterPrefix, selection)
     }
 }
 
-export function generateSelect (dialect: Dialect, selection: Selection): string {
-    return 'SELECT ' + generateSelection(dialect, selection)
+export function generateSelect (aliasEscape: string, namedParameterPrefix: string, selection: Selection): string {
+    return 'SELECT ' + generateSelection(aliasEscape, namedParameterPrefix, selection)
 }

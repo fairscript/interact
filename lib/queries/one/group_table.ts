@@ -2,7 +2,6 @@ import {SelectStatement} from '../../select_statement'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {parseAggregation} from '../../parsing/selection/aggregation_parsing'
 import {AggregatableTable} from './aggregatable_table'
-import {SelectGenerator} from '../select_generator'
 import {SelectRows} from '../selections/select_rows'
 
 export class GroupTable<T, K extends StringValueRecord> {

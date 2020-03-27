@@ -1,10 +1,16 @@
 import * as assert from 'assert'
-import {SelectGenerator} from '../../lib/queries/select_generator'
 import {joinWithNewLine} from '../../lib/parsing/parsing_helpers'
 import {sqliteDialect} from '../../lib/databases/sqlite/sqlite_dialect'
+import {SelectScalar} from '../../lib/queries/selections/select_scalar'
+import {SelectSingleRow} from '../../lib/queries/selections/select_single_row'
+import {SelectRows} from '../../lib/queries/selections/select_rows'
+import {generateSelectStatementSql} from '../../lib/generation/select_statement_generation'
 
-export function checkSql(generator: SelectGenerator, lines: string[]) {
-    const actualSql = generator.toSql(sqliteDialect)[0]
+export function checkSql<T>(
+    select: SelectScalar<T>|SelectSingleRow<T>|SelectRows<T>,
+    lines: string[]) {
+
+    const actualSql = generateSelectStatementSql(sqliteDialect, select.statement)
     const expectedSql = joinWithNewLine(lines)
 
     assert.equal(actualSql, expectedSql)

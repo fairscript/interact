@@ -1,34 +1,28 @@
 import {generateSelect} from './select_generation'
 import {generateFrom} from './from_generation'
-import {generateWhere} from './where_generation'
+import {generateWhereParameters, generateWhereSql} from './where_generation'
 import {generateOrderBy} from './order_by_generation'
 import {SelectStatement} from '../select_statement'
 import {generateGroupBy} from './group_by_generation'
 import {generateInnerJoin} from './join_generation'
 import {joinWithNewLine} from '../parsing/parsing_helpers'
-import {StringValueRecord} from '../record'
 import {Dialect} from '../databases/dialects'
+import {StringValueRecord} from '../record'
 
-export function generateSql(dialect: Dialect, statement: SelectStatement): [string, StringValueRecord] {
+export function generateSelectStatementSql(dialect: Dialect, statement: SelectStatement): string {
     const {selection, tableName, filters, key, orders, join} = statement
 
     const clauses = [
-        generateSelect(dialect, selection),
+        generateSelect(dialect.aliasEscape, dialect.namedParameterPrefix, selection),
         generateFrom(tableName)
     ]
-    let parameters = {}
 
     if (join !== null) {
         clauses.push(generateInnerJoin(join))
     }
 
     if (filters.length > 0) {
-        const [whereSql, whereParameters] = generateWhere(dialect.namedParameterPrefix, dialect.useNamedParameterPrefixInRecord, filters)
-        clauses.push(whereSql)
-        parameters = {
-            ...parameters,
-            ...whereParameters
-        }
+        clauses.push(generateWhereSql(dialect.namedParameterPrefix, filters))
     }
 
     if (key != null) {
@@ -39,5 +33,9 @@ export function generateSql(dialect: Dialect, statement: SelectStatement): [stri
         clauses.push(generateOrderBy(orders))
     }
 
-    return [joinWithNewLine(clauses), parameters]
+    return joinWithNewLine(clauses)
+}
+
+export function generateSelectStatementParameters(dialect: Dialect, statement: SelectStatement): StringValueRecord {
+    return generateWhereParameters(dialect.namedParameterPrefix, dialect.useNamedParameterPrefixInRecord, statement.filters)
 }

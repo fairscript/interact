@@ -1,9 +1,9 @@
 import {Subselect} from '../column_operations'
-import {generateWhere} from './where_generation'
+import {generateWhereSql} from './where_generation'
 import {joinWithWhitespace} from '../parsing/parsing_helpers'
 import {generateCountSelection} from './selection/count_selection_generation'
 
-export function generateSubselect(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, subselect: Subselect): string {
+export function generateSubselect(namedParameterPrefix: string, subselect: Subselect): string {
     const {tableName, filters} = subselect.statement
 
     const parts = []
@@ -15,7 +15,7 @@ export function generateSubselect(namedParameterPrefix: string, useNamedParamete
     parts.push(FROM)
 
     if (filters.length > 0) {
-        const WHERE = generateWhere(namedParameterPrefix, useNamedParameterPrefixInRecord, filters)[0]
+        const WHERE = generateWhereSql(namedParameterPrefix, filters)
         parts.push(WHERE)
     }
 

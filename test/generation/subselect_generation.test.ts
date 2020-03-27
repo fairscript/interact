@@ -26,7 +26,7 @@ describe('generateSubselect', () => {
         const subselect = createSubselect(subselectStatement)
 
         assert.equal(
-            generateSubselect(sqliteDialect.namedParameterPrefix, sqliteDialect.useNamedParameterPrefixInRecord, subselect),
+            generateSubselect(sqliteDialect.namedParameterPrefix, subselect),
             '(SELECT COUNT(*) FROM employees s1 WHERE s1.salary > t1.salary)'
         )
     })
