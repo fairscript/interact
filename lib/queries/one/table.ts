@@ -10,13 +10,14 @@ import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {parseJoin} from '../../parsing/join_parsing'
-import {RowSelectGenerator, ScalarSelectGenerator} from '../select_generators'
 import {parseMapS} from '../../parsing/selection/maps_parsing'
 import {createCountSelection} from '../../parsing/selection/count_parsing'
 import {parseSelectSingleTable} from '../../parsing/selection/single_table_selection_parsing'
 import {Subtable} from './subtable'
 import {parseParameterlessFilter} from '../../parsing/filtering/parameterless_filter_parsing'
 import {parseParameterizedFilter} from '../../parsing/filtering/parameterized_filter_parsing'
+import {SelectScalar} from '../selections/select_scalar'
+import {SelectRows} from '../selections/select_rows'
 
 
 export class Table<T> {
@@ -66,40 +67,40 @@ export class Table<T> {
             })
     }
 
-    select(): RowSelectGenerator<T> {
-        return new RowSelectGenerator(
+    select(): SelectRows<T> {
+        return new SelectRows(
             {
                 ...this.statement,
                 selection: parseSelectSingleTable(this.constructor)
             })
     }
 
-    map<U extends StringValueRecord>(map: (table: T) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
-        return new RowSelectGenerator(
+    map<U extends StringValueRecord>(map: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+        return new SelectRows(
             {
                 ...this.statement,
                 selection: parseMap(map)
             })
     }
 
-    mapS<S, U extends StringValueRecord>(tableInSubquery: Table<S>, map: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
-        return new RowSelectGenerator(
+    mapS<S, U extends StringValueRecord>(tableInSubquery: Table<S>, map: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+        return new SelectRows(
             {
                 ...this.statement,
                 selection: parseMapS(map, [tableInSubquery.tableName])
             })
     }
 
-    get<U extends Value>(f: (table: T) => U): ScalarSelectGenerator<U> {
-        return new ScalarSelectGenerator(
+    get<U extends Value>(f: (table: T) => U): SelectScalar<U> {
+        return new SelectScalar(
             {
                 ...this.statement,
                 selection: parseGet(f)
             })
     }
 
-    count(): ScalarSelectGenerator<number> {
-        return new ScalarSelectGenerator<number>(
+    count(): SelectScalar<number> {
+        return new SelectScalar<number>(
             {
                 ...this.statement,
                 selection: createCountSelection()
@@ -115,7 +116,7 @@ export class Table<T> {
     }
 
     join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T) => K, right: (secondTable: U) => K) {
-        return new JoinSecondTable<T, U, K>(
+        return new JoinSecondTable<T, U>(
             this.constructor,
             otherTable.constructor,
             {

@@ -1,16 +1,18 @@
-import {RowSelectGenerator, ScalarSelectGenerator, SingleRowSelectGenerator} from '../queries/select_generators'
 import {DatabaseClient} from './database_client'
 import {Dialect} from './dialects'
+import {SelectScalar} from '../queries/selections/select_scalar'
+import {SelectSingleRow} from '../queries/selections/select_single_row'
+import {SelectRows} from '../queries/selections/select_rows'
 
-type ExtractTypeParameterFromSelectGenerator<T> = T extends ScalarSelectGenerator<infer V>|SingleRowSelectGenerator<infer V>|RowSelectGenerator<infer V> ? V : never
+type ExtractTypeParameterFromSelection<T> = T extends SelectScalar<infer V>|SelectSingleRow<infer V>|SelectRows<infer V> ? V : never
 
 export class DatabaseContext {
     constructor(private client: DatabaseClient, private dialect: Dialect) {}
 
-    get<T>(generator: SingleRowSelectGenerator<T>): Promise<T>
-    get<T>(generator: ScalarSelectGenerator<T>): Promise<T>
-    get<T>(generator: RowSelectGenerator<T>): Promise<T[]>
-    get<T>(generator: ScalarSelectGenerator<T>|SingleRowSelectGenerator<T>|RowSelectGenerator<T>): Promise<T>|Promise<T[]> {
+    get<T>(generator: SelectSingleRow<T>): Promise<T>
+    get<T>(generator: SelectScalar<T>): Promise<T>
+    get<T>(generator: SelectRows<T>): Promise<T[]>
+    get<T>(generator: SelectScalar<T>|SelectSingleRow<T>|SelectRows<T>): Promise<T>|Promise<T[]> {
         const [sql, parameters] = generator.toSql(this.dialect)
 
         switch (generator.kind) {
@@ -23,7 +25,7 @@ export class DatabaseContext {
         }
     }
 
-    parallelGet<T extends {[K in keyof T]: ScalarSelectGenerator<any>|SingleRowSelectGenerator<any>|RowSelectGenerator<any>}, K extends string>(queries: T): Promise<{ [K in keyof T]: ExtractTypeParameterFromSelectGenerator<T[K]> }> {
+    parallelGet<T extends {[K in keyof T]: SelectScalar<any>|SelectSingleRow<any>|SelectRows<any>}, K extends string>(queries: T): Promise<{ [K in keyof T]: ExtractTypeParameterFromSelection<T[K]> }> {
         const promises = Object.keys(queries)
             .map(key =>
                 this
@@ -39,7 +41,7 @@ export class DatabaseContext {
                         acc[key] = result
                         return acc
                     },
-                    {} as { [K in keyof T]: ExtractTypeParameterFromSelectGenerator<T[K]> })
+                    {} as { [K in keyof T]: ExtractTypeParameterFromSelection<T[K]> })
             )
     }
 }

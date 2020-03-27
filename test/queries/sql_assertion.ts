@@ -1,9 +1,9 @@
 import * as assert from 'assert'
-import {SelectGenerator} from '../../lib/queries/select_generators'
+import {SelectGenerator} from '../../lib/queries/select_generator'
 import {joinWithNewLine} from '../../lib/parsing/parsing_helpers'
 import {sqliteDialect} from '../../lib/databases/sqlite/sqlite_dialect'
 
-export function checkSql<T>(generator: SelectGenerator<T>, lines: string[]) {
+export function checkSql(generator: SelectGenerator, lines: string[]) {
     const actualSql = generator.toSql(sqliteDialect)[0]
     const expectedSql = joinWithNewLine(lines)
 

@@ -8,7 +8,6 @@ import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseOrder} from '../../parsing/order_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {RowSelectGenerator, ScalarSelectGenerator, SelectGenerator} from '../select_generators'
 import {parseSelectMultipleTables} from '../../parsing/selection/multi_table_selection_parsing'
 import {Subtable} from '../one/subtable'
 import {parseMapS} from '../../parsing/selection/maps_parsing'
@@ -16,8 +15,10 @@ import {Table} from '../one/table'
 import {createCountSelection} from '../../parsing/selection/count_parsing'
 import {parseParameterlessFilter} from '../../parsing/filtering/parameterless_filter_parsing'
 import {parseParameterizedFilter} from '../../parsing/filtering/parameterized_filter_parsing'
+import {SelectScalar} from '../selections/select_scalar'
+import {SelectRows} from '../selections/select_rows'
 
-export class JoinSecondTable<T1, T2, K1> {
+export class JoinSecondTable<T1, T2> {
 
     constructor(
         private readonly firstConstructor: Constructor<T1>,
@@ -66,8 +67,8 @@ export class JoinSecondTable<T1, T2, K1> {
             })
     }
 
-    select<K extends string>(first: string, second: string): RowSelectGenerator<{ [first in K]: T1 } & { [second in K]: T2 }> {
-        return new RowSelectGenerator(
+    select<K extends string>(first: string, second: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
+        return new SelectRows(
             {
                 ...this.statement,
                 selection: parseSelectMultipleTables([
@@ -77,8 +78,8 @@ export class JoinSecondTable<T1, T2, K1> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
-        return new RowSelectGenerator(
+    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+        return new SelectRows(
             {
                 ...this.statement,
                 selection: parseMap(f)
@@ -87,24 +88,25 @@ export class JoinSecondTable<T1, T2, K1> {
 
     mapS<S, U extends StringValueRecord>(
         tableInSubquery: Table<S>,
-        f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
-        return new RowSelectGenerator(
+        f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+        return new SelectRows(
             {
                 ...this.statement,
                 selection: parseMapS(f, [tableInSubquery.tableName])
             })
     }
 
-    get<U extends Value>(f: (first: T1, second: T2) => U): ScalarSelectGenerator<U> {
-        return new ScalarSelectGenerator(
+    get<U extends Value>(f: (first: T1, second: T2) => U): SelectScalar<U> {
+        return new SelectScalar(
             {
                 ...this.statement,
                 selection: parseGet(f)
             })
     }
 
-    count(): ScalarSelectGenerator<number> {
-        return new ScalarSelectGenerator<number>(
+
+    count(): SelectScalar<number> {
+        return new SelectScalar<number>(
             {
                 ...this.statement,
                 selection: createCountSelection()

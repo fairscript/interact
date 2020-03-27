@@ -6,11 +6,13 @@ import {Value} from '../../value'
 import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {RowSelectGenerator, ScalarSelectGenerator, SelectGenerator} from '../select_generators'
+import {SelectGenerator} from '../select_generator'
 import {parseSelectSingleTable} from '../../parsing/selection/single_table_selection_parsing'
 import {Subtable} from './subtable'
 import {parseMapS} from '../../parsing/selection/maps_parsing'
 import {Table} from './table'
+import {SelectScalar} from '../selections/select_scalar'
+import {SelectRows} from '../selections/select_rows'
 
 export type Direction = 'asc' | 'desc'
 
@@ -34,31 +36,31 @@ export class SortTable<T> {
             })
     }
 
-    select(): RowSelectGenerator<T> {
-        return new RowSelectGenerator({
+    select(): SelectRows<T> {
+        return new SelectRows({
             ...this.statement,
             selection: parseSelectSingleTable(this.constructor)
         })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
-        return new RowSelectGenerator(
+    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+        return new SelectRows(
             {
                 ...this.statement,
                 selection: parseMap(f)
             })
     }
 
-    mapS<S, U extends StringValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
-        return new RowSelectGenerator(
+    mapS<S, U extends StringValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+        return new SelectRows(
             {
                 ...this.statement,
                 selection: parseMapS(f, [tableInSubquery.tableName])
             })
     }
 
-    get<U extends Value>(f: (table: T) => U): ScalarSelectGenerator<U> {
-        return new ScalarSelectGenerator(
+    get<U extends Value>(f: (table: T) => U): SelectScalar<U> {
+        return new SelectScalar(
             {
                 ...this.statement,
                 selection: parseGet(f)

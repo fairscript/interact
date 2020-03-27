@@ -6,11 +6,13 @@ import {Value} from '../../value'
 import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {RowSelectGenerator, ScalarSelectGenerator, SelectGenerator} from '../select_generators'
+import {SelectGenerator} from '../select_generator'
 import {parseSelectMultipleTables} from '../../parsing/selection/multi_table_selection_parsing'
 import {Table} from '../one/table'
 import {Subtable} from '../one/subtable'
 import {parseMapS} from '../../parsing/selection/maps_parsing'
+import {SelectScalar} from '../selections/select_scalar'
+import {SelectRows} from '../selections/select_rows'
 
 export class SortTwoTables<T1, T2> {
 
@@ -39,8 +41,8 @@ export class SortTwoTables<T1, T2> {
             })
     }
 
-    select<K extends string>(first: string, second: string): RowSelectGenerator<{ [first in K]: T1 } & { [second in K]: T2 }> {
-        return new RowSelectGenerator(
+    select<K extends string>(first: string, second: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
+        return new SelectRows(
             {
                 ...this.statement,
                 selection: parseSelectMultipleTables([
@@ -50,8 +52,8 @@ export class SortTwoTables<T1, T2> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
-        return new RowSelectGenerator(
+    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+        return new SelectRows(
             {
                 ...this.statement,
                 selection: parseMap(f)
@@ -60,16 +62,16 @@ export class SortTwoTables<T1, T2> {
 
     mapS<S, U extends StringValueRecord>(
         tableInSubquery: Table<S>,
-        f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): RowSelectGenerator<U> {
-        return new RowSelectGenerator(
+        f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+        return new SelectRows(
             {
                 ...this.statement,
                 selection: parseMapS(f, [tableInSubquery.tableName])
             })
     }
 
-    get<U extends Value>(f: (first: T1, second: T2) => U): ScalarSelectGenerator<U> {
-        return new ScalarSelectGenerator(
+    get<U extends Value>(f: (first: T1, second: T2) => U): SelectScalar<U> {
+        return new SelectScalar(
             {
                 ...this.statement,
                 selection: parseGet(f)
