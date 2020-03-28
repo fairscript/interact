@@ -11,40 +11,37 @@ export interface Constructor<T> {
 export interface SelectStatement {
     tableName: string
     selection: Selection|null
+    distinct: boolean
     filters: Filter[]
     orders: OrderExpression[]
     join: JoinExpression|null
     key: Key|null
-    limit: number|'all',
-    offset: number,
-
-    kind: 'select-statement'
+    limit: number|'all'
+    offset: number
 }
 
 export function createEmptySelectStatement(tableName: string): SelectStatement {
     return {
         tableName,
         selection: null,
+        distinct: false,
         filters: [],
         orders: [],
         join: null,
         key: null,
         limit: 'all',
-        offset: 0,
-        kind: 'select-statement'
+        offset: 0
     }
 }
 
 export interface SubselectStatement {
     tableName: string
     filters: Filter[]
-    kind: 'subselect-statement'
 }
 
 export function createSubselectStatement(tableName: string, filters: Filter[]): SubselectStatement {
     return {
         tableName,
-        filters,
-        kind: 'subselect-statement'
+        filters
     }
 }

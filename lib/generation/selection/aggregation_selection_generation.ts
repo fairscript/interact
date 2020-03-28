@@ -13,13 +13,13 @@ function generateGetPartOfKey(partOfKeyToTableAndProperty: { [part: string]: [st
     return generateColumnAccess(tableAlias, property)
 }
 
-function generateAggregate(
-    parameterToTable: { [part: string]: string },
+export function generateAggregateColumn(
+    parameterNameToTableAlias: { [part: string]: string },
     aggregationOperation: string,
-    parameter: string,
+    object: string,
     property: string): string {
 
-    const tableAlias = parameterToTable[parameter]
+    const tableAlias = parameterNameToTableAlias[object]
 
     return `${aggregationOperation.toUpperCase()}(${generateColumnAccess(tableAlias, property)})`
 }
@@ -34,7 +34,7 @@ function createGenerateAggregationOperation(
                 return generateGetPartOfKey(partOfKeyToTableAndProperty, operation.part)
             case 'aggregate-column':
                 const {object, property} = operation.get
-                return generateAggregate(parameterToTable, operation.aggregation, object, property)
+                return generateAggregateColumn(parameterToTable, operation.aggregation, object, property)
             case 'count-rows-in-group':
                 return generateCount()
         }

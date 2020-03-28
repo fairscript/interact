@@ -24,6 +24,16 @@ function generateSelection(aliasEscape: string|null, namedParameterPrefix: strin
     }
 }
 
-export function generateSelect (aliasEscape: string|null, namedParameterPrefix: string, selection: Selection): string {
-    return 'SELECT ' + generateSelection(aliasEscape, namedParameterPrefix, selection)
+export function generateSelect (aliasEscape: string|null, namedParameterPrefix: string, selection: Selection, distinct: boolean): string {
+    let result = 'SELECT'
+    result += ' '
+
+    if (distinct) {
+        result += 'DISTINCT'
+        result += ' '
+    }
+
+    result += generateSelection(aliasEscape, namedParameterPrefix, selection)
+
+    return result
 }

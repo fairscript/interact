@@ -44,6 +44,11 @@ export class SqliteClient implements DatabaseClient {
             .then(row => Object.values(row)[0] as T)
     }
 
+    getVector<T extends Value>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {
+        return this.getRows<StringValueRecord>(sql, parameters)
+            .then(rows => rows.map(row => Object.values(row)[0] as T))
+    }
+
     getSingleRow<T extends StringValueRecord>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
         return new Promise(
             (resolve, reject) => {

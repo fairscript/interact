@@ -10,8 +10,8 @@ import {parseSelectMultipleTables} from '../../parsing/selection/multi_table_sel
 import {Table} from '../one/table'
 import {Subtable} from '../one/subtable'
 import {parseMapS} from '../../parsing/selection/maps_parsing'
-import {SelectScalar} from '../selection/select_scalar'
 import {SelectRows} from '../selection/select_rows'
+import {SelectVector} from '../selection/select_vector'
 
 export class SortTwoTables<T1, T2> {
 
@@ -69,8 +69,8 @@ export class SortTwoTables<T1, T2> {
             })
     }
 
-    get<U extends Value>(f: (first: T1, second: T2) => U): SelectScalar<U> {
-        return new SelectScalar(
+    get<U extends Value>(f: (first: T1, second: T2) => U): SelectVector<U> {
+        return new SelectVector(
             {
                 ...this.statement,
                 selection: parseGet(f)

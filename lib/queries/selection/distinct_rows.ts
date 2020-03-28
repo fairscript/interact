@@ -1,16 +1,15 @@
 import {SelectStatement} from '../../select_statement'
+import {LimitRows} from './limit_rows'
 import {Runnable} from '../../databases/database_context'
-import {OffsetRows} from './offset_rows'
 
-export class LimitRows<T> implements Runnable<T[]>{
-
+export class DistinctRows<T> implements Runnable<T[]> {
     constructor(public statement: SelectStatement, public readonly client: 'vector'|'rows') {}
 
-    offset(offset: number): OffsetRows<T> {
-        return new OffsetRows(
+    limit(limit: number): LimitRows<T> {
+        return new LimitRows(
             {
                 ...this.statement,
-                offset
+                limit
             },
             this.client)
     }

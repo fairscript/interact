@@ -1,7 +1,8 @@
-import {createGetColumn} from '../../column_operations'
+import {createGetColumn, GetColumn} from '../../column_operations'
 import {Selection} from '../selection_parsing'
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {createNamedObjectPropertyParser} from '../javascript/record_parsing'
+import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 
 function createGetParser<T, U>(parameterNames: string[]) {
     const objectProperty = createNamedObjectPropertyParser(parameterNames)
@@ -12,26 +13,24 @@ function createGetParser<T, U>(parameterNames: string[]) {
 
 export interface GetSelection {
     kind: 'get-selection'
-    table: string
-    property: string
+    parameterNameToTableAlias: {[parameter: string]: string},
+    get: GetColumn
 }
 
-export function createGetSelection(table: string, property: string): GetSelection {
+export function createGetSelection(parameterNameToTableAlias: {[parameter: string]: string}, get: GetColumn): GetSelection {
     return {
         kind: 'get-selection',
-        table,
-        property
+        parameterNameToTableAlias,
+        get
     }
 }
 
 export function parseGet(f: Function): Selection {
     const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
-    const parser = createGetParser(parameters)
+    const parameterNameToTableAlias = mapParameterNamesToTableAliases(parameters)
 
-    const getFromParameter = parser.run(expression).result
+    const getColumn = createGetParser(parameters).run(expression).result
 
-    const table = `t${parameters.indexOf(getFromParameter.object)+1}`
-
-    return createGetSelection(table, getFromParameter.property)
+    return createGetSelection(parameterNameToTableAlias, getColumn)
 }

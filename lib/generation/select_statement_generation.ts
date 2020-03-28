@@ -13,10 +13,10 @@ import {generateOffset} from './offset_generation'
 
 
 export function generateSelectStatementSql(dialect: Dialect, statement: SelectStatement): string {
-    const {selection, tableName, filters, key, orders, join, limit, offset} = statement
+    const {selection, distinct, tableName, filters, key, orders, join, limit, offset} = statement
 
     const clauses = [
-        generateSelect(dialect.aliasEscape, dialect.namedParameterPrefix, selection!),
+        generateSelect(dialect.aliasEscape, dialect.namedParameterPrefix, selection!, distinct),
         generateFrom(tableName)
     ]
 

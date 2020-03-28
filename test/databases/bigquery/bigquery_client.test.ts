@@ -1,13 +1,14 @@
-import {BigQueryClient, createBigQueryClient} from '../../../lib/databases/bigquery/bigquery_client'
-
 require('dotenv').config()
-import * as assert from 'assert'
+import * as chai from 'chai'
+import * as chaiAsPromised from 'chai-as-promised'
+import {BigQueryClient, createBigQueryClient} from '../../../lib/databases/bigquery/bigquery_client'
 import {
     createBigQueryForTests,
     computeBigQueryTestTableName,
     setupBigQueryTestData,
     tearDownBigQueryTestData
 } from './bigquery_setup'
+import {createDatabaseClientTestSuite} from '../database_client_test_suite'
 
 describe('BigQueryClient', () => {
 
@@ -17,50 +18,35 @@ describe('BigQueryClient', () => {
 
     const client = createBigQueryClient(bigQuery, datasetId)
 
+    const suite = createDatabaseClientTestSuite(
+        client,
+        `SELECT COUNT(*) FROM ${tableName}`,
+        `
+            SELECT first_name AS firstName, last_name AS lastName
+            FROM ${tableName}
+            WHERE id = 1
+        `,
+        `SELECT title FROM ${tableName} ORDER BY id ASC`,
+        `
+            SELECT first_name AS firstName, last_name AS lastName
+            FROM ${tableName}
+            ORDER BY id ASC
+        `)
+
     before(async() => {
+        chai.should()
+        chai.use(chaiAsPromised)
+
         await setupBigQueryTestData(bigQuery, datasetId, tableName)
     })
 
-    it('can get a scalar', async() => {
-        const count = await client.getScalar(
-            `
-                SELECT COUNT(*)
-                FROM ${tableName};
-            `,
-            {})
+    it('can get a scalar', () => suite.testScalar())
 
-        assert.equal(count, 3)
-    })
+    it('can get a single row', () => suite.testSingleRow())
 
-    it('can get a single row', async() => {
-        const row = await client.getSingleRow(
-            `
-                SELECT first_name AS firstName, last_name AS lastName
-                FROM ${tableName}
-                WHERE id = 1;
-            `,
-            {})
+    it('can get a vector', () => suite.testVector())
 
-        assert.deepEqual(row, { firstName: 'John', lastName: 'Doe'})
-    })
-
-    it('can get multiple rows', async() => {
-        const rows = await client.getRows(
-            `
-                SELECT first_name AS firstName, last_name AS lastName
-                FROM ${tableName}
-                ORDER BY id ASC
-            `,
-            {})
-
-        assert.deepEqual(
-            rows,
-            [
-                { firstName: 'John', lastName: 'Doe'},
-                { firstName: 'Richard', lastName: 'Roe'},
-                { firstName: 'Bob', lastName: 'Smith'}
-            ])
-    })
+    it('can get multiple rows', () => suite.testRows())
 
     after(async() => {
         await tearDownBigQueryTestData(bigQuery, datasetId, tableName)

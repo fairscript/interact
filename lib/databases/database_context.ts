@@ -5,7 +5,7 @@ import {generateSelectStatementParameters, generateSelectStatementSql} from '../
 
 export interface Runnable<T> {
     statement: SelectStatement
-    client: 'scalar'|'single-row'|'rows'
+    client: 'scalar'|'vector'|'single-row'|'rows'
 }
 
 type ExtractTypeParameterFromRunnable<T> = T extends Runnable<infer V> ? V : never
@@ -14,12 +14,16 @@ export class DatabaseContext {
     constructor(private client: DatabaseClient, private dialect: Dialect) {}
 
     run<T>({ statement, client }: Runnable<T>): Promise<T> {
-        const sql = generateSelectStatementSql(this.dialect, statement)
-        const parameters = generateSelectStatementParameters(this.dialect, statement)
+        const adaptedStatement = this.dialect.adaptSelectStatement(statement)
+
+        const sql = generateSelectStatementSql(this.dialect, adaptedStatement)
+        const parameters = generateSelectStatementParameters(this.dialect, adaptedStatement)
 
         switch (client) {
             case 'scalar':
                 return this.client.getScalar(sql, parameters) as Promise<any>
+            case 'vector':
+                return this.client.getVector(sql, parameters) as Promise<any>
             case 'single-row':
                 return this.client.getSingleRow(sql, parameters) as Promise<any>
             case 'rows':

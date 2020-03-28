@@ -3,33 +3,31 @@ import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import {createSqliteInMemoryClient} from '../../../lib/databases/sqlite/sqlite_client'
 import {setUpSqliteTestData} from './sqlite_setup'
+import {createDatabaseClientTestSuite} from '../database_client_test_suite'
 
 describe('SqliteClient', () => {
-    const sqliteClient = createSqliteInMemoryClient()
+    const client = createSqliteInMemoryClient()
+
+    const suite = createDatabaseClientTestSuite(
+        client,
+        'SELECT COUNT(*) FROM employees',
+        'SELECT first_name AS firstName, last_name AS lastName FROM employees WHERE id = 1',
+        'SELECT title FROM employees',
+        'SELECT first_name AS firstName, last_name AS lastName FROM employees')
 
     before(async() => {
         chai.should()
         chai.use(chaiAsPromised)
         sqlite3.verbose()
 
-        await setUpSqliteTestData(sqliteClient)
+        await setUpSqliteTestData(client)
     })
 
-    it('can get a scalar', () => {
-        return sqliteClient.getScalar('SELECT COUNT(*) FROM employees').should.eventually.equal(3)
-    })
+    it('can get a scalar', () => suite.testScalar())
 
-    it('can get a single row', () => {
-        return sqliteClient.getSingleRow('SELECT first_name AS firstName, last_name AS lastName FROM employees WHERE id = 1')
-            .should.eventually.eql({ firstName: 'John', lastName: 'Doe'})
-    })
+    it('can get a single row', () => suite.testSingleRow())
 
-    it('can get multiple rows', () => {
-        return sqliteClient.getRows('SELECT first_name AS firstName, last_name AS lastName FROM employees')
-            .should.eventually.eql([
-                { firstName: 'John', lastName: 'Doe'},
-                { firstName: 'Richard', lastName: 'Roe'},
-                { firstName: 'Bob', lastName: 'Smith'}
-            ])
-    })
+    it('can get a vector', () => suite.testVector())
+
+    it('can get multiple rows', () => suite.testRows())
 })

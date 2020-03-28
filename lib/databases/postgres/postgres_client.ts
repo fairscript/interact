@@ -9,6 +9,16 @@ export class PostgresClient implements DatabaseClient {
         types.setTypeParser(20, value => parseInt(value))
     }
 
+    getScalar<T extends Value>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
+        return this.getSingleRow<StringValueRecord>(sql, parameters)
+            .then(row => Object.values(row)[0] as T)
+    }
+
+    getVector<T extends Value>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {
+        return this.getRows<StringValueRecord>(sql, parameters)
+            .then(rows => rows.map(row => Object.values(row)[0] as T))
+    }
+
     getRows<T extends StringValueRecord>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {
         return this.pg.query(named(sql)(parameters))
             .then(res => res.rows)
@@ -17,11 +27,6 @@ export class PostgresClient implements DatabaseClient {
     getSingleRow<T extends StringValueRecord>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
         return this.getRows<T>(sql, parameters)
             .then((rows: T[]) => rows[0])
-    }
-
-    getScalar<T extends Value>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
-        return this.getSingleRow<StringValueRecord>(sql, parameters)
-            .then(row => Object.values(row)[0] as T)
     }
 
     run(sql: string): Promise<void> {

@@ -23,6 +23,12 @@ describe('SQLite context', () => {
 
     it('can get a scalar', () => suite.testScalarQuery())
 
+    describe('can get a vector', () => {
+        it('without restrictions', () => suite.testVectorQuery())
+
+        it('with an ordered distinction',  () => suite.testDistinctQuery())
+    })
+
     describe('can get a single row', () => {
         it(
             'without a parameter',

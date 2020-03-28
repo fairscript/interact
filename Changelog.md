@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.10.2
+- DISTINCT selection
+
 ## v0.10.1
 - OFFSET setting
 

@@ -1,14 +1,9 @@
 import {SelectStatement} from '../../select_statement'
-import {SelectSingleRow} from './select_single_row'
-import {LimitRows} from './limit_rows'
 import {Runnable} from '../../databases/database_context'
+import {LimitRows} from './limit_rows'
 
-export class SelectRows<T> implements Runnable<T[]> {
+export class SelectVector<T> implements Runnable<T> {
     constructor(public statement: SelectStatement) {}
-
-    single(): SelectSingleRow<T> {
-        return new SelectSingleRow(this.statement)
-    }
 
     limit(limit: number): LimitRows<T> {
         return new LimitRows(
@@ -28,5 +23,5 @@ export class SelectRows<T> implements Runnable<T[]> {
             this.client)
     }
 
-    readonly client = 'rows'
+    readonly client = 'vector'
 }

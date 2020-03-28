@@ -1,63 +1,43 @@
-import {Employee} from '../test_tables'
+import {Employee, testEmployees} from '../test_tables'
 import {DatabaseContext} from '../../lib/databases/database_context'
 import {Table} from '../../lib/queries/one/table'
 
 export function createDatabaseContextTestSuite(ctx: DatabaseContext, employees: Table<Employee>) {
     const scalarQuery = employees.count()
-    const expectedScalarResult = 3
+    const expectedScalarResult = testEmployees.length
+
+    const vectorQuery = employees.sortBy(e => e.id).get(e => e.title)
+    const expectedVectorResult = testEmployees.map(e => e.title)
 
     const singleRowQuery = employees
         .filter(e => e.id === 1)
         .map(e => ({firstName: e.firstName, lastName: e.lastName}))
         .single()
-    const expectedSingleRowResult = { firstName: 'John', lastName: 'Doe'}
-
-    const singleRowQueryWithNumberParameter = employees
-        .filterP(
-            1,
-            (id, e) => e.id === id
-        )
-        .map(e => ({firstName: e.firstName, lastName: e.lastName}))
-        .single()
-    const expectedSingleRowWithNumberParameterResult = { firstName: 'John', lastName: 'Doe'}
-
-    const singleRowQueryWithObjectParameter = employees
-        .filterP(
-            {firstName: 'John', lastName: 'Doe'},
-            (name, e) => e.firstName === name.firstName && e.lastName === name.lastName)
-        .map(e => ({id: e.id}))
-        .single()
-    const expectedSingleRowWithObjectParameterResult = { id: 1 }
+    const firstEmployee = testEmployees.find(e => e.id === 1)!
+    const expectedSingleRowResult = { firstName: firstEmployee.firstName, lastName: firstEmployee.lastName }
 
     const rowsQuery = employees.sortBy(e => e.id).map(e => ({firstName: e.firstName, lastName: e.lastName}))
-    const expectedRowsResult = [
-        { firstName: 'John', lastName: 'Doe'},
-        { firstName: 'Richard', lastName: 'Roe'},
-        { firstName: 'Bob', lastName: 'Smith'}
-    ]
-
-    const limitedQuery = rowsQuery.limit(2)
-    const expectedLimitedResult = [
-        { firstName: 'John', lastName: 'Doe'},
-        { firstName: 'Richard', lastName: 'Roe'}
-    ]
-
-    const limitedOffsetQuery = rowsQuery.limit(1).offset(1)
-    const expectedLimitedOffsetResult = [
-        { firstName: 'Richard', lastName: 'Roe'}
-    ]
+    const expectedRowsResult = testEmployees.map(e =>({ firstName: e.firstName, lastName: e.lastName }))
 
     return {
         testScalarQuery: () => {
-            const promiseOfScalar = ctx
+            const promiseOfScalar: Promise<number> = ctx
                 .run(scalarQuery)
 
             return promiseOfScalar
                 .should.eventually.equal(expectedScalarResult)
         },
 
+        testVectorQuery: () => {
+            const promiseOfVector: Promise<string[]> = ctx
+                .run(vectorQuery)
+
+            return promiseOfVector
+                .should.eventually.eql(expectedVectorResult)
+        },
+
         testSingleRowQuery: () => {
-            const promiseOfRow = ctx
+            const promiseOfRow: Promise<{ firstName: string; lastName: string }> = ctx
                 .run(singleRowQuery)
 
             return promiseOfRow
@@ -66,22 +46,36 @@ export function createDatabaseContextTestSuite(ctx: DatabaseContext, employees: 
 
         testSingleRowQueryWithNumberParameter: () => {
             const promiseOfRow: Promise<{ firstName: string; lastName: string }> = ctx
-                .run(singleRowQueryWithNumberParameter)
+                .run(employees
+                    .filterP(
+                        1,
+                        (id, e) => e.id === id
+                    )
+                    .map(e => ({firstName: e.firstName, lastName: e.lastName}))
+                    .single()
+                )
 
             return promiseOfRow
-                .should.eventually.eql(expectedSingleRowWithNumberParameterResult)
+                .should.eventually.eql(expectedSingleRowResult)
         },
 
         testSingleRowQueryWithObjectParameter: () => {
+            const singleRowQueryWithObjectParameter = employees
+                .filterP(
+                    {firstName: 'John', lastName: 'Doe'},
+                    (name, e) => e.firstName === name.firstName && e.lastName === name.lastName)
+                .map(e => ({id: e.id}))
+                .single()
+
             const promiseOfRow: Promise<{ id: number }> = ctx
                 .run(singleRowQueryWithObjectParameter)
 
             return promiseOfRow
-                .should.eventually.eql(expectedSingleRowWithObjectParameterResult)
+                .should.eventually.eql({ id: testEmployees.find(e => e.firstName === 'John' && e.lastName === 'Doe')!.id })
         },
 
         testRowQuery: () => {
-            const promiseOfRows = ctx
+            const promiseOfRows: Promise<{ firstName: string; lastName: string }[]> = ctx
                 .run(rowsQuery)
 
             return promiseOfRows
@@ -89,35 +83,44 @@ export function createDatabaseContextTestSuite(ctx: DatabaseContext, employees: 
         },
 
         testLimitedQuery: () => {
-            const promiseOfLimitedRows = ctx
-                .run(limitedQuery)
+            const promiseOfRows: Promise<{ firstName: string; lastName: string }[]> = ctx.run(rowsQuery.limit(2))
 
-            return promiseOfLimitedRows
-                .should.eventually.eql(expectedLimitedResult)
+            return promiseOfRows
+                .should.eventually.eql(testEmployees.slice(0, 2).map(e => ({firstName: e.firstName, lastName: e.lastName})))
         },
 
         testLimitedOffsetQuery: () => {
-            const promiseOfLimitedOffsetRows = ctx
-                .run(limitedOffsetQuery)
+            const promiseOfRows: Promise<{ firstName: string; lastName: string }[]> = ctx.run(rowsQuery.limit(1).offset(1))
 
-            return promiseOfLimitedOffsetRows
-                .should.eventually.eql(expectedLimitedOffsetResult)
+            return promiseOfRows
+                .should.eventually.eql(testEmployees.slice(1, 2).map(e => ({firstName: e.firstName, lastName: e.lastName})))
+        },
+
+        testDistinctQuery: () => {
+            const promiseOfRows: Promise<{ firstName: string; lastName: string }[]> = ctx
+                .run(employees.sortBy(e => e.id).get(e => e.title).distinct())
+
+            const allTitles = testEmployees
+                .map(e => e.title)
+
+            const uniqueTitles = allTitles
+                .filter((item, pos) => allTitles.indexOf(item) === pos)
+
+            return promiseOfRows.should.eventually.eql(uniqueTitles)
         },
 
         testParallelQueries: () => {
             return ctx
                 .parallelRun({
                     scalar: scalarQuery,
+                    vector: vectorQuery,
                     singleRow: singleRowQuery,
-                    singleRowUsingNumberParameter: singleRowQueryWithNumberParameter,
-                    singleRowUsingObjectParameter: singleRowQueryWithObjectParameter,
                     rows: rowsQuery
                 })
                 .should.eventually.eql({
                     scalar: expectedScalarResult,
+                    vector: expectedVectorResult,
                     singleRow: expectedSingleRowResult,
-                    singleRowUsingNumberParameter: expectedSingleRowWithNumberParameterResult,
-                    singleRowUsingObjectParameter: expectedSingleRowWithObjectParameterResult,
                     rows: expectedRowsResult
                 })
         }

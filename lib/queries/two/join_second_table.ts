@@ -17,6 +17,7 @@ import {parseParameterlessFilter} from '../../parsing/filtering/parameterless_fi
 import {parseParameterizedFilter} from '../../parsing/filtering/parameterized_filter_parsing'
 import {SelectScalar} from '../selection/select_scalar'
 import {SelectRows} from '../selection/select_rows'
+import {SelectVector} from '../selection/select_vector'
 
 export class JoinSecondTable<T1, T2> {
 
@@ -96,8 +97,8 @@ export class JoinSecondTable<T1, T2> {
             })
     }
 
-    get<U extends Value>(f: (first: T1, second: T2) => U): SelectScalar<U> {
-        return new SelectScalar(
+    get<U extends Value>(f: (first: T1, second: T2) => U): SelectVector<U> {
+        return new SelectVector(
             {
                 ...this.statement,
                 selection: parseGet(f)

@@ -10,8 +10,8 @@ import {parseSelectSingleTable} from '../../parsing/selection/single_table_selec
 import {Subtable} from './subtable'
 import {parseMapS} from '../../parsing/selection/maps_parsing'
 import {Table} from './table'
-import {SelectScalar} from '../selection/select_scalar'
 import {SelectRows} from '../selection/select_rows'
+import {SelectVector} from '../selection/select_vector'
 
 export type Direction = 'asc' | 'desc'
 
@@ -58,8 +58,8 @@ export class SortTable<T> {
             })
     }
 
-    get<U extends Value>(f: (table: T) => U): SelectScalar<U> {
-        return new SelectScalar(
+    get<U extends Value>(f: (table: T) => U): SelectVector<U> {
+        return new SelectVector(
             {
                 ...this.statement,
                 selection: parseGet(f)

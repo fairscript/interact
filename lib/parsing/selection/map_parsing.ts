@@ -10,7 +10,7 @@ import {
 
 export interface MapSelection {
     kind: 'map-selection'
-    parameterToTable: {[parameter: string]: string}
+    parameterNameToTableAlias: {[parameter: string]: string}
     operations: [string, GetColumn|Subselect][]
 }
 
@@ -20,7 +20,7 @@ export function createMapSelection(
 
     return {
         kind: 'map-selection',
-        parameterToTable,
+        parameterNameToTableAlias: parameterToTable,
         operations
     }
 }
