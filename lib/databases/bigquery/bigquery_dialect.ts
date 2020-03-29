@@ -1,5 +1,5 @@
 import {Dialect} from '../dialects'
-import {SelectStatement} from '../../select_statement'
+import {GroupSelectStatement, SelectStatement} from '../../select_statement'
 import {adaptDistinct} from '../distinct_adaptation'
 
 export const bigQueryDialect: Dialect = {
@@ -7,8 +7,8 @@ export const bigQueryDialect: Dialect = {
     namedParameterPrefix: '@',
     useNamedParameterPrefixInRecord: false,
 
-    adaptSelectStatement(statement: SelectStatement): SelectStatement {
-        if (statement.distinct) {
+    adaptSelectStatement(statement: SelectStatement|GroupSelectStatement): SelectStatement|GroupSelectStatement {
+        if(statement.kind === 'select-statement' && statement.distinct) {
             return adaptDistinct(statement)
         }
         else {

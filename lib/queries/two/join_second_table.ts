@@ -1,4 +1,4 @@
-import {Constructor, SelectStatement} from '../../select_statement'
+import {Constructor, createGroupSelectStatement, SelectStatement} from '../../select_statement'
 import {SortTwoTables} from './sort_two_tables'
 import {FilterTwoTables} from './filter_two_tables'
 import {GroupTwoTables} from './group_two_tables'
@@ -6,7 +6,7 @@ import {EnforceNonEmptyRecord, StringValueRecord, ValueOrNestedStringValueRecord
 import {Value} from '../../value'
 import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
-import {parseOrder} from '../../parsing/order_parsing'
+import {parseSorting} from '../../parsing/sorting/sorting_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {parseSelectMultipleTables} from '../../parsing/selection/multi_table_selection_parsing'
 import {Subtable} from '../one/subtable'
@@ -54,7 +54,7 @@ export class JoinSecondTable<T1, T2> {
             this.secondConstructor,
             {
                 ...this.statement,
-                orders: this.statement.orders.concat(parseOrder(sortBy, 'asc'))
+                orders: this.statement.orders.concat(parseSorting(sortBy, 'asc'))
             })
     }
 
@@ -64,7 +64,7 @@ export class JoinSecondTable<T1, T2> {
             this.secondConstructor,
             {
                 ...this.statement,
-                orders: this.statement.orders.concat(parseOrder(sortBy, 'desc'))
+                orders: this.statement.orders.concat(parseSorting(sortBy, 'desc'))
             })
     }
 
@@ -116,10 +116,8 @@ export class JoinSecondTable<T1, T2> {
 
     groupBy<K extends StringValueRecord>(getKey: (first: T1, second: T2) => EnforceNonEmptyRecord<K> & K) : GroupTwoTables<T1, T2, K>{
         return new GroupTwoTables<T1, T2, K>(
-            {
-                ...this.statement,
-                key: parseGetKey(getKey)
-            })
+            createGroupSelectStatement(this.statement, parseGetKey(getKey))
+        )
     }
 }
 

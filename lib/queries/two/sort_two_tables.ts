@@ -1,5 +1,5 @@
-import {Constructor, SelectStatement} from '../../select_statement'
-import {parseOrder} from '../../parsing/order_parsing'
+import {Constructor, createGroupSelectStatement, SelectStatement} from '../../select_statement'
+import {parseSorting} from '../../parsing/sorting/sorting_parsing'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {GroupTwoTables} from './group_two_tables'
 import {Value} from '../../value'
@@ -26,7 +26,7 @@ export class SortTwoTables<T1, T2> {
             this.secondConstructor,
             {
                 ...this.statement,
-                orders: this.statement.orders.concat(parseOrder(sortBy, 'asc'))
+                orders: this.statement.orders.concat(parseSorting(sortBy, 'asc'))
             })
     }
 
@@ -36,7 +36,7 @@ export class SortTwoTables<T1, T2> {
             this.secondConstructor,
             {
                 ...this.statement,
-                orders: this.statement.orders.concat(parseOrder(sortBy, 'desc'))
+                orders: this.statement.orders.concat(parseSorting(sortBy, 'desc'))
             })
     }
 
@@ -79,9 +79,7 @@ export class SortTwoTables<T1, T2> {
 
     groupBy<K extends StringValueRecord>(getKey: (first: T1, second: T2) => EnforceNonEmptyRecord<K> & K) : GroupTwoTables<T1, T2, K>{
         return new GroupTwoTables<T1, T2, K>(
-            {
-                ...this.statement,
-                key: parseGetKey(getKey)
-            })
+            createGroupSelectStatement(this.statement, parseGetKey(getKey))
+        )
     }
 }

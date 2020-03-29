@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.10.3
+- Group ordering by aggregations
+
 ## v0.10.2
 - DISTINCT selection
 

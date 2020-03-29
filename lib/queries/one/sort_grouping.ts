@@ -1,16 +1,14 @@
-import {GroupSelectStatement, SelectStatement} from '../../select_statement'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
-import {parseAggregation} from '../../parsing/selection/aggregation_parsing'
+import {GroupSelectStatement} from '../../select_statement'
 import {AggregatableTable, Avg, Count, Max, Min, StringAggregationRecord, Sum} from './aggregatable_table'
-import {SelectRows} from '../selection/select_rows'
-import {SortGrouping} from './sort_grouping'
 import {parseGroupSorting} from '../../parsing/sorting/group_sorting_parsing'
+import {SelectRows} from '../selection/select_rows'
+import {parseAggregation} from '../../parsing/selection/aggregation_parsing'
 
-
-export class GroupTable<T, K extends StringValueRecord> {
+export class SortGrouping<T, K extends StringValueRecord> {
     constructor(private readonly statement: GroupSelectStatement) {}
 
-    sortBy(sortBy: (key: K, table: AggregatableTable<T>, count: () => Count) => K|Max|Min|Avg|Sum|Count): SortGrouping<T, K> {
+    thenBy(sortBy: (key: K, table: AggregatableTable<T>, count: () => Count) => K | Max | Min | Avg | Sum | Count): SortGrouping<T, K> {
         return new SortGrouping<T, K>(
             {
                 ...this.statement,
@@ -18,7 +16,7 @@ export class GroupTable<T, K extends StringValueRecord> {
             })
     }
 
-    sortDescendinglyBy(sortBy: (key: K, table: AggregatableTable<T>, count: () => Count) => K|Max|Min|Avg|Sum|Count): SortGrouping<T, K> {
+    thenDescendinglyBy(sortBy: (key: K, table: AggregatableTable<T>, count: () => Count) => K | Max | Min | Avg | Sum | Count): SortGrouping<T, K> {
         return new SortGrouping<T, K>(
             {
                 ...this.statement,
@@ -36,4 +34,3 @@ export class GroupTable<T, K extends StringValueRecord> {
             })
     }
 }
-

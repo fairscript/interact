@@ -1,18 +1,19 @@
 # Roadmap
 
 ## v0.11
-- Joins of up to five tables
-- Fix grouping after ordering
-
-## v0.12
-- Booleans, NOT, not equal to
-
-## v0.13
-- Dates
-
-## v0.14
 - HAVING
 - Aggregation without grouping
+- Return class instances in single/multi table selections
+
+## v0.12
+- Joins of up to five tables
+
+## v0.13
+- not equal to, IS NULL, IS NOT NULL
+- Booleans, NOT
+
+## v0.14
+- Dates
 
 ## v0.15
 - Publication to NPM

@@ -1,8 +1,8 @@
 import {Dialect} from '../dialects'
-import {SelectStatement} from '../../select_statement'
+import {GroupSelectStatement, SelectStatement} from '../../select_statement'
 
 export const sqliteDialect: Dialect = {
-    adaptSelectStatement(statement: SelectStatement): SelectStatement {
+    adaptSelectStatement(statement: SelectStatement|GroupSelectStatement): SelectStatement|GroupSelectStatement {
         return statement
     },
     aliasEscape: null,

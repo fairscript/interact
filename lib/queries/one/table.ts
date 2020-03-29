@@ -1,11 +1,16 @@
-import {Constructor, createEmptySelectStatement, SelectStatement} from '../../select_statement'
+import {
+    Constructor,
+    createEmptySelectStatement,
+    createGroupSelectStatement,
+    SelectStatement
+} from '../../select_statement'
 import {FilterTable} from './filter_table'
 import {SortTable} from './sort_table'
 import {GroupTable} from './group_table'
 import {JoinSecondTable} from '../two/join_second_table'
 import {EnforceNonEmptyRecord, StringValueRecord, ValueOrNestedStringValueRecord} from '../../record'
 import {Value} from '../../value'
-import {parseOrder} from '../../parsing/order_parsing'
+import {parseSorting} from '../../parsing/sorting/sorting_parsing'
 import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
@@ -56,7 +61,7 @@ export class Table<T> {
         return new SortTable(
             {
                 ...this.statement,
-                orders: this.statement.orders.concat(parseOrder(sortBy, 'asc'))
+                orders: this.statement.orders.concat(parseSorting(sortBy, 'asc'))
             })
     }
 
@@ -64,7 +69,7 @@ export class Table<T> {
         return new SortTable(
             {
                 ...this.statement,
-                orders: this.statement.orders.concat(parseOrder(sortBy, 'desc'))
+                orders: this.statement.orders.concat(parseSorting(sortBy, 'desc'))
             })
     }
 
@@ -110,10 +115,8 @@ export class Table<T> {
 
     groupBy<K extends StringValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{
         return new GroupTable<T, K>(
-            {
-                ...this.statement,
-                key: parseGetKey(getKey)
-            })
+            createGroupSelectStatement(this.statement, parseGetKey(getKey))
+        )
     }
 
     join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T) => K, right: (secondTable: U) => K) {

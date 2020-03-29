@@ -1,14 +1,12 @@
 import * as assert from 'assert'
-import {
-    createAggregateColumn,
-    createAggregation, createCountRowsInGroup,
-    createGetPartOfKey,
-    parseAggregation
-} from '../../../lib/parsing/selection/aggregation_parsing'
+import { createAggregation, parseAggregation } from '../../../lib/parsing/selection/aggregation_parsing'
 import {Employee} from '../../test_tables'
 import {createGetColumn} from '../../../lib/column_operations'
 import {AggregatableTable} from '../../../lib/queries/one/aggregatable_table'
 import {createKey, createPartOfKey} from '../../../lib/parsing/get_key_parsing'
+import {createGetPartOfKey} from '../../../lib/parsing/aggregation/get_part_of_key_parsing'
+import {createCountRowsInGroup} from '../../../lib/parsing/aggregation/count_rows_in_group_parsing'
+import {createAggregateColumn} from '../../../lib/parsing/aggregation/aggregate_column_parsing'
 
 describe('parseAggregate', () => {
     const firstKeyColumn = createGetColumn('e', 'departmentId')

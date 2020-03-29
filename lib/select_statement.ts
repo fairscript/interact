@@ -1,8 +1,9 @@
 import {Filter} from './parsing/filter_parsing'
-import {OrderExpression} from './parsing/order_parsing'
+import {OrderExpression} from './parsing/sorting/sorting_parsing'
 import {JoinExpression} from './parsing/join_parsing'
 import {Key} from './parsing/get_key_parsing'
 import {Selection} from './parsing/selection_parsing'
+import {GroupOrderExpression} from './parsing/sorting/group_sorting_parsing'
 
 export interface Constructor<T> {
     new (...args: any[]): T
@@ -15,9 +16,9 @@ export interface SelectStatement {
     filters: Filter[]
     orders: OrderExpression[]
     join: JoinExpression|null
-    key: Key|null
     limit: number|'all'
-    offset: number
+    offset: number,
+    kind: 'select-statement'
 }
 
 export function createEmptySelectStatement(tableName: string): SelectStatement {
@@ -28,9 +29,39 @@ export function createEmptySelectStatement(tableName: string): SelectStatement {
         filters: [],
         orders: [],
         join: null,
-        key: null,
         limit: 'all',
-        offset: 0
+        offset: 0,
+        kind: 'select-statement'
+    }
+}
+
+export interface GroupSelectStatement {
+    tableName: string
+    selection: Selection|null
+    distinct: boolean
+    filters: Filter[]
+    orders: GroupOrderExpression[]
+    join: JoinExpression|null
+    key: Key
+    limit: number|'all'
+    offset: number,
+    kind: 'group-select-statement'
+}
+
+export function createGroupSelectStatement(selectStatement: SelectStatement, key: Key): GroupSelectStatement {
+    const { tableName, selection, distinct, filters, orders, join, limit, offset } = selectStatement
+
+    return {
+        tableName,
+        selection,
+        distinct,
+        filters,
+        join,
+        limit,
+        offset,
+        key,
+        orders: [],
+        kind: 'group-select-statement'
     }
 }
 

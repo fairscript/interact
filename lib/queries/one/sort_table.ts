@@ -1,11 +1,9 @@
 import {SelectStatement} from '../../select_statement'
-import {parseOrder} from '../../parsing/order_parsing'
+import {parseSorting} from '../../parsing/sorting/sorting_parsing'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
-import {GroupTable} from './group_table'
 import {Value} from '../../value'
 import {parseGet} from '../../parsing/selection/get_parsing'
 import {parseMap} from '../../parsing/selection/map_parsing'
-import {parseGetKey} from '../../parsing/get_key_parsing'
 import {parseSelectSingleTable} from '../../parsing/selection/single_table_selection_parsing'
 import {Subtable} from './subtable'
 import {parseMapS} from '../../parsing/selection/maps_parsing'
@@ -23,7 +21,7 @@ export class SortTable<T> {
         return new SortTable(
             {
                 ...this.statement,
-                orders: this.statement.orders.concat(parseOrder(sortBy, 'asc'))
+                orders: this.statement.orders.concat(parseSorting(sortBy, 'asc'))
             })
     }
 
@@ -31,7 +29,7 @@ export class SortTable<T> {
         return new SortTable(
             {
                 ...this.statement,
-                orders: this.statement.orders.concat(parseOrder(sortBy, 'desc'))
+                orders: this.statement.orders.concat(parseSorting(sortBy, 'desc'))
             })
     }
 
@@ -63,14 +61,6 @@ export class SortTable<T> {
             {
                 ...this.statement,
                 selection: parseGet(f)
-            })
-    }
-
-    groupBy<K extends StringValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K> {
-        return new GroupTable<T, K>(
-            {
-                ...this.statement,
-                key: parseGetKey(getKey)
             })
     }
 }

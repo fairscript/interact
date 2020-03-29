@@ -1,24 +1,22 @@
-import {createOrderExpression, OrderExpression} from '../parsing/order_parsing'
+import {OrderExpression} from '../parsing/sorting/sorting_parsing'
 import {GetSelection} from '../parsing/selection/get_parsing'
 import {createKey, createPartOfKey, Key} from '../parsing/get_key_parsing'
-import {createAggregateColumn} from '../parsing/selection/aggregation_parsing'
-import {SelectStatement} from '../select_statement'
+import {createGroupSelectStatement, GroupSelectStatement, SelectStatement} from '../select_statement'
 import {MapSelection} from '../parsing/selection/map_parsing'
 import {GetColumn} from '../column_operations'
+import {createAggregateColumn} from '../parsing/aggregation/aggregate_column_parsing'
+import {createGroupOrderExpression} from '../parsing/sorting/group_sorting_parsing'
+import {mapPartOfKeyToTableAndProperty} from '../parsing/selection/aggregation_parsing'
 
 function checkIfGetColumnInOrderIsAbsentFromGetSelection(orders: OrderExpression[], selection: GetSelection): boolean {
     const get = selection.get
 
     for (let indexOrder in orders) {
         const order = orders[indexOrder]
-        const operation = order.operation
+        const operation = order.get
 
-        if(operation.kind !== 'get-column') {
-            continue
-        }
-
-        if (order.parameterNameToTableAlias[operation.object] !== selection.parameterNameToTableAlias[get.object] &&
-            operation.property === get.property) {
+        if (order.parameterNameToTableAlias[operation.object] !== selection.parameterNameToTableAlias[get.object] ||
+            operation.property !== get.property) {
             return true
         }
     }
@@ -29,11 +27,7 @@ function checkIfGetColumnInOrderIsAbsentFromGetSelection(orders: OrderExpression
 function checkIfGetColumnInOrderIsAbsentFromMapSelection(orders: OrderExpression[], selection: MapSelection): boolean {
     for (let indexOrder in orders) {
         const order = orders[indexOrder]
-        const orderOperation = order.operation
-
-        if(orderOperation.kind !== 'get-column') {
-            continue
-        }
+        const orderOperation = order.get
 
         for (let indexMap in selection.operations) {
             const [alias, mapOperation] = selection.operations[indexMap]
@@ -42,8 +36,8 @@ function checkIfGetColumnInOrderIsAbsentFromMapSelection(orders: OrderExpression
                 continue
             }
 
-            if (order.parameterNameToTableAlias[orderOperation.object] !== selection.parameterNameToTableAlias[mapOperation.object] &&
-                orderOperation.property === mapOperation.property) {
+            if (order.parameterNameToTableAlias[orderOperation.object] !== selection.parameterNameToTableAlias[mapOperation.object] ||
+                orderOperation.property !== mapOperation.property) {
                 return true
             }
         }
@@ -52,38 +46,29 @@ function checkIfGetColumnInOrderIsAbsentFromMapSelection(orders: OrderExpression
     return false
 }
 
-function mapGetColumnToAggregateColumn(orders: OrderExpression[]) {
-    return orders.map(o => {
-        const operation = o.operation
-        switch (operation.kind) {
-            case 'aggregate-column':
-                return o
-            case 'get-column':
-                switch (o.direction) {
-                    case 'asc':
-                        return createOrderExpression(o.parameterNameToTableAlias, createAggregateColumn('min', operation), 'asc')
-                    case 'desc':
-                        return createOrderExpression(o.parameterNameToTableAlias, createAggregateColumn('max', operation), 'desc')
-                }
+// Replace GetColumn order operations with MIN/MAX operations
+function mapOrderExpressionsToGroupOrderExpressions(key: Key, orders: OrderExpression[]) {
+    const partOfKeyToTableAndProperty = mapPartOfKeyToTableAndProperty(key)
+
+    return orders.map(({ parameterNameToTableAlias, get, direction }) => {
+        switch (direction) {
+            case 'asc':
+                return createGroupOrderExpression(partOfKeyToTableAndProperty, parameterNameToTableAlias, createAggregateColumn('min', get), 'asc')
+            case 'desc':
+                return createGroupOrderExpression(partOfKeyToTableAndProperty, parameterNameToTableAlias, createAggregateColumn('max', get), 'desc')
         }
     })
 }
 
-function adaptOrderedDistinct(statement: SelectStatement, key: Key) {
-    // Replace GetColumn order operations with MIN/MAX operations
-    const adaptedOrderExpressions: OrderExpression[] = mapGetColumnToAggregateColumn(statement.orders)
-
-    const adaptedSelectedStatement = {
-        ...statement,
+function adaptOrderedDistinct(statement: SelectStatement, key: Key): GroupSelectStatement {
+    return {
+        ...createGroupSelectStatement(statement, key),
         distinct: false,
-        key,
-        orders: adaptedOrderExpressions
+        orders: mapOrderExpressionsToGroupOrderExpressions(key, statement.orders)
     }
-
-    return adaptedSelectedStatement
 }
 
-export function adaptDistinct(statement: SelectStatement): SelectStatement {
+export function adaptDistinct(statement: SelectStatement): SelectStatement|GroupSelectStatement {
 
     const {orders} = statement
 
