@@ -1,6 +1,6 @@
 import {SelectStatement} from '../../select_statement'
 import {parseSorting} from '../../parsing/sorting/sorting_parsing'
-import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
+import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
 import {parseMapSelection} from '../../parsing/selection/map_selection_parsing'
@@ -40,7 +40,7 @@ export class SortTable<T> {
         })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+    map<U extends ValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
         return new SelectRows(
             {
                 ...this.statement,
@@ -48,7 +48,7 @@ export class SortTable<T> {
             })
     }
 
-    mapS<S, U extends StringValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+    mapS<S, U extends ValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
         return new SelectRows(
             {
                 ...this.statement,

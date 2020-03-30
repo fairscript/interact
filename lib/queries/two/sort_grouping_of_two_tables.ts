@@ -1,11 +1,11 @@
-import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
+import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
 import {GroupSelectStatement} from '../../select_statement'
 import {parseGroupSorting} from '../../parsing/sorting/group_sorting_parsing'
 import {SelectRows} from '../selection/select_rows'
-import {parseAggregationSelection} from '../../parsing/selection/aggregation_selection_parsing'
-import {AggregatableTable, Avg, Count, Max, Min, StringAggregationRecord, Sum} from '../one/aggregatable_table'
+import {parseGroupAggregationSelection} from '../../parsing/selection/group_aggregation_selection_parsing'
+import {AggregatableTable, Avg, Count, Max, Min, GroupAggregationRecord, Sum} from '../one/aggregatable_table'
 
-export class SortGroupingOfTwoTables<T1, T2, K extends StringValueRecord> {
+export class SortGroupingOfTwoTables<T1, T2, K extends ValueRecord> {
     constructor(private readonly statement: GroupSelectStatement) {}
 
     thenBy(sortBy: (key: K, first: AggregatableTable<T1>, second: AggregatableTable<T2>, count: () => Count) => K | Max | Min | Avg | Sum | Count): SortGroupingOfTwoTables<T1, T2, K> {
@@ -24,13 +24,13 @@ export class SortGroupingOfTwoTables<T1, T2, K extends StringValueRecord> {
             })
     }
 
-    aggregate<A extends StringAggregationRecord<K>>(
+    aggregate<A extends GroupAggregationRecord<K>>(
         aggregation: (key: K, first: AggregatableTable<T1>, second: AggregatableTable<T2>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectRows<A> {
 
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseAggregationSelection(aggregation, this.statement.key, 2)
+                selection: parseGroupAggregationSelection(aggregation, this.statement.key, 2)
             })
     }
 }

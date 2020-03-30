@@ -1,5 +1,5 @@
-import {generateCount} from '../count_generation'
+import {generateCountOperation} from '../count_generation'
 
 export function generateCountSelection(): string {
-    return generateCount()
+    return generateCountOperation()
 }

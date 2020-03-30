@@ -6,7 +6,7 @@ import {Concatenation, TailItem} from '../parsing/predicate/concatenation'
 import {InsideParentheses} from '../parsing/predicate/inside_parentheses'
 import {joinWithWhitespace} from '../parsing/parsing_helpers'
 import {computePlaceholderName, generateGetProvided} from './get_provided_generation'
-import {StringValueRecord, ValueOrNestedStringValueRecord} from '../record'
+import {ValueRecord, ValueOrNestedValueRecord} from '../record'
 
 
 function generateConstant(constant: Constant): string {
@@ -133,7 +133,7 @@ function recordFilterParameters(
     namedParameterPrefix: string,
     useNamedParameterPrefixInRecord: boolean,
     predicate: PredicateExpression,
-    userProvidedParameter: ValueOrNestedStringValueRecord): StringValueRecord {
+    userProvidedParameter: ValueOrNestedValueRecord): ValueRecord {
 
     return findGetProvided(predicate).reduce(
         (acc, item) => {
@@ -147,13 +147,13 @@ function recordFilterParameters(
         {})
 }
 
-function generateFilterParameters(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, filter: Filter): StringValueRecord {
+function generateFilterParameters(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, filter: Filter): ValueRecord {
     return filter.kind === 'parameterless-filter'
         ? {}
         : recordFilterParameters(namedParameterPrefix, useNamedParameterPrefixInRecord, filter.predicate, filter.userProvided)
 }
 
-export function generateWhereParameters(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, filters: Filter[]): StringValueRecord {
+export function generateWhereParameters(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, filters: Filter[]): ValueRecord {
     return filters
         .map(f => generateFilterParameters(namedParameterPrefix, useNamedParameterPrefixInRecord, f))
         .reduce(

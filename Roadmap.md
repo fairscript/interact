@@ -1,16 +1,10 @@
 # Roadmap
 
-## v0.11.0
-- Aggregation without grouping
-
 ## v0.11.1
 - Column aggregation in subselects
 
 ## v0.11.2
 - HAVING
-
-## v0.11.3
-- Return class instances in single/multi table selections
 
 ## v0.12
 - Joins of up to five tables
@@ -26,33 +20,36 @@
 - Publication to NPM
 
 ## v0.16
-- Set up and increase test coverage
+- Return class instances in single/multi table selections
 
 ## v0.17
-- Move database-specific code to separate modules
+- Set up and increase test coverage
 
 ## v0.18
+- Move database-specific code to separate modules
+
+## v0.19
 - INSERT
 - DELETE
 - UPDATE
 
-## v0.19
+## v0.20
 - Improve documentation
 
-## v0.20
+## v0.21
 - Byte arrays
 
-## v0.21
+## v0.22
 - Set clauses
 
-## v0.22
+## v0.23
 - String operations
 
-## v0.23
+## v0.24
 - Date operations
 
-## v0.24
+## v0.25
 - Mathematical operations
 
-## v0.25
+## v0.26
 - Array operations

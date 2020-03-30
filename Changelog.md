@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.11.0
+- Aggregation without grouping
+
 ## v0.10.3
 - Group ordering by aggregations
 

@@ -8,7 +8,7 @@ import {createNamedObjectPropertyParser} from './javascript/record_parsing'
 import {identifier} from './javascript/identifier_parsing'
 import {closingParenthesis, openingParenthesis} from './javascript/single_character_parsing'
 import normalizeQuotes from './quote_normalization'
-import {StringValueRecord} from '../record'
+import {ValueRecord} from '../record'
 import {ParameterizedFilter} from './filtering/parameterized_filter_parsing'
 import {ParameterlessFilter} from './filtering/parameterless_filter_parsing'
 

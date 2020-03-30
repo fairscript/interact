@@ -1,3 +1,3 @@
-export function generateCount(): string {
+export function generateCountOperation(): string {
     return 'COUNT(*)'
 }

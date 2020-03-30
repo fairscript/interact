@@ -1,7 +1,7 @@
 import {Constructor, createGroupSelectStatement, SelectStatement} from '../../select_statement'
 import {SortTable} from './sort_table'
 import {GroupTable} from './group_table'
-import {EnforceNonEmptyRecord, StringValueRecord, ValueOrNestedStringValueRecord} from '../../record'
+import {EnforceNonEmptyRecord, ValueRecord, ValueOrNestedValueRecord, TableAggregationRecord} from '../../record'
 import {Value} from '../../value'
 import {parseSorting} from '../../parsing/sorting/sorting_parsing'
 import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
@@ -22,6 +22,9 @@ import {
     parseMaxSelection,
     parseMinSelection, parseSumSelection
 } from '../../parsing/selection/aggregate_column_select_parsing'
+import {AggregatableTable, Count} from './aggregatable_table'
+import {parseTableAggregationSelection} from '../../parsing/selection/table_aggregation_selection_parsing'
+import {SelectSingleRow} from '../selection/select_single_row'
 
 export class FilterTable<T> {
 
@@ -40,7 +43,7 @@ export class FilterTable<T> {
             this.filters + 1)
     }
 
-    filterP<P extends ValueOrNestedStringValueRecord>(provided: P, predicate: (parameter: P, table: T) => boolean): FilterTable<T> {
+    filterP<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameter: P, table: T) => boolean): FilterTable<T> {
         return new FilterTable(
             this.constructor,
             {
@@ -74,7 +77,7 @@ export class FilterTable<T> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+    map<U extends ValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
         return new SelectRows(
             {
                 ...this.statement,
@@ -82,7 +85,7 @@ export class FilterTable<T> {
             })
     }
 
-    mapS<S, U extends StringValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+    mapS<S, U extends ValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
         return new SelectRows(
             {
                 ...this.statement,
@@ -138,7 +141,17 @@ export class FilterTable<T> {
             })
     }
 
-    groupBy<K extends StringValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{
+    aggregate<A extends TableAggregationRecord>(
+        aggregation: (table: AggregatableTable<T>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
+
+        return new SelectSingleRow(
+            {
+                ...this.statement,
+                selection: parseTableAggregationSelection(aggregation, 1)
+            })
+    }
+
+    groupBy<K extends ValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{
         return new GroupTable<T, K>(
             createGroupSelectStatement(this.statement, parseGetKey(getKey))
         )

@@ -1,17 +1,17 @@
 import * as assert from 'assert'
-import {createCountParser, createCountRowsInGroup} from '../../../lib/parsing/aggregation/count_rows_in_group_parsing'
+import {createCountOperationParser, createCountOperation} from '../../../lib/parsing/count_operation_parsing'
 import {extractLambdaParametersAndExpression} from '../../../lib/parsing/javascript/lambda_parsing'
 import {createAssertDoesNotMatch} from '../parsing_assertion'
 
 describe('createCountParser creates a parser that', () => {
-    const parser = createCountParser('count')
+    const parser = createCountOperationParser('count')
     const assertDoesNotMatch = createAssertDoesNotMatch(parser)
 
     it('matches the invocation of the COUNT function', () => {
         const {expression} = extractLambdaParametersAndExpression((key, e, count) => count())
 
         const actual = parser.run(expression).result
-        const expected = createCountRowsInGroup()
+        const expected = createCountOperation()
 
         assert.deepEqual(actual, expected)
     })

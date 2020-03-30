@@ -2,34 +2,28 @@ import {Key} from '../get_key_parsing'
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {createRecordInParenthesesParser} from '../javascript/record_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
-import {AggregationOperation, createAggregationOperationParser} from '../aggregation_operation_parsing'
+import {GroupAggregationOperation, createGroupAggregationOperationParser} from '../aggregation/group_aggregation_operation_parsing'
 
 
-export interface Aggregation {
-    kind: 'aggregation',
+export interface GroupAggregationSelection {
+    kind: 'group-aggregation-selection',
     partOfKeyToTableAndProperty: {[partOfKey: string]: [string, string]},
     parameterToTable: {[partOfKey: string]: string},
 
-    operations: [string, AggregationOperation][]
+    operations: [string, GroupAggregationOperation][]
 }
 
-export function createAggregation(
+export function createGroupAggregation(
     partOfKeyToTableAndProperty: {[partOfKey: string]: [string, string]},
     parameterToTable: {[partOfKey: string]: string},
-    operations: [string, AggregationOperation][]): Aggregation {
+    operations: [string, GroupAggregationOperation][]): GroupAggregationSelection {
 
     return {
-        kind: 'aggregation',
+        kind: 'group-aggregation-selection',
         partOfKeyToTableAndProperty,
         parameterToTable,
         operations
     }
-}
-
-function createAggregationParser(keyParameterName: string, objectParameterNames: string[], countParameter: string|null) {
-    const valueParser = createAggregationOperationParser(keyParameterName, objectParameterNames, countParameter)
-
-    return createRecordInParenthesesParser(valueParser)
 }
 
 export function mapPartOfKeyToTableAndProperty(key: Key): {[partOfKey: string]: [string, string]} {
@@ -43,7 +37,7 @@ export function mapPartOfKeyToTableAndProperty(key: Key): {[partOfKey: string]: 
     )
 }
 
-export function parseAggregationSelection(f: Function, key: Key, numberOfTables: number): Aggregation {
+export function parseGroupAggregationSelection(f: Function, key: Key, numberOfTables: number): GroupAggregationSelection {
     const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
     const partOfKeyToTableAndProperty = mapPartOfKeyToTableAndProperty(key)
@@ -54,11 +48,12 @@ export function parseAggregationSelection(f: Function, key: Key, numberOfTables:
 
     const parameterToTable = mapParameterNamesToTableAliases(objectParameterNames)
 
-    const parser = createAggregationParser(keyParameterName, objectParameterNames, countParameter)
+    const valueParser = createGroupAggregationOperationParser(keyParameterName, objectParameterNames, countParameter)
+    const parser = createRecordInParenthesesParser(valueParser)
 
     const operations = parser.run(expression).result
 
-    const aggregation = createAggregation(partOfKeyToTableAndProperty, parameterToTable, operations)
+    const aggregation = createGroupAggregation(partOfKeyToTableAndProperty, parameterToTable, operations)
 
     return aggregation
 }

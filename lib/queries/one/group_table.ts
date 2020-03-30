@@ -1,13 +1,13 @@
 import {GroupSelectStatement, SelectStatement} from '../../select_statement'
-import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
-import {parseAggregationSelection} from '../../parsing/selection/aggregation_selection_parsing'
-import {AggregatableTable, Avg, Count, Max, Min, StringAggregationRecord, Sum} from './aggregatable_table'
+import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
+import {parseGroupAggregationSelection} from '../../parsing/selection/group_aggregation_selection_parsing'
+import {AggregatableTable, Avg, Count, Max, Min, GroupAggregationRecord, Sum} from './aggregatable_table'
 import {SelectRows} from '../selection/select_rows'
 import {SortGrouping} from './sort_grouping'
 import {parseGroupSorting} from '../../parsing/sorting/group_sorting_parsing'
 
 
-export class GroupTable<T, K extends StringValueRecord> {
+export class GroupTable<T, K extends ValueRecord> {
     constructor(private readonly statement: GroupSelectStatement) {}
 
     sortBy(sortBy: (key: K, table: AggregatableTable<T>, count: () => Count) => K|Max|Min|Avg|Sum|Count): SortGrouping<T, K> {
@@ -26,13 +26,13 @@ export class GroupTable<T, K extends StringValueRecord> {
             })
     }
 
-    aggregate<A extends StringAggregationRecord<K>>(
+    aggregate<A extends GroupAggregationRecord<K>>(
         aggregation: (key: K, table: AggregatableTable<T>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectRows<A> {
 
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseAggregationSelection(aggregation, this.statement.key, 1)
+                selection: parseGroupAggregationSelection(aggregation, this.statement.key, 1)
             })
     }
 }

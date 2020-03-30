@@ -11,7 +11,7 @@ import {
 import {identifier} from '../javascript/identifier_parsing'
 import {createGetProvided} from '../../column_operations'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
-import {ValueOrNestedStringValueRecord} from '../../record'
+import {ValueOrNestedValueRecord} from '../../record'
 
 function createParameterSideParser(prefix: string, placeholderParameter: string) {
     return A.choice([
@@ -34,14 +34,14 @@ function parseParameterizedPredicate(prefix: string, placeholderParameter: strin
 export interface ParameterizedFilter {
     tableParameterToTableAlias: {[parameter: string]: string}
     predicate: PredicateExpression
-    userProvided: ValueOrNestedStringValueRecord
+    userProvided: ValueOrNestedValueRecord
     kind: 'parameterized-filter'
 }
 
 export function createParameterizedFilter(
     tableParameterToTableAlias: { [p: string]: string },
     predicate: PredicateExpression,
-    userProvided: ValueOrNestedStringValueRecord): ParameterizedFilter {
+    userProvided: ValueOrNestedValueRecord): ParameterizedFilter {
 
     return {
         tableParameterToTableAlias,
@@ -52,7 +52,7 @@ export function createParameterizedFilter(
 }
 
 
-export function parseParameterizedFilter(f: Function, prefix: string, userProvided: ValueOrNestedStringValueRecord): ParameterizedFilter {
+export function parseParameterizedFilter(f: Function, prefix: string, userProvided: ValueOrNestedValueRecord): ParameterizedFilter {
     const {parameters, expression} = extractLambdaParametersAndExpression(f)
 
     const userProvidedParameter = parameters[0]

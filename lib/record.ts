@@ -1,9 +1,12 @@
 import {Value} from './value'
+import {Avg, Count, Max, Min, Sum} from './queries/one/aggregatable_table'
 
 export type EnforceNonEmptyRecord<R> = keyof R extends never ? never : R
 
-export type StringValueRecord = Record<string, Value>
+export type ValueRecord = Record<string, Value>
 
-interface NestedStringValueRecord extends Record<string, Value|NestedStringValueRecord> {}
+interface NestedValueRecord extends Record<string, Value|NestedValueRecord> {}
 
-export type ValueOrNestedStringValueRecord = Value|NestedStringValueRecord
+export type ValueOrNestedValueRecord = Value|NestedValueRecord
+
+export type TableAggregationRecord = Record<string, Max|Min|Avg|Sum|Count>

@@ -7,7 +7,7 @@ import {generateGroupBy} from './group_by_generation'
 import {generateInnerJoin} from './join_generation'
 import {joinWithNewLine} from '../parsing/parsing_helpers'
 import {Dialect} from '../databases/dialects'
-import {StringValueRecord} from '../record'
+import {ValueRecord} from '../record'
 import {generateLimit} from './limit_generation'
 import {generateOffset} from './offset_generation'
 import {generateGroupOrderBy} from './ordering/group_order_by_generation'
@@ -55,6 +55,6 @@ export function generateSelectStatementSql(dialect: Dialect, statement: SelectSt
     return joinWithNewLine(clauses)
 }
 
-export function generateSelectStatementParameters(dialect: Dialect, statement: SelectStatement|GroupSelectStatement): StringValueRecord {
+export function generateSelectStatementParameters(dialect: Dialect, statement: SelectStatement|GroupSelectStatement): ValueRecord {
     return generateWhereParameters(dialect.namedParameterPrefix, dialect.useNamedParameterPrefixInRecord, statement.filters)
 }

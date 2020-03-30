@@ -1,6 +1,6 @@
 import {Constructor, createGroupSelectStatement, SelectStatement} from '../../select_statement'
 import {parseSorting} from '../../parsing/sorting/sorting_parsing'
-import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
+import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
 import {GroupTwoTables} from './group_two_tables'
 import {Value} from '../../value'
 import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
@@ -51,7 +51,7 @@ export class SortTwoTables<T1, T2> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+    map<U extends ValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
         return new SelectRows(
             {
                 ...this.statement,
@@ -59,7 +59,7 @@ export class SortTwoTables<T1, T2> {
             })
     }
 
-    mapS<S, U extends StringValueRecord>(
+    mapS<S, U extends ValueRecord>(
         tableInSubquery: Table<S>,
         f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
         return new SelectRows(
@@ -77,7 +77,7 @@ export class SortTwoTables<T1, T2> {
             })
     }
 
-    groupBy<K extends StringValueRecord>(getKey: (first: T1, second: T2) => EnforceNonEmptyRecord<K> & K) : GroupTwoTables<T1, T2, K>{
+    groupBy<K extends ValueRecord>(getKey: (first: T1, second: T2) => EnforceNonEmptyRecord<K> & K) : GroupTwoTables<T1, T2, K>{
         return new GroupTwoTables<T1, T2, K>(
             createGroupSelectStatement(this.statement, parseGetKey(getKey))
         )

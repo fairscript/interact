@@ -1,6 +1,6 @@
 import {generateGetColumn} from '../get_column_generation'
 import {SingleColumnSelection} from '../../parsing/selection/single_column_selection_parsing'
-import {generateAggregateColumn} from './aggregation_selection_generation'
+import {generateAggregateColumn} from './group_aggregation_selection_generation'
 
 export function generateSingleColumnSelection(selection: SingleColumnSelection): string {
     const {parameterNameToTableAlias, operation} = selection

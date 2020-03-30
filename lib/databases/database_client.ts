@@ -1,12 +1,12 @@
-import {StringValueRecord} from '../record'
+import {ValueRecord} from '../record'
 import {Value} from '../value'
 
 export interface DatabaseClient {
-    getScalar<T extends Value>(sql: string, parameters: StringValueRecord): Promise<T>
+    getScalar<T extends Value>(sql: string, parameters: ValueRecord): Promise<T>
 
-    getVector<T extends Value>(sql: string, parameters: StringValueRecord): Promise<T[]>
+    getVector<T extends Value>(sql: string, parameters: ValueRecord): Promise<T[]>
 
-    getSingleRow<T extends StringValueRecord>(sql: string, parameters: StringValueRecord): Promise<T>
+    getSingleRow<T extends ValueRecord>(sql: string, parameters: ValueRecord): Promise<T>
 
-    getRows<T extends StringValueRecord>(sql: string, parameters: StringValueRecord): Promise<T[]>
+    getRows<T extends ValueRecord>(sql: string, parameters: ValueRecord): Promise<T[]>
 }

@@ -14,4 +14,4 @@ export type AggregatableTable<T> = {
     [F in keyof T]: AggregatableColumn
 }
 
-export type StringAggregationRecord<K> = Record<string, K|Max|Min|Avg|Sum|Count>
+export type GroupAggregationRecord<K> = Record<string, K|Max|Min|Avg|Sum|Count>

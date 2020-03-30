@@ -2,7 +2,7 @@ import {Constructor, createGroupSelectStatement, SelectStatement} from '../../se
 import {SortTwoTables} from './sort_two_tables'
 import {FilterTwoTables} from './filter_two_tables'
 import {GroupTwoTables} from './group_two_tables'
-import {EnforceNonEmptyRecord, StringValueRecord, ValueOrNestedStringValueRecord} from '../../record'
+import {EnforceNonEmptyRecord, ValueRecord, ValueOrNestedValueRecord, TableAggregationRecord} from '../../record'
 import {Value} from '../../value'
 import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
 import {parseMapSelection} from '../../parsing/selection/map_selection_parsing'
@@ -23,6 +23,9 @@ import {
     parseMaxSelection,
     parseMinSelection, parseSumSelection
 } from '../../parsing/selection/aggregate_column_select_parsing'
+import {AggregatableTable, Count} from '../one/aggregatable_table'
+import {SelectSingleRow} from '../selection/select_single_row'
+import {parseTableAggregationSelection} from '../../parsing/selection/table_aggregation_selection_parsing'
 
 export class JoinSecondTable<T1, T2> {
 
@@ -42,7 +45,7 @@ export class JoinSecondTable<T1, T2> {
             1)
     }
 
-    filterP<P extends ValueOrNestedStringValueRecord>(provided: P, predicate: (parameter: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
+    filterP<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameter: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
         return new FilterTwoTables(
             this.firstConstructor,
             this.secondConstructor,
@@ -84,7 +87,7 @@ export class JoinSecondTable<T1, T2> {
             })
     }
 
-    map<U extends StringValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
+    map<U extends ValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
         return new SelectRows(
             {
                 ...this.statement,
@@ -92,7 +95,7 @@ export class JoinSecondTable<T1, T2> {
             })
     }
 
-    mapS<S, U extends StringValueRecord>(
+    mapS<S, U extends ValueRecord>(
         tableInSubquery: Table<S>,
         f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
         return new SelectRows(
@@ -150,7 +153,17 @@ export class JoinSecondTable<T1, T2> {
             })
     }
 
-    groupBy<K extends StringValueRecord>(getKey: (first: T1, second: T2) => EnforceNonEmptyRecord<K> & K) : GroupTwoTables<T1, T2, K>{
+    aggregate<A extends TableAggregationRecord>(
+        aggregation: (first: T1, second: T2, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
+
+        return new SelectSingleRow(
+            {
+                ...this.statement,
+                selection: parseTableAggregationSelection(aggregation, 2)
+            })
+    }
+
+    groupBy<K extends ValueRecord>(getKey: (first: T1, second: T2) => EnforceNonEmptyRecord<K> & K) : GroupTwoTables<T1, T2, K>{
         return new GroupTwoTables<T1, T2, K>(
             createGroupSelectStatement(this.statement, parseGetKey(getKey))
         )

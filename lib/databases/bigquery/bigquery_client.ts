@@ -1,5 +1,5 @@
 import {DatabaseClient} from '../database_client'
-import {StringValueRecord} from '../../record'
+import {ValueRecord} from '../../record'
 import {BigQuery, Dataset} from '@google-cloud/bigquery'
 import {Value} from '../../value'
 
@@ -10,22 +10,22 @@ export class BigQueryClient implements DatabaseClient {
         this.dataset = this.bigQuery.dataset(datasetId)
     }
 
-    getScalar<T extends Value>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
-        return this.getSingleRow<StringValueRecord>(sql, parameters)
+    getScalar<T extends Value>(sql: string, parameters: ValueRecord = {}): Promise<T> {
+        return this.getSingleRow<ValueRecord>(sql, parameters)
             .then(row => Object.values(row)[0] as T)
     }
 
-    getVector<T extends Value>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {
-        return this.getRows<StringValueRecord>(sql, parameters)
+    getVector<T extends Value>(sql: string, parameters: ValueRecord = {}): Promise<T[]> {
+        return this.getRows<ValueRecord>(sql, parameters)
             .then(rows => rows.map(row => Object.values(row)[0] as T))
     }
 
-    getSingleRow<T extends StringValueRecord>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
+    getSingleRow<T extends ValueRecord>(sql: string, parameters: ValueRecord = {}): Promise<T> {
         return this.getRows<T>(sql, parameters)
             .then(rows => rows[0])
     }
 
-    getRows<T extends StringValueRecord>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {
+    getRows<T extends ValueRecord>(sql: string, parameters: ValueRecord = {}): Promise<T[]> {
         return this.dataset
             .query({
                 query: sql,

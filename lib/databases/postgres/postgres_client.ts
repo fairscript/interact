@@ -1,6 +1,6 @@
 import {Client, QueryConfig, types} from 'pg'
 import {DatabaseClient} from '../database_client'
-import {StringValueRecord} from '../../record'
+import {ValueRecord} from '../../record'
 import {Value} from '../../value'
 const named = require('yesql').pg
 
@@ -9,22 +9,22 @@ export class PostgresClient implements DatabaseClient {
         types.setTypeParser(20, value => parseInt(value))
     }
 
-    getScalar<T extends Value>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
-        return this.getSingleRow<StringValueRecord>(sql, parameters)
+    getScalar<T extends Value>(sql: string, parameters: ValueRecord = {}): Promise<T> {
+        return this.getSingleRow<ValueRecord>(sql, parameters)
             .then(row => Object.values(row)[0] as T)
     }
 
-    getVector<T extends Value>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {
-        return this.getRows<StringValueRecord>(sql, parameters)
+    getVector<T extends Value>(sql: string, parameters: ValueRecord = {}): Promise<T[]> {
+        return this.getRows<ValueRecord>(sql, parameters)
             .then(rows => rows.map(row => Object.values(row)[0] as T))
     }
 
-    getRows<T extends StringValueRecord>(sql: string, parameters: StringValueRecord = {}): Promise<T[]> {
+    getRows<T extends ValueRecord>(sql: string, parameters: ValueRecord = {}): Promise<T[]> {
         return this.pg.query(named(sql)(parameters))
             .then(res => res.rows)
     }
 
-    getSingleRow<T extends StringValueRecord>(sql: string, parameters: StringValueRecord = {}): Promise<T> {
+    getSingleRow<T extends ValueRecord>(sql: string, parameters: ValueRecord = {}): Promise<T> {
         return this.getRows<T>(sql, parameters)
             .then((rows: T[]) => rows[0])
     }

@@ -59,6 +59,16 @@ describe('Table', () => {
             )
         })
 
-    })
+        it('to return an object', () => {
+            checkSql(
+                employees
+                    .aggregate((e, count) => ({ highestSalary: e.salary.max(), lowestSalary: e.salary.min(), averageSalary: e.salary.avg(), totalSalary: e.salary.sum(), salaries: count() })),
+                [
+                    'SELECT MAX(t1.salary) AS highestSalary, MIN(t1.salary) AS lowestSalary, AVG(t1.salary) AS averageSalary, SUM(t1.salary) AS totalSalary, COUNT(*) AS salaries',
+                    'FROM employees t1'
+                ]
+            )
+        })
 
+    })
 })

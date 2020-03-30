@@ -1,5 +1,5 @@
 import * as assert from 'assert'
-import {createCountParser, createCountRowsInGroup} from '../../../lib/parsing/aggregation/count_rows_in_group_parsing'
+import {createCountOperationParser, createCountOperation} from '../../../lib/parsing/count_operation_parsing'
 import {extractLambdaParametersAndExpression} from '../../../lib/parsing/javascript/lambda_parsing'
 import {createGetPartOfKey, createGetPartOfKeyParser} from '../../../lib/parsing/aggregation/get_part_of_key_parsing'
 import {createAssertDoesNotMatch} from '../parsing_assertion'
