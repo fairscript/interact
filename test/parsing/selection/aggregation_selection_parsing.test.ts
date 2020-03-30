@@ -1,5 +1,5 @@
 import * as assert from 'assert'
-import { createAggregation, parseAggregation } from '../../../lib/parsing/selection/aggregation_parsing'
+import { createAggregation, parseAggregationSelection } from '../../../lib/parsing/selection/aggregation_selection_parsing'
 import {Employee} from '../../test_tables'
 import {createGetColumn} from '../../../lib/column_operations'
 import {AggregatableTable} from '../../../lib/queries/one/aggregatable_table'
@@ -21,7 +21,7 @@ describe('parseAggregate', () => {
     describe('returns one aliased GetPartOfKey object when the key is accessed', () => {
         it('with one part', () => {
             assert.deepEqual(
-                parseAggregation((key: {departmentId: string}) => ({ depId: key.departmentId }), keyOfOnePart, 1),
+                parseAggregationSelection((key: {departmentId: string}) => ({ depId: key.departmentId }), keyOfOnePart, 1),
                 createAggregation(
                     {'departmentId': ['t1', 'departmentId']},
                     {},
@@ -33,7 +33,7 @@ describe('parseAggregate', () => {
         describe('returns two aliased GetPartOfKey objects when a key of two parts is accessed', () => {
             it('in one order', () => {
                 assert.deepEqual(
-                    parseAggregation((key: {departmentId: string, title: string}) => ({ depId: key.departmentId, title: key.title }), keyOfTwoParts, 1),
+                    parseAggregationSelection((key: {departmentId: string, title: string}) => ({ depId: key.departmentId, title: key.title }), keyOfTwoParts, 1),
                     createAggregation(
                         {departmentId: ['t1', 'departmentId'], title: ['t1', 'title']},
                         {},
@@ -44,7 +44,7 @@ describe('parseAggregate', () => {
 
             it('or in reverse order', () => {
                 assert.deepEqual(
-                    parseAggregation((key: {departmentId: string, title: string}) => ({ title: key.title, depId: key.departmentId }), keyOfTwoParts, 1),
+                    parseAggregationSelection((key: {departmentId: string, title: string}) => ({ title: key.title, depId: key.departmentId }), keyOfTwoParts, 1),
                     createAggregation(
                         {departmentId: ['t1', 'departmentId'], title: ['t1', 'title']},
                         {},
@@ -57,7 +57,7 @@ describe('parseAggregate', () => {
 
     it('returns an aliased AggregateColumn object when a column is aggregated', () => {
         assert.deepEqual(
-            parseAggregation((_, e: AggregatableTable<Employee>) => ({ highestSalary: e.salary.max() }), keyOfOnePart, 1),
+            parseAggregationSelection((_, e: AggregatableTable<Employee>) => ({ highestSalary: e.salary.max() }), keyOfOnePart, 1),
             createAggregation(
                 {departmentId: ['t1', 'departmentId']},
                 {e: 't1'},
@@ -68,7 +68,7 @@ describe('parseAggregate', () => {
 
     it('returns an aliased CountRowsInGroup object when the number of rows in each group is counted', () => {
         assert.deepEqual(
-            parseAggregation((_, e: AggregatableTable<Employee>, count) => ({ employees: count()}), keyOfOnePart, 1),
+            parseAggregationSelection((_, e: AggregatableTable<Employee>, count) => ({ employees: count()}), keyOfOnePart, 1),
             createAggregation(
                 {departmentId: ['t1', 'departmentId']},
                 {e: 't1'},
@@ -79,7 +79,7 @@ describe('parseAggregate', () => {
 
     it('can parse combinations of key access, column aggregation and row counting', () => {
         assert.deepEqual(
-            parseAggregation((key: {departmentId: string}, e, count) => ({ depId: key.departmentId, highestSalary: e.salary.max(), employees: count() }), keyOfOnePart, 1),
+            parseAggregationSelection((key: {departmentId: string}, e, count) => ({ depId: key.departmentId, highestSalary: e.salary.max(), employees: count() }), keyOfOnePart, 1),
             createAggregation(
                 {departmentId: ['t1', 'departmentId']},
                 {e: 't1'},

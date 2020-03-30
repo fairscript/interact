@@ -1,7 +1,7 @@
 import {createSubselect} from '../../column_operations'
 import * as A from 'arcsecond'
 import {createSubselectStatement} from '../../select_statement'
-import {createGetFromParameterParser, createMapSelection, MapSelection} from './map_parsing'
+import {createGetFromParameterParser, createMapSelection, MapSelection} from './map_selection_parsing'
 import {createConstantOrColumnSideParser} from '../filter_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {
@@ -72,7 +72,7 @@ function createSubselectParser(availableSubtableParameters: string[], outerParam
     })
 }
 
-export function parseMapS(f: Function, subtableNames: string[]): MapSelection {
+export function parseMapWithSubquerySelection(f: Function, subtableNames: string[]): MapSelection {
     const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
     const subParameterNames = parameters.slice(0, subtableNames.length)

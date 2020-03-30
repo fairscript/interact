@@ -2,11 +2,11 @@ import {SelectStatement} from '../../select_statement'
 import {parseSorting} from '../../parsing/sorting/sorting_parsing'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {Value} from '../../value'
-import {parseGet} from '../../parsing/selection/get_parsing'
-import {parseMap} from '../../parsing/selection/map_parsing'
-import {parseSelectSingleTable} from '../../parsing/selection/single_table_selection_parsing'
+import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
+import {parseMapSelection} from '../../parsing/selection/map_selection_parsing'
+import {parseSingleTableSelection} from '../../parsing/selection/single_table_selection_parsing'
 import {Subtable} from './subtable'
-import {parseMapS} from '../../parsing/selection/maps_parsing'
+import {parseMapWithSubquerySelection} from '../../parsing/selection/maps_selection_parsing'
 import {Table} from './table'
 import {SelectRows} from '../selection/select_rows'
 import {SelectVector} from '../selection/select_vector'
@@ -36,7 +36,7 @@ export class SortTable<T> {
     select(): SelectRows<T> {
         return new SelectRows({
             ...this.statement,
-            selection: parseSelectSingleTable(this.constructor)
+            selection: parseSingleTableSelection(this.constructor)
         })
     }
 
@@ -44,7 +44,7 @@ export class SortTable<T> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseMap(f)
+                selection: parseMapSelection(f)
             })
     }
 
@@ -52,7 +52,7 @@ export class SortTable<T> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseMapS(f, [tableInSubquery.tableName])
+                selection: parseMapWithSubquerySelection(f, [tableInSubquery.tableName])
             })
     }
 
@@ -60,7 +60,7 @@ export class SortTable<T> {
         return new SelectVector(
             {
                 ...this.statement,
-                selection: parseGet(f)
+                selection: parseGetSelection(f)
             })
     }
 }

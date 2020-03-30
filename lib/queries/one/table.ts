@@ -11,19 +11,26 @@ import {JoinSecondTable} from '../two/join_second_table'
 import {EnforceNonEmptyRecord, StringValueRecord, ValueOrNestedStringValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseSorting} from '../../parsing/sorting/sorting_parsing'
-import {parseGet} from '../../parsing/selection/get_parsing'
-import {parseMap} from '../../parsing/selection/map_parsing'
+import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
+import {parseMapSelection} from '../../parsing/selection/map_selection_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {parseJoin} from '../../parsing/join_parsing'
-import {parseMapS} from '../../parsing/selection/maps_parsing'
-import {createCountSelection} from '../../parsing/selection/count_parsing'
-import {parseSelectSingleTable} from '../../parsing/selection/single_table_selection_parsing'
+import {parseMapWithSubquerySelection} from '../../parsing/selection/maps_selection_parsing'
+import {createCountSelection} from '../../parsing/selection/count_selection'
+import {parseSingleTableSelection} from '../../parsing/selection/single_table_selection_parsing'
 import {Subtable} from './subtable'
 import {parseParameterlessFilter} from '../../parsing/filtering/parameterless_filter_parsing'
 import {parseParameterizedFilter} from '../../parsing/filtering/parameterized_filter_parsing'
 import {SelectScalar} from '../selection/select_scalar'
 import {SelectRows} from '../selection/select_rows'
 import {SelectVector} from '../selection/select_vector'
+import {createAggregateColumn} from '../../parsing/aggregation/aggregate_column_parsing'
+import {createGetColumn} from '../../column_operations'
+import {
+    parseAverageSelection,
+    parseMaxSelection,
+    parseMinSelection, parseSumSelection
+} from '../../parsing/selection/aggregate_column_select_parsing'
 
 
 export class Table<T> {
@@ -77,7 +84,7 @@ export class Table<T> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseSelectSingleTable(this.constructor)
+                selection: parseSingleTableSelection(this.constructor)
             })
     }
 
@@ -85,7 +92,7 @@ export class Table<T> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseMap(map)
+                selection: parseMapSelection(map)
             })
     }
 
@@ -93,7 +100,7 @@ export class Table<T> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseMapS(map, [tableInSubquery.tableName])
+                selection: parseMapWithSubquerySelection(map, [tableInSubquery.tableName])
             })
     }
 
@@ -101,15 +108,47 @@ export class Table<T> {
         return new SelectVector(
             {
                 ...this.statement,
-                selection: parseGet(f)
+                selection: parseGetSelection(f)
             })
     }
 
     count(): SelectScalar<number> {
-        return new SelectScalar<number>(
+        return new SelectScalar(
             {
                 ...this.statement,
                 selection: createCountSelection()
+            })
+    }
+
+    max<V extends Value>(f: (table: T) => V): SelectScalar<V> {
+        return new SelectScalar(
+            {
+                ...this.statement,
+                selection: parseMaxSelection(f)
+            })
+    }
+
+    min<V extends Value>(f: (table: T) => V): SelectScalar<V> {
+        return new SelectScalar(
+            {
+                ...this.statement,
+                selection: parseMinSelection(f)
+            })
+    }
+
+    average<V extends Value>(f: (table: T) => V): SelectScalar<V> {
+        return new SelectScalar(
+            {
+                ...this.statement,
+                selection: parseAverageSelection(f)
+            })
+    }
+
+    sum<V extends Value>(f: (table: T) => V): SelectScalar<V> {
+        return new SelectScalar(
+            {
+                ...this.statement,
+                selection: parseSumSelection(f)
             })
     }
 

@@ -2,13 +2,13 @@ import {Department, Employee} from '../../test_tables'
 import * as assert from 'assert'
 import {
     createMultiTableSelection,
-    parseSelectMultipleTables
+    parseMultipleTableSelection
 } from '../../../lib/parsing/selection/multi_table_selection_parsing'
 
 describe('parseMultiTableSelect', () => {
     it('returns an array of objects satisfying the Alias interface', () => {
         assert.deepEqual(
-            parseSelectMultipleTables([['employee', Employee], ['department', Department]]),
+            parseMultipleTableSelection([['employee', Employee], ['department', Department]]),
             createMultiTableSelection(
                 {
                     employee: 't1',

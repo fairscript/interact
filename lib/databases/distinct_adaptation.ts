@@ -1,43 +1,23 @@
 import {OrderExpression} from '../parsing/sorting/sorting_parsing'
-import {GetSelection} from '../parsing/selection/get_parsing'
 import {createKey, createPartOfKey, Key} from '../parsing/get_key_parsing'
 import {createGroupSelectStatement, GroupSelectStatement, SelectStatement} from '../select_statement'
-import {MapSelection} from '../parsing/selection/map_parsing'
+import {MapSelection} from '../parsing/selection/map_selection_parsing'
 import {GetColumn} from '../column_operations'
 import {createAggregateColumn} from '../parsing/aggregation/aggregate_column_parsing'
 import {createGroupOrderExpression} from '../parsing/sorting/group_sorting_parsing'
-import {mapPartOfKeyToTableAndProperty} from '../parsing/selection/aggregation_parsing'
+import {mapPartOfKeyToTableAndProperty} from '../parsing/selection/aggregation_selection_parsing'
+import {SingleColumnSelection} from '../parsing/selection/single_column_selection_parsing'
 
-function checkIfGetColumnInOrderIsAbsentFromGetSelection(orders: OrderExpression[], selection: GetSelection): boolean {
-    const get = selection.get
-
-    for (let indexOrder in orders) {
-        const order = orders[indexOrder]
-        const operation = order.get
-
-        if (order.parameterNameToTableAlias[operation.object] !== selection.parameterNameToTableAlias[get.object] ||
-            operation.property !== get.property) {
-            return true
-        }
-    }
-
-    return false
-}
-
-function checkIfGetColumnInOrderIsAbsentFromMapSelection(orders: OrderExpression[], selection: MapSelection): boolean {
+function checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders: OrderExpression[], selection: SingleColumnSelection|MapSelection): boolean {
     for (let indexOrder in orders) {
         const order = orders[indexOrder]
         const orderOperation = order.get
 
-        for (let indexMap in selection.operations) {
-            const [alias, mapOperation] = selection.operations[indexMap]
+        for (let indexMap in selection.referencedColumns) {
+            const selectOperation = selection.referencedColumns[indexMap]
 
-            if(mapOperation.kind !== 'get-column') {
-                continue
-            }
-
-            if (order.parameterNameToTableAlias[orderOperation.object] !== selection.parameterNameToTableAlias[mapOperation.object] ||
-                orderOperation.property !== mapOperation.property) {
+            if (order.parameterNameToTableAlias[orderOperation.object] !== selection.parameterNameToTableAlias[selectOperation.object] ||
+                orderOperation.property !== selectOperation.property) {
                 return true
             }
         }
@@ -60,7 +40,22 @@ function mapOrderExpressionsToGroupOrderExpressions(key: Key, orders: OrderExpre
     })
 }
 
-function adaptOrderedDistinct(statement: SelectStatement, key: Key): GroupSelectStatement {
+function adaptOrderedDistinct(
+    statement: SelectStatement,
+    parameterNameToTableAlias: {[parameter: string]: string},
+    referencedColumns: GetColumn[]): GroupSelectStatement {
+
+    const key = createKey(
+        parameterNameToTableAlias,
+        referencedColumns
+            .map(operation =>
+                createPartOfKey(
+                    operation.property,
+                    operation as GetColumn
+                )
+            )
+    )
+
     return {
         ...createGroupSelectStatement(statement, key),
         distinct: false,
@@ -74,39 +69,8 @@ export function adaptDistinct(statement: SelectStatement): SelectStatement|Group
 
     const selection = statement.selection!
 
-    // A single column is selected.
-    // Not that "get selection" implies that no key is set.
-    if (selection.kind === 'get-selection' && checkIfGetColumnInOrderIsAbsentFromGetSelection(orders, selection)) {
-        // Group by the selected column
-        const key = createKey(
-            selection.parameterNameToTableAlias,
-            [
-                createPartOfKey(
-                    selection.get.property,
-                    selection.get
-                )
-            ]
-        )
-
-        return adaptOrderedDistinct(statement, key)
-
-    }
-    else if (selection.kind === 'map-selection' && checkIfGetColumnInOrderIsAbsentFromMapSelection(orders, selection)) {
-        // Group by the sequence of selected columns
-        const key = createKey(
-            selection.parameterNameToTableAlias,
-            selection
-                .operations
-                .filter(([alias, operation]) => operation.kind === 'get-column')
-                .map(([alias, operation]) =>
-                    createPartOfKey(
-                        alias,
-                        operation as GetColumn
-                    )
-                )
-        )
-
-        return adaptOrderedDistinct(statement, key)
+    if ((selection.kind === 'single-column-selection' || selection.kind === 'map-selection') && checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders, selection)) {
+        return adaptOrderedDistinct(statement, selection.parameterNameToTableAlias, selection.referencedColumns)
     }
     else {
         return statement

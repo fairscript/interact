@@ -6,22 +6,29 @@ import {
     createRecordInParenthesesParser,
     createNamedObjectPropertyParser
 } from '../javascript/record_parsing'
+import {findReferencedColumns} from './search_for_referenced_columns'
 
 
 export interface MapSelection {
     kind: 'map-selection'
     parameterNameToTableAlias: {[parameter: string]: string}
     operations: [string, GetColumn|Subselect][]
+    referencedColumns: GetColumn[]
 }
 
 export function createMapSelection(
     parameterToTable: {[parameter: string]: string},
     operations: [string, GetColumn|Subselect][]): MapSelection {
 
+    const referencedColumns = operations.reduce(
+        (acc, [_, op]) => acc.concat(findReferencedColumns(op)),
+        [] as GetColumn[])
+
     return {
         kind: 'map-selection',
         parameterNameToTableAlias: parameterToTable,
-        operations
+        operations,
+        referencedColumns
     }
 }
 
@@ -36,7 +43,7 @@ function createMapParser(parameterNames: string[]) {
     return createRecordInParenthesesParser(getFromParameterParser)
 }
 
-export function parseMap(f: Function): Selection {
+export function parseMapSelection(f: Function): Selection {
     const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
     const parameterToTable = mapParameterNamesToTableAliases(parameters)

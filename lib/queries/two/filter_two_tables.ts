@@ -3,15 +3,15 @@ import {SortTwoTables} from './sort_two_tables'
 import {GroupTwoTables} from './group_two_tables'
 import {EnforceNonEmptyRecord, StringValueRecord, ValueOrNestedStringValueRecord} from '../../record'
 import {Value} from '../../value'
-import {parseGet} from '../../parsing/selection/get_parsing'
-import {parseMap} from '../../parsing/selection/map_parsing'
+import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
+import {parseMapSelection} from '../../parsing/selection/map_selection_parsing'
 import {parseSorting} from '../../parsing/sorting/sorting_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {parseSelectMultipleTables} from '../../parsing/selection/multi_table_selection_parsing'
+import {parseMultipleTableSelection} from '../../parsing/selection/multi_table_selection_parsing'
 import {Table} from '../one/table'
 import {Subtable} from '../one/subtable'
-import {parseMapS} from '../../parsing/selection/maps_parsing'
-import {createCountSelection} from '../../parsing/selection/count_parsing'
+import {parseMapWithSubquerySelection} from '../../parsing/selection/maps_selection_parsing'
+import {createCountSelection} from '../../parsing/selection/count_selection'
 import {parseParameterlessFilter} from '../../parsing/filtering/parameterless_filter_parsing'
 import {parseParameterizedFilter} from '../../parsing/filtering/parameterized_filter_parsing'
 import {SelectScalar} from '../selection/select_scalar'
@@ -71,7 +71,7 @@ export class FilterTwoTables<T1, T2> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseSelectMultipleTables([
+                selection: parseMultipleTableSelection([
                     [first, this.firstConstructor ],
                     [second, this.secondConstructor]
                 ])
@@ -82,7 +82,7 @@ export class FilterTwoTables<T1, T2> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseMap(f)
+                selection: parseMapSelection(f)
             })
     }
 
@@ -92,7 +92,7 @@ export class FilterTwoTables<T1, T2> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseMapS(f, [tableInSubquery.tableName])
+                selection: parseMapWithSubquerySelection(f, [tableInSubquery.tableName])
             })
     }
 
@@ -100,7 +100,7 @@ export class FilterTwoTables<T1, T2> {
         return new SelectVector(
             {
                 ...this.statement,
-                selection: parseGet(f)
+                selection: parseGetSelection(f)
             })
     }
 

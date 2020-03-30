@@ -3,16 +3,16 @@ import {
     createGetColumn,
     createSubselect
 } from '../../../lib/column_operations'
-import {parseMapS} from '../../../lib/parsing/selection/maps_parsing'
+import {parseMapWithSubquerySelection} from '../../../lib/parsing/selection/maps_selection_parsing'
 import {createSubselectStatement} from '../../../lib/select_statement'
-import {createMapSelection} from '../../../lib/parsing/selection/map_parsing'
+import {createMapSelection} from '../../../lib/parsing/selection/map_selection_parsing'
 import {createEquality, createGreaterThan} from '../../../lib/parsing/predicate/comparison'
 import {createParameterlessFilter} from '../../../lib/parsing/filtering/parameterless_filter_parsing'
 
 describe('parseMapS can parse a map with a subquery', function () {
 
     it('with one filter', () => {
-        const actual = parseMapS(
+        const actual = parseMapWithSubquerySelection(
             (st, e) => ({
                 id: e.id,
                 higherSalary: st.filter(se => se.salary > e.salary).count()
@@ -41,7 +41,7 @@ describe('parseMapS can parse a map with a subquery', function () {
     })
 
     it('with two filters', () => {
-        const actual = parseMapS(
+        const actual = parseMapWithSubquerySelection(
             (st, e) => ({
                 id: e.id,
                 higherSalary: st.filter(se => se.salary > e.salary).filter(se => se.departmentId === e.departmentId).count()

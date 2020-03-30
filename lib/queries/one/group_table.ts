@@ -1,6 +1,6 @@
 import {GroupSelectStatement, SelectStatement} from '../../select_statement'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
-import {parseAggregation} from '../../parsing/selection/aggregation_parsing'
+import {parseAggregationSelection} from '../../parsing/selection/aggregation_selection_parsing'
 import {AggregatableTable, Avg, Count, Max, Min, StringAggregationRecord, Sum} from './aggregatable_table'
 import {SelectRows} from '../selection/select_rows'
 import {SortGrouping} from './sort_grouping'
@@ -32,7 +32,7 @@ export class GroupTable<T, K extends StringValueRecord> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseAggregation(aggregation, this.statement.key, 1)
+                selection: parseAggregationSelection(aggregation, this.statement.key, 1)
             })
     }
 }

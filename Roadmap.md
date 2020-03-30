@@ -1,8 +1,12 @@
 # Roadmap
 
-## v0.11
-- HAVING
+## v0.11.0
 - Aggregation without grouping
+
+## v0.11.1
+- HAVING
+
+## v0.11.2
 - Return class instances in single/multi table selections
 
 ## v0.12

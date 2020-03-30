@@ -2,7 +2,7 @@ import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {GroupSelectStatement} from '../../select_statement'
 import {parseGroupSorting} from '../../parsing/sorting/group_sorting_parsing'
 import {SelectRows} from '../selection/select_rows'
-import {parseAggregation} from '../../parsing/selection/aggregation_parsing'
+import {parseAggregationSelection} from '../../parsing/selection/aggregation_selection_parsing'
 import {AggregatableTable, Avg, Count, Max, Min, StringAggregationRecord, Sum} from '../one/aggregatable_table'
 
 export class SortGroupingOfTwoTables<T1, T2, K extends StringValueRecord> {
@@ -30,7 +30,7 @@ export class SortGroupingOfTwoTables<T1, T2, K extends StringValueRecord> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseAggregation(aggregation, this.statement.key, 2)
+                selection: parseAggregationSelection(aggregation, this.statement.key, 2)
             })
     }
 }

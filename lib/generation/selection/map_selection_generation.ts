@@ -1,4 +1,4 @@
-import {MapSelection} from '../../parsing/selection/map_parsing'
+import {MapSelection} from '../../parsing/selection/map_selection_parsing'
 import {GetColumn, Subselect} from '../../column_operations'
 import {generateGetColumn} from '../get_column_generation'
 import {generateSubselect} from '../subselect_generation'

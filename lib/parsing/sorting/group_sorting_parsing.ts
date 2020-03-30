@@ -2,7 +2,7 @@ import {Direction} from '../../queries/one/sort_table'
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {AggregationOperation, createAggregationOperationParser} from '../aggregation_operation_parsing'
-import {mapPartOfKeyToTableAndProperty} from '../selection/aggregation_parsing'
+import {mapPartOfKeyToTableAndProperty} from '../selection/aggregation_selection_parsing'
 import {Key} from '../get_key_parsing'
 
 export interface GroupOrderExpression {

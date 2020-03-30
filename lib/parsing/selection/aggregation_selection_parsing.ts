@@ -43,7 +43,7 @@ export function mapPartOfKeyToTableAndProperty(key: Key): {[partOfKey: string]: 
     )
 }
 
-export function parseAggregation(f: Function, key: Key, numberOfTables: number): Aggregation {
+export function parseAggregationSelection(f: Function, key: Key, numberOfTables: number): Aggregation {
     const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
     const partOfKeyToTableAndProperty = mapPartOfKeyToTableAndProperty(key)

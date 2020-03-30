@@ -3,7 +3,7 @@ import {GroupSelectStatement} from '../../select_statement'
 import {AggregatableTable, Avg, Count, Max, Min, StringAggregationRecord, Sum} from './aggregatable_table'
 import {parseGroupSorting} from '../../parsing/sorting/group_sorting_parsing'
 import {SelectRows} from '../selection/select_rows'
-import {parseAggregation} from '../../parsing/selection/aggregation_parsing'
+import {parseAggregationSelection} from '../../parsing/selection/aggregation_selection_parsing'
 
 export class SortGrouping<T, K extends StringValueRecord> {
     constructor(private readonly statement: GroupSelectStatement) {}
@@ -30,7 +30,7 @@ export class SortGrouping<T, K extends StringValueRecord> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseAggregation(aggregation, this.statement.key, 1)
+                selection: parseAggregationSelection(aggregation, this.statement.key, 1)
             })
     }
 }

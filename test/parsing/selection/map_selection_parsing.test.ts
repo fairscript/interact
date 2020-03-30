@@ -1,12 +1,12 @@
 import * as assert from 'assert'
-import {createMapSelection, parseMap} from '../../../lib/parsing/selection/map_parsing'
+import {createMapSelection, parseMapSelection} from '../../../lib/parsing/selection/map_selection_parsing'
 import {Employee} from '../../test_tables'
 import {createGetColumn} from '../../../lib/column_operations'
 
 describe('parseMap can parse an object', function () {
     it('with a single key', () => {
         assert.deepEqual(
-            parseMap((e: Employee) => ({employeeId: e.id})),
+            parseMapSelection((e: Employee) => ({employeeId: e.id})),
             createMapSelection(
                 {e: 't1'},
                 [
@@ -18,7 +18,7 @@ describe('parseMap can parse an object', function () {
 
     it('with two keys', () => {
         assert.deepEqual(
-            parseMap((e: Employee) => ({first: e.firstName, last: e.lastName})),
+            parseMapSelection((e: Employee) => ({first: e.firstName, last: e.lastName})),
             createMapSelection(
                 {e: 't1'},
                 [

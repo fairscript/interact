@@ -13,7 +13,7 @@ export function createSingleTableSelection(properties: string[]): SingleTableSel
     }
 }
 
-export function parseSelectSingleTable(constructor: Function): Selection {
+export function parseSingleTableSelection(constructor: Function): Selection {
     const properties = parseConstructor(constructor)
 
     return createSingleTableSelection(properties)

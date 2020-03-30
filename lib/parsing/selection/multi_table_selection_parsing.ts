@@ -14,7 +14,7 @@ export function createMultiTableSelection(nameToTable: { [key: string]: string }
     }
 }
 
-export function parseSelectMultipleTables(pairs: [string, Function][]): MultiTableSelection {
+export function parseMultipleTableSelection(pairs: [string, Function][]): MultiTableSelection {
     const nameToTable = pairs.reduce(
         (acc, [name, _], index) => {
             acc[name] = `t${index + 1}`

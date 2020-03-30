@@ -4,13 +4,13 @@ import {GroupTable} from './group_table'
 import {EnforceNonEmptyRecord, StringValueRecord, ValueOrNestedStringValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseSorting} from '../../parsing/sorting/sorting_parsing'
-import {parseGet} from '../../parsing/selection/get_parsing'
-import {parseMap} from '../../parsing/selection/map_parsing'
+import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
+import {parseMapSelection} from '../../parsing/selection/map_selection_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
-import {createCountSelection} from '../../parsing/selection/count_parsing'
-import {parseSelectSingleTable} from '../../parsing/selection/single_table_selection_parsing'
+import {createCountSelection} from '../../parsing/selection/count_selection'
+import {parseSingleTableSelection} from '../../parsing/selection/single_table_selection_parsing'
 import {Subtable} from './subtable'
-import {parseMapS} from '../../parsing/selection/maps_parsing'
+import {parseMapWithSubquerySelection} from '../../parsing/selection/maps_selection_parsing'
 import {Table} from './table'
 import {parseParameterlessFilter} from '../../parsing/filtering/parameterless_filter_parsing'
 import {parseParameterizedFilter} from '../../parsing/filtering/parameterized_filter_parsing'
@@ -65,7 +65,7 @@ export class FilterTable<T> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseSelectSingleTable(this.constructor)
+                selection: parseSingleTableSelection(this.constructor)
             })
     }
 
@@ -73,7 +73,7 @@ export class FilterTable<T> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseMap(f)
+                selection: parseMapSelection(f)
             })
     }
 
@@ -81,7 +81,7 @@ export class FilterTable<T> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseMapS(f, [tableInSubquery.tableName])
+                selection: parseMapWithSubquerySelection(f, [tableInSubquery.tableName])
             })
     }
 
@@ -89,7 +89,7 @@ export class FilterTable<T> {
         return new SelectVector(
             {
                 ...this.statement,
-                selection: parseGet(f)
+                selection: parseGetSelection(f)
             })
     }
 

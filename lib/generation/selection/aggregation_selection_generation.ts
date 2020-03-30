@@ -1,9 +1,11 @@
-import {Aggregation} from '../../parsing/selection/aggregation_parsing'
+import {Aggregation} from '../../parsing/selection/aggregation_selection_parsing'
 import {generateCount} from '../count_generation'
 import {generateColumnAccess} from '../column_access_generation'
 import {joinWithCommaWhitespace} from '../../parsing/parsing_helpers'
 import {generateAlias} from '../alias_generation'
 import {AggregationOperation} from '../../parsing/aggregation_operation_parsing'
+import {AggregateColumn} from '../../parsing/aggregation/aggregate_column_parsing'
+import {generateGetColumn} from '../get_column_generation'
 
 export function generateGetPartOfKey(partOfKeyToTableAndProperty: { [part: string]: [string, string] }, part: string): string {
     const [tableAlias, property] = partOfKeyToTableAndProperty[part]
@@ -13,13 +15,9 @@ export function generateGetPartOfKey(partOfKeyToTableAndProperty: { [part: strin
 
 export function generateAggregateColumn(
     parameterNameToTableAlias: { [part: string]: string },
-    aggregationFunction: string,
-    object: string,
-    property: string): string {
+    aggregateColumn: AggregateColumn): string {
 
-    const tableAlias = parameterNameToTableAlias[object]
-
-    return `${aggregationFunction.toUpperCase()}(${generateColumnAccess(tableAlias, property)})`
+    return `${aggregateColumn.aggregationFunction.toUpperCase()}(${generateGetColumn(parameterNameToTableAlias, aggregateColumn.get)})`
 }
 
 export function generateAggregationOperation(
@@ -31,8 +29,7 @@ export function generateAggregationOperation(
         case 'get-part-of-key':
             return generateGetPartOfKey(partOfKeyToTableAndProperty, operation.part)
         case 'aggregate-column':
-            const {object, property} = operation.get
-            return generateAggregateColumn(parameterToTable, operation.aggregationFunction, object, property)
+            return generateAggregateColumn(parameterToTable, operation)
         case 'count-rows-in-group':
             return generateCount()
     }
