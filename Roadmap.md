@@ -4,9 +4,12 @@
 - Aggregation without grouping
 
 ## v0.11.1
-- HAVING
+- Column aggregation in subselects
 
 ## v0.11.2
+- HAVING
+
+## v0.11.3
 - Return class instances in single/multi table selections
 
 ## v0.12

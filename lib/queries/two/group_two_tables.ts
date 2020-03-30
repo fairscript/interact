@@ -1,9 +1,8 @@
-import {GroupSelectStatement, SelectStatement} from '../../select_statement'
+import {GroupSelectStatement} from '../../select_statement'
 import {EnforceNonEmptyRecord, StringValueRecord} from '../../record'
 import {parseAggregationSelection} from '../../parsing/selection/aggregation_selection_parsing'
 import {AggregatableTable, Avg, Count, Max, Min, StringAggregationRecord, Sum} from '../one/aggregatable_table'
 import {SelectRows} from '../selection/select_rows'
-import {SortGrouping} from '../one/sort_grouping'
 import {parseGroupSorting} from '../../parsing/sorting/group_sorting_parsing'
 import {SortGroupingOfTwoTables} from './sort_grouping_of_two_tables'
 

@@ -17,6 +17,11 @@ import {parseParameterizedFilter} from '../../parsing/filtering/parameterized_fi
 import {SelectScalar} from '../selection/select_scalar'
 import {SelectRows} from '../selection/select_rows'
 import {SelectVector} from '../selection/select_vector'
+import {
+    parseAverageSelection,
+    parseMaxSelection,
+    parseMinSelection, parseSumSelection
+} from '../../parsing/selection/aggregate_column_select_parsing'
 
 export class FilterTable<T> {
 
@@ -98,6 +103,38 @@ export class FilterTable<T> {
             {
                 ...this.statement,
                 selection: createCountSelection()
+            })
+    }
+
+    max<V extends Value>(f: (table: T) => V): SelectScalar<V> {
+        return new SelectScalar(
+            {
+                ...this.statement,
+                selection: parseMaxSelection(f)
+            })
+    }
+
+    min<V extends Value>(f: (table: T) => V): SelectScalar<V> {
+        return new SelectScalar(
+            {
+                ...this.statement,
+                selection: parseMinSelection(f)
+            })
+    }
+
+    average<V extends Value>(f: (table: T) => V): SelectScalar<V> {
+        return new SelectScalar(
+            {
+                ...this.statement,
+                selection: parseAverageSelection(f)
+            })
+    }
+
+    sum<V extends Value>(f: (table: T) => V): SelectScalar<V> {
+        return new SelectScalar(
+            {
+                ...this.statement,
+                selection: parseSumSelection(f)
             })
     }
 
