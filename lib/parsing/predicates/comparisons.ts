@@ -1,18 +1,5 @@
-import * as A from 'arcsecond'
+import {mapJsComparisonOperatorToSqlComparisonOperator, SqlComparisonOperator} from './comparison_operators'
 import {Constant, GetColumn, GetProvided} from '../../column_operations'
-import {aComparisonOperator} from '../javascript/operator_parsing'
-
-export type SqlComparisonOperator = '=' | '>' | '>=' | '<' | '<='
-
-function mapJsComparisonOperatorToSqlComparisonOperator(operator): SqlComparisonOperator {
-    switch (operator) {
-        case '===':
-        case '==':
-            return '='
-        default:
-            return operator
-    }
-}
 
 export type Side = Constant | GetColumn | GetProvided
 
@@ -32,8 +19,12 @@ export function createComparison(left: Side, operator: SqlComparisonOperator, ri
     }
 }
 
-export function createEquality(left: Side, right: Side): Comparison {
+export function createEqual(left: Side, right: Side): Comparison {
     return createComparison(left, '=', right)
+}
+
+export function createNotEqual(left: Side, right: Side): Comparison {
+    return createComparison(left, '!=', right)
 }
 
 export function createGreaterThan(left: Side, right: Side): Comparison {
@@ -50,16 +41,4 @@ export function createLessThan(left: Side, right: Side): Comparison {
 
 export function createLessThanOrEqualTo(left: Side, right: Side): Comparison {
     return createComparison(left, '<=', right)
-}
-
-export function createComparisonParser(sideParser) {
-    return A.sequenceOf(
-        [
-            sideParser,
-            A.optionalWhitespace,
-            aComparisonOperator,
-            A.optionalWhitespace,
-            sideParser
-        ])
-        .map(([left, ws1, operator, ws2, right]) => ([left, operator, right]))
 }

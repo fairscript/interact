@@ -3,7 +3,7 @@ import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
 import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
 import {
     createRecordInParenthesesParser,
-    createKeyValuePairParser, createNamedObjectPropertyParser
+    createNamedObjectPropertyParser
 } from './javascript/record_parsing'
 
 export interface PartOfKey {

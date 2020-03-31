@@ -3,9 +3,9 @@ import {
     createParameterizedFilter,
     parseParameterizedFilter
 } from '../../../lib/parsing/filtering/parameterized_filter_parsing'
-import {createComparison} from '../../../lib/parsing/predicate/comparison'
 import {createGetColumn, createGetProvided} from '../../../lib/column_operations'
-import {createConcatenation, createTailItem} from '../../../lib/parsing/predicate/concatenation'
+import {createConcatenation, createTailItem} from '../../../lib/parsing/predicates/concatenation'
+import {createComparison} from '../../../lib/parsing/predicates/comparisons'
 
 describe('parseParameterizedFilter can parse a filter', () => {
     it('with a number parameter', () => {

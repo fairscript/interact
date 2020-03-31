@@ -4,10 +4,10 @@ import {
 } from '../../../lib/column_operations'
 import {parseMapWithSubquerySelection} from '../../../lib/parsing/selection/maps_selection_parsing'
 import {createMapSelection} from '../../../lib/parsing/selection/map_selection_parsing'
-import {createEquality, createGreaterThan} from '../../../lib/parsing/predicate/comparison'
 import {createParameterlessFilter} from '../../../lib/parsing/filtering/parameterless_filter_parsing'
 import {createSubselectStatement} from '../../../lib/select_statement'
 import {createCountSelection} from '../../../lib/parsing/selection/count_selection'
+import {createEqual, createGreaterThan} from '../../../lib/parsing/predicates/comparisons'
 
 describe('parseMapS can parse a map with a subquery', function () {
 
@@ -59,7 +59,7 @@ describe('parseMapS can parse a map with a subquery', function () {
                 ),
                 createParameterlessFilter(
                     tableParameterNameToTableAlias,
-                    createEquality(createGetColumn('se', 'departmentId'), createGetColumn('e', 'departmentId'))
+                    createEqual(createGetColumn('se', 'departmentId'), createGetColumn('e', 'departmentId'))
                 )
             ],
             createCountSelection())

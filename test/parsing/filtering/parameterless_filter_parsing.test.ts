@@ -1,40 +1,40 @@
 import * as assert from 'assert'
 import {createConstant, createGetColumn} from '../../../lib/column_operations'
 import {Department, Employee} from '../../test_tables'
+import {createAnd, createConcatenation, createOr} from '../../../lib/parsing/predicates/concatenation'
+import {createInsideParentheses} from '../../../lib/parsing/predicates/inside_parentheses'
+import {extractLambdaParametersAndExpression} from '../../../lib/parsing/javascript/lambda_parsing'
+import {parseParameterlessPredicate} from '../../../lib/parsing/filtering/parameterless_filter_parsing'
 import {
-    createEquality,
+    createEqual,
     createGreaterThan,
     createGreaterThanOrEqualTo,
     createLessThan,
     createLessThanOrEqualTo
-} from '../../../lib/parsing/predicate/comparison'
-import {createAnd, createConcatenation, createOr} from '../../../lib/parsing/predicate/concatenation'
-import {createInsideParentheses} from '../../../lib/parsing/predicate/inside_parentheses'
-import {extractLambdaParametersAndExpression} from '../../../lib/parsing/javascript/lambda_parsing'
-import {PredicateExpression} from '../../../lib/parsing/filter_parsing'
-import {parseParameterlessPredicate} from '../../../lib/parsing/filtering/parameterless_filter_parsing'
+} from '../../../lib/parsing/predicates/comparisons'
+import {Predicate} from '../../../lib/parsing/predicates/predicate_parsing'
 
 
 describe('parseFilter', () => {
-    const idEqualsOne = createEquality(createGetColumn('e', 'id'), createConstant(1))
-    const oneEqualsId = createEquality(createConstant(1), createGetColumn('e', 'id'))
-    const titleEqualsCeo = createEquality(createGetColumn('e', 'title'), createConstant('CEO'))
-    const firstNameEqualsJohn = createEquality(createGetColumn('e', 'firstName'), createConstant('John'))
-    const lastNameEqualsDoe = createEquality(createGetColumn('e', 'lastName'), createConstant('Doe'))
-    const firstNameEqualsRichard = createEquality(createGetColumn('e', 'firstName'), createConstant('Richard'))
-    const lastNameEqualsRoe = createEquality(createGetColumn('e', 'lastName'), createConstant('Roe'))
+    const idEqualsOne = createEqual(createGetColumn('e', 'id'), createConstant(1))
+    const oneEqualsId = createEqual(createConstant(1), createGetColumn('e', 'id'))
+    const titleEqualsCeo = createEqual(createGetColumn('e', 'title'), createConstant('CEO'))
+    const firstNameEqualsJohn = createEqual(createGetColumn('e', 'firstName'), createConstant('John'))
+    const lastNameEqualsDoe = createEqual(createGetColumn('e', 'lastName'), createConstant('Doe'))
+    const firstNameEqualsRichard = createEqual(createGetColumn('e', 'firstName'), createConstant('Richard'))
+    const lastNameEqualsRoe = createEqual(createGetColumn('e', 'lastName'), createConstant('Roe'))
 
-    function parseFilter(f: Function): PredicateExpression {
+    function parseFilter(f: Function): Predicate {
         const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
         return parseParameterlessPredicate(parameters ,expression)
     }
 
-    function parseFilterWithEmployeeParameter(f: (e: Employee) => boolean): PredicateExpression {
+    function parseFilterWithEmployeeParameter(f: (e: Employee) => boolean): Predicate {
         return parseFilter(f)
     }
 
-    function parseFilterWithEmployeeAndDepartmentParameters(f: (e: Employee, d: Department) => boolean): PredicateExpression {
+    function parseFilterWithEmployeeAndDepartmentParameters(f: (e: Employee, d: Department) => boolean): Predicate {
         return parseFilter(f)
     }
 
@@ -88,13 +88,13 @@ describe('parseFilter', () => {
                     it('single quotes', () => {
                         assert.deepEqual(
                             parseFilterWithEmployeeParameter(e => e.title === 'some title'),
-                            createEquality(createGetColumn('e', 'title'), createConstant('some title')))
+                            createEqual(createGetColumn('e', 'title'), createConstant('some title')))
                     })
 
                     it('double quotes', () => {
                         assert.deepEqual(
                             parseFilterWithEmployeeParameter(e => e.title === "some title"),
-                            createEquality(createGetColumn('e', 'title'), createConstant('some title')))
+                            createEqual(createGetColumn('e', 'title'), createConstant('some title')))
                     })
                 })
 
@@ -102,19 +102,19 @@ describe('parseFilter', () => {
                     it('parentheses', () => {
                         assert.deepEqual(
                             parseFilterWithEmployeeParameter(e => e.title === '(text in parentheses)'),
-                            createEquality(createGetColumn('e', 'title'), createConstant('(text in parentheses)')))
+                            createEqual(createGetColumn('e', 'title'), createConstant('(text in parentheses)')))
                     })
 
                     it('double parentheses', () => {
                         assert.deepEqual(
                             parseFilterWithEmployeeParameter(e => e.title === '((text in parentheses))'),
-                            createEquality(createGetColumn('e', 'title'), createConstant('((text in parentheses))')))
+                            createEqual(createGetColumn('e', 'title'), createConstant('((text in parentheses))')))
                     })
 
                     it('escaped single quotes', () => {
                         assert.deepEqual(
                             parseFilterWithEmployeeParameter(e => e.title === 'I\'m'),
-                            createEquality(createGetColumn('e', 'title'), createConstant("I\\'m")))
+                            createEqual(createGetColumn('e', 'title'), createConstant("I\\'m")))
                     })
                 })
 
@@ -131,7 +131,7 @@ describe('parseFilter', () => {
             it('with a string', () => {
                 assert.deepEqual(
                     parseFilterWithEmployeeParameter(e => e.title === 'some title'),
-                    createEquality(createGetColumn('e', 'title'), createConstant('some title')))
+                    createEqual(createGetColumn('e', 'title'), createConstant('some title')))
             })
         })
     })
@@ -146,7 +146,7 @@ describe('parseFilter', () => {
         it('with a string', () => {
             assert.deepEqual(
                 parseFilterWithEmployeeParameter(e => (e.title == 'some title')),
-                createInsideParentheses(createEquality(createGetColumn('e', 'title'), createConstant('some title'))))
+                createInsideParentheses(createEqual(createGetColumn('e', 'title'), createConstant('some title'))))
         })
     })
 
@@ -160,7 +160,7 @@ describe('parseFilter', () => {
         it('with a string', () => {
             assert.deepEqual(
                 parseFilterWithEmployeeParameter(e => ((e.title == 'some title'))),
-                createInsideParentheses(createInsideParentheses(createEquality(createGetColumn('e', 'title'), createConstant('some title')))))
+                createInsideParentheses(createInsideParentheses(createEqual(createGetColumn('e', 'title'), createConstant('some title')))))
         })
     })
 
@@ -391,10 +391,10 @@ describe('parseFilter', () => {
             assert.deepEqual(
                 parseFilterWithEmployeeParameter(e => e.firstName == 'Jim' || e.firstName == 'James'),
                 createConcatenation(
-                    createEquality(createGetColumn('e', 'firstName'), createConstant('Jim')),
+                    createEqual(createGetColumn('e', 'firstName'), createConstant('Jim')),
                     [
                         createOr(
-                            createEquality(createGetColumn('e', 'firstName'), createConstant('James'))
+                            createEqual(createGetColumn('e', 'firstName'), createConstant('James'))
                         )
                     ]
                 )
@@ -422,14 +422,14 @@ describe('parseFilter', () => {
         it('when the comparison refers to the first table', () => {
             assert.deepEqual(
                 parseFilterWithEmployeeAndDepartmentParameters((e, d) => e.lastName == 'Doe'),
-                createEquality(createGetColumn('e', 'lastName'), createConstant('Doe'))
+                createEqual(createGetColumn('e', 'lastName'), createConstant('Doe'))
             )
         })
 
         it('when the comparison refers to the second table', () => {
             assert.deepEqual(
                 parseFilterWithEmployeeAndDepartmentParameters((e, d) => d.id == 1),
-                createEquality(createGetColumn('d', 'id'), createConstant(1))
+                createEqual(createGetColumn('d', 'id'), createConstant(1))
             )
         })
 
@@ -437,10 +437,10 @@ describe('parseFilter', () => {
             assert.deepEqual(
                 parseFilterWithEmployeeAndDepartmentParameters((e, d) => e.lastName == 'Doe' && d.id == 1),
                 createConcatenation(
-                    createEquality(createGetColumn('e', 'lastName'), createConstant('Doe')),
+                    createEqual(createGetColumn('e', 'lastName'), createConstant('Doe')),
                     [
                         createAnd(
-                            createEquality(createGetColumn('d', 'id'), createConstant(1)))
+                            createEqual(createGetColumn('d', 'id'), createConstant(1)))
                     ])
             )
         })
@@ -449,10 +449,10 @@ describe('parseFilter', () => {
             assert.deepEqual(
                 parseFilterWithEmployeeAndDepartmentParameters((e, d) => d.id == 1 && e.lastName == 'Doe'),
                 createConcatenation(
-                    createEquality(createGetColumn('d', 'id'), createConstant(1)),
+                    createEqual(createGetColumn('d', 'id'), createConstant(1)),
                     [
                         createAnd(
-                            createEquality(createGetColumn('e', 'lastName'), createConstant('Doe')))
+                            createEqual(createGetColumn('e', 'lastName'), createConstant('Doe')))
                     ])
             )
         })

@@ -6,21 +6,17 @@ import {
     createOneParameterFunctionInvocation,
     createParameterlessFunctionInvocation
 } from '../javascript/invocation_parsing'
-import {createLambdaParser, createLambdaBodyParser, lambdaSignatureParser} from '../javascript/lambda_parsing'
-import {createConstantOrColumnSideParser, createPredicateExpressionParser} from '../filter_parsing'
-import {createCountOperation} from '../count_operation_parsing'
-import {createNamedObjectPropertyParser} from '../javascript/record_parsing'
-import {identifier} from '../javascript/identifier_parsing'
+import {createLambdaBodyParser, createLambdaParser, lambdaSignatureParser} from '../javascript/lambda_parsing'
 import {
-    AggregationFunction,
     createAggregateColumn,
-    jsToSqlAggregationFunction
+    mapLibraryAggregateFunctionNameToSqlFunctionName
 } from '../aggregation/aggregate_column_parsing'
-import {createGetColumn} from '../../column_operations'
 import {createGetColumnParser} from '../get_column_parsing'
 import {createSingleColumnSelection} from './single_column_selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {createCountSelection} from './count_selection'
+import {createPredicateParser} from '../predicates/predicate_parsing'
+import {createConstantOrColumnSideParser} from '../predicates/side_parsing'
 
 // filter(function (se) { return se.salary > e.salary; })
 function createFilterParser(outerParameterNames) {
@@ -34,7 +30,7 @@ function createFilterParser(outerParameterNames) {
         yield A.optionalWhitespace
 
         const sideParser = createConstantOrColumnSideParser(outerParameterNames.concat(innerParameterName))
-        const predicateParser = createPredicateExpressionParser(sideParser)
+        const predicateParser = createPredicateParser(sideParser)
 
         const predicate = yield createLambdaBodyParser(predicateParser)
 
@@ -63,7 +59,7 @@ const countMethodParser = createParameterlessFunctionInvocation('count')
     .map(() => createCountSelection())
 
 function createAggregationMethodParser(methodName: string) {
-    const aggregationFunction = jsToSqlAggregationFunction[methodName]
+    const aggregationFunction = mapLibraryAggregateFunctionNameToSqlFunctionName(methodName)
     return createOneParameterFunctionInvocation(methodName, createLambdaParser(([parameter]) => createLambdaBodyParser(createGetColumnParser([parameter]))))
         .map(([_, [parameter, getColumn]]) => {
             const parameterNameToTableAlias = mapParameterNamesToTableAliases([parameter], 's')

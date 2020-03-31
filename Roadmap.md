@@ -5,6 +5,8 @@
 
 ## v0.12
 - not equal to, IS NULL, IS NOT NULL
+
+## v0.12.1
 - Booleans, NOT
 
 ## v0.13
@@ -18,6 +20,7 @@
 
 ## v0.16
 - Return class instances in single/multi table selections
+- first/single methods
 
 ## v0.17
 - Set up and increase test coverage

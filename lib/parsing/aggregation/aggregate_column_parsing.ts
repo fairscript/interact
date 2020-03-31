@@ -7,11 +7,13 @@ import {createNamedObjectPropertyParser} from '../javascript/record_parsing'
 
 export type AggregationFunction = 'avg' | 'min' | 'max' | 'sum'
 
-export const jsToSqlAggregationFunction = {
-    'min': 'min',
-    'max': 'max',
-    'sum': 'sum',
-    'average': 'avg'
+export function mapLibraryAggregateFunctionNameToSqlFunctionName(library): AggregationFunction {
+    switch (library) {
+        case 'average':
+            return 'avg'
+        default:
+            return library
+    }
 }
 
 export interface AggregateColumn {

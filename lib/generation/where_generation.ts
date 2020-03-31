@@ -1,12 +1,13 @@
 import {generateGetColumn} from './get_column_generation'
 import {Constant, GetProvided} from '../column_operations'
-import {Filter, PredicateExpression} from '../parsing/filter_parsing'
-import {Comparison, Side} from '../parsing/predicate/comparison'
-import {Concatenation, TailItem} from '../parsing/predicate/concatenation'
-import {InsideParentheses} from '../parsing/predicate/inside_parentheses'
+import {Filter} from '../parsing/filtering/filter_parsing'
+import {Concatenation, TailItem} from '../parsing/predicates/concatenation'
+import {InsideParentheses} from '../parsing/predicates/inside_parentheses'
 import {joinWithWhitespace} from '../parsing/parsing_helpers'
 import {computePlaceholderName, generateGetProvided} from './get_provided_generation'
 import {ValueRecord, ValueOrNestedValueRecord} from '../record'
+import {Comparison, Side} from '../parsing/predicates/comparisons'
+import {Predicate} from '../parsing/predicates/predicate_parsing'
 
 
 function generateConstant(constant: Constant): string {
@@ -62,7 +63,7 @@ function generateConcatenation(namedParameterPrefix: string, parameterNameToTabl
     return joinWithWhitespace([head].concat(predicate.tail.map(generateTailItem(namedParameterPrefix, parameterNameToTableAlias))))
 }
 
-function generatePredicate(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, predicate: PredicateExpression): string {
+function generatePredicate(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, predicate: Predicate): string {
     switch (predicate.kind) {
         case 'comparison':
             return generateComparison(namedParameterPrefix, parameterNameToTableAlias, predicate)
@@ -101,7 +102,7 @@ function getByPath(obj: {}, remainingPath: string[]): any {
     }
 }
 
-function findGetProvided(expression: PredicateExpression, collection: GetProvided[] = []): GetProvided[] {
+function findGetProvided(expression: Predicate, collection: GetProvided[] = []): GetProvided[] {
     switch (expression.kind) {
         case 'concatenation':
             const { head, tail } = expression
@@ -132,7 +133,7 @@ function findGetProvided(expression: PredicateExpression, collection: GetProvide
 function recordFilterParameters(
     namedParameterPrefix: string,
     useNamedParameterPrefixInRecord: boolean,
-    predicate: PredicateExpression,
+    predicate: Predicate,
     userProvidedParameter: ValueOrNestedValueRecord): ValueRecord {
 
     return findGetProvided(predicate).reduce(

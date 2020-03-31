@@ -1,5 +1,5 @@
 import {createGetColumn, GetColumn} from '../../column_operations'
-import {Selection} from '../selection_parsing'
+import {Selection} from './selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {

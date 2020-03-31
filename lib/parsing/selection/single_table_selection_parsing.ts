@@ -1,4 +1,4 @@
-import {Selection} from '../selection_parsing'
+import {Selection} from './selection_parsing'
 import {parseConstructor} from '../javascript/constructor_parsing'
 
 export interface SingleTableSelection {

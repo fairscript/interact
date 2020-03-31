@@ -1,6 +1,6 @@
 import {createNamedObjectPropertyParser} from './javascript/record_parsing'
 import {createGetColumn, GetColumn} from '../column_operations'
-import {Selection} from './selection_parsing'
+import {Selection} from './selection/selection_parsing'
 import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
 
