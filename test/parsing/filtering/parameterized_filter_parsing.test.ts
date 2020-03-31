@@ -11,10 +11,10 @@ import {createGetColumn} from '../../../lib/parsing/get_column_parsing'
 describe('parseParameterizedFilter can parse a filter', () => {
     it('with a number parameter', () => {
         assert.deepEqual(
-            parseParameterizedFilter((id, e) => e.id == id, 'f1', 1),
+            parseParameterizedFilter((id, e) => e.id === id, 'f1', 1),
             createParameterizedFilter(
                 {'e': 't1'},
-                createComparison(createGetColumn('e', 'id'), '=', createGetProvided('f1', 'id', [])),
+                createComparison(createGetColumn('e', 'id'), '===', createGetProvided('f1', 'id', [])),
                 1
             )
         )
@@ -22,13 +22,13 @@ describe('parseParameterizedFilter can parse a filter', () => {
 
     it('with an object parameter', () => {
         assert.deepEqual(
-            parseParameterizedFilter((name, e) => e.firstName == name.firstName && e.lastName == name.lastName, 'f1', {firstName: 'John', lastName: 'Doe'}),
+            parseParameterizedFilter((name, e) => e.firstName === name.firstName && e.lastName === name.lastName, 'f1', {firstName: 'John', lastName: 'Doe'}),
             createParameterizedFilter(
                 {'e': 't1'},
                 createConcatenation(
-                    createComparison(createGetColumn('e', 'firstName'), '=', createGetProvided('f1', 'name', ['firstName'])),
+                    createComparison(createGetColumn('e', 'firstName'), '===', createGetProvided('f1', 'name', ['firstName'])),
                     [
-                        createTailItem('&&', createComparison(createGetColumn('e', 'lastName'), '=', createGetProvided('f1', 'name', ['lastName'])))
+                        createTailItem('&&', createComparison(createGetColumn('e', 'lastName'), '===', createGetProvided('f1', 'name', ['lastName'])))
                     ]
                 ),
                 {firstName: 'John', lastName: 'Doe'}
@@ -38,7 +38,7 @@ describe('parseParameterizedFilter can parse a filter', () => {
 
     it('with a nested object parameter', () => {
         assert.deepEqual(
-            parseParameterizedFilter((search, e) => e.firstName == search.name.firstName && e.lastName == search.name.lastName, 'f1', {
+            parseParameterizedFilter((search, e) => e.firstName === search.name.firstName && e.lastName === search.name.lastName, 'f1', {
                 name: {
                     firstName: 'John',
                     lastName: 'Doe'
@@ -47,9 +47,9 @@ describe('parseParameterizedFilter can parse a filter', () => {
             createParameterizedFilter(
                 {'e': 't1'},
                 createConcatenation(
-                    createComparison(createGetColumn('e', 'firstName'), '=', createGetProvided('f1', 'search', ['name', 'firstName'])),
+                    createComparison(createGetColumn('e', 'firstName'), '===', createGetProvided('f1', 'search', ['name', 'firstName'])),
                     [
-                        createTailItem('&&', createComparison(createGetColumn('e', 'lastName'), '=', createGetProvided('f1', 'search', ['name', 'lastName'])))
+                        createTailItem('&&', createComparison(createGetColumn('e', 'lastName'), '===', createGetProvided('f1', 'search', ['name', 'lastName'])))
                     ]
                 ),
                 {

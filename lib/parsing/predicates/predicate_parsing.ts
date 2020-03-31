@@ -5,6 +5,7 @@ import {Concatenation, createConcatenation, createTailItem, createTailItemsParse
 import {Comparison, createComparison} from './comparisons'
 import {createComparisonParser} from './comparison_parsing'
 import {closingParenthesis, openingParenthesis} from '../javascript/single_character_parsing'
+import {createParameterizedSideParser, createParameterlessSideParser} from './side_parsing'
 
 export function createPredicateParser(sideParser) {
     const comparisonParser = createComparisonParser(sideParser)
@@ -28,13 +29,27 @@ export function createPredicateParser(sideParser) {
 
 export type Predicate = InsideParentheses | Concatenation | Comparison
 
-export function parsePredicate(parser, expression: string): Predicate {
+export function parsePredicate(sideParser, expression: string): Predicate {
     // Replace double quotes around string with single quotes
     const withNormalizedQuotes = normalizeQuotes(expression)
 
     // Escape parentheses?
     // Escape binary operators?
-    const predicateExpression = parser.run(withNormalizedQuotes).result
+    const predicateExpression = createPredicateParser(sideParser).run(withNormalizedQuotes).result
 
     return predicateExpression
+}
+
+export function parseParameterlessPredicate(tableParameters: string[], expression: string): Predicate {
+    const sideParser = createParameterlessSideParser(tableParameters)
+
+    const result = parsePredicate(sideParser, expression)
+
+    return result
+}
+
+export function parseParameterizedPredicate(prefix: string, userProvidedParameter: string, tableParameters: string[], expression: string) {
+    const sideParser = createParameterizedSideParser(prefix, userProvidedParameter, tableParameters)
+
+    return parsePredicate(sideParser, expression)
 }

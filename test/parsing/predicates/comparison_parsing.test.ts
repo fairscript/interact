@@ -1,7 +1,10 @@
 import * as A from 'arcsecond'
 import * as assert from 'assert'
 
-import {createComparisonParser} from '../../../lib/parsing/predicates/comparison_parsing'
+import {
+    createComparisonParser,
+    mapDoubleEqualityToTripleEquality
+} from '../../../lib/parsing/predicates/comparison_parsing'
 import {jsComparisonOperators} from '../../../lib/parsing/predicates/comparison_operators'
 
 describe('createComparisonParser returns a parser that', () => {
@@ -12,7 +15,7 @@ describe('createComparisonParser returns a parser that', () => {
         jsComparisonOperators.forEach(operator => {
             assert.deepEqual(
                 parser.run(`side ${operator} side`).result,
-                ['side', operator, 'side']
+                ['side', mapDoubleEqualityToTripleEquality(operator), 'side']
             )
         })
     })

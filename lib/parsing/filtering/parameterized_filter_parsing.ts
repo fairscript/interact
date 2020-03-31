@@ -1,8 +1,7 @@
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {ValueOrNestedValueRecord} from '../../record'
-import {createPredicateParser, parsePredicate, Predicate} from '../predicates/predicate_parsing'
-import {createParameterizedSideParser} from '../predicates/side_parsing'
+import {parseParameterizedPredicate, Predicate} from '../predicates/predicate_parsing'
 
 export interface ParameterizedFilter {
     tableParameterToTableAlias: {[parameter: string]: string}
@@ -31,10 +30,7 @@ export function parseParameterizedFilter(f: Function, prefix: string, userProvid
     const tableParameters = parameters.slice(1)
 
     const tableParameterToTableAlias = mapParameterNamesToTableAliases(tableParameters)
-
-    const parser = createPredicateParser(createParameterizedSideParser(prefix, userProvidedParameter, tableParameters))
-
-    const predicate = parsePredicate(parser, expression)
+    const predicate = parseParameterizedPredicate(prefix, userProvidedParameter, tableParameters, expression)
 
     return createParameterizedFilter(tableParameterToTableAlias, predicate, userProvided)
 }

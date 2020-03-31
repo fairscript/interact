@@ -1,19 +1,6 @@
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
-import {
-    createPredicateParser,
-    parsePredicate,
-    Predicate
-} from '../predicates/predicate_parsing'
-import {createParameterlessSideParser} from '../predicates/side_parsing'
-
-export function parseParameterlessPredicate(tableParameters: string[], expression: string): Predicate {
-    const sideParser = createParameterlessSideParser(tableParameters)
-
-    const parser = createPredicateParser(sideParser)
-
-    return parsePredicate(parser, expression)
-}
+import {parseParameterlessPredicate, Predicate} from '../predicates/predicate_parsing'
 
 export interface ParameterlessFilter {
     tableParameterToTableAlias: {[parameter: string]: string}

@@ -1,12 +1,24 @@
 import * as A from 'arcsecond'
 import {aComparisonOperator} from '../javascript/operator_parsing'
+import {JsComparisonOperator} from './comparison_operators'
+
+export function mapDoubleEqualityToTripleEquality(operator: JsComparisonOperator): JsComparisonOperator {
+    switch (operator) {
+        case '==':
+            return '==='
+        case '!=':
+            return '!=='
+        default:
+            return operator
+    }
+}
 
 export function createComparisonParser(sideParser) {
     return A.sequenceOf(
         [
             sideParser,
             A.optionalWhitespace,
-            aComparisonOperator,
+            aComparisonOperator.map(mapDoubleEqualityToTripleEquality),
             A.optionalWhitespace,
             sideParser
         ])

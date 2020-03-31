@@ -3,17 +3,60 @@ import {checkSql} from '../sql_assertion'
 
 describe('Filtering', () => {
 
-    it('works for a single predicate', () => {
-        checkSql(
-            employees
-                .filter(e => e.id == 1)
-                .get(e => e.salary),
-            [
-                'SELECT t1.salary',
-                'FROM employees t1',
-                'WHERE t1.id = 1'
-            ]
-        )
+    describe('works for a simple equality', () => {
+        it('with a constant on the right-hand side', () => {
+            checkSql(
+                employees
+                    .filter(e => e.id === 1)
+                    .get(e => e.salary),
+                [
+                    'SELECT t1.salary',
+                    'FROM employees t1',
+                    'WHERE t1.id = 1'
+                ]
+            )
+        })
+
+        it('with null on the right-hand side', () => {
+            checkSql(
+                employees
+                    .filter(e => e.title === null)
+                    .get(e => e.salary),
+                [
+                    'SELECT t1.salary',
+                    'FROM employees t1',
+                    'WHERE t1.title IS NULL'
+                ]
+            )
+        })
+    })
+
+    describe('works for a simple inequality', () => {
+        it('with a constant on the right-hand side', () => {
+            checkSql(
+                employees
+                    .filter(e => e.id !== 1)
+                    .get(e => e.salary),
+                [
+                    'SELECT t1.salary',
+                    'FROM employees t1',
+                    'WHERE t1.id != 1'
+                ]
+            )
+        })
+
+        it('with null on the right-hand side', () => {
+            checkSql(
+                employees
+                    .filter(e => e.title !== null)
+                    .get(e => e.salary),
+                [
+                    'SELECT t1.salary',
+                    'FROM employees t1',
+                    'WHERE t1.title IS NOT NULL'
+                ]
+            )
+        })
     })
 
     describe('works for a single parameterized predicate', () => {

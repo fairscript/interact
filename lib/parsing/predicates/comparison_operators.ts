@@ -1,15 +1,4 @@
-export type SqlComparisonOperator = '=' | '!=' | '>' | '>=' | '<' | '<='
-export const jsComparisonOperators = ['===', '==', '!==', '!=', '>=', '<=', '>', '<']
+export type JsComparisonOperator = '===' | '==' | '!==' | '!=' | '>=' | '<=' | '>' | '<'
+export const jsComparisonOperators: JsComparisonOperator[] = ['===', '==', '!==', '!=', '>=', '<=', '>', '<']
 
-export function mapJsComparisonOperatorToSqlComparisonOperator(operator): SqlComparisonOperator {
-    switch (operator) {
-        case '===':
-        case '==':
-            return '='
-        case '!==':
-        case '!=':
-            return '!='
-        default:
-            return operator
-    }
-}
+export type SqlComparisonOperator = '=' | '!=' | '>=' | '<=' | '>' | '<' | 'IS' | 'IS NOT'

@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.12
+- not equal to, IS NULL, IS NOT NULL
+
 ## v0.11.1
 - Column aggregation in subselects
 
