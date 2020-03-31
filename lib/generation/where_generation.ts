@@ -1,5 +1,5 @@
 import {generateGetColumn} from './get_column_generation'
-import {GetProvided} from '../parsing/get_provided'
+import {GetProvided} from '../parsing/get_provided_parsing'
 import {Filter} from '../parsing/filtering/filter_parsing'
 import {Concatenation, TailItem} from '../parsing/predicates/concatenation'
 import {InsideParentheses} from '../parsing/predicates/inside_parentheses'

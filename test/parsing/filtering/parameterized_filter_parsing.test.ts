@@ -3,7 +3,7 @@ import {
     createParameterizedFilter,
     parseParameterizedFilter
 } from '../../../lib/parsing/filtering/parameterized_filter_parsing'
-import {createGetProvided} from '../../../lib/parsing/get_provided'
+import {createGetProvided} from '../../../lib/parsing/get_provided_parsing'
 import {createConcatenation, createTailItem} from '../../../lib/parsing/predicates/concatenation'
 import {createComparison} from '../../../lib/parsing/predicates/comparisons'
 import {createGetColumn} from '../../../lib/parsing/get_column_parsing'

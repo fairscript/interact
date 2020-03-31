@@ -5,10 +5,10 @@ import {
     parsePredicate,
     Predicate
 } from '../predicates/predicate_parsing'
-import {createConstantOrGetColumnSideParser} from '../predicates/side_parsing'
+import {createParameterlessSideParser} from '../predicates/side_parsing'
 
 export function parseParameterlessPredicate(tableParameters: string[], expression: string): Predicate {
-    const sideParser = createConstantOrGetColumnSideParser(tableParameters)
+    const sideParser = createParameterlessSideParser(tableParameters)
 
     const parser = createPredicateParser(sideParser)
 

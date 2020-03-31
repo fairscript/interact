@@ -1,5 +1,5 @@
 import {mapJsComparisonOperatorToSqlComparisonOperator, SqlComparisonOperator} from './comparison_operators'
-import {GetProvided} from '../get_provided'
+import {GetProvided} from '../get_provided_parsing'
 import {GetColumn} from '../get_column_parsing'
 import {Constant} from './side_parsing'
 

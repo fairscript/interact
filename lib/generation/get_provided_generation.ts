@@ -1,4 +1,4 @@
-import {GetProvided,} from '../parsing/get_provided'
+import {GetProvided,} from '../parsing/get_provided_parsing'
 import {joinWithUnderscore} from '../parsing/parsing_helpers'
 
 export function escapeUnderscore(input: string): string {

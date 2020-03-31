@@ -1,39 +1,8 @@
-import * as A from 'arcsecond'
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
-import {
-    Filter
-} from './filter_parsing'
-import {
-    createNestedObjectPropertyParser
-} from '../javascript/record_parsing'
-import {identifier} from '../javascript/identifier_parsing'
-import {createGetProvided} from '../get_provided'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {ValueOrNestedValueRecord} from '../../record'
-import {
-    createPredicateParser,
-    parsePredicate,
-    Predicate
-} from '../predicates/predicate_parsing'
-import {createConstantOrGetColumnSideParser} from '../predicates/side_parsing'
-
-function createParameterSideParser(prefix: string, placeholderParameter: string) {
-    return A.choice([
-        createNestedObjectPropertyParser(A.str(placeholderParameter), identifier)
-            .map(([object, path]) => createGetProvided(prefix, object, path)),
-        A.str(placeholderParameter)
-            .map(() => createGetProvided(prefix, placeholderParameter, [])),
-    ])
-}
-
-function parseParameterizedPredicate(prefix: string, placeholderParameter: string, tableParameters: string[], expression: string): Predicate {
-    const parameterSideParser = createParameterSideParser(prefix, placeholderParameter)
-    const constantOrColumnSideParser = createConstantOrGetColumnSideParser(tableParameters)
-
-    const parser = createPredicateParser(A.choice([parameterSideParser, constantOrColumnSideParser]))
-
-    return parsePredicate(parser, expression)
-}
+import {createPredicateParser, parsePredicate, Predicate} from '../predicates/predicate_parsing'
+import {createParameterizedSideParser} from '../predicates/side_parsing'
 
 export interface ParameterizedFilter {
     tableParameterToTableAlias: {[parameter: string]: string}
@@ -55,7 +24,6 @@ export function createParameterizedFilter(
     }
 }
 
-
 export function parseParameterizedFilter(f: Function, prefix: string, userProvided: ValueOrNestedValueRecord): ParameterizedFilter {
     const {parameters, expression} = extractLambdaParametersAndExpression(f)
 
@@ -63,7 +31,10 @@ export function parseParameterizedFilter(f: Function, prefix: string, userProvid
     const tableParameters = parameters.slice(1)
 
     const tableParameterToTableAlias = mapParameterNamesToTableAliases(tableParameters)
-    const predicate = parseParameterizedPredicate(prefix, userProvidedParameter, tableParameters, expression)
+
+    const parser = createPredicateParser(createParameterizedSideParser(prefix, userProvidedParameter, tableParameters))
+
+    const predicate = parsePredicate(parser, expression)
 
     return createParameterizedFilter(tableParameterToTableAlias, predicate, userProvided)
 }

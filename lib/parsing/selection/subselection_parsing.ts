@@ -16,7 +16,7 @@ import {createSingleColumnSelection} from './single_column_selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {createCountSelection} from './count_selection'
 import {createPredicateParser} from '../predicates/predicate_parsing'
-import {createConstantOrGetColumnSideParser} from '../predicates/side_parsing'
+import {createParameterlessSideParser} from '../predicates/side_parsing'
 
 // filter(function (se) { return se.salary > e.salary; })
 function createFilterParser(outerParameterNames) {
@@ -29,7 +29,7 @@ function createFilterParser(outerParameterNames) {
 
         yield A.optionalWhitespace
 
-        const sideParser = createConstantOrGetColumnSideParser(outerParameterNames.concat(innerParameterName))
+        const sideParser = createParameterlessSideParser(outerParameterNames.concat(innerParameterName))
         const predicateParser = createPredicateParser(sideParser)
 
         const predicate = yield createLambdaBodyParser(predicateParser)
