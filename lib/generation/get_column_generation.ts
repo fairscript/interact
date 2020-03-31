@@ -1,5 +1,5 @@
-import {GetColumn,} from '../column_operations'
 import {generateColumnAccess} from './column_access_generation'
+import {GetColumn} from '../parsing/get_column_parsing'
 
 export function generateGetColumn(parameterNameToTableAlias: { [parameterName: string]: string }, get: GetColumn): string {
     const tableAlias = parameterNameToTableAlias[get.object]

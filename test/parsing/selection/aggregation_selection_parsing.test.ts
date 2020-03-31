@@ -1,12 +1,12 @@
 import * as assert from 'assert'
 import { createGroupAggregation, parseGroupAggregationSelection } from '../../../lib/parsing/selection/group_aggregation_selection_parsing'
 import {Employee} from '../../test_tables'
-import {createGetColumn} from '../../../lib/column_operations'
 import {AggregatableTable} from '../../../lib/queries/one/aggregatable_table'
 import {createKey, createPartOfKey} from '../../../lib/parsing/get_key_parsing'
 import {createGetPartOfKey} from '../../../lib/parsing/aggregation/get_part_of_key_parsing'
 import {createCountOperation} from '../../../lib/parsing/count_operation_parsing'
 import {createAggregateColumn} from '../../../lib/parsing/aggregation/aggregate_column_parsing'
+import {createGetColumn} from '../../../lib/parsing/get_column_parsing'
 
 describe('parseAggregate', () => {
     const firstKeyColumn = createGetColumn('e', 'departmentId')

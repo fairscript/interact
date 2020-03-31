@@ -8,7 +8,7 @@ import {FilterTable} from './filter_table'
 import {SortTable} from './sort_table'
 import {GroupTable} from './group_table'
 import {JoinSecondTable} from '../two/join_second_table'
-import {EnforceNonEmptyRecord, ValueRecord, ValueOrNestedValueRecord, TableAggregationRecord} from '../../record'
+import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseSorting} from '../../parsing/sorting/sorting_parsing'
 import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
@@ -24,15 +24,13 @@ import {parseParameterizedFilter} from '../../parsing/filtering/parameterized_fi
 import {SelectScalar} from '../selection/select_scalar'
 import {SelectRows} from '../selection/select_rows'
 import {SelectVector} from '../selection/select_vector'
-import {createAggregateColumn} from '../../parsing/aggregation/aggregate_column_parsing'
-import {createGetColumn} from '../../column_operations'
 import {
     parseAverageSelection,
     parseMaxSelection,
-    parseMinSelection, parseSumSelection
+    parseMinSelection,
+    parseSumSelection
 } from '../../parsing/selection/aggregate_column_select_parsing'
-import {AggregatableTable, Count, GroupAggregationRecord} from './aggregatable_table'
-import {parseGroupAggregationSelection} from '../../parsing/selection/group_aggregation_selection_parsing'
+import {AggregatableTable, Count} from './aggregatable_table'
 import {parseTableAggregationSelection} from '../../parsing/selection/table_aggregation_selection_parsing'
 import {SelectSingleRow} from '../selection/select_single_row'
 

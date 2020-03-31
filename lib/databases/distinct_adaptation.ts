@@ -2,11 +2,11 @@ import {OrderExpression} from '../parsing/sorting/sorting_parsing'
 import {createKey, createPartOfKey, Key} from '../parsing/get_key_parsing'
 import {createGroupSelectStatement, GroupSelectStatement, SelectStatement} from '../select_statement'
 import {MapSelection} from '../parsing/selection/map_selection_parsing'
-import {GetColumn} from '../column_operations'
 import {createAggregateColumn} from '../parsing/aggregation/aggregate_column_parsing'
 import {createGroupOrderExpression} from '../parsing/sorting/group_sorting_parsing'
 import {mapPartOfKeyToTableAndProperty} from '../parsing/selection/group_aggregation_selection_parsing'
 import {SingleColumnSelection} from '../parsing/selection/single_column_selection_parsing'
+import {GetColumn} from '../parsing/get_column_parsing'
 
 function checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders: OrderExpression[], selection: SingleColumnSelection|MapSelection): boolean {
     for (let indexOrder in orders) {

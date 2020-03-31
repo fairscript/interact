@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import {generateInnerJoin} from '../../lib/generation/join_generation'
-import {createGetColumn} from '../../lib/column_operations'
+import {createGetColumn} from '../../lib/parsing/get_column_parsing'
 
 describe('generateInnerJoin', () => {
     it('works when two tables are joined', () => {

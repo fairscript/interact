@@ -3,9 +3,10 @@ import {
     createParameterizedFilter,
     parseParameterizedFilter
 } from '../../../lib/parsing/filtering/parameterized_filter_parsing'
-import {createGetColumn, createGetProvided} from '../../../lib/column_operations'
+import {createGetProvided} from '../../../lib/parsing/get_provided'
 import {createConcatenation, createTailItem} from '../../../lib/parsing/predicates/concatenation'
 import {createComparison} from '../../../lib/parsing/predicates/comparisons'
+import {createGetColumn} from '../../../lib/parsing/get_column_parsing'
 
 describe('parseParameterizedFilter can parse a filter', () => {
     it('with a number parameter', () => {

@@ -1,5 +1,5 @@
 import {generateGetColumn} from './get_column_generation'
-import {Constant, GetProvided} from '../column_operations'
+import {GetProvided} from '../parsing/get_provided'
 import {Filter} from '../parsing/filtering/filter_parsing'
 import {Concatenation, TailItem} from '../parsing/predicates/concatenation'
 import {InsideParentheses} from '../parsing/predicates/inside_parentheses'
@@ -8,6 +8,7 @@ import {computePlaceholderName, generateGetProvided} from './get_provided_genera
 import {ValueRecord, ValueOrNestedValueRecord} from '../record'
 import {Comparison, Side} from '../parsing/predicates/comparisons'
 import {Predicate} from '../parsing/predicates/predicate_parsing'
+import {Constant} from '../parsing/predicates/side_parsing'
 
 
 function generateConstant(constant: Constant): string {

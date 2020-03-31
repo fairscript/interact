@@ -1,8 +1,7 @@
 import {Direction} from '../../queries/one/sort_table'
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
-import {GetColumn} from '../../column_operations'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
-import {createGetColumnParser} from '../get_column_parsing'
+import {createGetColumnParser, GetColumn} from '../get_column_parsing'
 
 export interface OrderExpression {
     parameterNameToTableAlias: {[parameterName: string]: string}

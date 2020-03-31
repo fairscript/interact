@@ -7,7 +7,7 @@ import {
     createNestedObjectPropertyParser
 } from '../javascript/record_parsing'
 import {identifier} from '../javascript/identifier_parsing'
-import {createGetProvided} from '../../column_operations'
+import {createGetProvided} from '../get_provided'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {ValueOrNestedValueRecord} from '../../record'
 import {

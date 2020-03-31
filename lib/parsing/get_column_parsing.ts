@@ -1,8 +1,20 @@
 import {createNamedObjectPropertyParser} from './javascript/record_parsing'
-import {createGetColumn, GetColumn} from '../column_operations'
-import {Selection} from './selection/selection_parsing'
 import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
+
+export interface GetColumn {
+    kind: 'get-column'
+    object: string,
+    property: string,
+}
+
+export function createGetColumn(object: string, property: string): GetColumn {
+    return {
+        kind: 'get-column',
+        object,
+        property
+    }
+}
 
 export function createGetColumnParser(parameterNames: string[]) {
     return createNamedObjectPropertyParser(parameterNames)

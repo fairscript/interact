@@ -1,5 +1,4 @@
 import * as assert from 'assert'
-import {createConstant, createGetColumn} from '../../../lib/column_operations'
 import {Department, Employee} from '../../test_tables'
 import {createAnd, createConcatenation, createOr} from '../../../lib/parsing/predicates/concatenation'
 import {createInsideParentheses} from '../../../lib/parsing/predicates/inside_parentheses'
@@ -13,6 +12,8 @@ import {
     createLessThanOrEqualTo
 } from '../../../lib/parsing/predicates/comparisons'
 import {Predicate} from '../../../lib/parsing/predicates/predicate_parsing'
+import {createGetColumn} from '../../../lib/parsing/get_column_parsing'
+import {createConstant} from '../../../lib/parsing/predicates/side_parsing'
 
 
 describe('parseFilter', () => {

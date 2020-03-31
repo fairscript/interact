@@ -1,9 +1,9 @@
 import * as A from 'arcsecond'
-import {createGetColumn, GetColumn} from '../../column_operations'
 import {identifier} from '../javascript/identifier_parsing'
 import {dot} from '../javascript/single_character_parsing'
 import {createParameterlessFunctionInvocationChoice} from '../javascript/invocation_parsing'
 import {createNamedObjectPropertyParser} from '../javascript/record_parsing'
+import {createGetColumn, GetColumn} from '../get_column_parsing'
 
 export type AggregationFunction = 'avg' | 'min' | 'max' | 'sum'
 

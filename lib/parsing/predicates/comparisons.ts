@@ -1,5 +1,7 @@
 import {mapJsComparisonOperatorToSqlComparisonOperator, SqlComparisonOperator} from './comparison_operators'
-import {Constant, GetColumn, GetProvided} from '../../column_operations'
+import {GetProvided} from '../get_provided'
+import {GetColumn} from '../get_column_parsing'
+import {Constant} from './side_parsing'
 
 export type Side = Constant | GetColumn | GetProvided
 

@@ -1,11 +1,10 @@
-import {GetColumn} from '../../column_operations'
 import {Selection} from './selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {createRecordInParenthesesParser} from '../javascript/record_parsing'
 import {findReferencedColumns} from './search_for_referenced_columns'
 import {SubselectStatement} from '../../select_statement'
-import {createGetColumnParser} from '../get_column_parsing'
+import {createGetColumnParser, GetColumn} from '../get_column_parsing'
 
 
 export interface MapSelection {

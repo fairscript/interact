@@ -1,4 +1,3 @@
-import {createGetColumn} from '../../lib/column_operations'
 import {generateSubselectStatement} from '../../lib/generation/subselect_generation'
 import {createSubselectStatement} from '../../lib/select_statement'
 import * as assert from 'assert'
@@ -6,6 +5,7 @@ import {createParameterlessFilter} from '../../lib/parsing/filtering/parameterle
 import {sqliteDialect} from '../../lib/databases/sqlite/sqlite_dialect'
 import {createCountSelection} from '../../lib/parsing/selection/count_selection'
 import {createGreaterThan} from '../../lib/parsing/predicates/comparisons'
+import {createGetColumn} from '../../lib/parsing/get_column_parsing'
 
 describe('generateSubselect', () => {
     it('works for a subselect statement with one filter', () => {

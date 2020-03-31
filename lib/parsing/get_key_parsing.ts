@@ -1,10 +1,10 @@
-import {createGetColumn, GetColumn} from '../column_operations'
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
 import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
 import {
     createRecordInParenthesesParser,
     createNamedObjectPropertyParser
 } from './javascript/record_parsing'
+import {createGetColumn, GetColumn} from './get_column_parsing'
 
 export interface PartOfKey {
     alias: string

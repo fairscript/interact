@@ -1,6 +1,5 @@
-import {GetColumn} from '../column_operations'
 import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
-import {createGetColumnParser} from './get_column_parsing'
+import {createGetColumnParser, GetColumn} from './get_column_parsing'
 
 export interface JoinExpression {
     tableName: string,
