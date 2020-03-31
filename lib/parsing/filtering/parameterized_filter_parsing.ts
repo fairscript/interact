@@ -15,7 +15,7 @@ import {
     parsePredicate,
     Predicate
 } from '../predicates/predicate_parsing'
-import {createConstantOrColumnSideParser} from '../predicates/side_parsing'
+import {createConstantOrGetColumnSideParser} from '../predicates/side_parsing'
 
 function createParameterSideParser(prefix: string, placeholderParameter: string) {
     return A.choice([
@@ -28,7 +28,7 @@ function createParameterSideParser(prefix: string, placeholderParameter: string)
 
 function parseParameterizedPredicate(prefix: string, placeholderParameter: string, tableParameters: string[], expression: string): Predicate {
     const parameterSideParser = createParameterSideParser(prefix, placeholderParameter)
-    const constantOrColumnSideParser = createConstantOrColumnSideParser(tableParameters)
+    const constantOrColumnSideParser = createConstantOrGetColumnSideParser(tableParameters)
 
     const parser = createPredicateParser(A.choice([parameterSideParser, constantOrColumnSideParser]))
 

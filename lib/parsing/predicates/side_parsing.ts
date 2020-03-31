@@ -1,14 +1,14 @@
 import * as A from 'arcsecond'
-import {aNumber, aString, createValueParser} from '../javascript/value_parsing'
-import {createConstant, createGetColumn} from '../../column_operations'
-import {createNamedObjectPropertyParser} from '../javascript/record_parsing'
-import {identifier} from '../javascript/identifier_parsing'
+import {valueParser} from '../values/value_parsing'
+import {createConstant} from '../../column_operations'
+import {createGetColumnParser} from '../get_column_parsing'
 
-export function createConstantOrColumnSideParser(tableParameters: string[]) {
+const constantParser = valueParser
+    .map(createConstant)
+
+export function createConstantOrGetColumnSideParser(tableParameters: string[]) {
     return A.choice([
-        createValueParser(aString.map(x => x.slice(1, x.length - 1)), aNumber)
-            .map(v => createConstant(v)),
-        createNamedObjectPropertyParser(tableParameters, identifier)
-            .map(([object, property]) => createGetColumn(object, property))
+        constantParser,
+        createGetColumnParser(tableParameters)
     ])
 }

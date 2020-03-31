@@ -1,11 +1,12 @@
 import * as A from 'arcsecond'
 import {createSubselectStatement} from '../../select_statement'
-import {createGetFromParameterParser, createMapSelection, MapSelection} from './map_selection_parsing'
+import {createMapSelection, MapSelection} from './map_selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {createRecordInParenthesesParser} from '../javascript/record_parsing'
 import {createParameterlessFilter} from '../filtering/parameterless_filter_parsing'
 import {createSubselectParser} from './subselection_parsing'
+import {createGetColumnParser} from '../get_column_parsing'
 
 export function parseMapWithSubquerySelection(f: Function, subtableNames: string[]): MapSelection {
     const { parameters, expression } = extractLambdaParametersAndExpression(f)
@@ -16,11 +17,11 @@ export function parseMapWithSubquerySelection(f: Function, subtableNames: string
     const outerParameterNames = parameters.slice(subtableNames.length)
     const outerParameterToTableAlias = mapParameterNamesToTableAliases(outerParameterNames, 't')
 
-    const getParser = createGetFromParameterParser(outerParameterNames)
+    const getColumnParser = createGetColumnParser(outerParameterNames)
     const subselectParser = createSubselectParser(subParameterNames, outerParameterNames)
 
     const choiceBetweenValueParsers = A.choice([
-        getParser,
+        getColumnParser,
         subselectParser
             .chain(([parsedSubtableParameter, parsedFilterInvocations, parsedSelection]) => {
 

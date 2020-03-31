@@ -1,8 +1,8 @@
 import {Direction} from '../../queries/one/sort_table'
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
-import {createNamedObjectPropertyParser} from '../javascript/record_parsing'
-import {createGetColumn, GetColumn} from '../../column_operations'
+import {GetColumn} from '../../column_operations'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
+import {createGetColumnParser} from '../get_column_parsing'
 
 export interface OrderExpression {
     parameterNameToTableAlias: {[parameterName: string]: string}
@@ -29,10 +29,7 @@ export function parseSorting(f: Function, direction: Direction): OrderExpression
 
     const parameterNameToTableAlias = mapParameterNamesToTableAliases(parameters)
 
-    const parser = createNamedObjectPropertyParser(parameters)
-        .map(([object, property]) => createGetColumn(object, property))
-
-    const operation = parser.run(expression).result
+    const operation = createGetColumnParser(parameters).run(expression).result
 
     return createOrderExpression(
         parameterNameToTableAlias,

@@ -1,6 +1,6 @@
-import {createGetColumn, GetColumn} from '../column_operations'
+import {GetColumn} from '../column_operations'
 import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
-import {createNamedObjectPropertyParser} from './javascript/record_parsing'
+import {createGetColumnParser} from './get_column_parsing'
 
 export interface JoinExpression {
     tableName: string,
@@ -8,19 +8,10 @@ export interface JoinExpression {
     right: GetColumn
 }
 
-function createOnParser(parameterNames: string[]) {
-    const objectPropertyParser = createNamedObjectPropertyParser(parameterNames)
-
-    const parser = objectPropertyParser
-        .map(([object, property]) => createGetColumn(object, property))
-
-    return parser
-}
-
 function parseSide(f: Function): GetColumn {
     const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
-    const parser = createOnParser(parameters)
+    const parser = createGetColumnParser(parameters)
 
     return parser.run(expression).result
 }

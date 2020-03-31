@@ -1,32 +1,5 @@
 import * as assert from 'assert'
-import {aString, float, integer} from '../../../lib/parsing/javascript/value_parsing'
-
-describe('aString matches strings', () => {
-    describe('surrounded by single quotes', () => {
-        it('containing a single character', () => {
-            assert.equal(aString.run("'a'").result, "'a'")
-        })
-
-        it('containing a two characters', () => {
-            assert.equal(aString.run("'ab'").result, "'ab'")
-        })
-
-        it('containing an escaped single quote', () => {
-            assert.equal(aString.run("'I\\'m'").result, "'I\\'m'")
-        })
-    })
-
-    describe('surrounded by double quotes', () => {
-        it('containing a single character', () => {
-            assert.equal(aString.run('"a"').result, '"a"')
-        })
-
-        it('containing a two characters', () => {
-            assert.equal(aString.run('"ab"').result, '"ab"')
-        })
-    })
-
-})
+import {float, integer} from '../../../lib/parsing/values/number_parsing'
 
 describe('integer', () => {
     describe('matches', () => {
