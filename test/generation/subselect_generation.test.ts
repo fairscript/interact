@@ -1,10 +1,11 @@
-import {createGetColumn, createSubselect} from '../../lib/column_operations'
-import {generateSubselect} from '../../lib/generation/subselect_generation'
+import {createGetColumn} from '../../lib/column_operations'
+import {generateSubselectStatement} from '../../lib/generation/subselect_generation'
 import {createSubselectStatement} from '../../lib/select_statement'
 import * as assert from 'assert'
 import {createGreaterThan} from '../../lib/parsing/predicate/comparison'
 import {createParameterlessFilter} from '../../lib/parsing/filtering/parameterless_filter_parsing'
 import {sqliteDialect} from '../../lib/databases/sqlite/sqlite_dialect'
+import {createCountSelection} from '../../lib/parsing/selection/count_selection'
 
 describe('generateSubselect', () => {
     it('works for a subselect statement with one filter', () => {
@@ -21,12 +22,11 @@ describe('generateSubselect', () => {
                         createGetColumn('e', 'salary')
                     )
                 )
-            ]
+            ],
+            createCountSelection()
         )
-        const subselect = createSubselect(subselectStatement)
-
         assert.equal(
-            generateSubselect(sqliteDialect.namedParameterPrefix, subselect),
+            generateSubselectStatement(sqliteDialect.namedParameterPrefix, subselectStatement),
             '(SELECT COUNT(*) FROM employees s1 WHERE s1.salary > t1.salary)'
         )
     })

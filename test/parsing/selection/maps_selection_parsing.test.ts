@@ -1,13 +1,13 @@
 import * as assert from 'assert'
 import {
-    createGetColumn,
-    createSubselect
+    createGetColumn
 } from '../../../lib/column_operations'
 import {parseMapWithSubquerySelection} from '../../../lib/parsing/selection/maps_selection_parsing'
-import {createSubselectStatement} from '../../../lib/select_statement'
 import {createMapSelection} from '../../../lib/parsing/selection/map_selection_parsing'
 import {createEquality, createGreaterThan} from '../../../lib/parsing/predicate/comparison'
 import {createParameterlessFilter} from '../../../lib/parsing/filtering/parameterless_filter_parsing'
+import {createSubselectStatement} from '../../../lib/select_statement'
+import {createCountSelection} from '../../../lib/parsing/selection/count_selection'
 
 describe('parseMapS can parse a map with a subquery', function () {
 
@@ -26,7 +26,8 @@ describe('parseMapS can parse a map with a subquery', function () {
                     {se: 's1', e: 't1'},
                     createGreaterThan(createGetColumn('se', 'salary'), createGetColumn('e', 'salary'))
                 )
-            ])
+            ],
+            createCountSelection())
 
         const expected = createMapSelection(
             {
@@ -34,7 +35,7 @@ describe('parseMapS can parse a map with a subquery', function () {
             },
             [
                 ['id', createGetColumn('e', 'id')],
-                ['higherSalary', createSubselect(expectedSubselectStatement)]
+                ['higherSalary', expectedSubselectStatement]
             ])
 
         assert.deepEqual(actual, expected)
@@ -60,7 +61,8 @@ describe('parseMapS can parse a map with a subquery', function () {
                     tableParameterNameToTableAlias,
                     createEquality(createGetColumn('se', 'departmentId'), createGetColumn('e', 'departmentId'))
                 )
-            ])
+            ],
+            createCountSelection())
 
         const expected = createMapSelection(
             {
@@ -68,7 +70,7 @@ describe('parseMapS can parse a map with a subquery', function () {
             },
             [
                 ['id', createGetColumn('e', 'id')],
-                ['higherSalary', createSubselect(expectedSubselectStatement)]
+                ['higherSalary', expectedSubselectStatement]
             ])
 
         assert.deepEqual(actual, expected)

@@ -31,18 +31,6 @@ export function createGetColumn(object: string, property: string): GetColumn {
     }
 }
 
-export interface Subselect {
-    statement: SubselectStatement
-    kind: 'subselect'
-}
-
-export function createSubselect(statement: SubselectStatement): Subselect {
-    return {
-        statement,
-        kind: 'subselect'
-    }
-}
-
 export interface Constant {
     kind: 'constant'
     value: Value

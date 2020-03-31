@@ -4,6 +4,9 @@ import {JoinExpression} from './parsing/join_parsing'
 import {Key} from './parsing/get_key_parsing'
 import {Selection} from './parsing/selection_parsing'
 import {GroupOrderExpression} from './parsing/sorting/group_sorting_parsing'
+import {CountSelection} from './parsing/selection/count_selection'
+import {TableAggregationSelection} from './parsing/selection/table_aggregation_selection_parsing'
+import {SingleColumnSelection} from './parsing/selection/single_column_selection_parsing'
 
 export interface Constructor<T> {
     new (...args: any[]): T
@@ -67,12 +70,16 @@ export function createGroupSelectStatement(selectStatement: SelectStatement, key
 
 export interface SubselectStatement {
     tableName: string
-    filters: Filter[]
+    filters: Filter[],
+    selection: CountSelection|SingleColumnSelection
+    kind: 'subselect-statement'
 }
 
-export function createSubselectStatement(tableName: string, filters: Filter[]): SubselectStatement {
+export function createSubselectStatement(tableName: string, filters: Filter[], selection: CountSelection|SingleColumnSelection): SubselectStatement {
     return {
         tableName,
-        filters
+        filters,
+        selection,
+        kind: 'subselect-statement'
     }
 }

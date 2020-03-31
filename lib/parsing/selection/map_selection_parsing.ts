@@ -1,4 +1,4 @@
-import {createGetColumn, GetColumn, Subselect} from '../../column_operations'
+import {createGetColumn, GetColumn} from '../../column_operations'
 import {Selection} from '../selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
@@ -7,18 +7,19 @@ import {
     createNamedObjectPropertyParser
 } from '../javascript/record_parsing'
 import {findReferencedColumns} from './search_for_referenced_columns'
+import {SubselectStatement} from '../../select_statement'
 
 
 export interface MapSelection {
     kind: 'map-selection'
     parameterNameToTableAlias: {[parameter: string]: string}
-    operations: [string, GetColumn|Subselect][]
+    operations: [string, GetColumn|SubselectStatement][]
     referencedColumns: GetColumn[]
 }
 
 export function createMapSelection(
     parameterToTable: {[parameter: string]: string},
-    operations: [string, GetColumn|Subselect][]): MapSelection {
+    operations: [string, GetColumn|SubselectStatement][]): MapSelection {
 
     const referencedColumns = operations.reduce(
         (acc, [_, op]) => acc.concat(findReferencedColumns(op)),

@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.11.1
+- Column aggregation in subselects
+
 ## v0.11.0
 - Aggregation without grouping
 

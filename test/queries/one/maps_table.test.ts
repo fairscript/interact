@@ -2,25 +2,62 @@ import {employees} from '../../test_tables'
 import {checkSql} from '../sql_assertion'
 
 describe('mapS works', () => {
-    it('for a map with an unfiltered subquery', () => {
-        const query = employees
-            .mapS(
-                employees,
-                (st, e) => ({
-                    id: e.id,
-                    count: st.count()
-                }))
+    describe('with an unfiltered subquery', () => {
 
-        const expectedLines = [
-            'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1) AS count',
-            'FROM employees t1'
-        ]
+        it('using a count operation', () => {
+            const query = employees
+                .mapS(
+                    employees,
+                    (st, e) => ({
+                        id: e.id,
+                        count: st.count()
+                    }))
 
-        checkSql(query, expectedLines)
+            const expectedLines = [
+                'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1) AS count',
+                'FROM employees t1'
+            ]
+
+            checkSql(query, expectedLines)
+        })
+
+        it('using a maximum operation', () => {
+            const query = employees
+                .mapS(
+                    employees,
+                    (st, e) => ({
+                        id: e.id,
+                        highestSalary: st.max(e => e.salary)
+                    }))
+
+            const expectedLines = [
+                'SELECT t1.id AS id, (SELECT MAX(s1.salary) FROM employees s1) AS highestSalary',
+                'FROM employees t1'
+            ]
+
+            checkSql(query, expectedLines)
+        })
+
+        it('using counting and maximimization', () => {
+            const query = employees
+                .mapS(
+                    employees,
+                    (st, e) => ({
+                        id: e.id,
+                        count: st.count(),
+                        highestSalary: st.max(e => e.salary)
+                    }))
+
+            const expectedLines = [
+                'SELECT t1.id AS id, (SELECT COUNT(*) FROM employees s1) AS count, (SELECT MAX(s1.salary) FROM employees s1) AS highestSalary',
+                'FROM employees t1'
+            ]
+
+            checkSql(query, expectedLines)
+        })
     })
 
-    describe('for a map with a filtered subquery', () => {
-
+    describe('with a filtered subquery', () => {
         it('on a table', () => {
             const query = employees
                 .mapS(
@@ -77,7 +114,7 @@ describe('mapS works', () => {
         })
     })
 
-    it('for a map with a subquery that has two filters', () => {
+    it('with a subquery that has two filters', () => {
         const query = employees
             .mapS(
                 employees,

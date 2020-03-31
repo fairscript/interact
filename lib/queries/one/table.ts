@@ -184,5 +184,5 @@ export class Table<T> {
 }
 
 export function defineTable<T>(constructor: Constructor<T>, name: string): Table<T> {
-    return new Table<T>(constructor, name)
+    return new Table(constructor, name)
 }

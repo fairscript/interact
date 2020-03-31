@@ -1,7 +1,8 @@
-import {GetColumn, Subselect} from '../../column_operations'
+import {GetColumn} from '../../column_operations'
 import {AggregateColumn} from '../aggregation/aggregate_column_parsing'
+import {SubselectStatement} from '../../select_statement'
 
-export function findReferencedColumns(operation: GetColumn | AggregateColumn | Subselect): GetColumn[] {
+export function findReferencedColumns(operation: GetColumn | AggregateColumn | SubselectStatement): GetColumn[] {
     const referencedColumns: GetColumn[] = []
 
     switch (operation.kind) {

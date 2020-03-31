@@ -47,18 +47,22 @@ export function createLambdaBodyParser(returnParser) {
     })
 }
 
-export const lambdaParametersAndExpressionExtractionParser = A.coroutine(function*() {
-    const parameters = yield lambdaSignatureParser
+export function createLambdaParser(createFunctionBodyParser) {
+    return A.coroutine(function*() {
+        const parameters = yield lambdaSignatureParser
 
-    yield A.optionalWhitespace
+        yield A.optionalWhitespace
 
-    const expression = yield createLambdaBodyParser(A.everythingUntil(A.sequenceOf([endOfLambdaBody, A.optionalWhitespace, A.endOfInput])))
+        const functionBody = yield createFunctionBodyParser(parameters)
 
-    return {
-        parameters,
-        expression
-    }
-})
+        return [parameters, functionBody]
+    })
+}
+
+export const wildcardLambdaParser =
+    createLambdaParser(
+        () => createLambdaBodyParser(A.everythingUntil(A.sequenceOf([endOfLambdaBody, A.optionalWhitespace, A.endOfInput])))
+    )
 
 interface LambdaExtractionResult {
     parameters: string[],
@@ -68,5 +72,8 @@ interface LambdaExtractionResult {
 export function extractLambdaParametersAndExpression(f: Function): LambdaExtractionResult {
     const functionAsString = f.toString().replace(/\r\n/g, ' ').replace(/\n/g, ' ')
 
-    return lambdaParametersAndExpressionExtractionParser.run(functionAsString).result
+    return wildcardLambdaParser
+        .map(([parameters, expression]) => ({ parameters, expression }))
+        .run(functionAsString).result
+
 }

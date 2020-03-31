@@ -4,10 +4,8 @@ import {Selection} from './selection_parsing'
 import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
 
-export function createGetColumnParser<T, U>(parameterNames: string[]) {
-    const objectProperty = createNamedObjectPropertyParser(parameterNames)
-
-    return objectProperty
+export function createGetColumnParser(parameterNames: string[]) {
+    return createNamedObjectPropertyParser(parameterNames)
         .map(([object, property]) => createGetColumn(object, property))
 }
 
