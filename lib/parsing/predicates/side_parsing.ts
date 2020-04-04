@@ -1,6 +1,5 @@
 import * as A from 'arcsecond'
-import {aValue} from '../values/value_parsing'
-import {theNull} from '../values/null_parsing'
+import {aValue, aValueOrNull} from '../values/value_parsing'
 import {createNegationParser} from './negation_parsing'
 import {aBoolean} from '../values/boolean_parsing'
 import {createLiteral} from '../values/literal'
@@ -9,9 +8,14 @@ import {nullSingleton} from '../values/null'
 export function createLiteralSideParser() {
     return A.choice([
         createNegationParser(aBoolean.map(createLiteral)),
-        aValue.map(createLiteral),
-
-        theNull.map(() => nullSingleton)
+        aValueOrNull.map(value => {
+            switch (value) {
+                case 'null':
+                    return nullSingleton
+                default:
+                    return createLiteral(value)
+            }
+        }),
     ])
 }
 
