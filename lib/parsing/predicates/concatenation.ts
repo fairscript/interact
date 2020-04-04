@@ -16,13 +16,13 @@ export function createTailItem(operator: '&&' | '||', expression: Predicate): Ta
     }
 }
 
-export function createTailParser(side) {
+export function createTailParser(itemParser) {
     return A.many1(
         A.sequenceOf([
             A.optionalWhitespace,
             aBinaryLogicalOperator,
             A.optionalWhitespace,
-            side
+            itemParser
         ])
             .map(([ws1, operator, ws2, comparison]) => ([operator, comparison]))
     )

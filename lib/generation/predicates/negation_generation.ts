@@ -1,6 +1,6 @@
 import {Negatable, Negation} from '../../parsing/predicates/negation_parsing'
 import {generateInsideParentheses} from './inside_parentheses_generation'
-import {generateLiteral} from './side_generation'
+import {generateLiteral} from './value_expression_generation'
 import {generateGetColumn} from '../get_column_generation'
 import {generateGetProvided} from '../get_provided_generation'
 

@@ -2,14 +2,14 @@ import * as A from 'arcsecond'
 import normalizeQuotes from '../quote_normalization'
 import {createInsideParentheses, InsideParentheses} from './inside_parentheses'
 import {Concatenation, createConcatenation, createTailItem, createTailParser} from './concatenation'
-import {Comparison, createComparison, createEqual, Side} from './comparisons'
+import {Comparison, createComparison} from './comparisons'
 import {createComparisonParser} from './comparison_parsing'
 import {closingParenthesis, openingParenthesis} from '../javascript/single_character_parsing'
 import {
-    createLiteralSideParser,
-    createParameterizedSideParser,
-    createParameterlessSideParser
-} from './side_parsing'
+    createLiteralValueExpressionParser,
+    createParameterizedValueExpressionParser,
+    createParameterlessValueExpressionParser
+} from './value_expression_parsing'
 import {createGetColumnParser, GetColumn} from '../get_column_parsing'
 import {createGetProvidedParser, GetProvided} from '../get_provided_parsing'
 import {
@@ -18,7 +18,7 @@ import {
     createParameterlessBooleanValueEvaluationParser
 } from './boolean_value_evaluation_parsing'
 import {createNegationParser, Negation} from './negation_parsing'
-import {createLiteral, Literal} from '../values/literal'
+import {Literal} from '../values/literal'
 
 function createConcatenationParser(concatenationItem) {
     return A.sequenceOf([
@@ -39,10 +39,10 @@ function createInsideParenthesesParser(inside) {
 }
 
 export function createPredicateParser(sideDataParser, booleanValueEvaluation) {
-    const insideOnSide = A.recursiveParser(() => A.choice([concatenation, comparison, insideParenthesesOnSide, sideDataParser]))
-    const insideParenthesesOnSide = createInsideParenthesesParser(insideOnSide)
+    const valueInside = A.recursiveParser(() => A.choice([concatenation, comparison, valueInsideParentheses, sideDataParser]))
+    const valueInsideParentheses = createInsideParenthesesParser(valueInside)
 
-    const comparison = createComparisonParser(A.choice([insideParenthesesOnSide, sideDataParser]))
+    const comparison = createComparisonParser(A.choice([valueInsideParentheses, sideDataParser]))
         .map(([left, operator, right]) => createComparison(left, operator, right))
 
     const inside = A.recursiveParser(() => A.choice([
@@ -79,7 +79,7 @@ export function parsePredicateExpression(parser, expression: string) {
 }
 
 function createLiteralPredicateParser() {
-    const sideParser = createLiteralSideParser()
+    const sideParser = createLiteralValueExpressionParser()
     const booleanValueEvaluationParser = createLiteralBooleanValueEvaluationParser()
 
     return createPredicateParser(sideParser, booleanValueEvaluationParser)
@@ -88,7 +88,7 @@ function createLiteralPredicateParser() {
 export function createParameterlessParser(tableParameters: string[]) {
     if (tableParameters.length > 0) {
         const getColumnParser = createGetColumnParser(tableParameters)
-        const sideParser = createParameterlessSideParser(getColumnParser)
+        const sideParser = createParameterlessValueExpressionParser(getColumnParser)
         const booleanValueEvaluationParser = createParameterlessBooleanValueEvaluationParser(getColumnParser)
 
         return createPredicateParser(sideParser, booleanValueEvaluationParser)
@@ -107,7 +107,7 @@ export function createParameterizedParser(prefix: string, userProvidedParameter:
     const getProvidedParser = createGetProvidedParser(prefix, userProvidedParameter)
     const getColumnParser =  tableParameters.length > 0 ? createGetColumnParser(tableParameters) : null
 
-    const sideParser = createParameterizedSideParser(getProvidedParser, getColumnParser)
+    const sideParser = createParameterizedValueExpressionParser(getProvidedParser, getColumnParser)
     const booleanValueEvaluationParser = createParameterizedBooleanValueEvaluationParser(getProvidedParser, getColumnParser)
 
     return createPredicateParser(sideParser, booleanValueEvaluationParser)

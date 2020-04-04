@@ -13,14 +13,14 @@ export function mapDoubleEqualityToTripleEquality(operator: JsComparisonOperator
     }
 }
 
-export function createComparisonParser(sideParser) {
+export function createComparisonParser(valueExpressionParser) {
     return A.sequenceOf(
         [
-            sideParser,
+            valueExpressionParser,
             A.optionalWhitespace,
             aComparisonOperator.map(mapDoubleEqualityToTripleEquality),
             A.optionalWhitespace,
-            sideParser
+            valueExpressionParser
         ])
         .map(([left, ws1, operator, ws2, right]) => ([left, operator, right]))
 }

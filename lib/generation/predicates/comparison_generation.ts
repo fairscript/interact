@@ -1,13 +1,13 @@
 import {Comparison} from '../../parsing/predicates/comparisons'
-import {generateSide} from './side_generation'
+import {generateValueExpression} from './value_expression_generation'
 import {SqlComparisonOperator} from '../../parsing/predicates/comparison_operators'
 
 export function generateComparison(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, predicate: Comparison): string {
     const {left, operator, right}: Comparison = predicate
 
-    const generatedLeft = generateSide(namedParameterPrefix, parameterNameToTableAlias, left)
+    const generatedLeft = generateValueExpression(namedParameterPrefix, parameterNameToTableAlias, left)
     const generatedOperator = generateOperator(operator, right.kind === 'null')
-    const generatedRight = generateSide(namedParameterPrefix, parameterNameToTableAlias, right)
+    const generatedRight = generateValueExpression(namedParameterPrefix, parameterNameToTableAlias, right)
 
     return `${generatedLeft} ${generatedOperator} ${generatedRight}`
 }

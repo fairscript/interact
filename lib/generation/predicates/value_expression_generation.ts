@@ -1,6 +1,6 @@
 import {generateGetColumn} from '../get_column_generation'
 import {generateGetProvided} from '../get_provided_generation'
-import {Side} from '../../parsing/predicates/comparisons'
+import {ValueExpression} from '../../parsing/predicates/comparisons'
 import {generateInsideParentheses} from './inside_parentheses_generation'
 import {Literal} from '../../parsing/values/literal'
 
@@ -13,16 +13,16 @@ export function generateLiteral({value}: Literal): string {
     }
 }
 
-export function generateSide(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, side: Side): string {
-    switch (side.kind) {
+export function generateValueExpression(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, expression: ValueExpression): string {
+    switch (expression.kind) {
         case 'inside':
-            return generateInsideParentheses(namedParameterPrefix, parameterNameToTableAlias, side)
+            return generateInsideParentheses(namedParameterPrefix, parameterNameToTableAlias, expression)
         case 'get-column':
-            return generateGetColumn(parameterNameToTableAlias, side)
+            return generateGetColumn(parameterNameToTableAlias, expression)
         case 'get-provided':
-            return generateGetProvided(namedParameterPrefix, side)
+            return generateGetProvided(namedParameterPrefix, expression)
         case 'literal':
-            return generateLiteral(side)
+            return generateLiteral(expression)
         case 'null':
             return 'NULL'
     }

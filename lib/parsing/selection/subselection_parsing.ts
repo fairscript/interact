@@ -16,7 +16,7 @@ import {createSingleColumnSelection} from './single_column_selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {createCountSelection} from './count_selection'
 import {createPredicateParser} from '../predicates/predicate_parsing'
-import {createParameterlessSideParser} from '../predicates/side_parsing'
+import {createParameterlessValueExpressionParser} from '../predicates/value_expression_parsing'
 import {createParameterlessBooleanValueEvaluationParser} from '../predicates/boolean_value_evaluation_parsing'
 
 // filter(function (se) { return se.salary > e.salary; })
@@ -33,7 +33,7 @@ function createFilterParser(outerParameterNames) {
         const outerAndInnerParameterNames = outerParameterNames.concat(innerParameterName)
         const getColumnParser = createGetColumnParser(outerAndInnerParameterNames)
 
-        const sideParser = createParameterlessSideParser(getColumnParser)
+        const sideParser = createParameterlessValueExpressionParser(getColumnParser)
         const booleanValueEvaluationParser = createParameterlessBooleanValueEvaluationParser(getColumnParser)
         const predicateParser = createPredicateParser(sideParser, booleanValueEvaluationParser)
 

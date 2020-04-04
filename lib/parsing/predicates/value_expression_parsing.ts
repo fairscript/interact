@@ -5,7 +5,7 @@ import {aBoolean} from '../values/boolean_parsing'
 import {createLiteral} from '../values/literal'
 import {nullSingleton} from '../values/null'
 
-export function createLiteralSideParser() {
+export function createLiteralValueExpressionParser() {
     return A.choice([
         createNegationParser(aBoolean.map(createLiteral)),
         aValueOrNull.map(value => {
@@ -19,22 +19,22 @@ export function createLiteralSideParser() {
     ])
 }
 
-export function createParameterlessSideParser(getColumnParser) {
+export function createParameterlessValueExpressionParser(getColumnParser) {
     return A.choice([
         createNegationParser(getColumnParser),
         getColumnParser,
-        createLiteralSideParser()
+        createLiteralValueExpressionParser()
     ])
 }
 
-export function createParameterizedSideParser(getProvidedParser, getColumnParser) {
+export function createParameterizedValueExpressionParser(getProvidedParser, getColumnParser) {
     const choices = [
         createNegationParser(getProvidedParser),
         getProvidedParser
     ]
 
     if (getColumnParser !== null) {
-        choices.push(createParameterlessSideParser(getColumnParser))
+        choices.push(createParameterlessValueExpressionParser(getColumnParser))
     }
 
     return A.choice(choices)

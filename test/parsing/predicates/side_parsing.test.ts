@@ -1,13 +1,13 @@
 import * as assert from 'assert'
 import {
-    createParameterlessSideParser
-} from '../../../lib/parsing/predicates/side_parsing'
+    createParameterlessValueExpressionParser
+} from '../../../lib/parsing/predicates/value_expression_parsing'
 import {createGetColumn, createGetColumnParser} from '../../../lib/parsing/get_column_parsing'
 import {createLiteral} from '../../../lib/parsing/values/literal'
 import {nullSingleton} from '../../../lib/parsing/values/null'
 
-describe('createParameterlessSideParser returns a parser that', () => {
-    const parser = createParameterlessSideParser(createGetColumnParser(['e']))
+describe('createParameterlessValueExpressionParser returns a parser that', () => {
+    const parser = createParameterlessValueExpressionParser(createGetColumnParser(['e']))
 
     describe('returns an object satisfying the Literal interface', () => {
         it('when the input is a number', () => {

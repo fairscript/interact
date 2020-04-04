@@ -5,16 +5,16 @@ import {InsideParentheses} from './inside_parentheses'
 import {Literal} from '../values/literal'
 import {Null} from '../values/null'
 
-export type Side = InsideParentheses | Literal | GetColumn | GetProvided | Null
+export type ValueExpression = InsideParentheses | Literal | GetColumn | GetProvided | Null
 
 export interface Comparison {
-    left: Side,
+    left: ValueExpression,
     operator: JsComparisonOperator,
-    right: Side,
+    right: ValueExpression,
     kind: 'comparison'
 }
 
-export function createComparison(left: Side, operator: JsComparisonOperator, right: Side): Comparison {
+export function createComparison(left: ValueExpression, operator: JsComparisonOperator, right: ValueExpression): Comparison {
     return {
         left,
         operator,
@@ -23,26 +23,26 @@ export function createComparison(left: Side, operator: JsComparisonOperator, rig
     }
 }
 
-export function createEqual(left: Side, right: Side): Comparison {
+export function createEqual(left: ValueExpression, right: ValueExpression): Comparison {
     return createComparison(left, '===', right)
 }
 
-export function createNotEqual(left: Side, right: Side): Comparison {
+export function createNotEqual(left: ValueExpression, right: ValueExpression): Comparison {
     return createComparison(left, '!==', right)
 }
 
-export function createGreaterThan(left: Side, right: Side): Comparison {
+export function createGreaterThan(left: ValueExpression, right: ValueExpression): Comparison {
     return createComparison(left, '>', right)
 }
 
-export function createGreaterThanOrEqual(left: Side, right: Side): Comparison {
+export function createGreaterThanOrEqual(left: ValueExpression, right: ValueExpression): Comparison {
     return createComparison(left, '>=', right)
 }
 
-export function createLessThan(left: Side, right: Side): Comparison {
+export function createLessThan(left: ValueExpression, right: ValueExpression): Comparison {
     return createComparison(left, '<', right)
 }
 
-export function createLessThanOrEqual(left: Side, right: Side): Comparison {
+export function createLessThanOrEqual(left: ValueExpression, right: ValueExpression): Comparison {
     return createComparison(left, '<=', right)
 }
