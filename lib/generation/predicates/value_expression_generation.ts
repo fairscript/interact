@@ -1,6 +1,6 @@
 import {generateGetColumn} from '../get_column_generation'
 import {generateGetProvided} from '../get_provided_generation'
-import {ValueExpression} from '../../parsing/predicates/comparisons'
+import {ValueExpression} from '../../parsing/booleanexpressions/comparisons'
 import {generateInsideParentheses} from './inside_parentheses_generation'
 import {Literal} from '../../parsing/values/literal'
 

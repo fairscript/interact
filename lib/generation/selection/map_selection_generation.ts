@@ -4,7 +4,7 @@ import {generateSubselectStatement} from '../subselect_generation'
 import {joinWithCommaWhitespace} from '../../parsing/parsing_helpers'
 import {generateAlias} from '../alias_generation'
 import {SubselectStatement} from '../../select_statement'
-import {GetColumn} from '../../parsing/get_column_parsing'
+import {GetColumn} from '../../parsing/valuexpressions/get_column_parsing'
 
 function generateMapPropertyOperation(namedParameterPrefix: string, parameterToTable: { [parameter: string]: string }, operation: GetColumn | SubselectStatement): string {
     switch (operation.kind) {

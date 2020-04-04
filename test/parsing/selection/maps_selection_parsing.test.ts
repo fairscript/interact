@@ -4,8 +4,8 @@ import {createMapSelection} from '../../../lib/parsing/selection/map_selection_p
 import {createParameterlessFilter} from '../../../lib/parsing/filtering/parameterless_filter_parsing'
 import {createSubselectStatement} from '../../../lib/select_statement'
 import {createCountSelection} from '../../../lib/parsing/selection/count_selection'
-import {createEqual, createGreaterThan} from '../../../lib/parsing/predicates/comparisons'
-import {createGetColumn} from '../../../lib/parsing/get_column_parsing'
+import {createEqual, createGreaterThan} from '../../../lib/parsing/booleanexpressions/comparisons'
+import {createGetColumn} from '../../../lib/parsing/valuexpressions/get_column_parsing'
 
 describe('parseMapS can parse a map with a subquery', function () {
 

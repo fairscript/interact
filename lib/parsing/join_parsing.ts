@@ -1,5 +1,5 @@
 import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
-import {createGetColumnParser, GetColumn} from './get_column_parsing'
+import {createGetColumnParser, GetColumn} from './valuexpressions/get_column_parsing'
 
 export interface JoinExpression {
     tableName: string,

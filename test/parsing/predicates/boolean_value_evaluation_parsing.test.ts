@@ -1,11 +1,11 @@
 import {
     createParameterizedBooleanValueEvaluationParser,
     createParameterlessBooleanValueEvaluationParser
-} from '../../../lib/parsing/predicates/boolean_value_evaluation_parsing'
-import {createGetColumn, createGetColumnParser} from '../../../lib/parsing/get_column_parsing'
+} from '../../../lib/parsing/booleanexpressions/boolean_value_evaluation_parsing'
+import {createGetColumn, createGetColumnParser} from '../../../lib/parsing/valuexpressions/get_column_parsing'
 import * as assert from 'assert'
-import {createNegation} from '../../../lib/parsing/predicates/negation_parsing'
-import {createGetProvided, createGetProvidedParser} from '../../../lib/parsing/get_provided_parsing'
+import {createNegation} from '../../../lib/parsing/booleanexpressions/negation_parsing'
+import {createGetProvided, createGetProvidedParser} from '../../../lib/parsing/valuexpressions/get_provided_parsing'
 import {createLiteral} from '../../../lib/parsing/values/literal'
 
 const getColumnParser = createGetColumnParser(['e'])

@@ -4,8 +4,8 @@ import * as assert from 'assert'
 import {createParameterlessFilter} from '../../lib/parsing/filtering/parameterless_filter_parsing'
 import {sqliteDialect} from '../../lib/databases/sqlite/sqlite_dialect'
 import {createCountSelection} from '../../lib/parsing/selection/count_selection'
-import {createGreaterThan} from '../../lib/parsing/predicates/comparisons'
-import {createGetColumn} from '../../lib/parsing/get_column_parsing'
+import {createGreaterThan} from '../../lib/parsing/booleanexpressions/comparisons'
+import {createGetColumn} from '../../lib/parsing/valuexpressions/get_column_parsing'
 
 describe('generateSubselect', () => {
     it('works for a subselect statement with one filter', () => {

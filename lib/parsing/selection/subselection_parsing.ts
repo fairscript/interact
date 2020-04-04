@@ -11,13 +11,13 @@ import {
     createAggregateColumn,
     mapLibraryAggregateFunctionNameToSqlFunctionName
 } from '../aggregation/aggregate_column_parsing'
-import {createGetColumnParser} from '../get_column_parsing'
+import {createGetColumnParser} from '../valuexpressions/get_column_parsing'
 import {createSingleColumnSelection} from './single_column_selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {createCountSelection} from './count_selection'
-import {createPredicateParser} from '../predicates/predicate_parsing'
-import {createParameterlessValueExpressionParser} from '../predicates/value_expression_parsing'
-import {createParameterlessBooleanValueEvaluationParser} from '../predicates/boolean_value_evaluation_parsing'
+import {createPredicateParser} from '../booleanexpressions/boolean_expression_parsing'
+import {createParameterlessValueExpressionParser} from '../valuexpressions/value_expression_parsing'
+import {createParameterlessBooleanValueEvaluationParser} from '../booleanexpressions/boolean_value_evaluation_parsing'
 
 // filter(function (se) { return se.salary > e.salary; })
 function createFilterParser(outerParameterNames) {

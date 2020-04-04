@@ -1,8 +1,8 @@
-import {InsideParentheses} from '../../parsing/predicates/inside_parentheses'
+import {InsideParentheses} from '../../parsing/booleanexpressions/inside_parentheses'
 import {generatePredicate} from './predicate_generation'
-import {Predicate} from '../../parsing/predicates/predicate_parsing'
+import {BooleanExpression} from '../../parsing/booleanexpressions/boolean_expression_parsing'
 
-function generateInside(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, inside: Predicate): string {
+function generateInside(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, inside: BooleanExpression): string {
     return generatePredicate(namedParameterPrefix, parameterNameToTableAlias, inside)
 }
 

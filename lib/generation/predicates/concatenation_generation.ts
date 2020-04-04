@@ -1,4 +1,4 @@
-import {Concatenation, TailItem} from '../../parsing/predicates/concatenation'
+import {Concatenation, TailItem} from '../../parsing/booleanexpressions/concatenation'
 import {joinWithWhitespace} from '../../parsing/parsing_helpers'
 import {generatePredicate} from './predicate_generation'
 

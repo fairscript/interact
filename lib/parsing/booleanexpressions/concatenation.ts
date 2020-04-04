@@ -1,14 +1,14 @@
 import * as A from 'arcsecond'
 import {aBinaryLogicalOperator} from '../javascript/operator_parsing'
-import {Predicate} from './predicate_parsing'
+import {BooleanExpression} from './boolean_expression_parsing'
 
 export interface TailItem {
     operator: '&&' | '||',
-    expression: Predicate
+    expression: BooleanExpression
     kind: 'tail-item'
 }
 
-export function createTailItem(operator: '&&' | '||', expression: Predicate): TailItem {
+export function createTailItem(operator: '&&' | '||', expression: BooleanExpression): TailItem {
     return {
         operator,
         expression,
@@ -28,21 +28,21 @@ export function createTailParser(itemParser) {
     )
 }
 
-export function createAnd(expression: Predicate): TailItem {
+export function createAnd(expression: BooleanExpression): TailItem {
     return createTailItem('&&', expression)
 }
 
-export function createOr(expression: Predicate): TailItem {
+export function createOr(expression: BooleanExpression): TailItem {
     return createTailItem('||', expression)
 }
 
 export interface Concatenation {
-    head: Predicate,
+    head: BooleanExpression,
     tail: TailItem[],
     kind: 'concatenation'
 }
 
-export function createConcatenation(head: Predicate, tail: TailItem[]): Concatenation {
+export function createConcatenation(head: BooleanExpression, tail: TailItem[]): Concatenation {
     return {
         head,
         tail,

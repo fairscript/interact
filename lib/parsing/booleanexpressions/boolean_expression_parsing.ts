@@ -9,9 +9,9 @@ import {
     createLiteralValueExpressionParser,
     createParameterizedValueExpressionParser,
     createParameterlessValueExpressionParser
-} from './value_expression_parsing'
-import {createGetColumnParser, GetColumn} from '../get_column_parsing'
-import {createGetProvidedParser, GetProvided} from '../get_provided_parsing'
+} from '../valuexpressions/value_expression_parsing'
+import {createGetColumnParser, GetColumn} from '../valuexpressions/get_column_parsing'
+import {createGetProvidedParser, GetProvided} from '../valuexpressions/get_provided_parsing'
 import {
     createLiteralBooleanValueEvaluationParser,
     createParameterizedBooleanValueEvaluationParser,
@@ -19,6 +19,9 @@ import {
 } from './boolean_value_evaluation_parsing'
 import {createNegationParser, Negation} from './negation_parsing'
 import {Literal} from '../values/literal'
+
+// GetColumn, GetProvided and Literal can refer to boolean columns/parameters/values and are, thus, predicates.
+export type BooleanExpression = InsideParentheses | Concatenation | Comparison | Negation | GetColumn | GetProvided | Literal
 
 function createConcatenationParser(concatenationItem) {
     return A.sequenceOf([
@@ -68,9 +71,6 @@ export function createPredicateParser(sideDataParser, booleanValueEvaluation) {
     ])
 }
 
-// GetColumn, GetProvided and Literal can refer to boolean columns/parameters/values and are, thus, predicates.
-export type Predicate = InsideParentheses | Concatenation | Comparison | Negation | GetColumn | GetProvided | Literal
-
 export function parsePredicateExpression(parser, expression: string) {
     // Replace double quotes around string with single quotes
     const withNormalizedQuotes = normalizeQuotes(expression)
@@ -98,7 +98,7 @@ export function createParameterlessParser(tableParameters: string[]) {
     }
 }
 
-export function parseParameterlessPredicate(tableParameters: string[], expression: string): Predicate {
+export function parseParameterlessPredicate(tableParameters: string[], expression: string): BooleanExpression {
     const parser = createParameterlessParser(tableParameters)
     return parsePredicateExpression(parser, expression)
 }

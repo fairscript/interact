@@ -1,5 +1,5 @@
 import {Selection} from './selection_parsing'
-import {parseGetColumn} from '../get_column_parsing'
+import {parseGetColumn} from '../valuexpressions/get_column_parsing'
 import {AggregationFunction, createAggregateColumn} from '../aggregation/aggregate_column_parsing'
 import {createSingleColumnSelection, SingleColumnSelection} from './single_column_selection_parsing'
 

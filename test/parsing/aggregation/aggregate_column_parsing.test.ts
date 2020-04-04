@@ -6,7 +6,7 @@ import {
     createAggregateColumnParser
 } from '../../../lib/parsing/aggregation/aggregate_column_parsing'
 import {createAssertDoesNotMatchFunction} from '../parsing_assertion'
-import {createGetColumn} from '../../../lib/parsing/get_column_parsing'
+import {createGetColumn} from '../../../lib/parsing/valuexpressions/get_column_parsing'
 
 describe('createAggregateColumnParser creates a parser that', () => {
     const parser = createAggregateColumnParser(['e'])

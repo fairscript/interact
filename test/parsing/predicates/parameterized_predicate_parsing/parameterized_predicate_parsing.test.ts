@@ -1,15 +1,15 @@
 import * as assert from 'assert'
-import {createGetProvided} from '../../../../lib/parsing/get_provided_parsing'
-import {createConcatenation, createTailItem} from '../../../../lib/parsing/predicates/concatenation'
-import {createComparison, createEqual} from '../../../../lib/parsing/predicates/comparisons'
-import {createGetColumn} from '../../../../lib/parsing/get_column_parsing'
-import {parseParameterizedPredicate, Predicate} from '../../../../lib/parsing/predicates/predicate_parsing'
+import {createGetProvided} from '../../../../lib/parsing/valuexpressions/get_provided_parsing'
+import {createConcatenation, createTailItem} from '../../../../lib/parsing/booleanexpressions/concatenation'
+import {createComparison, createEqual} from '../../../../lib/parsing/booleanexpressions/comparisons'
+import {createGetColumn} from '../../../../lib/parsing/valuexpressions/get_column_parsing'
+import {parseParameterizedPredicate, BooleanExpression} from '../../../../lib/parsing/booleanexpressions/boolean_expression_parsing'
 import {extractLambdaParametersAndExpression} from '../../../../lib/parsing/javascript/lambda_parsing'
-import {createNegation} from '../../../../lib/parsing/predicates/negation_parsing'
+import {createNegation} from '../../../../lib/parsing/booleanexpressions/negation_parsing'
 
 describe('parseParameterizedPredicate can parse', () => {
 
-    function test(f: Function, expected: Predicate) {
+    function test(f: Function, expected: BooleanExpression) {
         const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
         const actual = parseParameterizedPredicate('f1', parameters[0], parameters.slice(1), expression)

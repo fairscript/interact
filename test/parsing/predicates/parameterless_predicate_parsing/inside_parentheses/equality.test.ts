@@ -1,9 +1,9 @@
-import {createEqual, createGreaterThan} from '../../../../../lib/parsing/predicates/comparisons'
-import {createGetColumn} from '../../../../../lib/parsing/get_column_parsing'
+import {createEqual, createGreaterThan} from '../../../../../lib/parsing/booleanexpressions/comparisons'
+import {createGetColumn} from '../../../../../lib/parsing/valuexpressions/get_column_parsing'
 import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
-import {createParameterlessParser} from '../../../../../lib/parsing/predicates/predicate_parsing'
-import {createInsideParentheses} from '../../../../../lib/parsing/predicates/inside_parentheses'
-import {createNegation} from '../../../../../lib/parsing/predicates/negation_parsing'
+import {createParameterlessParser} from '../../../../../lib/parsing/booleanexpressions/boolean_expression_parsing'
+import {createInsideParentheses} from '../../../../../lib/parsing/booleanexpressions/inside_parentheses'
+import {createNegation} from '../../../../../lib/parsing/booleanexpressions/negation_parsing'
 import {createLiteral} from '../../../../../lib/parsing/values/literal'
 
 const parser = createParameterlessParser(['e'])

@@ -1,4 +1,4 @@
-import {Negatable, Negation} from '../../parsing/predicates/negation_parsing'
+import {Negatable, Negation} from '../../parsing/booleanexpressions/negation_parsing'
 import {generateInsideParentheses} from './inside_parentheses_generation'
 import {generateLiteral} from './value_expression_generation'
 import {generateGetColumn} from '../get_column_generation'

@@ -1,6 +1,6 @@
-import {createNamedObjectPropertyParser} from './javascript/record_parsing'
-import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
-import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
+import {createNamedObjectPropertyParser} from '../javascript/record_parsing'
+import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
+import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 
 export interface GetColumn {
     kind: 'get-column'

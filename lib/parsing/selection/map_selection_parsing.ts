@@ -4,7 +4,7 @@ import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing
 import {createRecordInParenthesesParser} from '../javascript/record_parsing'
 import {findReferencedColumns} from './search_for_referenced_columns'
 import {SubselectStatement} from '../../select_statement'
-import {createGetColumnParser, GetColumn} from '../get_column_parsing'
+import {createGetColumnParser, GetColumn} from '../valuexpressions/get_column_parsing'
 
 
 export interface MapSelection {

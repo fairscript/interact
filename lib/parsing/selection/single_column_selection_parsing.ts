@@ -1,6 +1,6 @@
 import {AggregateColumn} from '../aggregation/aggregate_column_parsing'
 import {findReferencedColumns} from './search_for_referenced_columns'
-import {GetColumn} from '../get_column_parsing'
+import {GetColumn} from '../valuexpressions/get_column_parsing'
 
 export interface SingleColumnSelection {
     kind: 'single-column-selection'

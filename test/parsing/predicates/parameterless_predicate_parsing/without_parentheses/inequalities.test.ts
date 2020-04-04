@@ -1,10 +1,10 @@
-import {createGetColumn} from '../../../../../lib/parsing/get_column_parsing'
+import {createGetColumn} from '../../../../../lib/parsing/valuexpressions/get_column_parsing'
 import {
     createGreaterThan,
     createGreaterThanOrEqual,
     createLessThan, createLessThanOrEqual, createNotEqual
-} from '../../../../../lib/parsing/predicates/comparisons'
-import {createParameterlessParser} from '../../../../../lib/parsing/predicates/predicate_parsing'
+} from '../../../../../lib/parsing/booleanexpressions/comparisons'
+import {createParameterlessParser} from '../../../../../lib/parsing/booleanexpressions/boolean_expression_parsing'
 import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
 import {createLiteral} from '../../../../../lib/parsing/values/literal'
 

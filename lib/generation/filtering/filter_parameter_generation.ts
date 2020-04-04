@@ -1,5 +1,5 @@
-import {Predicate} from '../../parsing/predicates/predicate_parsing'
-import {GetProvided} from '../../parsing/get_provided_parsing'
+import {BooleanExpression} from '../../parsing/booleanexpressions/boolean_expression_parsing'
+import {GetProvided} from '../../parsing/valuexpressions/get_provided_parsing'
 import {ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {computePlaceholderName} from '../get_provided_generation'
 import {Filter} from '../../parsing/filtering/filter_parsing'
@@ -14,7 +14,7 @@ function getByPath(obj: {}, remainingPath: string[]): any {
     }
 }
 
-function findGetProvided(predicate: Predicate, collection: GetProvided[] = []): GetProvided[] {
+function findGetProvided(predicate: BooleanExpression, collection: GetProvided[] = []): GetProvided[] {
     switch (predicate.kind) {
         case 'concatenation':
             const {head, tail} = predicate
@@ -52,7 +52,7 @@ function findGetProvided(predicate: Predicate, collection: GetProvided[] = []): 
 function recordFilterParameters(
     namedParameterPrefix: string,
     useNamedParameterPrefixInRecord: boolean,
-    predicate: Predicate,
+    predicate: BooleanExpression,
     userProvidedParameter: ValueOrNestedValueRecord): ValueRecord {
 
     return findGetProvided(predicate).reduce(

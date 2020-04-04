@@ -1,6 +1,6 @@
-import {Comparison} from '../../parsing/predicates/comparisons'
+import {Comparison} from '../../parsing/booleanexpressions/comparisons'
 import {generateValueExpression} from './value_expression_generation'
-import {SqlComparisonOperator} from '../../parsing/predicates/comparison_operators'
+import {SqlComparisonOperator} from '../../parsing/booleanexpressions/comparison_operators'
 
 export function generateComparison(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, predicate: Comparison): string {
     const {left, operator, right}: Comparison = predicate

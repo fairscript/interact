@@ -1,6 +1,6 @@
 import * as A from 'arcsecond'
-import {createNestedObjectPropertyParser} from './javascript/record_parsing'
-import {identifier} from './javascript/identifier_parsing'
+import {createNestedObjectPropertyParser} from '../javascript/record_parsing'
+import {identifier} from '../javascript/identifier_parsing'
 
 export interface GetProvided {
     kind: 'get-provided',

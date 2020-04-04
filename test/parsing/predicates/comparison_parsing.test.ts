@@ -4,8 +4,8 @@ import * as assert from 'assert'
 import {
     createComparisonParser,
     mapDoubleEqualityToTripleEquality
-} from '../../../lib/parsing/predicates/comparison_parsing'
-import {jsComparisonOperators} from '../../../lib/parsing/predicates/comparison_operators'
+} from '../../../lib/parsing/booleanexpressions/comparison_parsing'
+import {jsComparisonOperators} from '../../../lib/parsing/booleanexpressions/comparison_operators'
 
 describe('createComparisonParser returns a parser that', () => {
 
