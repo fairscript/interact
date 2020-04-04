@@ -1,6 +1,6 @@
 import {Concatenation, TailItem} from '../../parsing/boolean_expressions/concatenation'
 import {joinWithWhitespace} from '../../parsing/parsing_helpers'
-import {generatePredicate} from './predicate_generation'
+import {generateBooleanExpression} from './boolean_expression_generation'
 
 function generateBinaryLogicalOperator(operator: '&&' | '||'): string {
     switch (operator) {
@@ -14,14 +14,14 @@ function generateBinaryLogicalOperator(operator: '&&' | '||'): string {
 function generateTailItem(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }): (item: TailItem) => string {
     return item => {
         const binaryOperator = generateBinaryLogicalOperator(item.operator)
-        const predicate = generatePredicate(namedParameterPrefix, parameterNameToTableAlias, item.expression)
+        const booleanExpression = generateBooleanExpression(namedParameterPrefix, parameterNameToTableAlias, item.expression)
 
-        return `${binaryOperator} ${predicate}`
+        return `${binaryOperator} ${booleanExpression}`
     }
 }
 
-export function generateConcatenation(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, predicate: Concatenation): string {
-    const head = generatePredicate(namedParameterPrefix, parameterNameToTableAlias, predicate.head)
+export function generateConcatenation(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, concatenation: Concatenation): string {
+    const head = generateBooleanExpression(namedParameterPrefix, parameterNameToTableAlias, concatenation.head)
 
-    return joinWithWhitespace([head].concat(predicate.tail.map(generateTailItem(namedParameterPrefix, parameterNameToTableAlias))))
+    return joinWithWhitespace([head].concat(concatenation.tail.map(generateTailItem(namedParameterPrefix, parameterNameToTableAlias))))
 }

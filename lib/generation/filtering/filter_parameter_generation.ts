@@ -14,17 +14,17 @@ function getByPath(obj: {}, remainingPath: string[]): any {
     }
 }
 
-function findGetProvided(predicate: BooleanExpression, collection: GetProvided[] = []): GetProvided[] {
-    switch (predicate.kind) {
+function findGetProvided(expression: BooleanExpression, collection: GetProvided[] = []): GetProvided[] {
+    switch (expression.kind) {
         case 'concatenation':
-            const {head, tail} = predicate
+            const {head, tail} = expression
 
             return tail.reduce(
                 (acc, tailItem) => findGetProvided(tailItem.expression, acc),
                 findGetProvided(head, collection))
 
         case 'comparison':
-            const {left, right} = predicate
+            const {left, right} = expression
 
             const comparisonItems: GetProvided[] = []
 
@@ -38,37 +38,38 @@ function findGetProvided(predicate: BooleanExpression, collection: GetProvided[]
 
             return collection.concat(comparisonItems)
         case 'inside':
-            return findGetProvided(predicate.inside, collection)
+            return findGetProvided(expression.inside, collection)
         case 'negation':
-            return findGetProvided(predicate.negated, collection)
+            return findGetProvided(expression.negated, collection)
         case 'get-column':
         case 'literal':
             return collection
         case 'get-provided':
-            return collection.concat(predicate)
+            return collection.concat(expression)
     }
 }
 
 function recordFilterParameters(
     namedParameterPrefix: string,
     useNamedParameterPrefixInRecord: boolean,
-    predicate: BooleanExpression,
+    booleanExpression: BooleanExpression,
     userProvidedParameter: ValueOrNestedValueRecord): ValueRecord {
 
-    return findGetProvided(predicate).reduce(
-        (acc, item) => {
-            const key = (useNamedParameterPrefixInRecord ? namedParameterPrefix : '') + computePlaceholderName(item)
-            const value = item.path.length === 0 ? userProvidedParameter : getByPath(userProvidedParameter, item.path)
+    return findGetProvided(booleanExpression)
+        .reduce(
+            (acc, item) => {
+                const key = (useNamedParameterPrefixInRecord ? namedParameterPrefix : '') + computePlaceholderName(item)
+                const value = item.path.length === 0 ? userProvidedParameter : getByPath(userProvidedParameter, item.path)
 
-            acc[key] = value
+                acc[key] = value
 
-            return acc
-        },
-        {})
+                return acc
+            },
+            {})
 }
 
 export function generateFilterParameters(namedParameterPrefix: string, useNamedParameterPrefixInRecord: boolean, filter: Filter): ValueRecord {
     return filter.kind === 'parameterless-filter'
         ? {}
-        : recordFilterParameters(namedParameterPrefix, useNamedParameterPrefixInRecord, filter.predicate, filter.userProvided)
+        : recordFilterParameters(namedParameterPrefix, useNamedParameterPrefixInRecord, filter.booleanExpression, filter.userProvided)
 }

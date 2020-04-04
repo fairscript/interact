@@ -15,7 +15,7 @@ import {createGetColumnParser} from '../value_expressions/get_column_parsing'
 import {createSingleColumnSelection} from './single_column_selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {createCountSelection} from './count_selection'
-import {createPredicateParser} from '../boolean_expressions/boolean_expression_parsing'
+import {createBooleanExpressionParser} from '../boolean_expressions/boolean_expression_parsing'
 import {createParameterlessValueExpressionParser} from '../value_expressions/value_expression_parsing'
 import {createParameterlessBooleanValueEvaluationParser} from '../boolean_expressions/boolean_value_evaluation_parsing'
 
@@ -35,13 +35,13 @@ function createFilterParser(outerParameterNames) {
 
         const sideParser = createParameterlessValueExpressionParser(getColumnParser)
         const booleanValueEvaluationParser = createParameterlessBooleanValueEvaluationParser(getColumnParser)
-        const predicateParser = createPredicateParser(sideParser, booleanValueEvaluationParser)
+        const booleanExpressionParser = createBooleanExpressionParser(sideParser, booleanValueEvaluationParser)
 
-        const predicate = yield createLambdaBodyParser(predicateParser)
+        const booleanExpression = yield createLambdaBodyParser(booleanExpressionParser)
 
         yield closingParenthesis
 
-        return [innerParameterName, predicate]
+        return [innerParameterName, booleanExpression]
     })
 }
 

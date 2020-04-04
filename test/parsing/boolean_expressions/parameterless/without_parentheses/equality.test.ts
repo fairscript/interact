@@ -1,15 +1,15 @@
 import {createEqual} from '../../../../../lib/parsing/boolean_expressions/comparisons'
 import {createGetColumn} from '../../../../../lib/parsing/value_expressions/get_column_parsing'
-import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
-import {createParameterlessParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
+import {createAssertParameterlessBooleanExpressionParserMatches} from '../../boolean_expression_assertion'
+import {createParameterlessBooleanExpressionParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
 import {createLiteral} from '../../../../../lib/parsing/values/literal'
 import {nullSingleton} from '../../../../../lib/parsing/values/null'
 
-const parserForOneTable = createParameterlessParser(['e'])
-const assertMatchesUsingOneTable = createAssertParameterlessPredicateParserMatches(parserForOneTable)
+const parserForOneTable = createParameterlessBooleanExpressionParser(['e'])
+const assertMatchesUsingOneTable = createAssertParameterlessBooleanExpressionParserMatches(parserForOneTable)
 
-const parserForTwoTables = createParameterlessParser(['e', 'd'])
-const assertMatchesUsingTwoTables = createAssertParameterlessPredicateParserMatches(parserForTwoTables)
+const parserForTwoTables = createParameterlessBooleanExpressionParser(['e', 'd'])
+const assertMatchesUsingTwoTables = createAssertParameterlessBooleanExpressionParserMatches(parserForTwoTables)
 
 describe('parseParameterlessPredicate can parse', () => {
 

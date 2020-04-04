@@ -4,12 +4,12 @@ import {
     createGreaterThanOrEqual,
     createLessThan, createLessThanOrEqual, createNotEqual
 } from '../../../../../lib/parsing/boolean_expressions/comparisons'
-import {createParameterlessParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
-import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
+import {createParameterlessBooleanExpressionParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
+import {createAssertParameterlessBooleanExpressionParserMatches} from '../../boolean_expression_assertion'
 import {createLiteral} from '../../../../../lib/parsing/values/literal'
 
-const parser = createParameterlessParser(['e'])
-const assertMatches = createAssertParameterlessPredicateParserMatches(parser)
+const parser = createParameterlessBooleanExpressionParser(['e'])
+const assertMatches = createAssertParameterlessBooleanExpressionParserMatches(parser)
 
 describe('parseParameterlessPredicate can parse inequalities with the operator', () => {
     const getSalary = createGetColumn('e', 'salary')

@@ -91,7 +91,7 @@ describe('Filtering', () => {
         })
     })
 
-    it('works for a conjunction of two predicates', () => {
+    it('works for a conjunction of two boolean expressions', () => {
         const expectedSelect = "SELECT t1.id"
         const expectedFrom = "FROM employees t1"
 

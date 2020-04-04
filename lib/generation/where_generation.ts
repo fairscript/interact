@@ -1,17 +1,17 @@
 import {Filter} from '../parsing/filtering/filter_parsing'
 import {ValueRecord} from '../record'
-import {generatePredicate} from './boolean_expressions/predicate_generation'
+import {generateBooleanExpression} from './boolean_expressions/boolean_expression_generation'
 import {generateFilterParameters} from './filtering/filter_parameter_generation'
 
 
 function generateWhereClause(namedParameterPrefix: string, filters: Filter[]): string {
     if (filters.length == 1) {
-        const { tableParameterToTableAlias, predicate } = filters[0]
+        const { tableParameterToTableAlias, booleanExpression } = filters[0]
 
-        return generatePredicate(namedParameterPrefix, tableParameterToTableAlias, predicate)
+        return generateBooleanExpression(namedParameterPrefix, tableParameterToTableAlias, booleanExpression)
     }
     else {
-        return filters.map(f => generatePredicate(namedParameterPrefix, f.tableParameterToTableAlias, f.predicate))
+        return filters.map(f => generateBooleanExpression(namedParameterPrefix, f.tableParameterToTableAlias, f.booleanExpression))
             .map(sql => '(' + sql + ')')
             .join(' AND ')
     }

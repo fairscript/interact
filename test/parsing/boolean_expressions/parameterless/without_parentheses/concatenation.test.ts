@@ -2,12 +2,12 @@ import {createAnd, createConcatenation, createOr} from '../../../../../lib/parsi
 import {createInsideParentheses} from '../../../../../lib/parsing/boolean_expressions/inside_parentheses'
 import {createEqual} from '../../../../../lib/parsing/boolean_expressions/comparisons'
 import {createGetColumn} from '../../../../../lib/parsing/value_expressions/get_column_parsing'
-import {createParameterlessParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
-import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
+import {createParameterlessBooleanExpressionParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
+import {createAssertParameterlessBooleanExpressionParserMatches} from '../../boolean_expression_assertion'
 import {createLiteral} from '../../../../../lib/parsing/values/literal'
 
-const parser = createParameterlessParser(['e'])
-const assertMatches = createAssertParameterlessPredicateParserMatches(parser)
+const parser = createParameterlessBooleanExpressionParser(['e'])
+const assertMatches = createAssertParameterlessBooleanExpressionParserMatches(parser)
 
 describe('parseParameterlessPredicate can parse', () => {
 

@@ -1,8 +1,8 @@
 import {
-    createParameterlessParser,
-    parseParameterlessPredicate
+    createParameterlessBooleanExpressionParser,
+    parseParameterlessBooleanExpression
 } from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
-import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
+import {createAssertParameterlessBooleanExpressionParserMatches} from '../../boolean_expression_assertion'
 import {createEqual} from '../../../../../lib/parsing/boolean_expressions/comparisons'
 import {createGetColumn} from '../../../../../lib/parsing/value_expressions/get_column_parsing'
 import {createInsideParentheses} from '../../../../../lib/parsing/boolean_expressions/inside_parentheses'
@@ -10,8 +10,8 @@ import {createNegation} from '../../../../../lib/parsing/boolean_expressions/neg
 import {createLiteral} from '../../../../../lib/parsing/values/literal'
 import {nullSingleton} from '../../../../../lib/parsing/values/null'
 
-const parser = createParameterlessParser(['e'])
-const assertMatches = createAssertParameterlessPredicateParserMatches(parser)
+const parser = createParameterlessBooleanExpressionParser(['e'])
+const assertMatches = createAssertParameterlessBooleanExpressionParserMatches(parser)
 
 describe('parseParameterlessPredicate can parse', () => {
     const getFullTimeColumn = createGetColumn('e', 'fulltime')

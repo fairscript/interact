@@ -3,7 +3,7 @@ import {createGetProvided} from '../../../../lib/parsing/value_expressions/get_p
 import {createConcatenation, createTailItem} from '../../../../lib/parsing/boolean_expressions/concatenation'
 import {createComparison, createEqual} from '../../../../lib/parsing/boolean_expressions/comparisons'
 import {createGetColumn} from '../../../../lib/parsing/value_expressions/get_column_parsing'
-import {parseParameterizedPredicate, BooleanExpression} from '../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
+import {parseParameterizedBooleanExpression, BooleanExpression} from '../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
 import {extractLambdaParametersAndExpression} from '../../../../lib/parsing/javascript/lambda_parsing'
 import {createNegation} from '../../../../lib/parsing/boolean_expressions/negation_parsing'
 
@@ -12,7 +12,7 @@ describe('parseParameterizedPredicate can parse', () => {
     function test(f: Function, expected: BooleanExpression) {
         const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
-        const actual = parseParameterizedPredicate('f1', parameters[0], parameters.slice(1), expression)
+        const actual = parseParameterizedBooleanExpression('f1', parameters[0], parameters.slice(1), expression)
 
         assert.deepEqual(actual, expected)
     }

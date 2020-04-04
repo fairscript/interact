@@ -1,13 +1,13 @@
 import {createEqual, createGreaterThan} from '../../../../../lib/parsing/boolean_expressions/comparisons'
 import {createGetColumn} from '../../../../../lib/parsing/value_expressions/get_column_parsing'
-import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
-import {createParameterlessParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
+import {createAssertParameterlessBooleanExpressionParserMatches} from '../../boolean_expression_assertion'
+import {createParameterlessBooleanExpressionParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
 import {createInsideParentheses} from '../../../../../lib/parsing/boolean_expressions/inside_parentheses'
 import {createNegation} from '../../../../../lib/parsing/boolean_expressions/negation_parsing'
 import {createLiteral} from '../../../../../lib/parsing/values/literal'
 
-const parser = createParameterlessParser(['e'])
-const assertMatches = createAssertParameterlessPredicateParserMatches(parser)
+const parser = createParameterlessBooleanExpressionParser(['e'])
+const assertMatches = createAssertParameterlessBooleanExpressionParserMatches(parser)
 
 describe('parseParameterlessPredicate can parse', () => {
     const getIdColumn = createGetColumn('e', 'id')

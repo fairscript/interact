@@ -1,23 +1,23 @@
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {ValueOrNestedValueRecord} from '../../record'
-import {parseParameterizedPredicate, BooleanExpression} from '../boolean_expressions/boolean_expression_parsing'
+import {parseParameterizedBooleanExpression, BooleanExpression} from '../boolean_expressions/boolean_expression_parsing'
 
 export interface ParameterizedFilter {
     tableParameterToTableAlias: {[parameter: string]: string}
-    predicate: BooleanExpression
+    booleanExpression: BooleanExpression
     userProvided: ValueOrNestedValueRecord
     kind: 'parameterized-filter'
 }
 
 export function createParameterizedFilter(
     tableParameterToTableAlias: { [p: string]: string },
-    predicate: BooleanExpression,
+    booleanExpression: BooleanExpression,
     userProvided: ValueOrNestedValueRecord): ParameterizedFilter {
 
     return {
         tableParameterToTableAlias,
-        predicate,
+        booleanExpression,
         userProvided,
         kind: 'parameterized-filter'
     }
@@ -30,7 +30,7 @@ export function parseParameterizedFilter(f: Function, prefix: string, userProvid
     const tableParameters = parameters.slice(1)
 
     const tableParameterToTableAlias = mapParameterNamesToTableAliases(tableParameters)
-    const predicate = parseParameterizedPredicate(prefix, userProvidedParameter, tableParameters, expression)
+    const booleanExpression = parseParameterizedBooleanExpression(prefix, userProvidedParameter, tableParameters, expression)
 
-    return createParameterizedFilter(tableParameterToTableAlias, predicate, userProvided)
+    return createParameterizedFilter(tableParameterToTableAlias, booleanExpression, userProvided)
 }

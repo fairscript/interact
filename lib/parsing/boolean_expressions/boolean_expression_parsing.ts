@@ -20,7 +20,7 @@ import {
 import {createNegationParser, Negation} from './negation_parsing'
 import {Literal} from '../values/literal'
 
-// GetColumn, GetProvided and Literal can refer to boolean columns/parameters/values and are, thus, predicates.
+// GetColumn, GetProvided and Literal can refer to boolean columns/parameters/values and are, thus, boolean expressions.
 export type BooleanExpression = InsideParentheses | Concatenation | Comparison | Negation | GetColumn | GetProvided | Literal
 
 function createConcatenationParser(concatenationItem) {
@@ -41,11 +41,11 @@ function createInsideParenthesesParser(inside) {
     return A.choice([positive, negative])
 }
 
-export function createPredicateParser(sideDataParser, booleanValueEvaluation) {
-    const valueInside = A.recursiveParser(() => A.choice([concatenation, comparison, valueInsideParentheses, sideDataParser]))
+export function createBooleanExpressionParser(valueExpressionParser, booleanValueEvaluation) {
+    const valueInside = A.recursiveParser(() => A.choice([concatenation, comparison, valueInsideParentheses, valueExpressionParser]))
     const valueInsideParentheses = createInsideParenthesesParser(valueInside)
 
-    const comparison = createComparisonParser(A.choice([valueInsideParentheses, sideDataParser]))
+    const comparison = createComparisonParser(A.choice([valueInsideParentheses, valueExpressionParser]))
         .map(([left, operator, right]) => createComparison(left, operator, right))
 
     const inside = A.recursiveParser(() => A.choice([
@@ -71,54 +71,54 @@ export function createPredicateParser(sideDataParser, booleanValueEvaluation) {
     ])
 }
 
-export function parsePredicateExpression(parser, expression: string) {
+export function parseBooleanExpression(parser, expression: string) {
     // Replace double quotes around string with single quotes
     const withNormalizedQuotes = normalizeQuotes(expression)
 
     return parser.run(withNormalizedQuotes).result
 }
 
-function createLiteralPredicateParser() {
-    const sideParser = createLiteralValueExpressionParser()
+function createLiteralBooleanExpressionParser() {
+    const valueExpressionParser = createLiteralValueExpressionParser()
     const booleanValueEvaluationParser = createLiteralBooleanValueEvaluationParser()
 
-    return createPredicateParser(sideParser, booleanValueEvaluationParser)
+    return createBooleanExpressionParser(valueExpressionParser, booleanValueEvaluationParser)
 }
 
-export function createParameterlessParser(tableParameters: string[]) {
+export function createParameterlessBooleanExpressionParser(tableParameters: string[]) {
     if (tableParameters.length > 0) {
         const getColumnParser = createGetColumnParser(tableParameters)
-        const sideParser = createParameterlessValueExpressionParser(getColumnParser)
+        const valueExpressionParser = createParameterlessValueExpressionParser(getColumnParser)
         const booleanValueEvaluationParser = createParameterlessBooleanValueEvaluationParser(getColumnParser)
 
-        return createPredicateParser(sideParser, booleanValueEvaluationParser)
+        return createBooleanExpressionParser(valueExpressionParser, booleanValueEvaluationParser)
     }
     else {
-        return createLiteralPredicateParser()
+        return createLiteralBooleanExpressionParser()
     }
 }
 
-export function parseParameterlessPredicate(tableParameters: string[], expression: string): BooleanExpression {
-    const parser = createParameterlessParser(tableParameters)
-    return parsePredicateExpression(parser, expression)
+export function parseParameterlessBooleanExpression(tableParameters: string[], expression: string): BooleanExpression {
+    const parser = createParameterlessBooleanExpressionParser(tableParameters)
+    return parseBooleanExpression(parser, expression)
 }
 
-export function createParameterizedParser(prefix: string, userProvidedParameter: string, tableParameters: string[]) {
+export function createParameterizedBooleanExpressionParser(prefix: string, userProvidedParameter: string, tableParameters: string[]) {
     const getProvidedParser = createGetProvidedParser(prefix, userProvidedParameter)
     const getColumnParser =  tableParameters.length > 0 ? createGetColumnParser(tableParameters) : null
 
-    const sideParser = createParameterizedValueExpressionParser(getProvidedParser, getColumnParser)
+    const valueExpressionParser = createParameterizedValueExpressionParser(getProvidedParser, getColumnParser)
     const booleanValueEvaluationParser = createParameterizedBooleanValueEvaluationParser(getProvidedParser, getColumnParser)
 
-    return createPredicateParser(sideParser, booleanValueEvaluationParser)
+    return createBooleanExpressionParser(valueExpressionParser, booleanValueEvaluationParser)
 }
 
-export function parseParameterizedPredicate(prefix: string, userProvidedParameter: string, tableParameters: string[], expression: string) {
+export function parseParameterizedBooleanExpression(prefix: string, userProvidedParameter: string, tableParameters: string[], expression: string) {
     if (userProvidedParameter === null) {
-        return createLiteralPredicateParser()
+        return createLiteralBooleanExpressionParser()
     }
     else {
-        const parser = createParameterizedParser(prefix, userProvidedParameter, tableParameters)
-        return parsePredicateExpression(parser, expression)
+        const parser = createParameterizedBooleanExpressionParser(prefix, userProvidedParameter, tableParameters)
+        return parseBooleanExpression(parser, expression)
     }
 }
