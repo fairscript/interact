@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import {Department, departments, Employee} from '../test_tables'
 import {parseJoin} from '../../lib/parsing/join_parsing'
-import {createGetColumn} from '../../lib/parsing/valuexpressions/get_column_parsing'
+import {createGetColumn} from '../../lib/parsing/value_expressions/get_column_parsing'
 
 describe('parseJoin', () => {
 

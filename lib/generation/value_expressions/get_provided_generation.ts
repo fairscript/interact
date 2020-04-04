@@ -1,5 +1,5 @@
-import {GetProvided,} from '../parsing/valuexpressions/get_provided_parsing'
-import {joinWithUnderscore} from '../parsing/parsing_helpers'
+import {GetProvided,} from '../../parsing/value_expressions/get_provided_parsing'
+import {joinWithUnderscore} from '../../parsing/parsing_helpers'
 
 export function escapeUnderscore(input: string): string {
     return input.replace(/_/g, '__')

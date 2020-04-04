@@ -1,7 +1,7 @@
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {ValueOrNestedValueRecord} from '../../record'
-import {parseParameterizedPredicate, BooleanExpression} from '../booleanexpressions/boolean_expression_parsing'
+import {parseParameterizedPredicate, BooleanExpression} from '../boolean_expressions/boolean_expression_parsing'
 
 export interface ParameterizedFilter {
     tableParameterToTableAlias: {[parameter: string]: string}

@@ -1,7 +1,7 @@
 import {generateColumnAccess} from '../column_access_generation'
 import {Key} from '../../parsing/get_key_parsing'
 import {joinWithCommaWhitespace} from '../../parsing/parsing_helpers'
-import {generateGetColumn} from '../get_column_generation'
+import {generateGetColumn} from '../value_expressions/get_column_generation'
 
 export function generateGetPartOfKey(partOfKeyToTableAndProperty: { [part: string]: [string, string] }, part: string): string {
     const [tableAlias, property] = partOfKeyToTableAndProperty[part]

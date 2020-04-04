@@ -1,4 +1,4 @@
-import {generateGetColumn} from '../get_column_generation'
+import {generateGetColumn} from '../value_expressions/get_column_generation'
 import {SingleColumnSelection} from '../../parsing/selection/single_column_selection_parsing'
 import {generateAggregateColumn} from '../aggregation/aggregate_column_generation'
 

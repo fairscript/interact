@@ -1,5 +1,5 @@
-import {GetProvided} from '../valuexpressions/get_provided_parsing'
-import {GetColumn} from '../valuexpressions/get_column_parsing'
+import {GetProvided} from '../value_expressions/get_provided_parsing'
+import {GetColumn} from '../value_expressions/get_column_parsing'
 import {JsComparisonOperator} from './comparison_operators'
 import {InsideParentheses} from './inside_parentheses'
 import {Literal} from '../values/literal'

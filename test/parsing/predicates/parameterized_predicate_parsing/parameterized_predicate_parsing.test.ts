@@ -1,11 +1,11 @@
 import * as assert from 'assert'
-import {createGetProvided} from '../../../../lib/parsing/valuexpressions/get_provided_parsing'
-import {createConcatenation, createTailItem} from '../../../../lib/parsing/booleanexpressions/concatenation'
-import {createComparison, createEqual} from '../../../../lib/parsing/booleanexpressions/comparisons'
-import {createGetColumn} from '../../../../lib/parsing/valuexpressions/get_column_parsing'
-import {parseParameterizedPredicate, BooleanExpression} from '../../../../lib/parsing/booleanexpressions/boolean_expression_parsing'
+import {createGetProvided} from '../../../../lib/parsing/value_expressions/get_provided_parsing'
+import {createConcatenation, createTailItem} from '../../../../lib/parsing/boolean_expressions/concatenation'
+import {createComparison, createEqual} from '../../../../lib/parsing/boolean_expressions/comparisons'
+import {createGetColumn} from '../../../../lib/parsing/value_expressions/get_column_parsing'
+import {parseParameterizedPredicate, BooleanExpression} from '../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
 import {extractLambdaParametersAndExpression} from '../../../../lib/parsing/javascript/lambda_parsing'
-import {createNegation} from '../../../../lib/parsing/booleanexpressions/negation_parsing'
+import {createNegation} from '../../../../lib/parsing/boolean_expressions/negation_parsing'
 
 describe('parseParameterizedPredicate can parse', () => {
 

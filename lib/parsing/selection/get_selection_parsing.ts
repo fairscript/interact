@@ -1,4 +1,4 @@
-import {parseGetColumn} from '../valuexpressions/get_column_parsing'
+import {parseGetColumn} from '../value_expressions/get_column_parsing'
 import {createSingleColumnSelection, SingleColumnSelection} from './single_column_selection_parsing'
 
 export function parseGetSelection(f: Function): SingleColumnSelection {

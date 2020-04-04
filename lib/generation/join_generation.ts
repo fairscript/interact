@@ -1,5 +1,5 @@
 import {JoinExpression} from '../parsing/join_parsing'
-import {generateGetColumn} from './get_column_generation'
+import {generateGetColumn} from './value_expressions/get_column_generation'
 
 function generateJoinExpression(expr: JoinExpression): string {
     const { tableName, left, right } = expr

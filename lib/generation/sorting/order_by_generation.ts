@@ -1,6 +1,6 @@
 import {OrderExpression} from '../../parsing/sorting/sorting_parsing'
 import {joinWithCommaWhitespace} from '../../parsing/parsing_helpers'
-import {generateGetColumn} from '../get_column_generation'
+import {generateGetColumn} from '../value_expressions/get_column_generation'
 
 export function generateDirection(direction: 'asc'|'desc'): string {
     return direction.toUpperCase()

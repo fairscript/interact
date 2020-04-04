@@ -1,7 +1,7 @@
-import {BooleanExpression} from '../../parsing/booleanexpressions/boolean_expression_parsing'
-import {GetProvided} from '../../parsing/valuexpressions/get_provided_parsing'
+import {BooleanExpression} from '../../parsing/boolean_expressions/boolean_expression_parsing'
+import {GetProvided} from '../../parsing/value_expressions/get_provided_parsing'
 import {ValueOrNestedValueRecord, ValueRecord} from '../../record'
-import {computePlaceholderName} from '../get_provided_generation'
+import {computePlaceholderName} from '../value_expressions/get_provided_generation'
 import {Filter} from '../../parsing/filtering/filter_parsing'
 
 function getByPath(obj: {}, remainingPath: string[]): any {

@@ -1,5 +1,5 @@
 import * as assert from 'assert'
-import {escapeUnderscore, generatePath} from '../../lib/generation/get_provided_generation'
+import {escapeUnderscore, generatePath} from '../../lib/generation/value_expressions/get_provided_generation'
 
 describe('escapeUnderscore', () => {
 

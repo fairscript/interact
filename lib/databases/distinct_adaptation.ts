@@ -6,7 +6,7 @@ import {createAggregateColumn} from '../parsing/aggregation/aggregate_column_par
 import {createGroupOrderExpression} from '../parsing/sorting/group_sorting_parsing'
 import {mapPartOfKeyToTableAndProperty} from '../parsing/selection/group_aggregation_selection_parsing'
 import {SingleColumnSelection} from '../parsing/selection/single_column_selection_parsing'
-import {GetColumn} from '../parsing/valuexpressions/get_column_parsing'
+import {GetColumn} from '../parsing/value_expressions/get_column_parsing'
 
 function checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders: OrderExpression[], selection: SingleColumnSelection|MapSelection): boolean {
     for (let indexOrder in orders) {

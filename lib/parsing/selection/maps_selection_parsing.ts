@@ -6,7 +6,7 @@ import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing
 import {createRecordInParenthesesParser} from '../javascript/record_parsing'
 import {createParameterlessFilter} from '../filtering/parameterless_filter_parsing'
 import {createSubselectParser} from './subselection_parsing'
-import {createGetColumnParser} from '../valuexpressions/get_column_parsing'
+import {createGetColumnParser} from '../value_expressions/get_column_parsing'
 
 export function parseMapWithSubquerySelection(f: Function, subtableNames: string[]): MapSelection {
     const { parameters, expression } = extractLambdaParametersAndExpression(f)

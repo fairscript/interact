@@ -1,11 +1,11 @@
-import {BooleanExpression} from '../../parsing/booleanexpressions/boolean_expression_parsing'
+import {BooleanExpression} from '../../parsing/boolean_expressions/boolean_expression_parsing'
 import {generateComparison} from './comparison_generation'
 import {generateInsideParentheses} from './inside_parentheses_generation'
 import {generateConcatenation} from './concatenation_generation'
-import {generateLiteral} from './value_expression_generation'
-import {generateGetColumn} from '../get_column_generation'
-import {generateGetProvided} from '../get_provided_generation'
+import {generateGetColumn} from '../value_expressions/get_column_generation'
+import {generateGetProvided} from '../value_expressions/get_provided_generation'
 import {generateNegation} from './negation_generation'
+import {generateLiteral} from '../value_expressions/literal_generation'
 
 export function generatePredicate(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, predicate: BooleanExpression): string {
     switch (predicate.kind) {

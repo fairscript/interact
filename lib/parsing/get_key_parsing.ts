@@ -4,7 +4,7 @@ import {
     createRecordInParenthesesParser,
     createNamedObjectPropertyParser
 } from './javascript/record_parsing'
-import {createGetColumn, GetColumn} from './valuexpressions/get_column_parsing'
+import {createGetColumn, GetColumn} from './value_expressions/get_column_parsing'
 
 export interface PartOfKey {
     alias: string

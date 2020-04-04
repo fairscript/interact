@@ -1,7 +1,7 @@
-import {createEqual} from '../../../../../lib/parsing/booleanexpressions/comparisons'
-import {createGetColumn} from '../../../../../lib/parsing/valuexpressions/get_column_parsing'
+import {createEqual} from '../../../../../lib/parsing/boolean_expressions/comparisons'
+import {createGetColumn} from '../../../../../lib/parsing/value_expressions/get_column_parsing'
 import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
-import {createParameterlessParser} from '../../../../../lib/parsing/booleanexpressions/boolean_expression_parsing'
+import {createParameterlessParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
 import {createLiteral} from '../../../../../lib/parsing/values/literal'
 import {nullSingleton} from '../../../../../lib/parsing/values/null'
 

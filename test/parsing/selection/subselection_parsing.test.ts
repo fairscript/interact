@@ -4,7 +4,7 @@ import {AggregationFunction, createAggregateColumn} from '../../../lib/parsing/a
 import {extractLambdaParametersAndExpression} from '../../../lib/parsing/javascript/lambda_parsing'
 import {createCountSelection} from '../../../lib/parsing/selection/count_selection'
 import {createSingleColumnSelection} from '../../../lib/parsing/selection/single_column_selection_parsing'
-import {createGetColumn} from '../../../lib/parsing/valuexpressions/get_column_parsing'
+import {createGetColumn} from '../../../lib/parsing/value_expressions/get_column_parsing'
 
 describe('createSubselectParser', () => {
 

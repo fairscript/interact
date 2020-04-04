@@ -1,8 +1,8 @@
-import {createAnd, createConcatenation, createOr} from '../../../../../lib/parsing/booleanexpressions/concatenation'
-import {createInsideParentheses} from '../../../../../lib/parsing/booleanexpressions/inside_parentheses'
-import {createEqual} from '../../../../../lib/parsing/booleanexpressions/comparisons'
-import {createGetColumn} from '../../../../../lib/parsing/valuexpressions/get_column_parsing'
-import {createParameterlessParser} from '../../../../../lib/parsing/booleanexpressions/boolean_expression_parsing'
+import {createAnd, createConcatenation, createOr} from '../../../../../lib/parsing/boolean_expressions/concatenation'
+import {createInsideParentheses} from '../../../../../lib/parsing/boolean_expressions/inside_parentheses'
+import {createEqual} from '../../../../../lib/parsing/boolean_expressions/comparisons'
+import {createGetColumn} from '../../../../../lib/parsing/value_expressions/get_column_parsing'
+import {createParameterlessParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
 import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
 import {createLiteral} from '../../../../../lib/parsing/values/literal'
 

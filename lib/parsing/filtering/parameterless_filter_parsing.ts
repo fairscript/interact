@@ -1,6 +1,6 @@
 import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
-import {parseParameterlessPredicate, BooleanExpression} from '../booleanexpressions/boolean_expression_parsing'
+import {parseParameterlessPredicate, BooleanExpression} from '../boolean_expressions/boolean_expression_parsing'
 
 export interface ParameterlessFilter {
     tableParameterToTableAlias: {[parameter: string]: string}

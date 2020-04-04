@@ -1,8 +1,8 @@
-import {Negatable, Negation} from '../../parsing/booleanexpressions/negation_parsing'
+import {Negatable, Negation} from '../../parsing/boolean_expressions/negation_parsing'
 import {generateInsideParentheses} from './inside_parentheses_generation'
-import {generateLiteral} from './value_expression_generation'
-import {generateGetColumn} from '../get_column_generation'
-import {generateGetProvided} from '../get_provided_generation'
+import {generateGetColumn} from '../value_expressions/get_column_generation'
+import {generateGetProvided} from '../value_expressions/get_provided_generation'
+import {generateLiteral} from '../value_expressions/literal_generation'
 
 export function generateNegated(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, negated: Negatable) {
     switch (negated.kind) {

@@ -1,8 +1,8 @@
 import {aBoolean} from '../../../lib/parsing/values/boolean_parsing'
-import {createNegation, createNegationParser} from '../../../lib/parsing/booleanexpressions/negation_parsing'
+import {createNegation, createNegationParser} from '../../../lib/parsing/boolean_expressions/negation_parsing'
 import {createAssertDoesNotMatchExpression} from '../parsing_assertion'
 import * as assert from 'assert'
-import {createGetColumn, createGetColumnParser} from '../../../lib/parsing/valuexpressions/get_column_parsing'
+import {createGetColumn, createGetColumnParser} from '../../../lib/parsing/value_expressions/get_column_parsing'
 import {createLiteral} from '../../../lib/parsing/values/literal'
 
 describe('createNegationParser returns a parser', () => {

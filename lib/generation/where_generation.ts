@@ -1,6 +1,6 @@
 import {Filter} from '../parsing/filtering/filter_parsing'
 import {ValueRecord} from '../record'
-import {generatePredicate} from './predicates/predicate_generation'
+import {generatePredicate} from './boolean_expressions/predicate_generation'
 import {generateFilterParameters} from './filtering/filter_parameter_generation'
 
 

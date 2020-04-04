@@ -1,6 +1,6 @@
 import * as A from 'arcsecond'
 import {aValue, aValueOrNull} from '../values/value_parsing'
-import {createNegationParser} from '../booleanexpressions/negation_parsing'
+import {createNegationParser} from '../boolean_expressions/negation_parsing'
 import {aBoolean} from '../values/boolean_parsing'
 import {createLiteral} from '../values/literal'
 import {nullSingleton} from '../values/null'

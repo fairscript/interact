@@ -9,9 +9,9 @@ import {
     createLiteralValueExpressionParser,
     createParameterizedValueExpressionParser,
     createParameterlessValueExpressionParser
-} from '../valuexpressions/value_expression_parsing'
-import {createGetColumnParser, GetColumn} from '../valuexpressions/get_column_parsing'
-import {createGetProvidedParser, GetProvided} from '../valuexpressions/get_provided_parsing'
+} from '../value_expressions/value_expression_parsing'
+import {createGetColumnParser, GetColumn} from '../value_expressions/get_column_parsing'
+import {createGetProvidedParser, GetProvided} from '../value_expressions/get_provided_parsing'
 import {
     createLiteralBooleanValueEvaluationParser,
     createParameterizedBooleanValueEvaluationParser,
