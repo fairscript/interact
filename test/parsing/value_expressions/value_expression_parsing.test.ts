@@ -1,32 +1,34 @@
 import * as assert from 'assert'
 import {
-    createParameterlessValueExpressionParser
+    createParameterlessValueExpressionParser, literalValueExpressionParser
 } from '../../../lib/parsing/value_expressions/value_expression_parsing'
 import {createGetColumn, createGetColumnParser} from '../../../lib/parsing/value_expressions/get_column_parsing'
 import {createLiteral} from '../../../lib/parsing/values/literal'
 import {nullSingleton} from '../../../lib/parsing/values/null'
 
-describe('createParameterlessValueExpressionParser returns a parser that', () => {
-    const parser = createParameterlessValueExpressionParser(createGetColumnParser(['e']))
-
+describe('literalValueExpressionParser', function () {
     describe('returns an object satisfying the Literal interface', () => {
         it('when the input is a number', () => {
-            assert.deepEqual(parser.run('1').result, createLiteral(1))
+            assert.deepEqual(literalValueExpressionParser.run('1').result, createLiteral(1))
         })
 
         it('when the input is null', () => {
-            assert.deepEqual(parser.run('null').result, nullSingleton)
+            assert.deepEqual(literalValueExpressionParser.run('null').result, nullSingleton)
         })
 
         it('when the input is a string', () => {
-            assert.deepEqual(parser.run("'text'").result, createLiteral('text'))
+            assert.deepEqual(literalValueExpressionParser.run("'text'").result, createLiteral('text'))
         })
 
         it('when the input is a boolean', () => {
-            assert.deepEqual(parser.run("true").result, createLiteral(true))
-            assert.deepEqual(parser.run("false").result, createLiteral(false))
+            assert.deepEqual(literalValueExpressionParser.run("true").result, createLiteral(true))
+            assert.deepEqual(literalValueExpressionParser.run("false").result, createLiteral(false))
         })
     })
+})
+
+describe('createParameterlessValueExpressionParser returns a parser that', () => {
+    const parser = createParameterlessValueExpressionParser(createGetColumnParser(['e']))
 
     describe('returns a GetColumn instance', () => {
         it('when an object property is accessed', () => {

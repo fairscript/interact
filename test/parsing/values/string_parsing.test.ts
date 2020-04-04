@@ -2,7 +2,6 @@ import * as assert from 'assert'
 import {aStringWithoutTheQuotes} from '../../../lib/parsing/values/string_parsing'
 
 describe('aStringWithoutTheQuotes matches', () => {
-
     function check(input, expected) {
         assert.equal(aStringWithoutTheQuotes.run(input).result, expected)
     }

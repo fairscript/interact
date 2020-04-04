@@ -6,7 +6,7 @@ import {Comparison, createComparison} from './comparisons'
 import {createComparisonParser} from './comparison_parsing'
 import {closingParenthesis, openingParenthesis} from '../javascript/single_character_parsing'
 import {
-    createLiteralValueExpressionParser,
+    literalValueExpressionParser,
     createParameterizedValueExpressionParser,
     createParameterlessValueExpressionParser
 } from '../value_expressions/value_expression_parsing'
@@ -79,10 +79,9 @@ export function parseBooleanExpression(parser, expression: string) {
 }
 
 function createLiteralBooleanExpressionParser() {
-    const valueExpressionParser = createLiteralValueExpressionParser()
     const booleanValueEvaluationParser = createLiteralBooleanValueEvaluationParser()
 
-    return createBooleanExpressionParser(valueExpressionParser, booleanValueEvaluationParser)
+    return createBooleanExpressionParser(literalValueExpressionParser, booleanValueEvaluationParser)
 }
 
 export function createParameterlessBooleanExpressionParser(tableParameters: string[]) {

@@ -1,12 +1,12 @@
 import * as A from 'arcsecond'
-import {aValue, aValueOrNull} from '../values/value_parsing'
+import {aValueOrNull} from '../values/value_parsing'
 import {createNegationParser} from '../boolean_expressions/negation_parsing'
 import {aBoolean} from '../values/boolean_parsing'
 import {createLiteral} from '../values/literal'
 import {nullSingleton} from '../values/null'
 
-export function createLiteralValueExpressionParser() {
-    return A.choice([
+export const literalValueExpressionParser =
+    A.choice([
         createNegationParser(aBoolean.map(createLiteral)),
         aValueOrNull.map(value => {
             switch (value) {
@@ -15,15 +15,14 @@ export function createLiteralValueExpressionParser() {
                 default:
                     return createLiteral(value)
             }
-        }),
+        })
     ])
-}
 
 export function createParameterlessValueExpressionParser(getColumnParser) {
     return A.choice([
         createNegationParser(getColumnParser),
         getColumnParser,
-        createLiteralValueExpressionParser()
+        literalValueExpressionParser
     ])
 }
 
