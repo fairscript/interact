@@ -1,10 +1,11 @@
 import {GetProvided} from '../get_provided_parsing'
 import {GetColumn} from '../get_column_parsing'
-import {Constant, Null} from './side_parsing'
 import {JsComparisonOperator} from './comparison_operators'
 import {InsideParentheses} from './inside_parentheses'
+import {Literal} from '../values/literal'
+import {Null} from '../values/null'
 
-export type Side = InsideParentheses | Constant | GetColumn | GetProvided | Null
+export type Side = InsideParentheses | Literal | GetColumn | GetProvided | Null
 
 export interface Comparison {
     left: Side,

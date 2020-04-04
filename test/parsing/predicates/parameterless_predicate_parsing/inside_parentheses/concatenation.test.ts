@@ -1,23 +1,23 @@
 import {createEqual} from '../../../../../lib/parsing/predicates/comparisons'
 import {createGetColumn} from '../../../../../lib/parsing/get_column_parsing'
-import {createConstant} from '../../../../../lib/parsing/predicates/side_parsing'
 import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
 import {createParameterlessParser} from '../../../../../lib/parsing/predicates/predicate_parsing'
 import {createInsideParentheses} from '../../../../../lib/parsing/predicates/inside_parentheses'
 import {createAnd, createConcatenation, createOr} from '../../../../../lib/parsing/predicates/concatenation'
 import {createNegation} from '../../../../../lib/parsing/predicates/negation_parsing'
+import {createLiteral} from '../../../../../lib/parsing/values/literal'
 
 const parser = createParameterlessParser(['e'])
 const assertMatches = createAssertParameterlessPredicateParserMatches(parser)
 
 describe('parseParameterlessPredicate can parse', () => {
     const getFirstName = createGetColumn('e', 'firstName')
-    const firstNameEqualsJohn = createEqual(getFirstName, createConstant('John'))
-    const lastNameEqualsDoe = createEqual(createGetColumn('e', 'lastName'), createConstant('Doe'))
+    const firstNameEqualsJohn = createEqual(getFirstName, createLiteral('John'))
+    const lastNameEqualsDoe = createEqual(createGetColumn('e', 'lastName'), createLiteral('Doe'))
 
-    const firstNameEqualsJim = createEqual(getFirstName, createConstant('Jim'))
-    const firstNameEqualsJames = createEqual(getFirstName, createConstant('James'))
-    const firstNameEqualsJimmy = createEqual(getFirstName, createConstant('Jimmy'))
+    const firstNameEqualsJim = createEqual(getFirstName, createLiteral('Jim'))
+    const firstNameEqualsJames = createEqual(getFirstName, createLiteral('James'))
+    const firstNameEqualsJimmy = createEqual(getFirstName, createLiteral('Jimmy'))
 
     describe('a negated concatenation of', () => {
         it('two literals', () => {

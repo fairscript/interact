@@ -1,16 +1,17 @@
 import * as assert from 'assert'
 import {
-    createConstant,
-    createParameterlessSideParser, nullSingleton
+    createParameterlessSideParser
 } from '../../../lib/parsing/predicates/side_parsing'
 import {createGetColumn, createGetColumnParser} from '../../../lib/parsing/get_column_parsing'
+import {createLiteral} from '../../../lib/parsing/values/literal'
+import {nullSingleton} from '../../../lib/parsing/values/null'
 
 describe('createParameterlessSideParser returns a parser that', () => {
     const parser = createParameterlessSideParser(createGetColumnParser(['e']))
 
-    describe('returns a Constant instance', () => {
+    describe('returns an object satisfying the Literal interface', () => {
         it('when the input is a number', () => {
-            assert.deepEqual(parser.run('1').result, createConstant(1))
+            assert.deepEqual(parser.run('1').result, createLiteral(1))
         })
 
         it('when the input is null', () => {
@@ -18,12 +19,12 @@ describe('createParameterlessSideParser returns a parser that', () => {
         })
 
         it('when the input is a string', () => {
-            assert.deepEqual(parser.run("'text'").result, createConstant('text'))
+            assert.deepEqual(parser.run("'text'").result, createLiteral('text'))
         })
 
         it('when the input is a boolean', () => {
-            assert.deepEqual(parser.run("true").result, createConstant(true))
-            assert.deepEqual(parser.run("false").result, createConstant(false))
+            assert.deepEqual(parser.run("true").result, createLiteral(true))
+            assert.deepEqual(parser.run("false").result, createLiteral(false))
         })
     })
 

@@ -1,11 +1,11 @@
 import * as A from 'arcsecond'
-import {Constant} from './side_parsing'
 import {GetColumn} from '../get_column_parsing'
 import {exclamationMark} from '../javascript/single_character_parsing'
 import {GetProvided} from '../get_provided_parsing'
 import {InsideParentheses} from './inside_parentheses'
+import {Literal} from '../values/literal'
 
-export type Negatable = Constant|GetColumn|GetProvided|InsideParentheses
+export type Negatable = Literal|GetColumn|GetProvided|InsideParentheses
 
 export interface Negation {
     negated: Negatable

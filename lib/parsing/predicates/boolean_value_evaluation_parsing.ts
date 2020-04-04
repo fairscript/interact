@@ -1,15 +1,15 @@
 import * as A from 'arcsecond'
 import {aBoolean} from '../values/boolean_parsing'
 import {createNegationParser, Negation} from './negation_parsing'
-import {createConstant} from './side_parsing'
+import {createLiteral} from '../values/literal'
 
 
-export function createConstantBooleanValueEvaluationParser() {
-    const booleanToConstant = aBoolean.map(createConstant)
+export function createLiteralBooleanValueEvaluationParser() {
+    const booleanToLiteral = aBoolean.map(createLiteral)
 
     return A.choice([
-        createNegationParser(booleanToConstant),
-        booleanToConstant
+        createNegationParser(booleanToLiteral),
+        booleanToLiteral
     ])
 }
 
@@ -17,7 +17,7 @@ export function createParameterlessBooleanValueEvaluationParser(getColumnParser)
     return A.choice([
         createNegationParser(getColumnParser),
         getColumnParser,
-        createConstantBooleanValueEvaluationParser()
+        createLiteralBooleanValueEvaluationParser()
     ])
 }
 

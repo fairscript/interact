@@ -1,5 +1,4 @@
 import {createGetColumn} from '../../../../../lib/parsing/get_column_parsing'
-import {createConstant} from '../../../../../lib/parsing/predicates/side_parsing'
 import {
     createGreaterThan,
     createGreaterThanOrEqual,
@@ -7,13 +6,14 @@ import {
 } from '../../../../../lib/parsing/predicates/comparisons'
 import {createParameterlessParser} from '../../../../../lib/parsing/predicates/predicate_parsing'
 import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
+import {createLiteral} from '../../../../../lib/parsing/values/literal'
 
 const parser = createParameterlessParser(['e'])
 const assertMatches = createAssertParameterlessPredicateParserMatches(parser)
 
 describe('parseParameterlessPredicate can parse inequalities with the operator', () => {
     const getSalary = createGetColumn('e', 'salary')
-    const fiveThousand = createConstant(5_000)
+    const fiveThousand = createLiteral(5_000)
 
     it('not equal to', () => {
         assertMatches(

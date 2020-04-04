@@ -5,8 +5,9 @@ import {
 import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
 import {createEqual} from '../../../../../lib/parsing/predicates/comparisons'
 import {createGetColumn} from '../../../../../lib/parsing/get_column_parsing'
-import {createConstant, nullSingleton} from '../../../../../lib/parsing/predicates/side_parsing'
 import {createNegation} from '../../../../../lib/parsing/predicates/negation_parsing'
+import {createLiteral} from '../../../../../lib/parsing/values/literal'
+import {nullSingleton} from '../../../../../lib/parsing/values/null'
 
 const parser = createParameterlessParser(['e'])
 const assertMatches = createAssertParameterlessPredicateParserMatches(parser)
@@ -23,13 +24,13 @@ describe('parseParameterlessPredicate can parse', () => {
         it('true', () => {
             assertMatches(
                 () => true,
-                createConstant(true))
+                createLiteral(true))
         })
 
         it('false', () => {
             assertMatches(
                 () => false,
-                createConstant(false))
+                createLiteral(false))
         })
     })
 
@@ -47,7 +48,7 @@ describe('parseParameterlessPredicate can parse', () => {
             assertMatches(
                 () => !true,
                 createNegation(
-                    createConstant(true)
+                    createLiteral(true)
                 )
             )
         })
@@ -56,7 +57,7 @@ describe('parseParameterlessPredicate can parse', () => {
             assertMatches(
                 () => !false,
                 createNegation(
-                    createConstant(false)
+                    createLiteral(false)
                 ))
         })
     })
@@ -72,14 +73,14 @@ describe('parseParameterlessPredicate can parse', () => {
         it('true', () => {
             assertMatches(
                 () => !!true,
-                createConstant(true)
+                createLiteral(true)
             )
         })
 
         it('false', () => {
             assertMatches(
                 () => !!false,
-                createConstant(false)
+                createLiteral(false)
             )
         })
     })

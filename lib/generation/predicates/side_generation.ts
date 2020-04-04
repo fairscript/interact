@@ -1,10 +1,10 @@
 import {generateGetColumn} from '../get_column_generation'
 import {generateGetProvided} from '../get_provided_generation'
-import {Constant} from '../../parsing/predicates/side_parsing'
 import {Side} from '../../parsing/predicates/comparisons'
 import {generateInsideParentheses} from './inside_parentheses_generation'
+import {Literal} from '../../parsing/values/literal'
 
-export function generateConstant({value}: Constant): string {
+export function generateLiteral({value}: Literal): string {
     if (typeof value === 'string') {
         return "'" + value + "'"
     }
@@ -21,8 +21,8 @@ export function generateSide(namedParameterPrefix: string, parameterNameToTableA
             return generateGetColumn(parameterNameToTableAlias, side)
         case 'get-provided':
             return generateGetProvided(namedParameterPrefix, side)
-        case 'constant':
-            return generateConstant(side)
+        case 'literal':
+            return generateLiteral(side)
         case 'null':
             return 'NULL'
     }

@@ -5,17 +5,18 @@ import {
 import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
 import {createEqual} from '../../../../../lib/parsing/predicates/comparisons'
 import {createGetColumn} from '../../../../../lib/parsing/get_column_parsing'
-import {createConstant, nullSingleton} from '../../../../../lib/parsing/predicates/side_parsing'
 import {createInsideParentheses} from '../../../../../lib/parsing/predicates/inside_parentheses'
 import {createNegation} from '../../../../../lib/parsing/predicates/negation_parsing'
+import {createLiteral} from '../../../../../lib/parsing/values/literal'
+import {nullSingleton} from '../../../../../lib/parsing/values/null'
 
 const parser = createParameterlessParser(['e'])
 const assertMatches = createAssertParameterlessPredicateParserMatches(parser)
 
 describe('parseParameterlessPredicate can parse', () => {
     const getFullTimeColumn = createGetColumn('e', 'fulltime')
-    const constantTrue = createConstant(true)
-    const constantFalse = createConstant(false)
+    const literalTrue = createLiteral(true)
+    const literalFalse = createLiteral(false)
 
     describe('parentheses around', () => {
         describe('an evaluation of', () => {
@@ -29,14 +30,14 @@ describe('parseParameterlessPredicate can parse', () => {
             it('true', () => {
                 assertMatches(
                     () => (true),
-                    createInsideParentheses(createConstant(true))
+                    createInsideParentheses(createLiteral(true))
                 )
             })
 
             it('false', () => {
                 assertMatches(
                     () => (false),
-                    createInsideParentheses(createConstant(false))
+                    createInsideParentheses(createLiteral(false))
                 )
             })
         })
@@ -57,7 +58,7 @@ describe('parseParameterlessPredicate can parse', () => {
                     () => (!true),
                     createInsideParentheses(
                         createNegation(
-                            constantTrue
+                            literalTrue
                         ))
                 )
             })
@@ -67,7 +68,7 @@ describe('parseParameterlessPredicate can parse', () => {
                     () => (!false),
                     createInsideParentheses(
                         createNegation(
-                            constantFalse
+                            literalFalse
                         ))
                 )
             })
@@ -84,14 +85,14 @@ describe('parseParameterlessPredicate can parse', () => {
             it('true', () => {
                 assertMatches(
                     () => (!!true),
-                    createInsideParentheses(constantTrue)
+                    createInsideParentheses(literalTrue)
                 )
             })
 
             it('false', () => {
                 assertMatches(
                     () => (!!false),
-                    createInsideParentheses(constantFalse)
+                    createInsideParentheses(literalFalse)
                 )
             })
         })
@@ -109,14 +110,14 @@ describe('parseParameterlessPredicate can parse', () => {
             it('true', () => {
                 assertMatches(
                     () => ((true)),
-                    createInsideParentheses(createInsideParentheses(createConstant(true)))
+                    createInsideParentheses(createInsideParentheses(createLiteral(true)))
                 )
             })
 
             it('false', () => {
                 assertMatches(
                     () => ((false)),
-                    createInsideParentheses(createInsideParentheses(createConstant(false)))
+                    createInsideParentheses(createInsideParentheses(createLiteral(false)))
                 )
             })
         })
@@ -141,7 +142,7 @@ describe('parseParameterlessPredicate can parse', () => {
                     createInsideParentheses(
                         createInsideParentheses(
                             createNegation(
-                                constantTrue
+                                literalTrue
                             )
                         )
                     )
@@ -154,7 +155,7 @@ describe('parseParameterlessPredicate can parse', () => {
                     createInsideParentheses(
                         createInsideParentheses(
                             createNegation(
-                                constantFalse
+                                literalFalse
                             )
                         )
                     )
@@ -173,14 +174,14 @@ describe('parseParameterlessPredicate can parse', () => {
             it('true', () => {
                 assertMatches(
                     () => ((!!true)),
-                    createInsideParentheses(createInsideParentheses(constantTrue))
+                    createInsideParentheses(createInsideParentheses(literalTrue))
                 )
             })
 
             it('false', () => {
                 assertMatches(
                     () => ((!!false)),
-                    createInsideParentheses(createInsideParentheses(constantFalse))
+                    createInsideParentheses(createInsideParentheses(literalFalse))
                 )
             })
         })

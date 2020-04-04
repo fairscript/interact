@@ -1,34 +1,15 @@
 import * as A from 'arcsecond'
 import {aValue} from '../values/value_parsing'
-import {Value} from '../../value'
 import {theNull} from '../values/null_parsing'
 import {createNegationParser} from './negation_parsing'
 import {aBoolean} from '../values/boolean_parsing'
+import {createLiteral} from '../values/literal'
+import {nullSingleton} from '../values/null'
 
-export interface Constant {
-    kind: 'constant'
-    value: Value
-}
-
-export function createConstant(value: Value): Constant {
-    return {
-        kind: 'constant',
-        value
-    }
-}
-
-export interface Null {
-    kind: 'null'
-}
-
-export const nullSingleton: Null = {
-    kind: 'null'
-}
-
-export function createConstantSideParser() {
+export function createLiteralSideParser() {
     return A.choice([
-        createNegationParser(aBoolean.map(createConstant)),
-        aValue.map(createConstant),
+        createNegationParser(aBoolean.map(createLiteral)),
+        aValue.map(createLiteral),
 
         theNull.map(() => nullSingleton)
     ])
@@ -38,7 +19,7 @@ export function createParameterlessSideParser(getColumnParser) {
     return A.choice([
         createNegationParser(getColumnParser),
         getColumnParser,
-        createConstantSideParser()
+        createLiteralSideParser()
     ])
 }
 

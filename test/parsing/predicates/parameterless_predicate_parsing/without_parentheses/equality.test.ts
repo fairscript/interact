@@ -1,8 +1,9 @@
 import {createEqual} from '../../../../../lib/parsing/predicates/comparisons'
 import {createGetColumn} from '../../../../../lib/parsing/get_column_parsing'
-import {createConstant, nullSingleton} from '../../../../../lib/parsing/predicates/side_parsing'
 import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
 import {createParameterlessParser} from '../../../../../lib/parsing/predicates/predicate_parsing'
+import {createLiteral} from '../../../../../lib/parsing/values/literal'
+import {nullSingleton} from '../../../../../lib/parsing/values/null'
 
 const parserForOneTable = createParameterlessParser(['e'])
 const assertMatchesUsingOneTable = createAssertParameterlessPredicateParserMatches(parserForOneTable)
@@ -13,33 +14,33 @@ const assertMatchesUsingTwoTables = createAssertParameterlessPredicateParserMatc
 describe('parseParameterlessPredicate can parse', () => {
 
     const getIdColumn = createGetColumn('e', 'id')
-    const constantOne = createConstant(1)
+    const literalOne = createLiteral(1)
 
-    const idEqualsOne = createEqual(getIdColumn, constantOne)
-    const oneEqualsId = createEqual(constantOne, getIdColumn)
-    const oneEqualsOne = createEqual(constantOne, constantOne)
+    const idEqualsOne = createEqual(getIdColumn, literalOne)
+    const oneEqualsId = createEqual(literalOne, getIdColumn)
+    const oneEqualsOne = createEqual(literalOne, literalOne)
     const idEqualsId = createEqual(getIdColumn, getIdColumn)
 
     const getTitleColumn = createGetColumn('e', 'title')
-    const constantCeo = createConstant('CEO')
+    const literalCeo = createLiteral('CEO')
 
-    const titleEqualsCeo = createEqual(getTitleColumn, constantCeo)
-    const ceoEqualsTitle = createEqual(constantCeo, getTitleColumn)
-    const ceoEqualsCeo = createEqual(constantCeo, constantCeo)
+    const titleEqualsCeo = createEqual(getTitleColumn, literalCeo)
+    const ceoEqualsTitle = createEqual(literalCeo, getTitleColumn)
+    const ceoEqualsCeo = createEqual(literalCeo, literalCeo)
     const titleEqualsTitle = createEqual(getTitleColumn, getTitleColumn)
 
     const getFullTimeColumn = createGetColumn('e', 'fulltime')
-    const constantTrue = createConstant(true)
+    const literalTrue = createLiteral(true)
 
-    const fulltimeEqualsTrue = createEqual(getFullTimeColumn, constantTrue)
-    const trueEqualsFulltime = createEqual(constantTrue, getFullTimeColumn)
-    const trueEqualsTrue = createEqual(constantTrue, constantTrue)
+    const fulltimeEqualsTrue = createEqual(getFullTimeColumn, literalTrue)
+    const trueEqualsFulltime = createEqual(literalTrue, getFullTimeColumn)
+    const trueEqualsTrue = createEqual(literalTrue, literalTrue)
     const fulltimeEqualsFulltime = createEqual(getFullTimeColumn, getFullTimeColumn)
 
     describe('equalities with', () => {
         describe('an integer', () => {
             describe('using no table', () => {
-                it('with constants on both sides', () => {
+                it('with literals on both sides', () => {
                     assertMatchesUsingOneTable(
                         () => 1 == 1,
                         oneEqualsOne)
@@ -47,13 +48,13 @@ describe('parseParameterlessPredicate can parse', () => {
             })
 
             describe('using one table', () => {
-                it('with a column on the left and a constant on the right', () => {
+                it('with a column on the left and a literal on the right', () => {
                     assertMatchesUsingOneTable(
                         e => e.id == 1,
                         idEqualsOne)
                 })
 
-                it('with a constant on the left and a column on the rights', () => {
+                it('with a literal on the left and a column on the rights', () => {
                     assertMatchesUsingOneTable(
                         e => 1 == e.id,
                         oneEqualsId)
@@ -70,14 +71,14 @@ describe('parseParameterlessPredicate can parse', () => {
                 it('with a reference only to the first table', () => {
                     assertMatchesUsingTwoTables(
                         (e, d) => e.id === 1,
-                        createEqual(createGetColumn('e', 'id'), constantOne)
+                        createEqual(createGetColumn('e', 'id'), literalOne)
                     )
                 })
 
                 it('with a reference only to the second table', () => {
                     assertMatchesUsingTwoTables(
                         (e, d) => d.id === 1,
-                        createEqual(createGetColumn('d', 'id'), constantOne)
+                        createEqual(createGetColumn('d', 'id'), literalOne)
                     )
                 })
 
@@ -98,19 +99,19 @@ describe('parseParameterlessPredicate can parse', () => {
         })
 
         describe('a string', () => {
-            it('column on the left and constant on the right', () => {
+            it('column on the left and literal on the right', () => {
                 assertMatchesUsingOneTable(
                     e => e.title == 'CEO',
                     titleEqualsCeo)
             })
 
-            it('constant on the left and column on the right', () => {
+            it('literal on the left and column on the right', () => {
                 assertMatchesUsingOneTable(
                     e => 'CEO' == e.title,
                     ceoEqualsTitle)
             })
 
-            it('constant on both sides', () => {
+            it('literal on both sides', () => {
                 assertMatchesUsingOneTable(
                     () => 'CEO' == 'CEO',
                     ceoEqualsCeo)
@@ -125,19 +126,19 @@ describe('parseParameterlessPredicate can parse', () => {
         })
 
         describe('a boolean', () => {
-            it('column on the left and constant on the right', () => {
+            it('column on the left and literal on the right', () => {
                 assertMatchesUsingOneTable(
                     e => e.fulltime == true,
                     fulltimeEqualsTrue)
             })
 
-            it('constant on the left and column on the right', () => {
+            it('literal on the left and column on the right', () => {
                 assertMatchesUsingOneTable(
                     e => true == e.fulltime,
                     trueEqualsFulltime)
             })
 
-            it('constant on both sides', () => {
+            it('literal on both sides', () => {
                 assertMatchesUsingOneTable(
                     () => true == true,
                     trueEqualsTrue)
@@ -179,19 +180,19 @@ describe('parseParameterlessPredicate can parse', () => {
 
     describe('strict equalities with', () => {
         describe('an integer', () => {
-            it('column on the left and constant on the right', () => {
+            it('column on the left and literal on the right', () => {
                 assertMatchesUsingOneTable(
                     e => e.id === 1,
                     idEqualsOne)
             })
 
-            it('constant on the left and column on the rights', () => {
+            it('literal on the left and column on the rights', () => {
                 assertMatchesUsingOneTable(
                     e => 1 === e.id,
                     oneEqualsId)
             })
 
-            it('constant on both sides', () => {
+            it('literal on both sides', () => {
                 assertMatchesUsingOneTable(
                     () => 1 === 1,
                     oneEqualsOne)
@@ -253,19 +254,19 @@ describe('parseParameterlessPredicate can parse', () => {
         })
 
         describe('a boolean', () => {
-            it('column on the left and constant on the right', () => {
+            it('column on the left and literal on the right', () => {
                 assertMatchesUsingOneTable(
                     e => e.fulltime === true,
                     fulltimeEqualsTrue)
             })
 
-            it('constant on the left and column on the right', () => {
+            it('literal on the left and column on the right', () => {
                 assertMatchesUsingOneTable(
                     e => true === e.fulltime,
                     trueEqualsFulltime)
             })
 
-            it('constant on both sides', () => {
+            it('literal on both sides', () => {
                 assertMatchesUsingOneTable(
                     () => true === true,
                     trueEqualsTrue)

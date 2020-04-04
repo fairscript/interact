@@ -6,20 +6,19 @@ import {Comparison, createComparison, createEqual, Side} from './comparisons'
 import {createComparisonParser} from './comparison_parsing'
 import {closingParenthesis, openingParenthesis} from '../javascript/single_character_parsing'
 import {
-    Constant,
-    createConstant,
-    createConstantSideParser,
+    createLiteralSideParser,
     createParameterizedSideParser,
     createParameterlessSideParser
 } from './side_parsing'
 import {createGetColumnParser, GetColumn} from '../get_column_parsing'
 import {createGetProvidedParser, GetProvided} from '../get_provided_parsing'
 import {
-    createConstantBooleanValueEvaluationParser,
+    createLiteralBooleanValueEvaluationParser,
     createParameterizedBooleanValueEvaluationParser,
     createParameterlessBooleanValueEvaluationParser
 } from './boolean_value_evaluation_parsing'
 import {createNegationParser, Negation} from './negation_parsing'
+import {createLiteral, Literal} from '../values/literal'
 
 function createConcatenationParser(concatenationItem) {
     return A.sequenceOf([
@@ -69,8 +68,8 @@ export function createPredicateParser(sideDataParser, booleanValueEvaluation) {
     ])
 }
 
-// GetColumn, GetProvided and Constant can refer to boolean columns/parameters/values and are, thus, predicates.
-export type Predicate = InsideParentheses | Concatenation | Comparison | Negation | GetColumn | GetProvided | Constant
+// GetColumn, GetProvided and Literal can refer to boolean columns/parameters/values and are, thus, predicates.
+export type Predicate = InsideParentheses | Concatenation | Comparison | Negation | GetColumn | GetProvided | Literal
 
 export function parsePredicateExpression(parser, expression: string) {
     // Replace double quotes around string with single quotes
@@ -79,9 +78,9 @@ export function parsePredicateExpression(parser, expression: string) {
     return parser.run(withNormalizedQuotes).result
 }
 
-function createConstantPredicateParser() {
-    const sideParser = createConstantSideParser()
-    const booleanValueEvaluationParser = createConstantBooleanValueEvaluationParser()
+function createLiteralPredicateParser() {
+    const sideParser = createLiteralSideParser()
+    const booleanValueEvaluationParser = createLiteralBooleanValueEvaluationParser()
 
     return createPredicateParser(sideParser, booleanValueEvaluationParser)
 }
@@ -95,7 +94,7 @@ export function createParameterlessParser(tableParameters: string[]) {
         return createPredicateParser(sideParser, booleanValueEvaluationParser)
     }
     else {
-        return createConstantPredicateParser()
+        return createLiteralPredicateParser()
     }
 }
 
@@ -116,7 +115,7 @@ export function createParameterizedParser(prefix: string, userProvidedParameter:
 
 export function parseParameterizedPredicate(prefix: string, userProvidedParameter: string, tableParameters: string[], expression: string) {
     if (userProvidedParameter === null) {
-        return createConstantPredicateParser()
+        return createLiteralPredicateParser()
     }
     else {
         const parser = createParameterizedParser(prefix, userProvidedParameter, tableParameters)

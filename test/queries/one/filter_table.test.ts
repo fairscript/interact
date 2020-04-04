@@ -4,7 +4,7 @@ import {checkSql} from '../sql_assertion'
 describe('Filtering', () => {
 
     describe('works for a simple equality', () => {
-        it('with a constant on the right-hand side', () => {
+        it('with a literal on the right-hand side', () => {
             checkSql(
                 employees
                     .filter(e => e.id === 1)
@@ -32,7 +32,7 @@ describe('Filtering', () => {
     })
 
     describe('works for a simple inequality', () => {
-        it('with a constant on the right-hand side', () => {
+        it('with a literal on the right-hand side', () => {
             checkSql(
                 employees
                     .filter(e => e.id !== 1)

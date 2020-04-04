@@ -3,8 +3,9 @@
 ## v0.12.1
 - Booleans
 - Negation
+- Evaluation of Boolean values
 
-## v0.12
+## v0.12.0
 - not equal to, IS NULL, IS NOT NULL
 
 ## v0.11.1

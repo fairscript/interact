@@ -5,8 +5,8 @@ import {
 import {createGetColumn, createGetColumnParser} from '../../../lib/parsing/get_column_parsing'
 import * as assert from 'assert'
 import {createNegation} from '../../../lib/parsing/predicates/negation_parsing'
-import {createConstant} from '../../../lib/parsing/predicates/side_parsing'
 import {createGetProvided, createGetProvidedParser} from '../../../lib/parsing/get_provided_parsing'
+import {createLiteral} from '../../../lib/parsing/values/literal'
 
 const getColumnParser = createGetColumnParser(['e'])
 
@@ -21,23 +21,23 @@ describe('createParameterlessBooleanValueEvaluationParser creates a parser that'
         assert.deepEqual(parser.run('!e.fulltime').result, createNegation(createGetColumn('e', 'fulltime')))
     })
 
-    describe('returns a Constant instance for', () => {
+    describe('returns an object satisfying the Literal interface for', () => {
         it('true', () => {
-            assert.deepEqual(parser.run('true').result, createConstant(true))
+            assert.deepEqual(parser.run('true').result, createLiteral(true))
         })
 
         it('false', () => {
-            assert.deepEqual(parser.run('false').result, createConstant(false))
+            assert.deepEqual(parser.run('false').result, createLiteral(false))
         })
     })
 
     describe('returns a Negation instance for', () => {
         it('!true', () => {
-            assert.deepEqual(parser.run('!true').result, createNegation(createConstant(true)))
+            assert.deepEqual(parser.run('!true').result, createNegation(createLiteral(true)))
         })
 
         it('!false', () => {
-            assert.deepEqual(parser.run('!false').result, createNegation(createConstant(false)))
+            assert.deepEqual(parser.run('!false').result, createNegation(createLiteral(false)))
         })
     })
 

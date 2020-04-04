@@ -2,20 +2,20 @@ import {createAnd, createConcatenation, createOr} from '../../../../../lib/parsi
 import {createInsideParentheses} from '../../../../../lib/parsing/predicates/inside_parentheses'
 import {createEqual} from '../../../../../lib/parsing/predicates/comparisons'
 import {createGetColumn} from '../../../../../lib/parsing/get_column_parsing'
-import {createConstant} from '../../../../../lib/parsing/predicates/side_parsing'
 import {createParameterlessParser} from '../../../../../lib/parsing/predicates/predicate_parsing'
 import {createAssertParameterlessPredicateParserMatches} from '../../predicate_assertion'
+import {createLiteral} from '../../../../../lib/parsing/values/literal'
 
 const parser = createParameterlessParser(['e'])
 const assertMatches = createAssertParameterlessPredicateParserMatches(parser)
 
 describe('parseParameterlessPredicate can parse', () => {
 
-    const firstNameEqualsJohn = createEqual(createGetColumn('e', 'firstName'), createConstant('John'))
-    const firstNameEqualsRichard = createEqual(createGetColumn('e', 'firstName'), createConstant('Richard'))
-    const lastNameEqualsRoe = createEqual(createGetColumn('e', 'lastName'), createConstant('Roe'))
-    const lastNameEqualsDoe = createEqual(createGetColumn('e', 'lastName'), createConstant('Doe'))
-    const titleEqualsCeo = createEqual(createGetColumn('e', 'title'), createConstant('CEO'))
+    const firstNameEqualsJohn = createEqual(createGetColumn('e', 'firstName'), createLiteral('John'))
+    const firstNameEqualsRichard = createEqual(createGetColumn('e', 'firstName'), createLiteral('Richard'))
+    const lastNameEqualsRoe = createEqual(createGetColumn('e', 'lastName'), createLiteral('Roe'))
+    const lastNameEqualsDoe = createEqual(createGetColumn('e', 'lastName'), createLiteral('Doe'))
+    const titleEqualsCeo = createEqual(createGetColumn('e', 'title'), createLiteral('CEO'))
 
     describe('a conjunction of', () => {
         it('two items', () => {
@@ -76,10 +76,10 @@ describe('parseParameterlessPredicate can parse', () => {
             assertMatches(
                 e => e.firstName === 'Jim' || e.firstName === 'James',
                 createConcatenation(
-                    createEqual(createGetColumn('e', 'firstName'), createConstant('Jim')),
+                    createEqual(createGetColumn('e', 'firstName'), createLiteral('Jim')),
                     [
                         createOr(
-                            createEqual(createGetColumn('e', 'firstName'), createConstant('James'))
+                            createEqual(createGetColumn('e', 'firstName'), createLiteral('James'))
                         )
                     ]
                 )
@@ -90,13 +90,13 @@ describe('parseParameterlessPredicate can parse', () => {
             assertMatches(
                 e => e.firstName === 'Jim' || e.firstName === 'James' || e.firstName === 'Jimmy',
                 createConcatenation(
-                    createEqual(createGetColumn('e', 'firstName'), createConstant('Jim')),
+                    createEqual(createGetColumn('e', 'firstName'), createLiteral('Jim')),
                     [
                         createOr(
-                            createEqual(createGetColumn('e', 'firstName'), createConstant('James'))
+                            createEqual(createGetColumn('e', 'firstName'), createLiteral('James'))
                         ),
                         createOr(
-                            createEqual(createGetColumn('e', 'firstName'), createConstant('Jimmy'))
+                            createEqual(createGetColumn('e', 'firstName'), createLiteral('Jimmy'))
                         )
                     ]
                 )

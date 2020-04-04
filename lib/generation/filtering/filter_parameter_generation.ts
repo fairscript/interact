@@ -3,12 +3,6 @@ import {GetProvided} from '../../parsing/get_provided_parsing'
 import {ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {computePlaceholderName} from '../get_provided_generation'
 import {Filter} from '../../parsing/filtering/filter_parsing'
-import {InsideParentheses} from '../../parsing/predicates/inside_parentheses'
-import {Concatenation} from '../../parsing/predicates/concatenation'
-import {Comparison} from '../../parsing/predicates/comparisons'
-import {Negation} from '../../parsing/predicates/negation_parsing'
-import {GetColumn} from '../../parsing/get_column_parsing'
-import {Constant} from '../../parsing/predicates/side_parsing'
 
 function getByPath(obj: {}, remainingPath: string[]): any {
     const current = obj[remainingPath[0]]
@@ -48,7 +42,7 @@ function findGetProvided(predicate: Predicate, collection: GetProvided[] = []): 
         case 'negation':
             return findGetProvided(predicate.negated, collection)
         case 'get-column':
-        case 'constant':
+        case 'literal':
             return collection
         case 'get-provided':
             return collection.concat(predicate)
