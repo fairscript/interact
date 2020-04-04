@@ -1,4 +1,4 @@
-import {Literal} from '../../parsing/values/literal'
+import {Literal} from '../../parsing/literals/literal'
 
 export function generateLiteral({value}: Literal): string {
     if (typeof value === 'string') {

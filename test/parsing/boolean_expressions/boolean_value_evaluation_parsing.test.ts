@@ -6,7 +6,7 @@ import {createGetColumn, createGetColumnParser} from '../../../lib/parsing/value
 import * as assert from 'assert'
 import {createNegation} from '../../../lib/parsing/boolean_expressions/negation_parsing'
 import {createGetProvided, createGetProvidedParser} from '../../../lib/parsing/value_expressions/get_provided_parsing'
-import {createLiteral} from '../../../lib/parsing/values/literal'
+import {createLiteral} from '../../../lib/parsing/literals/literal'
 
 const getColumnParser = createGetColumnParser(['e'])
 

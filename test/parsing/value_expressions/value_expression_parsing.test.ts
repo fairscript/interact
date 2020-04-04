@@ -3,8 +3,8 @@ import {
     createParameterlessValueExpressionParser, literalValueExpressionParser
 } from '../../../lib/parsing/value_expressions/value_expression_parsing'
 import {createGetColumn, createGetColumnParser} from '../../../lib/parsing/value_expressions/get_column_parsing'
-import {createLiteral} from '../../../lib/parsing/values/literal'
-import {nullSingleton} from '../../../lib/parsing/values/null'
+import {createLiteral} from '../../../lib/parsing/literals/literal'
+import {nullSingleton} from '../../../lib/parsing/literals/null'
 
 describe('literalValueExpressionParser', function () {
     describe('returns an object satisfying the Literal interface', () => {

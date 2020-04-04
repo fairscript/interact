@@ -7,8 +7,8 @@ import {createEqual} from '../../../../../lib/parsing/boolean_expressions/compar
 import {createGetColumn} from '../../../../../lib/parsing/value_expressions/get_column_parsing'
 import {createInsideParentheses} from '../../../../../lib/parsing/boolean_expressions/inside_parentheses'
 import {createNegation} from '../../../../../lib/parsing/boolean_expressions/negation_parsing'
-import {createLiteral} from '../../../../../lib/parsing/values/literal'
-import {nullSingleton} from '../../../../../lib/parsing/values/null'
+import {createLiteral} from '../../../../../lib/parsing/literals/literal'
+import {nullSingleton} from '../../../../../lib/parsing/literals/null'
 
 const parser = createParameterlessBooleanExpressionParser(['e'])
 const assertMatches = createAssertParameterlessBooleanExpressionParserMatches(parser)

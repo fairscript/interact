@@ -4,7 +4,7 @@ import {createAssertParameterlessBooleanExpressionParserMatches} from '../../boo
 import {createParameterlessBooleanExpressionParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
 import {createInsideParentheses} from '../../../../../lib/parsing/boolean_expressions/inside_parentheses'
 import {createNegation} from '../../../../../lib/parsing/boolean_expressions/negation_parsing'
-import {createLiteral} from '../../../../../lib/parsing/values/literal'
+import {createLiteral} from '../../../../../lib/parsing/literals/literal'
 
 const parser = createParameterlessBooleanExpressionParser(['e'])
 const assertMatches = createAssertParameterlessBooleanExpressionParserMatches(parser)

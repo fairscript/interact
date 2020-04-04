@@ -18,7 +18,7 @@ import {
     createParameterlessBooleanValueEvaluationParser
 } from './boolean_value_evaluation_parsing'
 import {createNegationParser, Negation} from './negation_parsing'
-import {Literal} from '../values/literal'
+import {Literal} from '../literals/literal'
 
 // GetColumn, GetProvided and Literal can refer to boolean columns/parameters/values and are, thus, boolean expressions.
 export type BooleanExpression = InsideParentheses | Concatenation | Comparison | Negation | GetColumn | GetProvided | Literal

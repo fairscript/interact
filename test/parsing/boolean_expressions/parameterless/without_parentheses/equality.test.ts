@@ -2,8 +2,8 @@ import {createEqual} from '../../../../../lib/parsing/boolean_expressions/compar
 import {createGetColumn} from '../../../../../lib/parsing/value_expressions/get_column_parsing'
 import {createAssertParameterlessBooleanExpressionParserMatches} from '../../boolean_expression_assertion'
 import {createParameterlessBooleanExpressionParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
-import {createLiteral} from '../../../../../lib/parsing/values/literal'
-import {nullSingleton} from '../../../../../lib/parsing/values/null'
+import {createLiteral} from '../../../../../lib/parsing/literals/literal'
+import {nullSingleton} from '../../../../../lib/parsing/literals/null'
 
 const parserForOneTable = createParameterlessBooleanExpressionParser(['e'])
 const assertMatchesUsingOneTable = createAssertParameterlessBooleanExpressionParserMatches(parserForOneTable)

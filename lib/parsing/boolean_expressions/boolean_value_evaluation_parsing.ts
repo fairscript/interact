@@ -1,7 +1,7 @@
 import * as A from 'arcsecond'
-import {aBoolean} from '../values/boolean_parsing'
+import {aBoolean} from '../literals/boolean_parsing'
 import {createNegationParser, Negation} from './negation_parsing'
-import {createLiteral} from '../values/literal'
+import {createLiteral} from '../literals/literal'
 
 
 export function createLiteralBooleanValueEvaluationParser() {

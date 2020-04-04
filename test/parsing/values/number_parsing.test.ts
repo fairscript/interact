@@ -1,5 +1,5 @@
 import * as assert from 'assert'
-import {float, integer} from '../../../lib/parsing/values/number_parsing'
+import {float, integer} from '../../../lib/parsing/literals/number_parsing'
 
 describe('integer', () => {
     describe('matches', () => {

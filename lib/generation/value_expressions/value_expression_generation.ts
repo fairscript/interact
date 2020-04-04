@@ -2,7 +2,8 @@ import {generateGetColumn} from './get_column_generation'
 import {generateGetProvided} from './get_provided_generation'
 import {ValueExpression} from '../../parsing/boolean_expressions/comparisons'
 import {generateInsideParentheses} from '../boolean_expressions/inside_parentheses_generation'
-import {generateLiteral} from './literal_generation'
+import {generateLiteral} from '../literals/literal_generation'
+import {generateNull} from '../literals/null_generation'
 
 export function generateValueExpression(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, expression: ValueExpression): string {
     switch (expression.kind) {
@@ -15,6 +16,6 @@ export function generateValueExpression(namedParameterPrefix: string, parameterN
         case 'literal':
             return generateLiteral(expression)
         case 'null':
-            return 'NULL'
+            return generateNull()
     }
 }

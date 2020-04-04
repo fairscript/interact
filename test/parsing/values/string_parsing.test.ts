@@ -1,5 +1,5 @@
 import * as assert from 'assert'
-import {aStringWithoutTheQuotes} from '../../../lib/parsing/values/string_parsing'
+import {aStringWithoutTheQuotes} from '../../../lib/parsing/literals/string_parsing'
 
 describe('aStringWithoutTheQuotes matches', () => {
     function check(input, expected) {

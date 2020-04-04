@@ -5,7 +5,7 @@ import {generateConcatenation} from './concatenation_generation'
 import {generateGetColumn} from '../value_expressions/get_column_generation'
 import {generateGetProvided} from '../value_expressions/get_provided_generation'
 import {generateNegation} from './negation_generation'
-import {generateLiteral} from '../value_expressions/literal_generation'
+import {generateLiteral} from '../literals/literal_generation'
 
 export function generateBooleanExpression(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, expression: BooleanExpression): string {
     switch (expression.kind) {

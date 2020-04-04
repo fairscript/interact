@@ -6,7 +6,7 @@ import {
 } from '../../../../../lib/parsing/boolean_expressions/comparisons'
 import {createParameterlessBooleanExpressionParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
 import {createAssertParameterlessBooleanExpressionParserMatches} from '../../boolean_expression_assertion'
-import {createLiteral} from '../../../../../lib/parsing/values/literal'
+import {createLiteral} from '../../../../../lib/parsing/literals/literal'
 
 const parser = createParameterlessBooleanExpressionParser(['e'])
 const assertMatches = createAssertParameterlessBooleanExpressionParserMatches(parser)

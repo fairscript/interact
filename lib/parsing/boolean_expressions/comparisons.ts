@@ -2,8 +2,8 @@ import {GetProvided} from '../value_expressions/get_provided_parsing'
 import {GetColumn} from '../value_expressions/get_column_parsing'
 import {JsComparisonOperator} from './comparison_operators'
 import {InsideParentheses} from './inside_parentheses'
-import {Literal} from '../values/literal'
-import {Null} from '../values/null'
+import {Literal} from '../literals/literal'
+import {Null} from '../literals/null'
 
 export type ValueExpression = InsideParentheses | Literal | GetColumn | GetProvided | Null
 

@@ -4,7 +4,7 @@ import {createEqual} from '../../../../../lib/parsing/boolean_expressions/compar
 import {createGetColumn} from '../../../../../lib/parsing/value_expressions/get_column_parsing'
 import {createParameterlessBooleanExpressionParser} from '../../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
 import {createAssertParameterlessBooleanExpressionParserMatches} from '../../boolean_expression_assertion'
-import {createLiteral} from '../../../../../lib/parsing/values/literal'
+import {createLiteral} from '../../../../../lib/parsing/literals/literal'
 
 const parser = createParameterlessBooleanExpressionParser(['e'])
 const assertMatches = createAssertParameterlessBooleanExpressionParserMatches(parser)

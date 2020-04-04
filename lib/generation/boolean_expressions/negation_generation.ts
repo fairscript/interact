@@ -2,7 +2,7 @@ import {Negatable, Negation} from '../../parsing/boolean_expressions/negation_pa
 import {generateInsideParentheses} from './inside_parentheses_generation'
 import {generateGetColumn} from '../value_expressions/get_column_generation'
 import {generateGetProvided} from '../value_expressions/get_provided_generation'
-import {generateLiteral} from '../value_expressions/literal_generation'
+import {generateLiteral} from '../literals/literal_generation'
 
 export function generateNegated(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, negated: Negatable) {
     switch (negated.kind) {
