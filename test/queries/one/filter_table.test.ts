@@ -64,7 +64,7 @@ describe('Filtering', () => {
         it('with a value parameter', () => {
             checkSql(
                 employees
-                    .filterP(2, (id, e) => e.id == id)
+                    .filter(2, (id, e) => e.id == id)
                     .get(e => e.salary),
                 [
                     'SELECT t1.salary',
@@ -77,7 +77,7 @@ describe('Filtering', () => {
         it('with an object parameter', () => {
             checkSql(
                 employees
-                    .filterP(
+                    .filter(
                         { firstName: 'John', lastName: 'Doe' },
                         (name, e) => e.firstName === name.firstName && e.lastName === name.lastName
                     )

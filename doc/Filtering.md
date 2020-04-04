@@ -55,16 +55,14 @@ Predicates are put into parentheses and concatenated with the `AND` operator whe
 
 ## Parameters
 
-Filters with user-provided parameters can be set using the `filterP` method.
-
-Its first parameter accepts a value or an object that is made available in the predicate.
+The first parameter can be used to provide a value or object parameters. The parameter is made available in the predicate.
 
 *Providing a value*
 
 TypeScript:
 ```typescript
 employees
-    .filterP(
+    .filter(
         1,
         (id, e) => e.id === id)
     .select()
@@ -82,7 +80,7 @@ WHERE (t1.id = $f1_name_firstName) AND (t1.last_name = $f1_name_lastName)
 TypeScript:
 ```typescript
 employees
-    .filterP(
+    .filter(
         {firstName: 'John', lastName: 'Doe'},
         (name, e) => e.firstName === name.firstName && e.lastName === name.lastName)
     .select()

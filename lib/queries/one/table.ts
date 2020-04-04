@@ -45,27 +45,24 @@ export class Table<T> {
         this.statement = createEmptySelectStatement(tableName)
     }
 
-    filter(predicate: (table: T) => boolean): FilterTable<T> {
+    filter(predicate: (table: T) => boolean): FilterTable<T>
+    filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, table: T) => boolean): FilterTable<T>
+    filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((table: T) => boolean)|P, predicate?: (parameters: P, table: T) => boolean): FilterTable<T> {
+
+        const additionalFilter = typeof predicateOrProvided === 'function'
+            ? parseParameterlessFilter(predicateOrProvided)
+            : parseParameterizedFilter(predicate!, 'f1', predicateOrProvided)
+
         return new FilterTable(
             this.constructor,
             {
                 ...this.statement,
-                filters: this.statement.filters.concat(parseParameterlessFilter(predicate))
+                filters: this.statement.filters.concat(additionalFilter)
             },
             1
         )
     }
 
-    filterP<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, table: T) => boolean): FilterTable<T> {
-        return new FilterTable(
-            this.constructor,
-            {
-                ...this.statement,
-                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, 'f1', provided))
-            },
-            1
-        )
-    }
     sortBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
             {
@@ -90,19 +87,17 @@ export class Table<T> {
             })
     }
 
-    map<U extends ValueRecord>(map: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
-        return new SelectRows(
-            {
-                ...this.statement,
-                selection: parseMapSelection(map)
-            })
-    }
+    map<U extends ValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
+    map<S, U extends ValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
+    map<S, U extends ValueRecord>(fOrTableInSubquery: ((table: T) => EnforceNonEmptyRecord<U> & U)|Table<S>, f?: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>{
+        const selection = typeof fOrTableInSubquery === 'function'
+            ? parseMapSelection(fOrTableInSubquery)
+            : parseMapWithSubquerySelection(f!, [fOrTableInSubquery.tableName])
 
-    mapS<S, U extends ValueRecord>(tableInSubquery: Table<S>, map: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseMapWithSubquerySelection(map, [tableInSubquery.tableName])
+                selection
             })
     }
 

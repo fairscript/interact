@@ -51,21 +51,17 @@ export class SortTwoTables<T1, T2> {
             })
     }
 
-    map<U extends ValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
-        return new SelectRows(
-            {
-                ...this.statement,
-                selection: parseMapSelection(f)
-            })
-    }
+    map<U extends ValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
+    map<S, U extends ValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
+    map<S, U extends ValueRecord>(fOrTableInSubquery: ((first: T1, second: T2) => EnforceNonEmptyRecord<U> & U)|Table<S>, f?: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U>{
+        const selection = typeof fOrTableInSubquery === 'function'
+            ? parseMapSelection(fOrTableInSubquery)
+            : parseMapWithSubquerySelection(f!, [fOrTableInSubquery.tableName])
 
-    mapS<S, U extends ValueRecord>(
-        tableInSubquery: Table<S>,
-        f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseMapWithSubquerySelection(f, [tableInSubquery.tableName])
+                selection
             })
     }
 

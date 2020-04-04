@@ -1,9 +1,5 @@
 # Roadmap
 
-## v0.12.2
-- Try replacing mapS/filterP with overloads of map/filter.
-- Rename Predicate to BooleanExpression, Side to ValueExpression and Constant to Literal.
-
 ## v0.13
 - Joins of up to five tables
 
@@ -38,16 +34,20 @@
 - Byte arrays
 
 ## v0.23
-- Set clauses
+- Boolean expression in selections
+- Boolean expressions as a subset of value expressions
 
 ## v0.24
-- String operations
+- Set clauses
 
 ## v0.25
-- Date operations
+- String operations
 
 ## v0.26
-- Mathematical operations
+- Date operations
 
 ## v0.27
+- Mathematical operations
+
+## v0.28
 - Array operations

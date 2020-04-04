@@ -2,7 +2,7 @@ import {Constructor, createGroupSelectStatement, SelectStatement} from '../../se
 import {SortTwoTables} from './sort_two_tables'
 import {FilterTwoTables} from './filter_two_tables'
 import {GroupTwoTables} from './group_two_tables'
-import {EnforceNonEmptyRecord, ValueRecord, ValueOrNestedValueRecord, TableAggregationRecord} from '../../record'
+import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
 import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
 import {parseMapSelection} from '../../parsing/selection/map_selection_parsing'
@@ -21,9 +21,10 @@ import {SelectVector} from '../selection/select_vector'
 import {
     parseAverageSelection,
     parseMaxSelection,
-    parseMinSelection, parseSumSelection
+    parseMinSelection,
+    parseSumSelection
 } from '../../parsing/selection/aggregate_column_select_parsing'
-import {AggregatableTable, Count} from '../one/aggregatable_table'
+import {Count} from '../one/aggregatable_table'
 import {SelectSingleRow} from '../selection/select_single_row'
 import {parseTableAggregationSelection} from '../../parsing/selection/table_aggregation_selection_parsing'
 
@@ -34,26 +35,23 @@ export class JoinSecondTable<T1, T2> {
         private readonly secondConstructor: Constructor<T2>,
         private readonly statement: SelectStatement) {}
 
-    filter(predicate: (first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
-        return new FilterTwoTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            {
-                ...this.statement,
-                filters: this.statement.filters.concat(parseParameterlessFilter(predicate))
-            },
-            1)
-    }
+    filter(predicate: (first: T1, second: T2) => boolean): FilterTwoTables<T1, T2>
+    filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2>
+    filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((first: T1, second: T2) => boolean)|P, predicate?: (parameters: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
 
-    filterP<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameter: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
+        const additionalFilter = typeof predicateOrProvided === 'function'
+            ? parseParameterlessFilter(predicateOrProvided)
+            : parseParameterizedFilter(predicate!, 'f1', predicateOrProvided)
+
         return new FilterTwoTables(
             this.firstConstructor,
             this.secondConstructor,
             {
                 ...this.statement,
-                filters: this.statement.filters.concat(parseParameterizedFilter(predicate, `f1`, provided))
+                filters: this.statement.filters.concat(additionalFilter)
             },
-            1)
+            1
+        )
     }
 
     sortBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {
@@ -87,21 +85,17 @@ export class JoinSecondTable<T1, T2> {
             })
     }
 
-    map<U extends ValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
-        return new SelectRows(
-            {
-                ...this.statement,
-                selection: parseMapSelection(f)
-            })
-    }
+    map<U extends ValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
+    map<S, U extends ValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
+    map<S, U extends ValueRecord>(fOrTableInSubquery: ((first: T1, second: T2) => EnforceNonEmptyRecord<U> & U)|Table<S>, f?: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U>{
+        const selection = typeof fOrTableInSubquery === 'function'
+            ? parseMapSelection(fOrTableInSubquery)
+            : parseMapWithSubquerySelection(f!, [fOrTableInSubquery.tableName])
 
-    mapS<S, U extends ValueRecord>(
-        tableInSubquery: Table<S>,
-        f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseMapWithSubquerySelection(f, [tableInSubquery.tableName])
+                selection
             })
     }
 

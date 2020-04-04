@@ -47,7 +47,7 @@ export function createDatabaseContextTestSuite(ctx: DatabaseContext, employees: 
         testSingleRowQueryWithNumberParameter: () => {
             const promiseOfRow: Promise<{ firstName: string; lastName: string }> = ctx
                 .run(employees
-                    .filterP(
+                    .filter(
                         1,
                         (id, e) => e.id === id
                     )
@@ -61,7 +61,7 @@ export function createDatabaseContextTestSuite(ctx: DatabaseContext, employees: 
 
         testSingleRowQueryWithObjectParameter: () => {
             const singleRowQueryWithObjectParameter = employees
-                .filterP(
+                .filter(
                     {firstName: 'John', lastName: 'Doe'},
                     (name, e) => e.firstName === name.firstName && e.lastName === name.lastName)
                 .map(e => ({id: e.id}))

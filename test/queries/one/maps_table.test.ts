@@ -1,12 +1,12 @@
 import {employees} from '../../test_tables'
 import {checkSql} from '../sql_assertion'
 
-describe('mapS works', () => {
+describe('map with a subtable works', () => {
     describe('with an unfiltered subquery', () => {
 
         it('using a count operation', () => {
             const query = employees
-                .mapS(
+                .map(
                     employees,
                     (st, e) => ({
                         id: e.id,
@@ -23,7 +23,7 @@ describe('mapS works', () => {
 
         it('using a maximum operation', () => {
             const query = employees
-                .mapS(
+                .map(
                     employees,
                     (st, e) => ({
                         id: e.id,
@@ -40,7 +40,7 @@ describe('mapS works', () => {
 
         it('using counting and maximimization', () => {
             const query = employees
-                .mapS(
+                .map(
                     employees,
                     (st, e) => ({
                         id: e.id,
@@ -60,7 +60,7 @@ describe('mapS works', () => {
     describe('with a filtered subquery', () => {
         it('on a table', () => {
             const query = employees
-                .mapS(
+                .map(
                     employees,
                     (st, e) => ({
                         id: e.id,
@@ -78,7 +78,7 @@ describe('mapS works', () => {
         it('on a filtered table', () => {
             const query = employees
                 .filter(e => e.salary >= 5000)
-                .mapS(
+                .map(
                     employees,
                     (st, e) => ({
                         id: e.id,
@@ -97,7 +97,7 @@ describe('mapS works', () => {
         it('on a sorted table', () => {
             const query = employees
                 .sortDescendinglyBy(e => e.salary)
-                .mapS(
+                .map(
                     employees,
                     (st, e) => ({
                         id: e.id,
@@ -116,7 +116,7 @@ describe('mapS works', () => {
 
     it('with a subquery that has two filters', () => {
         const query = employees
-            .mapS(
+            .map(
                 employees,
                 (st, e) => ({
                     id: e.id,

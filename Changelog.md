@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.12.2
+- Terminology changes (literals, boolean expression, value expressions)
+- Replaced mapS/filterP with overloads of map/filter
+
 ## v0.12.1
 - Booleans
 - Negation

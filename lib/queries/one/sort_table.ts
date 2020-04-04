@@ -40,19 +40,17 @@ export class SortTable<T> {
         })
     }
 
-    map<U extends ValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
-        return new SelectRows(
-            {
-                ...this.statement,
-                selection: parseMapSelection(f)
-            })
-    }
+    map<U extends ValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
+    map<S, U extends ValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
+    map<S, U extends ValueRecord>(fOrTableInSubquery: ((table: T) => EnforceNonEmptyRecord<U> & U)|Table<S>, f?: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>{
+        const selection = typeof fOrTableInSubquery === 'function'
+            ? parseMapSelection(fOrTableInSubquery)
+            : parseMapWithSubquerySelection(f!, [fOrTableInSubquery.tableName])
 
-    mapS<S, U extends ValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U> {
         return new SelectRows(
             {
                 ...this.statement,
-                selection: parseMapWithSubquerySelection(f, [tableInSubquery.tableName])
+                selection
             })
     }
 

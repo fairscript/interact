@@ -3,7 +3,7 @@
 TypeScript
 ```typescript
 employees
-    .mapS(
+    .map(
         employees,
         (st, e) => ({
             id: e.id,
