@@ -4,7 +4,7 @@ import {createInsideParentheses, InsideParentheses} from './inside_parentheses'
 import {Concatenation, createConcatenation, createTailItem, createTailParser} from './concatenation'
 import {Comparison, createComparison} from './comparisons'
 import {createComparisonParser} from './comparison_parsing'
-import {closingParenthesis, openingParenthesis} from '../javascript/single_character_parsing'
+import {closingParenthesis, openingParenthesis} from '../literals/single_character_parsing'
 import {
     literalValueExpressionParser,
     createParameterizedValueExpressionParser,

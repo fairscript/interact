@@ -1,5 +1,5 @@
 import {Direction} from '../../queries/one/sort_table'
-import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
+import {extractLambdaParametersAndExpression} from '../functions/lambda_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {GroupAggregationOperation, createGroupAggregationOperationParser} from '../aggregation/group_aggregation_operation_parsing'
 import {mapPartOfKeyToTableAndProperty} from '../selection/group_aggregation_selection_parsing'

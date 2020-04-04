@@ -1,6 +1,6 @@
 import * as A from 'arcsecond'
 import {join} from '../parsing_helpers'
-import {minus, plus} from '../javascript/single_character_parsing'
+import {minus, plus} from './single_character_parsing'
 
 const plusOrMinus = A.choice([plus, minus])
 const optionalPositiveOrNegative = A.possibly(plusOrMinus).map(x => x === null ? '' : x)

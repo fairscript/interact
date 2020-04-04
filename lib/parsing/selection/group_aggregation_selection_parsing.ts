@@ -1,6 +1,6 @@
 import {Key} from '../get_key_parsing'
-import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
-import {createRecordInParenthesesParser} from '../javascript/record_parsing'
+import {extractLambdaParametersAndExpression} from '../functions/lambda_parsing'
+import {createRecordInParenthesesParser} from '../literals/record_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {GroupAggregationOperation, createGroupAggregationOperationParser} from '../aggregation/group_aggregation_operation_parsing'
 

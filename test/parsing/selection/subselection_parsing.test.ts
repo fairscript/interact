@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import {createSubselectParser} from '../../../lib/parsing/selection/subselection_parsing'
 import {AggregationFunction, createAggregateColumn} from '../../../lib/parsing/aggregation/aggregate_column_parsing'
-import {extractLambdaParametersAndExpression} from '../../../lib/parsing/javascript/lambda_parsing'
+import {extractLambdaParametersAndExpression} from '../../../lib/parsing/functions/lambda_parsing'
 import {createCountSelection} from '../../../lib/parsing/selection/count_selection'
 import {createSingleColumnSelection} from '../../../lib/parsing/selection/single_column_selection_parsing'
 import {createGetColumn} from '../../../lib/parsing/value_expressions/get_column_parsing'

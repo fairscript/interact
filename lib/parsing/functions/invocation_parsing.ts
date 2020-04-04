@@ -1,5 +1,5 @@
 import * as A from 'arcsecond'
-import {closingParenthesis, openingParenthesis} from './single_character_parsing'
+import {closingParenthesis, openingParenthesis} from '../literals/single_character_parsing'
 
 const parameterlessInvocation = A.str('()')
 

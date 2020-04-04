@@ -1,5 +1,5 @@
 import {Selection} from './selection_parsing'
-import {parseConstructor} from '../javascript/constructor_parsing'
+import {parseConstructor} from '../functions/constructor_parsing'
 
 export interface SingleTableSelection {
     kind: 'single-table-selection'

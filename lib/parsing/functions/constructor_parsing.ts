@@ -1,6 +1,6 @@
 import * as A from 'arcsecond'
-import {identifier} from './identifier_parsing'
-import {openingParenthesis} from './single_character_parsing'
+import {identifier} from '../identifier_parsing'
+import {openingParenthesis} from '../literals/single_character_parsing'
 import {parameterListParser} from './parameter_list_parsing'
 
 const constructorParser = A.coroutine(function*() {

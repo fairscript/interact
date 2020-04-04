@@ -4,7 +4,7 @@ import {
     closingParenthesis, openingBracket,
     openingParenthesis,
     semicolon
-} from './single_character_parsing'
+} from '../literals/single_character_parsing'
 import {parameterListParser} from './parameter_list_parsing'
 
 export const lambdaSignatureParser = A.coroutine(function*() {

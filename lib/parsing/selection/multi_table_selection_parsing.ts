@@ -1,4 +1,4 @@
-import {parseConstructor} from '../javascript/constructor_parsing'
+import {parseConstructor} from '../functions/constructor_parsing'
 
 export interface MultiTableSelection {
     kind: 'multi-table-selection'

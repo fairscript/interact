@@ -1,5 +1,5 @@
 import * as A from 'arcsecond'
-import {doubleQuote, singleQuote} from '../javascript/single_character_parsing'
+import {doubleQuote, singleQuote} from './single_character_parsing'
 import {join} from '../parsing_helpers'
 
 const aString =

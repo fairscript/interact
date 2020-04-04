@@ -1,4 +1,4 @@
-import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
+import {extractLambdaParametersAndExpression} from '../functions/lambda_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {parseParameterlessBooleanExpression, BooleanExpression} from '../boolean_expressions/boolean_expression_parsing'
 

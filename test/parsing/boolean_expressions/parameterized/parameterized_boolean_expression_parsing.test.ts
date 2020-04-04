@@ -4,7 +4,7 @@ import {createConcatenation, createTailItem} from '../../../../lib/parsing/boole
 import {createComparison, createEqual} from '../../../../lib/parsing/boolean_expressions/comparisons'
 import {createGetColumn} from '../../../../lib/parsing/value_expressions/get_column_parsing'
 import {parseParameterizedBooleanExpression, BooleanExpression} from '../../../../lib/parsing/boolean_expressions/boolean_expression_parsing'
-import {extractLambdaParametersAndExpression} from '../../../../lib/parsing/javascript/lambda_parsing'
+import {extractLambdaParametersAndExpression} from '../../../../lib/parsing/functions/lambda_parsing'
 import {createNegation} from '../../../../lib/parsing/boolean_expressions/negation_parsing'
 
 describe('parseParameterizedPredicate can parse', () => {

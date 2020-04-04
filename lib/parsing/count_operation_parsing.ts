@@ -1,4 +1,4 @@
-import {createParameterlessFunctionInvocation} from './javascript/invocation_parsing'
+import {createParameterlessFunctionInvocation} from './functions/invocation_parsing'
 
 export interface CountOperation {
     kind: 'count-operation'

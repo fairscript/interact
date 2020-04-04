@@ -1,6 +1,6 @@
 import * as A from 'arcsecond'
 
-import {identifier} from './identifier_parsing'
+import {identifier} from '../identifier_parsing'
 import {
     closingBracket,
     closingParenthesis,

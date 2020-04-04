@@ -1,4 +1,4 @@
-import {createNamedObjectPropertyParser} from '../javascript/record_parsing'
+import {createNamedObjectPropertyParser} from '../literals/record_parsing'
 
 export interface GetPartOfKey {
     kind: 'get-part-of-key',

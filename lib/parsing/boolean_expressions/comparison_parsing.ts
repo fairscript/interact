@@ -1,6 +1,9 @@
 import * as A from 'arcsecond'
-import {aComparisonOperator} from '../javascript/operator_parsing'
-import {JsComparisonOperator} from './comparison_operators'
+import {JsComparisonOperator, jsComparisonOperators} from './comparison_operators'
+import {createChoiceFromStrings} from '../parsing_helpers'
+
+export const aComparisonOperator = createChoiceFromStrings(jsComparisonOperators)
+
 
 export function mapDoubleEqualityToTripleEquality(operator: JsComparisonOperator): JsComparisonOperator {
     switch (operator) {

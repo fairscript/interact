@@ -1,5 +1,5 @@
 import * as assert from 'assert'
-import {identifier} from '../../../lib/parsing/javascript/identifier_parsing'
+import {identifier} from '../../lib/parsing/identifier_parsing'
 
 describe('identifier', () => {
 

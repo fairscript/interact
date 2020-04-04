@@ -1,5 +1,5 @@
 import {Direction} from '../../queries/one/sort_table'
-import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
+import {extractLambdaParametersAndExpression} from '../functions/lambda_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {createGetColumnParser, GetColumn} from '../value_expressions/get_column_parsing'
 

@@ -1,9 +1,9 @@
 import {mapParameterNamesToTableAliases} from '../generation/table_aliases'
-import {extractLambdaParametersAndExpression} from './javascript/lambda_parsing'
+import {extractLambdaParametersAndExpression} from './functions/lambda_parsing'
 import {
     createRecordInParenthesesParser,
     createNamedObjectPropertyParser
-} from './javascript/record_parsing'
+} from './literals/record_parsing'
 import {createGetColumn, GetColumn} from './value_expressions/get_column_parsing'
 
 export interface PartOfKey {

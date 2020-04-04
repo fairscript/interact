@@ -1,6 +1,6 @@
 import * as A from 'arcsecond'
 import {GetColumn} from '../value_expressions/get_column_parsing'
-import {exclamationMark} from '../javascript/single_character_parsing'
+import {exclamationMark} from '../literals/single_character_parsing'
 import {GetProvided} from '../value_expressions/get_provided_parsing'
 import {InsideParentheses} from './inside_parentheses'
 import {Literal} from '../literals/literal'

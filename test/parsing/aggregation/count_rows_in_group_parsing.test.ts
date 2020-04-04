@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import {createCountOperationParser, createCountOperation} from '../../../lib/parsing/count_operation_parsing'
-import {extractLambdaParametersAndExpression} from '../../../lib/parsing/javascript/lambda_parsing'
+import {extractLambdaParametersAndExpression} from '../../../lib/parsing/functions/lambda_parsing'
 import {createAssertDoesNotMatchFunction} from '../parsing_assertion'
 
 describe('createCountParser creates a parser that', () => {

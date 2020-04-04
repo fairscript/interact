@@ -6,8 +6,8 @@ import {
     createKeyValuePairParser, createObjectPropertyParser,
     createRecordInParenthesesParser,
     createRecordParser
-} from '../../../lib/parsing/javascript/record_parsing'
-import {identifier} from '../../../lib/parsing/javascript/identifier_parsing'
+} from '../../../lib/parsing/literals/record_parsing'
+import {identifier} from '../../../lib/parsing/identifier_parsing'
 
 const someValueParser = A.str('some value')
 

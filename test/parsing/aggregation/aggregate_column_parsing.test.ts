@@ -1,5 +1,5 @@
 import * as assert from 'assert'
-import {extractLambdaParametersAndExpression} from '../../../lib/parsing/javascript/lambda_parsing'
+import {extractLambdaParametersAndExpression} from '../../../lib/parsing/functions/lambda_parsing'
 import {
     AggregateColumn,
     createAggregateColumn,

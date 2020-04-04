@@ -1,10 +1,10 @@
-import {extractLambdaParametersAndExpression} from '../javascript/lambda_parsing'
+import {extractLambdaParametersAndExpression} from '../functions/lambda_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {
     createTableAggregationOperationParser,
     TableAggregationOperation
 } from '../aggregation/table_aggregation_operation_parsing'
-import {createRecordInParenthesesParser} from '../javascript/record_parsing'
+import {createRecordInParenthesesParser} from '../literals/record_parsing'
 
 
 export interface TableAggregationSelection {

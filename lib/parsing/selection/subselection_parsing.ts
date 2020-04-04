@@ -1,12 +1,12 @@
 import * as A from 'arcsecond'
 
 import {createChoiceFromStrings} from '../parsing_helpers'
-import {closingParenthesis, dot, openingParenthesis} from '../javascript/single_character_parsing'
+import {closingParenthesis, dot, openingParenthesis} from '../literals/single_character_parsing'
 import {
     createOneParameterFunctionInvocation,
     createParameterlessFunctionInvocation
-} from '../javascript/invocation_parsing'
-import {createLambdaBodyParser, createLambdaParser, lambdaSignatureParser} from '../javascript/lambda_parsing'
+} from '../functions/invocation_parsing'
+import {createLambdaBodyParser, createLambdaParser, lambdaSignatureParser} from '../functions/lambda_parsing'
 import {
     createAggregateColumn,
     mapLibraryAggregateFunctionNameToSqlFunctionName
