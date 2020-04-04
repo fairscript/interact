@@ -1,10 +1,8 @@
 # Roadmap
 
-## v0.12.1
-- Booleans
-
 ## v0.12.2
-- Negation
+- Try replacing mapS/filterP with overloads of map/filter.
+- Rename Predicate to BooleanExpression, Side to ValueExpression and Constant to Literal.
 
 ## v0.13
 - Joins of up to five tables

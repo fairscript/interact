@@ -16,7 +16,7 @@ export function createTailItem(operator: '&&' | '||', expression: Predicate): Ta
     }
 }
 
-export function createTailItemsParser(side) {
+export function createTailParser(side) {
     return A.many1(
         A.sequenceOf([
             A.optionalWhitespace,

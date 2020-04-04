@@ -1,9 +1,9 @@
 import * as A from 'arcsecond'
 import {aValue} from '../values/value_parsing'
-import {createGetColumnParser} from '../get_column_parsing'
 import {Value} from '../../value'
 import {theNull} from '../values/null_parsing'
-import {createGetProvidedParser} from '../get_provided_parsing'
+import {createNegationParser} from './negation_parsing'
+import {aBoolean} from '../values/boolean_parsing'
 
 export interface Constant {
     kind: 'constant'
@@ -21,23 +21,36 @@ export interface Null {
     kind: 'null'
 }
 
-function createNull(): Null {
-    return {
-        kind: 'null'
-    }
+export const nullSingleton: Null = {
+    kind: 'null'
 }
 
-export function createParameterlessSideParser(tableParameters: string[]) {
+export function createConstantSideParser() {
     return A.choice([
-        theNull.map(createNull),
+        createNegationParser(aBoolean.map(createConstant)),
         aValue.map(createConstant),
-        createGetColumnParser(tableParameters)
+
+        theNull.map(() => nullSingleton)
     ])
 }
 
-export function createParameterizedSideParser(prefix: string, placeholderParameter: string, tableParameters: string[]) {
-    const providedSideParser = createGetProvidedParser(prefix, placeholderParameter)
-    const constantOrColumnSideParser = createParameterlessSideParser(tableParameters)
+export function createParameterlessSideParser(getColumnParser) {
+    return A.choice([
+        createNegationParser(getColumnParser),
+        getColumnParser,
+        createConstantSideParser()
+    ])
+}
 
-    return A.choice([providedSideParser, constantOrColumnSideParser])
+export function createParameterizedSideParser(getProvidedParser, getColumnParser) {
+    const choices = [
+        createNegationParser(getProvidedParser),
+        getProvidedParser
+    ]
+
+    if (getColumnParser !== null) {
+        choices.push(createParameterlessSideParser(getColumnParser))
+    }
+
+    return A.choice(choices)
 }

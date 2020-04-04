@@ -21,6 +21,7 @@ describe('parseMultiTableSelect', () => {
                     ['employee_title', ['employee', 'title']],
                     ['employee_salary', ['employee', 'salary']],
                     ['employee_departmentId', ['employee', 'departmentId']],
+                    ['employee_fulltime', ['employee', 'fulltime']],
 
                     ['department_id', ['department', 'id']],
                     ['department_name', ['department', 'name']]

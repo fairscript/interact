@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.12.1
+- Booleans
+- Negation
+
 ## v0.12
 - not equal to, IS NULL, IS NOT NULL
 

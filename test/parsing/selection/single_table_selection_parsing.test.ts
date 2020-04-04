@@ -9,7 +9,7 @@ describe('parseSelectSingleTable', () => {
     it('returns an array of objects satisfying the Get interface', () => {
         assert.deepEqual(
             parseSingleTableSelection(Employee),
-            createSingleTableSelection([ 'id', 'firstName', 'lastName', 'title', 'salary', 'departmentId' ])
+            createSingleTableSelection([ 'id', 'firstName', 'lastName', 'title', 'salary', 'departmentId', 'fulltime' ])
         )
     })
 })

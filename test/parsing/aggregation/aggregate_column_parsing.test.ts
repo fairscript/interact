@@ -5,12 +5,12 @@ import {
     createAggregateColumn,
     createAggregateColumnParser
 } from '../../../lib/parsing/aggregation/aggregate_column_parsing'
-import {createAssertDoesNotMatch} from '../parsing_assertion'
+import {createAssertDoesNotMatchFunction} from '../parsing_assertion'
 import {createGetColumn} from '../../../lib/parsing/get_column_parsing'
 
 describe('createAggregateColumnParser creates a parser that', () => {
     const parser = createAggregateColumnParser(['e'])
-    const assertDoesNotMatch = createAssertDoesNotMatch(parser)
+    const assertDoesNotMatch = createAssertDoesNotMatchFunction(parser)
 
     function assertMatches(f: Function, expected: AggregateColumn) {
         const {expression} = extractLambdaParametersAndExpression(f)

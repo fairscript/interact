@@ -64,7 +64,8 @@ export async function setupBigQueryTestData(client: BigQuery, datasetName: strin
                     {name: 'last_name', type: 'STRING', mode: 'REQUIRED'},
                     {name: 'title', type: 'STRING', mode: 'REQUIRED'},
                     {name: 'salary', type: 'NUMERIC', mode: 'REQUIRED'},
-                    {name: 'department_id', type: 'INTEGER', mode: 'REQUIRED'}
+                    {name: 'department_id', type: 'INTEGER', mode: 'REQUIRED'},
+                    {name: 'fulltime', type: 'BOOL', mode: 'REQUIRED'}
                 ]
             })
         .catch(err => {

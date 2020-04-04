@@ -10,14 +10,15 @@ export async function setUpSqliteTestData(client: SqliteClient) {
             last_name TEXT NOT NULL,
             title TEXT NOT NULL,
             salary REAL NOT NULL,
-            department_id INTEGER NOT NULL
+            department_id INTEGER NOT NULL,
+            fulltime INTEGER NOT NULL
         );        
     `)
 
     await client.runBatch(
         `
-            INSERT INTO employees (first_name, last_name, title, salary, department_id)
-            VALUES (?, ?, ?, ?, ?);
+            INSERT INTO employees (first_name, last_name, title, salary, department_id, fulltime)
+            VALUES (?, ?, ?, ?, ?, ?);
         `,
         testEmployeeRowsWithoutId)
 }

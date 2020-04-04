@@ -3,6 +3,12 @@ import {GetProvided} from '../../parsing/get_provided_parsing'
 import {ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {computePlaceholderName} from '../get_provided_generation'
 import {Filter} from '../../parsing/filtering/filter_parsing'
+import {InsideParentheses} from '../../parsing/predicates/inside_parentheses'
+import {Concatenation} from '../../parsing/predicates/concatenation'
+import {Comparison} from '../../parsing/predicates/comparisons'
+import {Negation} from '../../parsing/predicates/negation_parsing'
+import {GetColumn} from '../../parsing/get_column_parsing'
+import {Constant} from '../../parsing/predicates/side_parsing'
 
 function getByPath(obj: {}, remainingPath: string[]): any {
     const current = obj[remainingPath[0]]
@@ -14,19 +20,17 @@ function getByPath(obj: {}, remainingPath: string[]): any {
     }
 }
 
-function findGetProvided(expression: Predicate, collection: GetProvided[] = []): GetProvided[] {
-    switch (expression.kind) {
+function findGetProvided(predicate: Predicate, collection: GetProvided[] = []): GetProvided[] {
+    switch (predicate.kind) {
         case 'concatenation':
-            const {head, tail} = expression
+            const {head, tail} = predicate
 
             return tail.reduce(
                 (acc, tailItem) => findGetProvided(tailItem.expression, acc),
                 findGetProvided(head, collection))
 
-        case 'inside':
-            return findGetProvided(expression.inside, collection)
         case 'comparison':
-            const {left, right} = expression
+            const {left, right} = predicate
 
             const comparisonItems: GetProvided[] = []
 
@@ -39,6 +43,15 @@ function findGetProvided(expression: Predicate, collection: GetProvided[] = []):
             }
 
             return collection.concat(comparisonItems)
+        case 'inside':
+            return findGetProvided(predicate.inside, collection)
+        case 'negation':
+            return findGetProvided(predicate.negated, collection)
+        case 'get-column':
+        case 'constant':
+            return collection
+        case 'get-provided':
+            return collection.concat(predicate)
     }
 }
 

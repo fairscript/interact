@@ -1,6 +1,5 @@
 import * as assert from 'assert'
 import {createSubselectParser} from '../../../lib/parsing/selection/subselection_parsing'
-import {createCountOperation} from '../../../lib/parsing/count_operation_parsing'
 import {AggregationFunction, createAggregateColumn} from '../../../lib/parsing/aggregation/aggregate_column_parsing'
 import {extractLambdaParametersAndExpression} from '../../../lib/parsing/javascript/lambda_parsing'
 import {createCountSelection} from '../../../lib/parsing/selection/count_selection'

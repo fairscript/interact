@@ -19,4 +19,5 @@ describe('createComparisonParser returns a parser that', () => {
             )
         })
     })
+
 })

@@ -2,8 +2,9 @@ import {GetProvided} from '../get_provided_parsing'
 import {GetColumn} from '../get_column_parsing'
 import {Constant, Null} from './side_parsing'
 import {JsComparisonOperator} from './comparison_operators'
+import {InsideParentheses} from './inside_parentheses'
 
-export type Side = Constant | GetColumn | GetProvided | Null
+export type Side = InsideParentheses | Constant | GetColumn | GetProvided | Null
 
 export interface Comparison {
     left: Side,
@@ -33,7 +34,7 @@ export function createGreaterThan(left: Side, right: Side): Comparison {
     return createComparison(left, '>', right)
 }
 
-export function createGreaterThanOrEqualTo(left: Side, right: Side): Comparison {
+export function createGreaterThanOrEqual(left: Side, right: Side): Comparison {
     return createComparison(left, '>=', right)
 }
 
@@ -41,6 +42,6 @@ export function createLessThan(left: Side, right: Side): Comparison {
     return createComparison(left, '<', right)
 }
 
-export function createLessThanOrEqualTo(left: Side, right: Side): Comparison {
+export function createLessThanOrEqual(left: Side, right: Side): Comparison {
     return createComparison(left, '<=', right)
 }
