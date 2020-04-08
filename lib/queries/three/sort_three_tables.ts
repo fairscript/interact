@@ -2,7 +2,7 @@ import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
 import {Table} from '../one/table'
 import {Subtable} from '../subtable'
-import {mapTable, mapTableWithSubquery, SelectRows, selectThreeTables} from '../selection/select_rows'
+import {mapTable, mapTableWithSubquery, SelectRows, selectTables} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
 import {addAscendingOrder, addDescendingOrder, Constructor, SelectStatement} from '../../statements/select_statement'
 
@@ -31,14 +31,13 @@ export class SortThreeTables<T1, T2, T3> {
     }
 
     select<K extends string>(firstName: string, secondName: string, thirdName: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 } & { [third in K]: T3 }> {
-        return selectThreeTables(
+        return selectTables(
             this.statement,
-            firstName,
-            this.firstConstructor,
-            secondName,
-            this.secondConstructor,
-            thirdName,
-            this.thirdConstructor)
+            [
+                [firstName, this.firstConstructor],
+                [secondName, this.secondConstructor],
+                [thirdName, this.thirdConstructor]
+            ])
     }
 
     map<U extends ValueRecord>(f: (first: T1, second: T2, third: T3) => EnforceNonEmptyRecord<U> & U): SelectRows<U>

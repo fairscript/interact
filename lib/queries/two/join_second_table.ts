@@ -13,7 +13,7 @@ import {
     SelectScalar,
     sumColumn
 } from '../selection/select_scalar'
-import {mapTable, mapTableWithSubquery, SelectRows, selectTwoTables} from '../selection/select_rows'
+import {mapTable, mapTableWithSubquery, SelectRows, selectTables} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
 import {Count} from '../aggregatable_table'
 import {aggregateTables, SelectSingleRow} from '../selection/select_single_row'
@@ -61,12 +61,12 @@ export class JoinSecondTable<T1, T2> {
     }
 
     select<K extends string>(firstName: string, secondName: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
-        return selectTwoTables(
+        return selectTables(
             this.statement,
-            firstName,
-            this.firstConstructor,
-            secondName,
-            this.secondConstructor)
+            [
+                [firstName, this.firstConstructor],
+                [secondName, this.secondConstructor]
+            ])
     }
 
     map<U extends ValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U>

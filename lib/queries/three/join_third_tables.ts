@@ -13,7 +13,7 @@ import {
     SelectScalar,
     sumColumn
 } from '../selection/select_scalar'
-import {mapTable, mapTableWithSubquery, SelectRows, selectThreeTables, selectTwoTables} from '../selection/select_rows'
+import {mapTable, mapTableWithSubquery, SelectRows, selectTables} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
 import {Count} from '../aggregatable_table'
 import {aggregateTables, SelectSingleRow} from '../selection/select_single_row'
@@ -65,14 +65,13 @@ export class JoinThirdTable<T1, T2, T3> {
     }
 
     select<K extends string>(firstName: string, secondName: string, thirdName: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
-        return selectThreeTables(
+        return selectTables(
             this.statement,
-            firstName,
-            this.firstConstructor,
-            secondName,
-            this.secondConstructor,
-            thirdName,
-            this.thirdConstructor)
+            [
+                [firstName, this.firstConstructor],
+                [secondName, this.secondConstructor],
+                [thirdName, this.thirdConstructor]
+            ])
     }
 
     map<U extends ValueRecord>(f: (first: T1, second: T2, third: T3) => EnforceNonEmptyRecord<U> & U): SelectRows<U>

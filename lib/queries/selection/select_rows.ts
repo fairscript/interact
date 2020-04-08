@@ -46,40 +46,14 @@ export function selectTable<T>(statement: SelectStatement, constructor: Function
         })
 }
 
-export function selectTwoTables<T1, T2, K extends string>(
+export function selectTables<Ts>(
     statement: SelectStatement,
-    firstName: string,
-    firstConstructor: Constructor<T1>,
-    secondName: string,
-    secondConstructor: Constructor<T2>): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
+    nameAndConstructorPairs: [string, Function][]): SelectRows<Ts> {
 
     return new SelectRows(
         {
             ...statement,
-            selection: parseMultipleTableSelection([
-                [firstName, firstConstructor],
-                [secondName, secondConstructor]
-            ])
-        })
-}
-
-export function selectThreeTables<T1, T2, T3, K extends string>(
-    statement: SelectStatement,
-    firstName: string,
-    firstConstructor: Constructor<T1>,
-    secondName: string,
-    secondConstructor: Constructor<T2>,
-    thirdName: string,
-    thirdConstructor: Constructor<T3>): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 } & { [third in K]: T3 }> {
-
-    return new SelectRows(
-        {
-            ...statement,
-            selection: parseMultipleTableSelection([
-                [firstName, firstConstructor],
-                [secondName, secondConstructor],
-                [thirdName, thirdConstructor]
-            ])
+            selection: parseMultipleTableSelection(nameAndConstructorPairs)
         })
 }
 

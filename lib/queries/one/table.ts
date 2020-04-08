@@ -16,8 +16,7 @@ import {
 import {
     mapTable,
     mapTableWithSubquery,
-    SelectRows,
-    selectTable
+    SelectRows, selectTable
 } from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
 import {AggregatableTable, Count} from '../aggregatable_table'
