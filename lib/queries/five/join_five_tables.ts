@@ -1,6 +1,6 @@
-import {SortFourTables} from './sort_four_tables'
-import {FilterFourTables} from './filter_four_tables'
-import {GroupFourTables} from './group_four_tables'
+import {SortFiveTables} from './sort_five_tables'
+import {FilterFiveTables} from './filter_five_tables'
+import {GroupFiveTables} from './group_five_tables'
 import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
 import {Subtable} from '../subtable'
@@ -22,61 +22,54 @@ import {
     addDescendingOrder,
     addParameterizedFilter,
     addParameterlessFilter,
-    Constructor, joinTable,
+    Constructor,
     SelectStatement
 } from '../../statements/select_statement'
 import {groupTablesBy} from '../../statements/group_select_statement'
-import {JoinFifthTable} from '../five/join_five_tables'
 
-export class JoinFourthTable<T1, T2, T3, T4> {
+export class JoinFifthTable<T1, T2, T3, T4, T5> {
 
     constructor(
         private readonly firstConstructor: Constructor<T1>,
         private readonly secondConstructor: Constructor<T2>,
         private readonly thirdConstructor: Constructor<T3>,
         private readonly fourthConstructor: Constructor<T4>,
+        private readonly fifthConstructor: Constructor<T5>,
         private readonly statement: SelectStatement) {}
 
-    filter(predicate: (first: T1, second: T2, third: T3, fourth: T4) => boolean): FilterFourTables<T1, T2, T3, T4>
-    filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, first: T1, second: T2, third: T3, fourth: T4) => boolean): FilterFourTables<T1, T2, T3, T4>
-    filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((first: T1, second: T2, third: T3, fourth: T4) => boolean)|P, predicate?: (parameters: P, first: T1, second: T2, third: T3, fourth: T4) => boolean): FilterFourTables<T1, T2, T3, T4> {
-        return new FilterFourTables(
+    filter(predicate: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => boolean): FilterFiveTables<T1, T2, T3, T4, T5>
+    filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => boolean): FilterFiveTables<T1, T2, T3, T4, T5>
+    filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => boolean)|P, predicate?: (parameters: P, first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => boolean): FilterFiveTables<T1, T2, T3, T4, T5> {
+        return new FilterFiveTables(
             this.firstConstructor,
             this.secondConstructor,
             this.thirdConstructor,
             this.fourthConstructor,
+            this.fifthConstructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
                 : addParameterizedFilter(this.statement, predicate!, predicateOrProvided),
         )
     }
 
-    sortBy(sortBy: (first: T1, second: T2, third: T3, fourth: T4) => Value): SortFourTables<T1, T2, T3, T4> {
-        return new SortFourTables(
+    sortBy(sortBy: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => Value): SortFiveTables<T1, T2, T3, T4, T5> {
+        return new SortFiveTables(
             this.firstConstructor,
             this.secondConstructor,
             this.thirdConstructor,
             this.fourthConstructor,
+            this.fifthConstructor,
             addAscendingOrder(this.statement, sortBy))
     }
 
-    sortDescendinglyBy(sortBy: (first: T1, second: T2, third: T3, fourth: T4) => Value): SortFourTables<T1, T2, T3, T4> {
-        return new SortFourTables(
+    sortDescendinglyBy(sortBy: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => Value): SortFiveTables<T1, T2, T3, T4, T5> {
+        return new SortFiveTables(
             this.firstConstructor,
             this.secondConstructor,
             this.thirdConstructor,
             this.fourthConstructor,
+            this.fifthConstructor,
             addDescendingOrder(this.statement, sortBy))
-    }
-
-    join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T1, secondTable: T2, thirdTable: T3, fourthTable: T4) => K, right: (thirdTable: U) => K): JoinFifthTable<T1, T2, T3, T4, U> {
-        return new JoinFifthTable(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
-            this.fourthConstructor,
-            otherTable.constructor,
-            joinTable(this.statement, otherTable, left, right))
     }
 
     select<K extends string>(firstName: string, secondName: string, thirdName: string, fourthName: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 } & { [third in K]: T3 } & { [fourth in K]: T4 } > {
@@ -90,15 +83,15 @@ export class JoinFourthTable<T1, T2, T3, T4> {
             ])
     }
 
-    map<U extends ValueRecord>(f: (first: T1, second: T2, third: T3, fourth: T4) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
-    map<S, U extends ValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, first: T1, second: T2, third: T3, fourth: T4) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
-    map<S, U extends ValueRecord>(fOrTableInSubquery: ((first: T1, second: T2, third: T3, fourth: T4) => EnforceNonEmptyRecord<U> & U)|Table<S>, f?: (s: Subtable<S>, first: T1, second: T2, third: T3, fourth: T4) => EnforceNonEmptyRecord<U> & U): SelectRows<U>{
+    map<U extends ValueRecord>(f: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
+    map<S, U extends ValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
+    map<S, U extends ValueRecord>(fOrTableInSubquery: ((first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => EnforceNonEmptyRecord<U> & U)|Table<S>, f?: (s: Subtable<S>, first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => EnforceNonEmptyRecord<U> & U): SelectRows<U>{
         return typeof fOrTableInSubquery === 'function'
             ? mapTable(this.statement, fOrTableInSubquery)
             : mapTableWithSubquery(this.statement, f!, fOrTableInSubquery)
     }
 
-    get<U extends Value>(f: (first: T1, second: T2, third: T3, fourth: T4) => U): SelectVector<U> {
+    get<U extends Value>(f: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => U): SelectVector<U> {
         return getColumn(this.statement, f)
     }
 
@@ -106,29 +99,29 @@ export class JoinFourthTable<T1, T2, T3, T4> {
         return countRows(this.statement)
     }
 
-    max<V extends Value>(f: (first: T1, second: T2, third: T3, fourth: T4) => V): SelectScalar<V> {
+    max<V extends Value>(f: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => V): SelectScalar<V> {
         return maximizeColumn(this.statement, f)
     }
 
-    min<V extends Value>(f: (first: T1, second: T2, third: T3, fourth: T4) => V): SelectScalar<V> {
+    min<V extends Value>(f: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => V): SelectScalar<V> {
         return minimizeColumn(this.statement, f)
     }
 
-    sum<V extends Value>(f: (first: T1, second: T2, third: T3, fourth: T4) => V): SelectScalar<V> {
+    sum<V extends Value>(f: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => V): SelectScalar<V> {
         return sumColumn(this.statement, f)
     }
 
-    average<V extends Value>(f: (first: T1, second: T2, third: T3, fourth: T4) => V): SelectScalar<V> {
+    average<V extends Value>(f: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => V): SelectScalar<V> {
         return averageColumn(this.statement, f)
     }
 
     aggregate<A extends TableAggregationRecord>(
-        aggregation: (first: T1, second: T2, third: T3, fourth: T4, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
+        aggregation: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
         return aggregateTables(this.statement, aggregation)
     }
 
-    groupBy<K extends ValueRecord>(getKey: (first: T1, second: T2, third: T3, fourth: T4) => EnforceNonEmptyRecord<K> & K) : GroupFourTables<T1, T2, T3, T4, K>{
-        return new GroupFourTables(groupTablesBy(this.statement, getKey))
+    groupBy<K extends ValueRecord>(getKey: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => EnforceNonEmptyRecord<K> & K) : GroupFiveTables<T1, T2, T3, T4, T5, K>{
+        return new GroupFiveTables(groupTablesBy(this.statement, getKey))
     }
 }
 
