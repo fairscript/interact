@@ -3,7 +3,7 @@ import {generateGetColumn} from '../value_expressions/get_column_generation'
 import {generateSubselectStatement} from '../subselect_generation'
 import {joinWithCommaWhitespace} from '../../parsing/parsing_helpers'
 import {generateAlias} from '../alias_generation'
-import {SubselectStatement} from '../../select_statement'
+import {SubselectStatement} from '../../statements/subselect_statement'
 import {GetColumn} from '../../parsing/value_expressions/get_column_parsing'
 
 function generateMapPropertyOperation(namedParameterPrefix: string, parameterToTable: { [parameter: string]: string }, operation: GetColumn | SubselectStatement): string {

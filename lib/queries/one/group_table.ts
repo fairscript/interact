@@ -1,10 +1,11 @@
-import {GroupSelectStatement, SelectStatement} from '../../select_statement'
 import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
 import {parseGroupAggregationSelection} from '../../parsing/selection/group_aggregation_selection_parsing'
 import {AggregatableTable, Avg, Count, Max, Min, GroupAggregationRecord, Sum} from './aggregatable_table'
 import {SelectRows} from '../selection/select_rows'
 import {SortGrouping} from './sort_grouping'
 import {parseGroupSorting} from '../../parsing/sorting/group_sorting_parsing'
+import {SelectStatement} from '../../statements/select_statement'
+import {GroupSelectStatement} from '../../statements/group_select_statement'
 
 
 export class GroupTable<T, K extends ValueRecord> {

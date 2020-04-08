@@ -1,6 +1,7 @@
 import {Dialect} from '../dialects'
-import {GroupSelectStatement, SelectStatement} from '../../select_statement'
 import {adaptDistinct} from '../distinct_adaptation'
+import {SelectStatement} from '../../statements/select_statement'
+import {GroupSelectStatement} from '../../statements/group_select_statement'
 
 export const bigQueryDialect: Dialect = {
     aliasEscape: '`',

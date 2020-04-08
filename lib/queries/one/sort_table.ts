@@ -1,4 +1,3 @@
-import {SelectStatement} from '../../select_statement'
 import {parseSorting} from '../../parsing/sorting/sorting_parsing'
 import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
@@ -10,6 +9,7 @@ import {parseMapWithSubquerySelection} from '../../parsing/selection/maps_select
 import {Table} from './table'
 import {SelectRows} from '../selection/select_rows'
 import {SelectVector} from '../selection/select_vector'
+import {SelectStatement} from '../../statements/select_statement'
 
 export type Direction = 'asc' | 'desc'
 

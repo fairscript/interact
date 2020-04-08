@@ -1,12 +1,16 @@
 import {OrderExpression} from '../parsing/sorting/sorting_parsing'
 import {createKey, createPartOfKey, Key} from '../parsing/get_key_parsing'
-import {createGroupSelectStatement, GroupSelectStatement, SelectStatement} from '../select_statement'
 import {MapSelection} from '../parsing/selection/map_selection_parsing'
 import {createAggregateColumn} from '../parsing/aggregation/aggregate_column_parsing'
 import {createGroupOrderExpression} from '../parsing/sorting/group_sorting_parsing'
 import {mapPartOfKeyToTableAndProperty} from '../parsing/selection/group_aggregation_selection_parsing'
 import {SingleColumnSelection} from '../parsing/selection/single_column_selection_parsing'
 import {GetColumn} from '../parsing/value_expressions/get_column_parsing'
+import {SelectStatement} from '../statements/select_statement'
+import {
+    createEmptyGroupSelectStatement,
+    GroupSelectStatement
+} from '../statements/group_select_statement'
 
 function checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders: OrderExpression[], selection: SingleColumnSelection|MapSelection): boolean {
     for (let indexOrder in orders) {
@@ -56,10 +60,19 @@ function adaptOrderedDistinct(
             )
     )
 
+    const { tableName, filters, join, selection, limit, offset } = statement
+
     return {
-        ...createGroupSelectStatement(statement, key),
-        distinct: false,
-        orders: mapOrderExpressionsToGroupOrderExpressions(key, statement.orders)
+        ...createEmptyGroupSelectStatement(tableName, key),
+
+        filters: filters,
+        join: join,
+        selection: selection,
+        limit: limit,
+        offset: offset,
+
+        orders: mapOrderExpressionsToGroupOrderExpressions(key, statement.orders),
+        distinct: false
     }
 }
 

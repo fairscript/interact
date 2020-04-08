@@ -1,4 +1,3 @@
-import {Constructor, createGroupSelectStatement, SelectStatement} from '../../select_statement'
 import {SortTable} from './sort_table'
 import {GroupTable} from './group_table'
 import {EnforceNonEmptyRecord, ValueRecord, ValueOrNestedValueRecord, TableAggregationRecord} from '../../record'
@@ -25,6 +24,8 @@ import {
 import {AggregatableTable, Count} from './aggregatable_table'
 import {parseTableAggregationSelection} from '../../parsing/selection/table_aggregation_selection_parsing'
 import {SelectSingleRow} from '../selection/select_single_row'
+import {Constructor, SelectStatement} from '../../statements/select_statement'
+import {createEmptyGroupSelectStatement} from '../../statements/group_select_statement'
 
 export class FilterTable<T> {
 
@@ -148,8 +149,11 @@ export class FilterTable<T> {
     }
 
     groupBy<K extends ValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{
-        return new GroupTable<T, K>(
-            createGroupSelectStatement(this.statement, parseGetKey(getKey))
-        )
+        const {tableName, filters} = this.statement
+
+        return new GroupTable<T, K>({
+            ...createEmptyGroupSelectStatement(tableName, parseGetKey(getKey)),
+            filters
+        })
     }
 }

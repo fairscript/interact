@@ -1,5 +1,5 @@
 import * as A from 'arcsecond'
-import {createSubselectStatement} from '../../select_statement'
+import {createSubselectStatement} from '../../statements/subselect_statement'
 import {createMapSelection, MapSelection} from './map_selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {extractLambdaParametersAndExpression} from '../functions/lambda_parsing'

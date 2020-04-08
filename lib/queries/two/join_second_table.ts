@@ -1,4 +1,3 @@
-import {Constructor, createGroupSelectStatement, SelectStatement} from '../../select_statement'
 import {SortTwoTables} from './sort_two_tables'
 import {FilterTwoTables} from './filter_two_tables'
 import {GroupTwoTables} from './group_two_tables'
@@ -27,6 +26,8 @@ import {
 import {Count} from '../one/aggregatable_table'
 import {SelectSingleRow} from '../selection/select_single_row'
 import {parseTableAggregationSelection} from '../../parsing/selection/table_aggregation_selection_parsing'
+import {Constructor, SelectStatement} from '../../statements/select_statement'
+import {createEmptyGroupSelectStatement} from '../../statements/group_select_statement'
 
 export class JoinSecondTable<T1, T2> {
 
@@ -158,9 +159,12 @@ export class JoinSecondTable<T1, T2> {
     }
 
     groupBy<K extends ValueRecord>(getKey: (first: T1, second: T2) => EnforceNonEmptyRecord<K> & K) : GroupTwoTables<T1, T2, K>{
-        return new GroupTwoTables<T1, T2, K>(
-            createGroupSelectStatement(this.statement, parseGetKey(getKey))
-        )
+        const {tableName, join} = this.statement
+
+        return new GroupTwoTables<T1, T2, K>({
+            ...createEmptyGroupSelectStatement(tableName, parseGetKey(getKey)),
+            join
+        })
     }
 }
 

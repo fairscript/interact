@@ -1,4 +1,5 @@
-import {GroupSelectStatement, SelectStatement} from '../select_statement'
+import {SelectStatement} from '../statements/select_statement'
+import {GroupSelectStatement} from '../statements/group_select_statement'
 
 export interface Dialect {
     aliasEscape: string|null

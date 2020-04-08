@@ -2,7 +2,6 @@ import {generateSelect} from './select_generation'
 import {generateFrom} from './from_generation'
 import {generateWhereParameters, generateWhereSql} from './where_generation'
 import {generateOrderBy} from './sorting/order_by_generation'
-import {GroupSelectStatement, SelectStatement} from '../select_statement'
 import {generateGroupBy} from './group_by_generation'
 import {generateInnerJoin} from './join_generation'
 import {joinWithNewLine} from '../parsing/parsing_helpers'
@@ -11,6 +10,8 @@ import {ValueRecord} from '../record'
 import {generateLimit} from './limit_generation'
 import {generateOffset} from './offset_generation'
 import {generateGroupOrderBy} from './sorting/group_order_by_generation'
+import {SelectStatement} from '../statements/select_statement'
+import {GroupSelectStatement} from '../statements/group_select_statement'
 
 
 export function generateSelectStatementSql(dialect: Dialect, statement: SelectStatement|GroupSelectStatement): string {

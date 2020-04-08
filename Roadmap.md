@@ -34,7 +34,7 @@
 - Byte arrays
 
 ## v0.23
-- Boolean expression in selections
+- Boolean expressions in selections
 - Boolean expressions as a subset of value expressions
 
 ## v0.24

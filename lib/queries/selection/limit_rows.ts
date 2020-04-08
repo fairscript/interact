@@ -1,6 +1,7 @@
-import {GroupSelectStatement, SelectStatement} from '../../select_statement'
 import {Runnable} from '../../databases/database_context'
 import {OffsetRows} from './offset_rows'
+import {SelectStatement} from '../../statements/select_statement'
+import {GroupSelectStatement} from '../../statements/group_select_statement'
 
 export class LimitRows<T> implements Runnable<T[]>{
 

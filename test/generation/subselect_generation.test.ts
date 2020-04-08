@@ -1,5 +1,5 @@
 import {generateSubselectStatement} from '../../lib/generation/subselect_generation'
-import {createSubselectStatement} from '../../lib/select_statement'
+import {createSubselectStatement} from '../../lib/statements/subselect_statement'
 import * as assert from 'assert'
 import {createParameterlessFilter} from '../../lib/parsing/filtering/parameterless_filter_parsing'
 import {sqliteDialect} from '../../lib/databases/sqlite/sqlite_dialect'

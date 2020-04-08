@@ -1,6 +1,6 @@
-import {SelectStatement} from '../../select_statement'
 import {LimitRows} from './limit_rows'
 import {Runnable} from '../../databases/database_context'
+import {SelectStatement} from '../../statements/select_statement'
 
 export class DistinctRows<T> implements Runnable<T[]> {
     constructor(public statement: SelectStatement, public readonly client: 'vector'|'rows') {}

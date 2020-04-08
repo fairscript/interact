@@ -1,7 +1,8 @@
 import {DatabaseClient} from './database_client'
 import {Dialect} from './dialects'
-import {GroupSelectStatement, SelectStatement} from '../select_statement'
 import {generateSelectStatementParameters, generateSelectStatementSql} from '../generation/select_statement_generation'
+import {SelectStatement} from '../statements/select_statement'
+import {GroupSelectStatement} from '../statements/group_select_statement'
 
 export interface Runnable<T> {
     statement: SelectStatement|GroupSelectStatement

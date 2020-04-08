@@ -3,7 +3,7 @@ import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {extractLambdaParametersAndExpression} from '../functions/lambda_parsing'
 import {createRecordInParenthesesParser} from '../literals/record_parsing'
 import {findReferencedColumns} from './search_for_referenced_columns'
-import {SubselectStatement} from '../../select_statement'
+import {SubselectStatement} from '../../statements/subselect_statement'
 import {createGetColumnParser, GetColumn} from '../value_expressions/get_column_parsing'
 
 

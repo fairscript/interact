@@ -1,5 +1,5 @@
 import {AggregateColumn} from '../aggregation/aggregate_column_parsing'
-import {SubselectStatement} from '../../select_statement'
+import {SubselectStatement} from '../../statements/subselect_statement'
 import {GetColumn} from '../value_expressions/get_column_parsing'
 
 export function findReferencedColumns(operation: GetColumn | AggregateColumn | SubselectStatement): GetColumn[] {
