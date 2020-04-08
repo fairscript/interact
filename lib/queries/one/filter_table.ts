@@ -4,24 +4,23 @@ import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord,
 import {Value} from '../../value'
 import {Subtable} from './subtable'
 import {Table} from './table'
-import {SelectScalar} from '../selection/select_scalar'
 import {
-    aggregateTables,
     averageColumn,
     countRows,
-    getColumn,
-    groupTablesBy,
-    mapTable,
-    mapTableWithSubquery,
     maximizeColumn,
     minimizeColumn,
-    SelectRows,
-    selectTable,
+    SelectScalar,
     sumColumn
+} from '../selection/select_scalar'
+import {
+    mapTable,
+    mapTableWithSubquery,
+    SelectRows,
+    selectTable
 } from '../selection/select_rows'
-import {SelectVector} from '../selection/select_vector'
+import {getColumn, SelectVector} from '../selection/select_vector'
 import {AggregatableTable, Count} from './aggregatable_table'
-import {SelectSingleRow} from '../selection/select_single_row'
+import {aggregateTables, SelectSingleRow} from '../selection/select_single_row'
 import {
     addAscendingOrder,
     addDescendingOrder,
@@ -30,6 +29,7 @@ import {
     Constructor,
     SelectStatement
 } from '../../statements/select_statement'
+import {groupTablesBy} from '../../statements/group_select_statement'
 
 export class FilterTable<T> {
 
@@ -100,7 +100,7 @@ export class FilterTable<T> {
 
     aggregate<A extends TableAggregationRecord>(
         aggregation: (table: AggregatableTable<T>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
-        return aggregateTables(this.statement, aggregation, 1)
+        return aggregateTables(this.statement, aggregation)
     }
 
     groupBy<K extends ValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{

@@ -1,6 +1,7 @@
 import {Runnable} from '../../databases/database_context'
 import {LimitRows} from './limit_rows'
 import {SelectStatement} from '../../statements/select_statement'
+import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
 
 export class SelectVector<T> implements Runnable<T> {
     constructor(public statement: SelectStatement) {}
@@ -24,4 +25,12 @@ export class SelectVector<T> implements Runnable<T> {
     }
 
     readonly client = 'vector'
+}
+
+export function getColumn<T>(statement: SelectStatement, get: Function): SelectVector<T> {
+    return new SelectVector(
+        {
+            ...statement,
+            selection: parseGetSelection(get)
+        })
 }
