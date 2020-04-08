@@ -22,10 +22,11 @@ import {
     addDescendingOrder,
     addParameterizedFilter,
     addParameterlessFilter,
-    Constructor,
+    Constructor, joinTable,
     SelectStatement
 } from '../../statements/select_statement'
 import {groupTablesBy} from '../../statements/group_select_statement'
+import {JoinFourthTable} from '../four/join_four_tables'
 
 export class JoinThirdTable<T1, T2, T3> {
 
@@ -64,7 +65,16 @@ export class JoinThirdTable<T1, T2, T3> {
             addDescendingOrder(this.statement, sortBy))
     }
 
-    select<K extends string>(firstName: string, secondName: string, thirdName: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
+    join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T1, secondTable: T2, thirdTable: T3) => K, right: (thirdTable: U) => K): JoinFourthTable<T1, T2, T3, U> {
+        return new JoinFourthTable(
+            this.firstConstructor,
+            this.secondConstructor,
+            this.thirdConstructor,
+            otherTable.constructor,
+            joinTable(this.statement, otherTable, left, right))
+    }
+
+    select<K extends string>(firstName: string, secondName: string, thirdName: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 } & { [third in K]: T3 }> {
         return selectTables(
             this.statement,
             [
