@@ -1,64 +1,46 @@
-import {parseSorting} from '../../parsing/sorting/sorting_parsing'
 import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
-import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
-import {parseMapSelection} from '../../parsing/selection/map_selection_parsing'
-import {parseSingleTableSelection} from '../../parsing/selection/single_table_selection_parsing'
 import {Subtable} from './subtable'
-import {parseMapWithSubquerySelection} from '../../parsing/selection/maps_selection_parsing'
 import {Table} from './table'
-import {SelectRows} from '../selection/select_rows'
+import {getColumn, mapTable, mapTableWithSubquery, SelectRows, selectTable} from '../selection/select_rows'
 import {SelectVector} from '../selection/select_vector'
-import {SelectStatement} from '../../statements/select_statement'
+import {addAscendingOrder, addDescendingOrder, Constructor, SelectStatement} from '../../statements/select_statement'
 
 export type Direction = 'asc' | 'desc'
 
 export class SortTable<T> {
 
-    constructor(private readonly statement: SelectStatement) {}
+    constructor(
+        private readonly constructor: Constructor<T>,
+        private readonly statement: SelectStatement) {}
 
     thenBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
-            {
-                ...this.statement,
-                orders: this.statement.orders.concat(parseSorting(sortBy, 'asc'))
-            })
+            this.constructor,
+            addAscendingOrder(this.statement, sortBy)
+        )
     }
 
     thenDescendinglyBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
-            {
-                ...this.statement,
-                orders: this.statement.orders.concat(parseSorting(sortBy, 'desc'))
-            })
+            this.constructor,
+            addDescendingOrder(this.statement, sortBy)
+        )
     }
 
     select(): SelectRows<T> {
-        return new SelectRows({
-            ...this.statement,
-            selection: parseSingleTableSelection(this.constructor)
-        })
+        return selectTable(this.statement, this.constructor)
     }
 
     map<U extends ValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
     map<S, U extends ValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
     map<S, U extends ValueRecord>(fOrTableInSubquery: ((table: T) => EnforceNonEmptyRecord<U> & U)|Table<S>, f?: (s: Subtable<S>, x: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>{
-        const selection = typeof fOrTableInSubquery === 'function'
-            ? parseMapSelection(fOrTableInSubquery)
-            : parseMapWithSubquerySelection(f!, [fOrTableInSubquery.tableName])
-
-        return new SelectRows(
-            {
-                ...this.statement,
-                selection
-            })
+        return typeof fOrTableInSubquery === 'function'
+            ? mapTable(this.statement, fOrTableInSubquery)
+            : mapTableWithSubquery(this.statement, f!, fOrTableInSubquery)
     }
 
     get<U extends Value>(f: (table: T) => U): SelectVector<U> {
-        return new SelectVector(
-            {
-                ...this.statement,
-                selection: parseGetSelection(f)
-            })
+        return getColumn(this.statement, f)
     }
 }

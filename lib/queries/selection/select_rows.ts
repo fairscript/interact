@@ -48,7 +48,7 @@ export class SelectRows<T> implements Runnable<T[]> {
     readonly client = 'rows'
 }
 
-export function selectTable<T>(statement: SelectStatement, constructor: Constructor<T>): SelectRows<T> {
+export function selectTable<T>(statement: SelectStatement, constructor: Function): SelectRows<T> {
     return new SelectRows(
         {
             ...statement,

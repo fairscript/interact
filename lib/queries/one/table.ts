@@ -58,13 +58,16 @@ export class Table<T> {
 
     sortBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
+            this.constructor,
             addAscendingOrder(this.statement, sortBy)
         )
     }
 
     sortDescendinglyBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
-            addAscendingOrder(this.statement, sortBy))
+            this.constructor,
+            addAscendingOrder(this.statement, sortBy)
+        )
     }
 
     join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T) => K, right: (secondTable: U) => K) {
