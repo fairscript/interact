@@ -9,14 +9,14 @@ export interface GroupOrderExpression {
     partOfKeyToTableAndProperty: {[partOfKey: string]: [string, string]}
     parameterNameToTableAlias: {[parameterName: string]: string}
     operation: GroupAggregationOperation,
-    direction: 'asc'|'desc'
+    direction: Direction
 }
 
 export function createGroupOrderExpression(
     partOfKeyToTableAndProperty: {[partOfKey: string]: [string, string]},
     parameterNameToTableAlias: {[parameterName: string]: string},
     operation: GroupAggregationOperation,
-    direction: 'asc'|'desc'): GroupOrderExpression {
+    direction: Direction): GroupOrderExpression {
 
     return {
         partOfKeyToTableAndProperty,

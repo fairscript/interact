@@ -6,7 +6,7 @@ import {createGetColumnParser, GetColumn} from '../value_expressions/get_column_
 export interface OrderExpression {
     parameterNameToTableAlias: {[parameterName: string]: string}
     get: GetColumn,
-    direction: 'asc'|'desc'
+    direction: Direction
     kind: 'order-expression'
 }
 

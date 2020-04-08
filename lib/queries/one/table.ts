@@ -27,7 +27,14 @@ import {
 import {AggregatableTable, Count} from './aggregatable_table'
 import {parseTableAggregationSelection} from '../../parsing/selection/table_aggregation_selection_parsing'
 import {SelectSingleRow} from '../selection/select_single_row'
-import {Constructor, createEmptySelectStatement, SelectStatement} from '../../statements/select_statement'
+import {
+    addAscendingOrder,
+    addParameterizedFilter,
+    addParameterlessFilter,
+    Constructor,
+    createEmptySelectStatement, joinTable,
+    SelectStatement
+} from '../../statements/select_statement'
 import {createEmptyGroupSelectStatement} from '../../statements/group_select_statement'
 
 
@@ -44,35 +51,31 @@ export class Table<T> {
     filter(predicate: (table: T) => boolean): FilterTable<T>
     filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, table: T) => boolean): FilterTable<T>
     filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((table: T) => boolean)|P, predicate?: (parameters: P, table: T) => boolean): FilterTable<T> {
-
-        const additionalFilter = typeof predicateOrProvided === 'function'
-            ? parseParameterlessFilter(predicateOrProvided)
-            : parseParameterizedFilter(predicate!, 'f1', predicateOrProvided)
-
         return new FilterTable(
             this.constructor,
-            {
-                ...this.statement,
-                filters: this.statement.filters.concat(additionalFilter)
-            },
+            typeof predicateOrProvided === 'function'
+                ? addParameterlessFilter(this.statement, predicateOrProvided)
+                : addParameterizedFilter(this.statement, predicate!, 'f1', predicateOrProvided),
             1
         )
     }
 
     sortBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
-            {
-                ...this.statement,
-                orders: this.statement.orders.concat(parseSorting(sortBy, 'asc'))
-            })
+            addAscendingOrder(this.statement, sortBy)
+        )
     }
 
     sortDescendinglyBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
-            {
-                ...this.statement,
-                orders: this.statement.orders.concat(parseSorting(sortBy, 'desc'))
-            })
+            addAscendingOrder(this.statement, sortBy))
+    }
+
+    join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T) => K, right: (secondTable: U) => K) {
+        return new JoinSecondTable<T, U>(
+            this.constructor,
+            otherTable.constructor,
+            joinTable(this.statement, otherTable, left, right))
     }
 
     select(): SelectRows<T> {
@@ -158,16 +161,6 @@ export class Table<T> {
             {
                 ...this.statement,
                 selection: parseTableAggregationSelection(aggregation, 1)
-            })
-    }
-
-    join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T) => K, right: (secondTable: U) => K) {
-        return new JoinSecondTable<T, U>(
-            this.constructor,
-            otherTable.constructor,
-            {
-                ...this.statement,
-                join: parseJoin(otherTable.tableName, left, right)
             })
     }
 }
