@@ -11,11 +11,11 @@ export class SortGrouping<T, K extends ValueRecord> {
     constructor(private readonly statement: GroupSelectStatement) {}
 
     thenBy(sortBy: (key: K, table: AggregatableTable<T>, count: () => Count) => K | Max | Min | Avg | Sum | Count): SortGrouping<T, K> {
-        return new SortGrouping<T, K>(addAscendingGroupOrder(this.statement, sortBy))
+        return new SortGrouping(addAscendingGroupOrder(this.statement, sortBy))
     }
 
     thenDescendinglyBy(sortBy: (key: K, table: AggregatableTable<T>, count: () => Count) => K | Max | Min | Avg | Sum | Count): SortGrouping<T, K> {
-        return new SortGrouping<T, K>(addDescendinGroupOrder(this.statement, sortBy))
+        return new SortGrouping(addDescendinGroupOrder(this.statement, sortBy))
     }
 
     aggregate<A extends GroupAggregationRecord<K>>(

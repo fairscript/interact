@@ -1,36 +1,25 @@
 import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
-import {parseGroupSorting} from '../../parsing/sorting/group_sorting_parsing'
-import {SelectRows} from '../selection/select_rows'
-import {parseGroupAggregationSelection} from '../../parsing/selection/group_aggregation_selection_parsing'
-import {AggregatableTable, Avg, Count, Max, Min, GroupAggregationRecord, Sum} from '../aggregatable_table'
-import {GroupSelectStatement} from '../../statements/group_select_statement'
+import {aggregateGroups, SelectRows} from '../selection/select_rows'
+import {AggregatableTable, Avg, Count, GroupAggregationRecord, Max, Min, Sum} from '../aggregatable_table'
+import {
+    addAscendingGroupOrder,
+    addDescendinGroupOrder,
+    GroupSelectStatement
+} from '../../statements/group_select_statement'
 
 export class SortGroupingOfTwoTables<T1, T2, K extends ValueRecord> {
     constructor(private readonly statement: GroupSelectStatement) {}
 
     thenBy(sortBy: (key: K, first: AggregatableTable<T1>, second: AggregatableTable<T2>, count: () => Count) => K | Max | Min | Avg | Sum | Count): SortGroupingOfTwoTables<T1, T2, K> {
-        return new SortGroupingOfTwoTables<T1, T2, K>(
-            {
-                ...this.statement,
-                orders: this.statement.orders.concat(parseGroupSorting(sortBy, 'asc', this.statement.key, 2))
-            })
+        return new SortGroupingOfTwoTables(addAscendingGroupOrder(this.statement, sortBy))
     }
 
     thenDescendinglyBy(sortBy: (key: K, first: AggregatableTable<T1>, second: AggregatableTable<T2>, count: () => Count) => K | Max | Min | Avg | Sum | Count): SortGroupingOfTwoTables<T1, T2, K> {
-        return new SortGroupingOfTwoTables<T1, T2, K>(
-            {
-                ...this.statement,
-                orders: this.statement.orders.concat(parseGroupSorting(sortBy, 'desc', this.statement.key, 2))
-            })
+        return new SortGroupingOfTwoTables(addDescendinGroupOrder(this.statement, sortBy))
     }
 
     aggregate<A extends GroupAggregationRecord<K>>(
         aggregation: (key: K, first: AggregatableTable<T1>, second: AggregatableTable<T2>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectRows<A> {
-
-        return new SelectRows(
-            {
-                ...this.statement,
-                selection: parseGroupAggregationSelection(aggregation, this.statement.key, 2)
-            })
+        return aggregateGroups(this.statement, aggregation)
     }
 }
