@@ -35,8 +35,7 @@ export class FilterTable<T> {
 
     constructor(
         private readonly constructor: Constructor<T>,
-        private readonly statement: SelectStatement,
-        private readonly filters: number) {}
+        private readonly statement: SelectStatement) {}
 
     filter(predicate: (table: T) => boolean): FilterTable<T>
     filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, table: T) => boolean): FilterTable<T>
@@ -45,8 +44,7 @@ export class FilterTable<T> {
             this.constructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
-                : addParameterizedFilter(this.statement, predicate!, 'f1', predicateOrProvided),
-            this.filters + 1
+                : addParameterizedFilter(this.statement, predicate!, `f${this.statement.filters.length+1}`, predicateOrProvided)
         )
     }
 

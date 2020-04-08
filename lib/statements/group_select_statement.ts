@@ -49,12 +49,13 @@ export function addDescendinGroupOrder(statement: GroupSelectStatement, sortBy: 
     return addGroupOrder(statement, sortBy, 'desc')
 }
 
-export function groupTablesBy<T>(statement: SelectStatement, getKey: Function): GroupSelectStatement {
+export function groupTablesBy<T>(selectStatement: SelectStatement, getKey: Function): GroupSelectStatement {
     return {
         ...createEmptyGroupSelectStatement(
-            statement.tableName,
+            selectStatement.tableName,
             parseGetKey(getKey)
         ),
-        filters: statement.filters
+        filters: selectStatement.filters,
+        join: selectStatement.join
     }
 }

@@ -31,8 +31,7 @@ export class FilterTwoTables<T1, T2> {
     constructor(
         private readonly firstConstructor: Constructor<T1>,
         private readonly secondConstructor: Constructor<T2>,
-        private readonly statement: SelectStatement,
-        private readonly filters: number) {}
+        private readonly statement: SelectStatement) {}
 
     filter(predicate: (first: T1, second: T2) => boolean): FilterTwoTables<T1, T2>
     filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2>
@@ -40,7 +39,7 @@ export class FilterTwoTables<T1, T2> {
 
         const additionalFilter = typeof predicateOrProvided === 'function'
             ? parseParameterlessFilter(predicateOrProvided)
-            : parseParameterizedFilter(predicate!, `f${this.filters + 1}`, predicateOrProvided)
+            : parseParameterizedFilter(predicate!, `f${this.statement.filters.length + 1}`, predicateOrProvided)
 
         return new FilterTwoTables(
             this.firstConstructor,
@@ -48,8 +47,7 @@ export class FilterTwoTables<T1, T2> {
             {
                 ...this.statement,
                 filters: this.statement.filters.concat(additionalFilter)
-            },
-            this.filters+1)
+            })
     }
 
     sortBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {

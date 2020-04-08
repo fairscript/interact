@@ -51,8 +51,7 @@ export class Table<T> {
             this.constructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
-                : addParameterizedFilter(this.statement, predicate!, 'f1', predicateOrProvided),
-            1
+                : addParameterizedFilter(this.statement, predicate!, 'f1', predicateOrProvided)
         )
     }
 
@@ -115,7 +114,6 @@ export class Table<T> {
 
     aggregate<A extends TableAggregationRecord>(
         aggregation: (table: AggregatableTable<T>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
-
         return aggregateTables(this.statement, aggregation)
     }
 

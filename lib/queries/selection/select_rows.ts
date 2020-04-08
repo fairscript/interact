@@ -1,13 +1,14 @@
 import {SelectSingleRow} from './select_single_row'
 import {LimitRows} from './limit_rows'
 import {Runnable} from '../../databases/database_context'
-import {SelectStatement} from '../../statements/select_statement'
+import {Constructor, SelectStatement} from '../../statements/select_statement'
 import {GroupSelectStatement} from '../../statements/group_select_statement'
 import {parseMapSelection} from '../../parsing/selection/map_selection_parsing'
 import {parseMapWithSubquerySelection} from '../../parsing/selection/maps_selection_parsing'
 import {Table} from '../one/table'
 import {parseSingleTableSelection} from '../../parsing/selection/single_table_selection_parsing'
 import {parseGroupAggregationSelection} from '../../parsing/selection/group_aggregation_selection_parsing'
+import {parseMultipleTableSelection} from '../../parsing/selection/multi_table_selection_parsing'
 
 export class SelectRows<T> implements Runnable<T[]> {
     constructor(public statement: SelectStatement|GroupSelectStatement) {}
@@ -42,6 +43,23 @@ export function selectTable<T>(statement: SelectStatement, constructor: Function
         {
             ...statement,
             selection: parseSingleTableSelection(constructor)
+        })
+}
+
+export function selectTwoTables<T1, T2, K extends string>(
+    statement: SelectStatement,
+    firstName: string,
+    firstConstructor: Constructor<T1>,
+    secondName: string,
+    secondConstructor: Constructor<T2>): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
+
+    return new SelectRows(
+        {
+            ...statement,
+            selection: parseMultipleTableSelection([
+                [firstName, firstConstructor],
+                [secondName, secondConstructor]
+            ])
         })
 }
 
