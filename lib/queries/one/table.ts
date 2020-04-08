@@ -37,7 +37,7 @@ export class Table<T> {
     private readonly statement: SelectStatement
 
     constructor(
-        protected constructor: Constructor<T>,
+        public constructor: Constructor<T>,
         public tableName: string) {
 
         this.statement = createEmptySelectStatement(tableName)
@@ -68,8 +68,8 @@ export class Table<T> {
         )
     }
 
-    join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T) => K, right: (secondTable: U) => K) {
-        return new JoinSecondTable<T, U>(
+    join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T) => K, right: (secondTable: U) => K): JoinSecondTable<T, U> {
+        return new JoinSecondTable(
             this.constructor,
             otherTable.constructor,
             joinTable(this.statement, otherTable, left, right))
@@ -117,7 +117,7 @@ export class Table<T> {
     }
 
     groupBy<K extends ValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{
-        return new GroupTable<T, K>(groupTablesBy(this.statement, getKey))
+        return new GroupTable(groupTablesBy(this.statement, getKey))
     }
 }
 

@@ -105,6 +105,6 @@ export class FilterTwoTables<T1, T2> {
     }
 
     groupBy<K extends ValueRecord>(getKey: (first: T1, second: T2) => EnforceNonEmptyRecord<K> & K) : GroupTwoTables<T1, T2, K>{
-        return new GroupTwoTables<T1, T2, K>(groupTablesBy(this.statement, getKey))
+        return new GroupTwoTables(groupTablesBy(this.statement, getKey))
     }
 }

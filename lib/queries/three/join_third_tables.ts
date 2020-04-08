@@ -112,7 +112,7 @@ export class JoinThirdTable<T1, T2, T3> {
     }
 
     groupBy<K extends ValueRecord>(getKey: (first: T1, second: T2, third: T3) => EnforceNonEmptyRecord<K> & K) : GroupThreeTables<T1, T2, T3, K>{
-        return new GroupThreeTables<T1, T2, T3, K>(groupTablesBy(this.statement, getKey))
+        return new GroupThreeTables(groupTablesBy(this.statement, getKey))
     }
 }
 

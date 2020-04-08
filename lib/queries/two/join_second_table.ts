@@ -22,10 +22,11 @@ import {
     addDescendingOrder,
     addParameterizedFilter,
     addParameterlessFilter,
-    Constructor,
+    Constructor, joinTable,
     SelectStatement
 } from '../../statements/select_statement'
 import {groupTablesBy} from '../../statements/group_select_statement'
+import {JoinThirdTable} from '../three/join_third_tables'
 
 export class JoinSecondTable<T1, T2> {
 
@@ -58,6 +59,14 @@ export class JoinSecondTable<T1, T2> {
             this.firstConstructor,
             this.secondConstructor,
             addDescendingOrder(this.statement, sortBy))
+    }
+
+    join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T1, secondTable: T2) => K, right: (thirdTable: U) => K): JoinThirdTable<T1, T2, U> {
+        return new JoinThirdTable(
+            this.firstConstructor,
+            this.secondConstructor,
+            otherTable.constructor,
+            joinTable(this.statement, otherTable, left, right))
     }
 
     select<K extends string>(firstName: string, secondName: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
@@ -107,7 +116,7 @@ export class JoinSecondTable<T1, T2> {
     }
 
     groupBy<K extends ValueRecord>(getKey: (first: T1, second: T2) => EnforceNonEmptyRecord<K> & K) : GroupTwoTables<T1, T2, K>{
-        return new GroupTwoTables<T1, T2, K>(groupTablesBy(this.statement, getKey))
+        return new GroupTwoTables(groupTablesBy(this.statement, getKey))
     }
 }
 
