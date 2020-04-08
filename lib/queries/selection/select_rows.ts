@@ -127,6 +127,12 @@ export function aggregateTables<A>(statement: SelectStatement, aggregation: Func
     })
 }
 
-export function groupBy<T>(table: Table<T>, getKey: Function): GroupSelectStatement {
-    return createEmptyGroupSelectStatement(table.tableName, parseGetKey(getKey))
+export function groupTablesBy<T>(statement: SelectStatement, getKey: Function): GroupSelectStatement {
+    return {
+        ...createEmptyGroupSelectStatement(
+            statement.tableName,
+            parseGetKey(getKey)
+        ),
+        filters: statement.filters
+    }
 }

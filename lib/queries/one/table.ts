@@ -11,7 +11,7 @@ import {
     averageColumn,
     countRows,
     getColumn,
-    groupBy,
+    groupTablesBy,
     mapTable,
     mapTableWithSubquery,
     maximizeColumn,
@@ -24,7 +24,7 @@ import {SelectVector} from '../selection/select_vector'
 import {AggregatableTable, Count} from './aggregatable_table'
 import {SelectSingleRow} from '../selection/select_single_row'
 import {
-    addAscendingOrder,
+    addAscendingOrder, addDescendingOrder,
     addParameterizedFilter,
     addParameterlessFilter,
     Constructor,
@@ -66,7 +66,7 @@ export class Table<T> {
     sortDescendinglyBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
             this.constructor,
-            addAscendingOrder(this.statement, sortBy)
+            addDescendingOrder(this.statement, sortBy)
         )
     }
 
@@ -120,7 +120,7 @@ export class Table<T> {
     }
 
     groupBy<K extends ValueRecord>(getKey: (table: T) => EnforceNonEmptyRecord<K> & K): GroupTable<T, K>{
-        return new GroupTable<T, K>(groupBy(this, getKey))
+        return new GroupTable<T, K>(groupTablesBy(this.statement, getKey))
     }
 }
 
