@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import {Department, departments, Employee} from '../test_tables'
-import {parseJoin} from '../../lib/parsing/join_parsing'
+import {createLeftSideOfJoin, createRightSideOfJoin, parseJoin} from '../../lib/parsing/join_parsing'
 import {createGetColumn} from '../../lib/parsing/value_expressions/get_column_parsing'
 
 describe('parseJoin', () => {
@@ -10,11 +10,12 @@ describe('parseJoin', () => {
             parseJoin(
                 'departments',
                 (e: Employee) => e.departmentId,
-                (d: Department) => d.id),
+                (d: Department) => d.id,
+                1),
             {
                 tableName: 'departments',
-                left: createGetColumn('e', 'departmentId'),
-                right: createGetColumn('d', 'id')
+                left: createLeftSideOfJoin({'e': 't1'}, createGetColumn('e', 'departmentId')),
+                right: createRightSideOfJoin('t2', createGetColumn('d', 'id'))
             })
 
     })
@@ -26,24 +27,26 @@ describe('parseJoin', () => {
                 parseJoin(
                     'companies',
                     (e, d) => e.companyId,
-                    (c) => c.id),
+                    (c) => c.id,
+                    2),
                 {
                     tableName: 'companies',
-                    left: createGetColumn('e', 'companyId'),
-                    right: createGetColumn('c', 'id')
+                    left: createLeftSideOfJoin({'e': 't1', 'd': 't2'}, createGetColumn('e', 'companyId')),
+                    right: createRightSideOfJoin('t3', createGetColumn('c', 'id'))
                 })
         })
 
-        it('a column of the first table', () => {
+        it('a column of the second table', () => {
             assert.deepEqual(
                 parseJoin(
                     'companies',
                     (e, d) => d.companyId,
-                    (c) => c.id),
+                    (c) => c.id,
+                    2),
                 {
                     tableName: 'companies',
-                    left: createGetColumn('d', 'companyId'),
-                    right: createGetColumn('c', 'id')
+                    left: createLeftSideOfJoin({'e': 't1', 'd': 't2'}, createGetColumn('d', 'companyId')),
+                    right: createRightSideOfJoin('t3', createGetColumn('c', 'id'))
                 })
         })
 

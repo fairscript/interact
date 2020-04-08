@@ -3,7 +3,7 @@ import {generateFrom} from './from_generation'
 import {generateWhereParameters, generateWhereSql} from './where_generation'
 import {generateOrderBy} from './sorting/order_by_generation'
 import {generateGroupBy} from './group_by_generation'
-import {generateInnerJoin} from './join_generation'
+import {generateInnerJoin, generateJoins} from './join_generation'
 import {joinWithNewLine} from '../parsing/parsing_helpers'
 import {Dialect} from '../databases/dialects'
 import {ValueRecord} from '../record'
@@ -15,15 +15,15 @@ import {GroupSelectStatement} from '../statements/group_select_statement'
 
 
 export function generateSelectStatementSql(dialect: Dialect, statement: SelectStatement|GroupSelectStatement): string {
-    const {selection, distinct, tableName, filters, join, limit, offset} = statement
+    const {selection, distinct, tableName, filters, joins, limit, offset} = statement
 
     const clauses = [
         generateSelect(dialect.aliasEscape, dialect.namedParameterPrefix, selection!, distinct),
         generateFrom(tableName)
     ]
 
-    if (join !== null) {
-        clauses.push(generateInnerJoin(join))
+    if (joins.length > 0) {
+        clauses.push(...generateJoins(joins))
     }
 
     if (filters.length > 0) {

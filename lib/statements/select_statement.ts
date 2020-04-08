@@ -15,7 +15,7 @@ export interface Constructor<T> {
 export interface SelectStatement {
     tableName: string
     filters: Filter[]
-    join: JoinExpression | null
+    joins: JoinExpression[]
     orders: OrderExpression[]
     selection: Selection | null
     distinct: boolean
@@ -28,7 +28,7 @@ export function createEmptySelectStatement(tableName: string): SelectStatement {
     return {
         tableName,
         filters: [],
-        join: null,
+        joins: [],
         orders: [],
         selection: null,
         distinct: false,
@@ -73,8 +73,11 @@ export function addDescendingOrder(statement: SelectStatement, sortBy: Function)
 }
 
 export function joinTable<T>(statement: SelectStatement, otherTable: Table<T>, left: Function, right: Function): SelectStatement {
+    const existingJoins = statement.joins
+    const additionalJoin = parseJoin(otherTable.tableName, left, right, statement.joins.length+1)
+
     return {
         ...statement,
-        join: parseJoin(otherTable.tableName, left, right)
+        joins: existingJoins.concat(additionalJoin)
     }
 }

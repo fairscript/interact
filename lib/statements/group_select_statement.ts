@@ -10,7 +10,7 @@ export interface GroupSelectStatement {
     tableName: string
     key: Key
     filters: Filter[]
-    join: JoinExpression | null
+    joins: JoinExpression[]
     orders: GroupOrderExpression[]
     selection: Selection | null
     limit: number | 'all'
@@ -24,7 +24,7 @@ export function createEmptyGroupSelectStatement(tableName: string, key: Key): Gr
         tableName,
         key,
         filters: [],
-        join: null,
+        joins: [],
         orders: [],
         selection: null,
         limit: 'all',
@@ -37,7 +37,7 @@ export function createEmptyGroupSelectStatement(tableName: string, key: Key): Gr
 function addGroupOrder(statement: GroupSelectStatement, sortBy: Function, direction: Direction): GroupSelectStatement {
     return {
         ...statement,
-        orders: statement.orders.concat(parseGroupSorting(sortBy!, direction, statement.key, statement.join === null ? 1 : 2))
+        orders: statement.orders.concat(parseGroupSorting(sortBy!, direction, statement.key, statement.joins.length+1))
     }
 }
 
@@ -56,6 +56,6 @@ export function groupTablesBy<T>(selectStatement: SelectStatement, getKey: Funct
             parseGetKey(getKey)
         ),
         filters: selectStatement.filters,
-        join: selectStatement.join
+        joins: selectStatement.joins
     }
 }

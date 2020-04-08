@@ -15,12 +15,22 @@ export class Employee {
 export class Department {
     constructor(
         public id: number,
+        public name: string,
+        public companyId: number) {
+    }
+}
+
+export class Company {
+    constructor(
+        public id: number,
         public name: string) {
     }
 }
 
+
 export const employees = defineTable(Employee, 'employees')
 export const departments = defineTable(Department, 'departments')
+export const companies = defineTable(Company, 'companies')
 
 export const testEmployees: Employee[] =
     [

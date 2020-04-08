@@ -78,6 +78,6 @@ export function aggregateGroups<T>(statement: GroupSelectStatement, aggregation:
     return new SelectRows(
         {
             ...statement,
-            selection: parseGroupAggregationSelection(aggregation, statement.key, statement.join === null ? 1 : 2)
+            selection: parseGroupAggregationSelection(aggregation, statement.key, statement.joins.length+1)
         })
 }

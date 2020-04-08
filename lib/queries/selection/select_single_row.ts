@@ -12,6 +12,6 @@ export class SelectSingleRow<T> implements Runnable<T> {
 export function aggregateTables<A>(statement: SelectStatement, aggregation: Function): SelectSingleRow<A> {
     return new SelectSingleRow({
         ...statement,
-        selection: parseTableAggregationSelection(aggregation, statement.join === null ? 1 : 2)
+        selection: parseTableAggregationSelection(aggregation, statement.joins.length+1)
     })
 }

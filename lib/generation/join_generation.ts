@@ -1,18 +1,27 @@
-import {JoinExpression} from '../parsing/join_parsing'
+import {JoinExpression, LeftSideOfJoin, RightSideOfJoin} from '../parsing/join_parsing'
 import {generateGetColumn} from './value_expressions/get_column_generation'
 
-function generateJoinExpression(expr: JoinExpression): string {
-    const { tableName, left, right } = expr
 
-    const leftParameter = left.object
-    const rightParameter = right.object
+function generateLeftSideOfJoin(side: LeftSideOfJoin): string {
+    return generateGetColumn(side.tableParameterToTableAlias, side.getColumn)
+}
 
-    const leftSql = `${generateGetColumn({[leftParameter]: 't1'}, left)}`
-    const rightSql = `${generateGetColumn({[rightParameter]: 't2'}, right)}`
+function generateRightSideOfJoin(side: RightSideOfJoin): string {
+    const {getColumn, tableAlias} = side
 
-    return `${tableName} t2 ON ${leftSql} = ${rightSql}`
+    return generateGetColumn({[getColumn.object]: tableAlias}, getColumn)
+}
+
+function generateSidesOfJoin(left: LeftSideOfJoin, right: RightSideOfJoin): string {
+    return `${generateLeftSideOfJoin(left)} = ${generateRightSideOfJoin(right)}`
 }
 
 export function generateInnerJoin(joinExpression: JoinExpression): string {
-    return `INNER JOIN ${generateJoinExpression(joinExpression)}`
+    const {tableName, left, right} = joinExpression
+
+    return `INNER JOIN ${tableName} ${right.tableAlias} ON ${generateSidesOfJoin(left, right)}`
+}
+
+export function generateJoins(joinExpressions: JoinExpression[]): string[] {
+    return joinExpressions.map(generateInnerJoin)
 }

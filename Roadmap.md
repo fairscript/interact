@@ -1,8 +1,5 @@
 # Roadmap
 
-## v0.13
-- Joins of up to five tables
-
 ## v0.14
 - Publication to NPM
 

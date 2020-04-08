@@ -60,16 +60,16 @@ function adaptOrderedDistinct(
             )
     )
 
-    const { tableName, filters, join, selection, limit, offset } = statement
+    const { tableName, filters, joins, selection, limit, offset } = statement
 
     return {
         ...createEmptyGroupSelectStatement(tableName, key),
 
-        filters: filters,
-        join: join,
-        selection: selection,
-        limit: limit,
-        offset: offset,
+        filters,
+        joins,
+        selection,
+        limit,
+        offset,
 
         orders: mapOrderExpressionsToGroupOrderExpressions(key, statement.orders),
         distinct: false

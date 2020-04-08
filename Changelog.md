@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.13.0
+- Joins of up to five tables
+
 ## v0.12.2
 - Terminology changes (literals, boolean expression, value expressions)
 - Replaced mapS/filterP with overloads of map/filter

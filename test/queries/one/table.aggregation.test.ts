@@ -4,17 +4,6 @@ import {employees} from '../../test_tables'
 describe('Table', () => {
 
     describe('can aggregate rows', () => {
-        it('to count the number of rows', () => {
-            checkSql(
-                employees
-                    .count(),
-                [
-                    'SELECT COUNT(*)',
-                    'FROM employees t1'
-                ]
-            )
-        })
-
         it('to find the maximum of a column', () => {
             checkSql(
                 employees
@@ -69,6 +58,5 @@ describe('Table', () => {
                 ]
             )
         })
-
     })
 })
