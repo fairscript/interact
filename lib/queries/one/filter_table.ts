@@ -44,7 +44,7 @@ export class FilterTable<T> {
             this.constructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
-                : addParameterizedFilter(this.statement, predicate!, `f${this.statement.filters.length+1}`, predicateOrProvided)
+                : addParameterizedFilter(this.statement, predicate!, predicateOrProvided)
         )
     }
 

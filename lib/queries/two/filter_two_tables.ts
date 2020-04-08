@@ -1,31 +1,30 @@
 import {SortTwoTables} from './sort_two_tables'
 import {GroupTwoTables} from './group_two_tables'
-import {EnforceNonEmptyRecord, ValueRecord, ValueOrNestedValueRecord, TableAggregationRecord} from '../../record'
+import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
-import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
-import {parseMapSelection} from '../../parsing/selection/map_selection_parsing'
-import {parseSorting} from '../../parsing/sorting/sorting_parsing'
-import {parseGetKey} from '../../parsing/get_key_parsing'
-import {parseMultipleTableSelection} from '../../parsing/selection/multi_table_selection_parsing'
 import {Table} from '../one/table'
 import {Subtable} from '../subtable'
-import {parseMapWithSubquerySelection} from '../../parsing/selection/maps_selection_parsing'
-import {createCountSelection} from '../../parsing/selection/count_selection'
-import {parseParameterlessFilter} from '../../parsing/filtering/parameterless_filter_parsing'
-import {parseParameterizedFilter} from '../../parsing/filtering/parameterized_filter_parsing'
-import {SelectScalar} from '../selection/select_scalar'
-import {SelectRows} from '../selection/select_rows'
-import {SelectVector} from '../selection/select_vector'
 import {
-    parseAverageSelection,
-    parseMaxSelection,
-    parseMinSelection, parseSumSelection
-} from '../../parsing/selection/aggregate_column_select_parsing'
+    averageColumn,
+    countRows,
+    maximizeColumn,
+    minimizeColumn,
+    SelectScalar,
+    sumColumn
+} from '../selection/select_scalar'
+import {mapTable, mapTableWithSubquery, SelectRows, selectTwoTables} from '../selection/select_rows'
+import {getColumn, SelectVector} from '../selection/select_vector'
 import {Count} from '../aggregatable_table'
-import {SelectSingleRow} from '../selection/select_single_row'
-import {parseTableAggregationSelection} from '../../parsing/selection/table_aggregation_selection_parsing'
-import {Constructor, SelectStatement} from '../../statements/select_statement'
-import {createEmptyGroupSelectStatement} from '../../statements/group_select_statement'
+import {aggregateTables, SelectSingleRow} from '../selection/select_single_row'
+import {
+    addAscendingOrder,
+    addDescendingOrder,
+    addParameterizedFilter,
+    addParameterlessFilter,
+    Constructor,
+    SelectStatement
+} from '../../statements/select_statement'
+import {groupTablesBy} from '../../statements/group_select_statement'
 
 export class FilterTwoTables<T1, T2> {
     constructor(
@@ -36,130 +35,76 @@ export class FilterTwoTables<T1, T2> {
     filter(predicate: (first: T1, second: T2) => boolean): FilterTwoTables<T1, T2>
     filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2>
     filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((first: T1, second: T2) => boolean)|P, predicate?: (parameters: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
-
-        const additionalFilter = typeof predicateOrProvided === 'function'
-            ? parseParameterlessFilter(predicateOrProvided)
-            : parseParameterizedFilter(predicate!, `f${this.statement.filters.length + 1}`, predicateOrProvided)
-
         return new FilterTwoTables(
             this.firstConstructor,
             this.secondConstructor,
-            {
-                ...this.statement,
-                filters: this.statement.filters.concat(additionalFilter)
-            })
+            typeof predicateOrProvided === 'function'
+                ? addParameterlessFilter(this.statement, predicateOrProvided)
+                : addParameterizedFilter(this.statement, predicate!, predicateOrProvided)
+        )
     }
 
     sortBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {
         return new SortTwoTables(
             this.firstConstructor,
             this.secondConstructor,
-            {
-                ...this.statement,
-                orders: this.statement.orders.concat(parseSorting(sortBy, 'asc'))
-            })
+            addAscendingOrder(this.statement, sortBy))
     }
 
     sortDescendinglyBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {
         return new SortTwoTables(
             this.firstConstructor,
             this.secondConstructor,
-            {
-                ...this.statement,
-                orders: this.statement.orders.concat(parseSorting(sortBy, 'desc'))
-            })
+            addDescendingOrder(this.statement, sortBy))
     }
 
-    select<K extends string>(first: string, second: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
-        return new SelectRows(
-            {
-                ...this.statement,
-                selection: parseMultipleTableSelection([
-                    [first, this.firstConstructor ],
-                    [second, this.secondConstructor]
-                ])
-            })
+    select<K extends string>(firstName: string, secondName: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
+        return selectTwoTables(
+            this.statement,
+            firstName,
+            this.firstConstructor,
+            secondName,
+            this.secondConstructor)
     }
 
     map<U extends ValueRecord>(f: (first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
     map<S, U extends ValueRecord>(tableInSubquery: Table<S>, f: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
     map<S, U extends ValueRecord>(fOrTableInSubquery: ((first: T1, second: T2) => EnforceNonEmptyRecord<U> & U)|Table<S>, f?: (s: Subtable<S>, first: T1, second: T2) => EnforceNonEmptyRecord<U> & U): SelectRows<U>{
-        const selection = typeof fOrTableInSubquery === 'function'
-            ? parseMapSelection(fOrTableInSubquery)
-            : parseMapWithSubquerySelection(f!, [fOrTableInSubquery.tableName])
-
-        return new SelectRows(
-            {
-                ...this.statement,
-                selection
-            })
+        return typeof fOrTableInSubquery === 'function'
+            ? mapTable(this.statement, fOrTableInSubquery)
+            : mapTableWithSubquery(this.statement, f!, fOrTableInSubquery)
     }
 
     get<U extends Value>(f: (first: T1, second: T2) => U): SelectVector<U> {
-        return new SelectVector(
-            {
-                ...this.statement,
-                selection: parseGetSelection(f)
-            })
+        return getColumn(this.statement, f)
     }
 
     count(): SelectScalar<number> {
-        return new SelectScalar(
-            {
-                ...this.statement,
-                selection: createCountSelection()
-            })
+        return countRows(this.statement)
     }
 
     max<V extends Value>(f: (first: T1, second: T2) => V): SelectScalar<V> {
-        return new SelectScalar(
-            {
-                ...this.statement,
-                selection: parseMaxSelection(f)
-            })
+        return maximizeColumn(this.statement, f)
     }
 
     min<V extends Value>(f: (first: T1, second: T2) => V): SelectScalar<V> {
-        return new SelectScalar(
-            {
-                ...this.statement,
-                selection: parseMinSelection(f)
-            })
-    }
-
-    average<V extends Value>(f: (first: T1, second: T2) => V): SelectScalar<V> {
-        return new SelectScalar(
-            {
-                ...this.statement,
-                selection: parseAverageSelection(f)
-            })
+        return minimizeColumn(this.statement, f)
     }
 
     sum<V extends Value>(f: (first: T1, second: T2) => V): SelectScalar<V> {
-        return new SelectScalar(
-            {
-                ...this.statement,
-                selection: parseSumSelection(f)
-            })
+        return sumColumn(this.statement, f)
+    }
+
+    average<V extends Value>(f: (first: T1, second: T2) => V): SelectScalar<V> {
+        return averageColumn(this.statement, f)
     }
 
     aggregate<A extends TableAggregationRecord>(
         aggregation: (first: T1, second: T2, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
-
-        return new SelectSingleRow(
-            {
-                ...this.statement,
-                selection: parseTableAggregationSelection(aggregation, 2)
-            })
+        return aggregateTables(this.statement, aggregation)
     }
 
     groupBy<K extends ValueRecord>(getKey: (first: T1, second: T2) => EnforceNonEmptyRecord<K> & K) : GroupTwoTables<T1, T2, K>{
-        const {tableName, filters, join} = this.statement
-
-        return new GroupTwoTables<T1, T2, K>({
-            ...createEmptyGroupSelectStatement(tableName, parseGetKey(getKey)),
-            filters,
-            join
-        })
+        return new GroupTwoTables<T1, T2, K>(groupTablesBy(this.statement, getKey))
     }
 }

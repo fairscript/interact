@@ -51,7 +51,7 @@ export class Table<T> {
             this.constructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
-                : addParameterizedFilter(this.statement, predicate!, 'f1', predicateOrProvided)
+                : addParameterizedFilter(this.statement, predicate!, predicateOrProvided)
         )
     }
 

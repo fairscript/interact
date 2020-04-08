@@ -45,10 +45,15 @@ export function addParameterlessFilter(statement: SelectStatement, predicate: Fu
     }
 }
 
-export function addParameterizedFilter<P extends ValueOrNestedValueRecord>(statement: SelectStatement, predicate: Function, prefix: string, userProvided: P): SelectStatement {
+export function addParameterizedFilter<P extends ValueOrNestedValueRecord>(statement: SelectStatement, predicate: Function, userProvided: P): SelectStatement {
+    const existingFilters = statement.filters
+
+    const prefix = `f${existingFilters.length + 1}`
+    const additionalFilter = parseParameterizedFilter(predicate, prefix, userProvided)
+
     return {
         ...statement,
-        filters: statement.filters.concat(parseParameterizedFilter(predicate, prefix, userProvided))
+        filters: existingFilters.concat(additionalFilter)
     }
 }
 

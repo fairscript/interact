@@ -42,7 +42,7 @@ export class JoinSecondTable<T1, T2> {
             this.secondConstructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
-                : addParameterizedFilter(this.statement, predicate!, 'f1', predicateOrProvided),
+                : addParameterizedFilter(this.statement, predicate!, predicateOrProvided),
         )
     }
 
