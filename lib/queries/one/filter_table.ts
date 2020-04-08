@@ -2,7 +2,7 @@ import {SortTable} from './sort_table'
 import {GroupTable} from './group_table'
 import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
-import {Subtable} from './subtable'
+import {Subtable} from '../subtable'
 import {Table} from './table'
 import {
     averageColumn,
@@ -19,7 +19,7 @@ import {
     selectTable
 } from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
-import {AggregatableTable, Count} from './aggregatable_table'
+import {AggregatableTable, Count} from '../aggregatable_table'
 import {aggregateTables, SelectSingleRow} from '../selection/select_single_row'
 import {
     addAscendingOrder,

@@ -1,5 +1,5 @@
 import {Value} from './value'
-import {Avg, Count, Max, Min, Sum} from './queries/one/aggregatable_table'
+import {Avg, Count, Max, Min, Sum} from './queries/aggregatable_table'
 
 export type EnforceNonEmptyRecord<R> = keyof R extends never ? never : R
 

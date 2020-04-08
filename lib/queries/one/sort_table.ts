@@ -1,6 +1,6 @@
 import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
-import {Subtable} from './subtable'
+import {Subtable} from '../subtable'
 import {Table} from './table'
 import {mapTable, mapTableWithSubquery, SelectRows, selectTable} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'

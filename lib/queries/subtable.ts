@@ -1,4 +1,4 @@
-import {Value} from '../../value'
+import {Value} from '../value'
 
 export interface Subtable<S> {
     filter: (predicate: (x: S) => boolean) => Subtable<S>,

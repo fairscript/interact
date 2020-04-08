@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import { createGroupAggregation, parseGroupAggregationSelection } from '../../../lib/parsing/selection/group_aggregation_selection_parsing'
 import {Employee} from '../../test_tables'
-import {AggregatableTable} from '../../../lib/queries/one/aggregatable_table'
+import {AggregatableTable} from '../../../lib/queries/aggregatable_table'
 import {createKey, createPartOfKey} from '../../../lib/parsing/get_key_parsing'
 import {createGetPartOfKey} from '../../../lib/parsing/aggregation/get_part_of_key_parsing'
 import {createCountOperation} from '../../../lib/parsing/count_operation_parsing'

@@ -8,7 +8,7 @@ import {parseSorting} from '../../parsing/sorting/sorting_parsing'
 import {parseGetKey} from '../../parsing/get_key_parsing'
 import {parseMultipleTableSelection} from '../../parsing/selection/multi_table_selection_parsing'
 import {Table} from '../one/table'
-import {Subtable} from '../one/subtable'
+import {Subtable} from '../subtable'
 import {parseMapWithSubquerySelection} from '../../parsing/selection/maps_selection_parsing'
 import {createCountSelection} from '../../parsing/selection/count_selection'
 import {parseParameterlessFilter} from '../../parsing/filtering/parameterless_filter_parsing'
@@ -21,7 +21,7 @@ import {
     parseMaxSelection,
     parseMinSelection, parseSumSelection
 } from '../../parsing/selection/aggregate_column_select_parsing'
-import {Count} from '../one/aggregatable_table'
+import {Count} from '../aggregatable_table'
 import {SelectSingleRow} from '../selection/select_single_row'
 import {parseTableAggregationSelection} from '../../parsing/selection/table_aggregation_selection_parsing'
 import {Constructor, SelectStatement} from '../../statements/select_statement'

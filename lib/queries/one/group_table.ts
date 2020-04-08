@@ -1,5 +1,5 @@
 import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
-import {AggregatableTable, Avg, Count, GroupAggregationRecord, Max, Min, Sum} from './aggregatable_table'
+import {AggregatableTable, Avg, Count, GroupAggregationRecord, Max, Min, Sum} from '../aggregatable_table'
 import {aggregateGroups, SelectRows} from '../selection/select_rows'
 import {SortGrouping} from './sort_grouping'
 import {

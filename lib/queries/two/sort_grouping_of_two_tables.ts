@@ -2,7 +2,7 @@ import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
 import {parseGroupSorting} from '../../parsing/sorting/group_sorting_parsing'
 import {SelectRows} from '../selection/select_rows'
 import {parseGroupAggregationSelection} from '../../parsing/selection/group_aggregation_selection_parsing'
-import {AggregatableTable, Avg, Count, Max, Min, GroupAggregationRecord, Sum} from '../one/aggregatable_table'
+import {AggregatableTable, Avg, Count, Max, Min, GroupAggregationRecord, Sum} from '../aggregatable_table'
 import {GroupSelectStatement} from '../../statements/group_select_statement'
 
 export class SortGroupingOfTwoTables<T1, T2, K extends ValueRecord> {

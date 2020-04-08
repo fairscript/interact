@@ -1,6 +1,6 @@
 import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
 import {parseGroupAggregationSelection} from '../../parsing/selection/group_aggregation_selection_parsing'
-import {AggregatableTable, Avg, Count, Max, Min, GroupAggregationRecord, Sum} from '../one/aggregatable_table'
+import {AggregatableTable, Avg, Count, Max, Min, GroupAggregationRecord, Sum} from '../aggregatable_table'
 import {SelectRows} from '../selection/select_rows'
 import {parseGroupSorting} from '../../parsing/sorting/group_sorting_parsing'
 import {SortGroupingOfTwoTables} from './sort_grouping_of_two_tables'
