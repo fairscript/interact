@@ -45,7 +45,7 @@ export function addAscendingGroupOrder(statement: GroupSelectStatement, sortBy: 
     return addGroupOrder(statement, sortBy, 'asc')
 }
 
-export function addDescendinGroupOrder(statement: GroupSelectStatement, sortBy: Function): GroupSelectStatement {
+export function addDescendingGroupOrder(statement: GroupSelectStatement, sortBy: Function): GroupSelectStatement {
     return addGroupOrder(statement, sortBy, 'desc')
 }
 

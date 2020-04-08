@@ -5,8 +5,7 @@ import {createGetColumn} from '../../lib/parsing/value_expressions/get_column_pa
 
 describe('parseJoin', () => {
 
-    it('returns an object satisfying JoinExpression', () => {
-
+    it('works for a join of two tables', () => {
         assert.deepEqual(
             parseJoin(
                 'departments',
@@ -17,6 +16,36 @@ describe('parseJoin', () => {
                 left: createGetColumn('e', 'departmentId'),
                 right: createGetColumn('d', 'id')
             })
+
+    })
+
+    describe('when the third table is joined on', () => {
+
+        it('a column of the first table', () => {
+            assert.deepEqual(
+                parseJoin(
+                    'companies',
+                    (e, d) => e.companyId,
+                    (c) => c.id),
+                {
+                    tableName: 'companies',
+                    left: createGetColumn('e', 'companyId'),
+                    right: createGetColumn('c', 'id')
+                })
+        })
+
+        it('a column of the first table', () => {
+            assert.deepEqual(
+                parseJoin(
+                    'companies',
+                    (e, d) => d.companyId,
+                    (c) => c.id),
+                {
+                    tableName: 'companies',
+                    left: createGetColumn('d', 'companyId'),
+                    right: createGetColumn('c', 'id')
+                })
+        })
 
     })
 

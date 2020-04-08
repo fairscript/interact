@@ -3,7 +3,7 @@ import {AggregatableTable, Avg, Count, GroupAggregationRecord, Max, Min, Sum} fr
 import {aggregateGroups, SelectRows} from '../selection/select_rows'
 import {
     addAscendingGroupOrder,
-    addDescendinGroupOrder,
+    addDescendingGroupOrder,
     GroupSelectStatement
 } from '../../statements/group_select_statement'
 
@@ -15,7 +15,7 @@ export class SortGrouping<T, K extends ValueRecord> {
     }
 
     thenDescendinglyBy(sortBy: (key: K, table: AggregatableTable<T>, count: () => Count) => K | Max | Min | Avg | Sum | Count): SortGrouping<T, K> {
-        return new SortGrouping(addDescendinGroupOrder(this.statement, sortBy))
+        return new SortGrouping(addDescendingGroupOrder(this.statement, sortBy))
     }
 
     aggregate<A extends GroupAggregationRecord<K>>(

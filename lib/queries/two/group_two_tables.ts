@@ -4,7 +4,7 @@ import {aggregateGroups, SelectRows} from '../selection/select_rows'
 import {SortGroupingOfTwoTables} from './sort_grouping_of_two_tables'
 import {
     addAscendingGroupOrder,
-    addDescendinGroupOrder,
+    addDescendingGroupOrder,
     GroupSelectStatement
 } from '../../statements/group_select_statement'
 
@@ -16,7 +16,7 @@ export class GroupTwoTables<T1, T2, K extends ValueRecord> {
     }
 
     sortDescendinglyBy(sortBy: (key: K, first: AggregatableTable<T1>, second: AggregatableTable<T2>, count: () => Count) => K|Max|Min|Avg|Sum|Count): SortGroupingOfTwoTables<T1, T2, K> {
-        return new SortGroupingOfTwoTables(addDescendinGroupOrder(this.statement, sortBy))
+        return new SortGroupingOfTwoTables(addDescendingGroupOrder(this.statement, sortBy))
     }
 
     aggregate<A extends GroupAggregationRecord<K>>(
