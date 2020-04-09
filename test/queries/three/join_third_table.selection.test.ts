@@ -2,40 +2,30 @@ import {checkSql} from '../sql_assertion'
 import {
     departmentsThenCompaniesThenEmployees,
     departmentsThenEmployeesThenCompanies,
-    employeesThenDepartmentsThenCompanies
+    employeesThenDepartmentsThenCompanies,
+    expectedDepartmentsThenCompaniesThenEmployeesSql,
+    expectedDepartmentsThenEmployeesThenCompaniesSql,
+    expectedEmployeesThenDepartmentsThenCompaniesSql
 } from './test_joins_of_three_tables'
 
 function testSelectionForEmployeesThenDepartmentsThenCompanies(actual, expected) {
     checkSql(
         actual,
-        [expected]
-            .concat(
-                'FROM employees t1',
-                'INNER JOIN departments t2 ON t1.department_id = t2.id',
-                'INNER JOIN companies t3 ON t2.company_id = t3.id'
-            ))
+        [expected].concat(expectedEmployeesThenDepartmentsThenCompaniesSql)
+    )
 }
 
 function testSelectionForDepartmentsThenEmployeesThenCompanies(actual, expected) {
     checkSql(
         actual,
-        [expected]
-            .concat(
-                'FROM departments t1',
-                'INNER JOIN employees t2 ON t1.id = t2.department_id',
-                'INNER JOIN companies t3 ON t1.company_id = t3.id'
-            ))
+        [expected].concat(expectedDepartmentsThenEmployeesThenCompaniesSql)
+    )
 }
 
 function testSelectionForDepartmentsThenCompaniesThenEmployees(actual, expected) {
     checkSql(
         actual,
-        [expected]
-            .concat(
-                'FROM departments t1',
-                'INNER JOIN companies t2 ON t1.company_id = t2.id',
-                'INNER JOIN employees t3 ON t1.id = t3.department_id'
-            ))
+        [expected].concat(expectedDepartmentsThenCompaniesThenEmployeesSql))
 }
 
 
