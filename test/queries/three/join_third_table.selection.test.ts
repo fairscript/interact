@@ -3,29 +3,29 @@ import {
     departmentsThenCompaniesThenEmployees,
     departmentsThenEmployeesThenCompanies,
     employeesThenDepartmentsThenCompanies,
-    expectedDepartmentsThenCompaniesThenEmployeesSql,
-    expectedDepartmentsThenEmployeesThenCompaniesSql,
-    expectedEmployeesThenDepartmentsThenCompaniesSql
+    expectedDepartmentsThenCompaniesThenEmployeesLines,
+    expectedDepartmentsThenEmployeesThenCompaniesLines,
+    expectedEmployeesThenDepartmentsThenCompaniesLines
 } from './test_joins_of_three_tables'
 
 function testSelectionForEmployeesThenDepartmentsThenCompanies(actual, expected) {
     checkSql(
         actual,
-        [expected].concat(expectedEmployeesThenDepartmentsThenCompaniesSql)
+        [expected].concat(expectedEmployeesThenDepartmentsThenCompaniesLines)
     )
 }
 
 function testSelectionForDepartmentsThenEmployeesThenCompanies(actual, expected) {
     checkSql(
         actual,
-        [expected].concat(expectedDepartmentsThenEmployeesThenCompaniesSql)
+        [expected].concat(expectedDepartmentsThenEmployeesThenCompaniesLines)
     )
 }
 
 function testSelectionForDepartmentsThenCompaniesThenEmployees(actual, expected) {
     checkSql(
         actual,
-        [expected].concat(expectedDepartmentsThenCompaniesThenEmployeesSql))
+        [expected].concat(expectedDepartmentsThenCompaniesThenEmployeesLines))
 }
 
 

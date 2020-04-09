@@ -1,25 +1,23 @@
 import {checkSql} from '../sql_assertion'
-import {departmentsThenEmployees, employeesThenDepartments} from './test_joins_of_two_tables'
+import {
+    departmentsThenEmployees,
+    employeesThenDepartments, expectedDepartmentsThenEmployeesLines,
+    expectedEmployeesThenDepartmentsLines
+} from './test_joins_of_two_tables'
 
 
 function testSelectionForEmployeesThenDepartments(actual, expected) {
     checkSql(
         actual,
-        [expected]
-            .concat(
-                'FROM employees t1',
-                'INNER JOIN departments t2 ON t1.department_id = t2.id'
-            ))
+        [expected].concat(expectedEmployeesThenDepartmentsLines)
+    )
 }
 
 function testSelectionForDepartmentsThenEmployees(actual, expected) {
     checkSql(
         actual,
-        [expected]
-            .concat(
-                'FROM departments t1',
-                'INNER JOIN employees t2 ON t1.id = t2.department_id'
-            ))
+        [expected].concat(expectedDepartmentsThenEmployeesLines)
+    )
 }
 
 describe('JoinSecondTable', () => {

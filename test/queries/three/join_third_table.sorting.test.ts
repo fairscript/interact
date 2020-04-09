@@ -2,29 +2,29 @@ import {checkSql} from '../sql_assertion'
 import {
     departmentsThenCompaniesThenEmployees,
     departmentsThenEmployeesThenCompanies,
-    employeesThenDepartmentsThenCompanies, expectedDepartmentsThenCompaniesThenEmployeesSql,
-    expectedDepartmentsThenEmployeesThenCompaniesSql,
-    expectedEmployeesThenDepartmentsThenCompaniesSql
+    employeesThenDepartmentsThenCompanies, expectedDepartmentsThenCompaniesThenEmployeesLines,
+    expectedDepartmentsThenEmployeesThenCompaniesLines,
+    expectedEmployeesThenDepartmentsThenCompaniesLines
 } from './test_joins_of_three_tables'
 
 function testSortingForEmployeesThenDepartmentsThenCompanies(actual, expected) {
     checkSql(
         actual,
-        ['SELECT t1.id'].concat(expectedEmployeesThenDepartmentsThenCompaniesSql).concat(expected)
+        ['SELECT t1.id'].concat(expectedEmployeesThenDepartmentsThenCompaniesLines).concat(expected)
     )
 }
 
 function testSortingForDepartmentsThenEmployeesThenCompanies(actual, expected) {
     checkSql(
         actual,
-        ['SELECT t2.id'].concat(expectedDepartmentsThenEmployeesThenCompaniesSql).concat(expected)
+        ['SELECT t2.id'].concat(expectedDepartmentsThenEmployeesThenCompaniesLines).concat(expected)
     )
 }
 
 function testSelectionForDepartmentsThenCompaniesThenEmployees(actual, expected) {
     checkSql(
         actual,
-        ['SELECT t3.id'].concat(expectedDepartmentsThenCompaniesThenEmployeesSql).concat(expected)
+        ['SELECT t3.id'].concat(expectedDepartmentsThenCompaniesThenEmployeesLines).concat(expected)
     )
 }
 
