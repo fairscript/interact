@@ -29,3 +29,13 @@ export const expectedDepartmentsThenCompaniesThenEmployeesLines = [
     'INNER JOIN companies t2 ON t1.company_id = t2.id',
     'INNER JOIN employees t3 ON t1.id = t3.department_id'
 ]
+
+export const companiesThenDepartmentsThenEmployees = companies
+    .join(departments, c => c.id, d => d.companyId)
+    .join(employees, (c, d) => d.id, e => e.departmentId)
+
+export const expectedCompaniesThenDepartmentsThenEmployeesLines = [
+    'FROM companies t1',
+    'INNER JOIN departments t2 ON t1.id = t2.company_id',
+    'INNER JOIN employees t3 ON t2.id = t3.department_id'
+]

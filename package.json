@@ -1,6 +1,6 @@
 {
   "name": "lambda-sql",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "An object-relational mapper for Node.js/TypeScript designed to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.",
   "keywords": [
     "lambda",

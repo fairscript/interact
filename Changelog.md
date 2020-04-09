@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.13.1
+- Fixed the signature of th aggregate method in classes representing joins.
+- Rewrote test suite for Table and JoinSecondTable to JoinThirdTable. 
+
 ## v0.13.0
 - Joins of up to five tables
 

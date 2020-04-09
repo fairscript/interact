@@ -1,5 +1,5 @@
-import {employees} from '../../test_tables'
-import {checkSql} from '../sql_assertion'
+import {employees} from '../test_tables'
+import {checkSql} from './sql_assertion'
 
 describe('map with a subtable works', () => {
     describe('with an unfiltered subquery', () => {
