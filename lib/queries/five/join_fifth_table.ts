@@ -15,7 +15,7 @@ import {
 } from '../selection/select_scalar'
 import {mapTable, mapTableWithSubquery, SelectRows, selectTables} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
-import {Count} from '../aggregatable_table'
+import {AggregatableTable, Count} from '../aggregatable_table'
 import {aggregateTables, SelectSingleRow} from '../selection/select_single_row'
 import {
     addAscendingOrder,
@@ -116,7 +116,7 @@ export class JoinFifthTable<T1, T2, T3, T4, T5> {
     }
 
     aggregate<A extends TableAggregationRecord>(
-        aggregation: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
+        aggregation: (first: AggregatableTable<T1>, second: AggregatableTable<T2>, third: AggregatableTable<T3>, fourth: AggregatableTable<T4>, fifth: AggregatableTable<T5>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
         return aggregateTables(this.statement, aggregation)
     }
 
