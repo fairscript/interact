@@ -1,9 +1,9 @@
-import {companies, departments, employees} from '../../test_tables'
 import {checkSql} from '../sql_assertion'
-
-const employeesThenDepartmentsThenCompanies = employees
-    .join(departments, e => e.departmentId, d => d.id)
-    .join(companies, (e, d) => d.companyId, c => c.id)
+import {
+    departmentsThenCompaniesThenEmployees,
+    departmentsThenEmployeesThenCompanies,
+    employeesThenDepartmentsThenCompanies
+} from './test_joins_of_three_tables'
 
 function testSelectionForEmployeesThenDepartmentsThenCompanies(actual, expected) {
     checkSql(
@@ -16,10 +16,6 @@ function testSelectionForEmployeesThenDepartmentsThenCompanies(actual, expected)
             ))
 }
 
-const departmentsThenEmployeesThenCompanies = departments
-    .join(employees, d => d.id, e => e.departmentId)
-    .join(companies, (d, e) => d.companyId, c => c.id)
-
 function testSelectionForDepartmentsThenEmployeesThenCompanies(actual, expected) {
     checkSql(
         actual,
@@ -30,10 +26,6 @@ function testSelectionForDepartmentsThenEmployeesThenCompanies(actual, expected)
                 'INNER JOIN companies t3 ON t1.company_id = t3.id'
             ))
 }
-
-const departmentsThenCompaniesThenEmployees = departments
-    .join(companies, d => d.companyId, c => c.id)
-    .join(employees, (d, c) => d.id, e => e.departmentId)
 
 function testSelectionForDepartmentsThenCompaniesThenEmployees(actual, expected) {
     checkSql(

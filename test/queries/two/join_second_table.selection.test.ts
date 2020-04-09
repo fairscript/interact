@@ -1,9 +1,6 @@
-import {departments, employees} from '../../test_tables'
 import {checkSql} from '../sql_assertion'
+import {departmentsThenEmployees, employeesThenDepartments} from './test_joins_of_two_tables'
 
-
-const employeesThenDepartments = employees
-    .join(departments, e => e.departmentId, d => d.id)
 
 function testSelectionForEmployeesThenDepartments(actual, expected) {
     checkSql(
@@ -14,9 +11,6 @@ function testSelectionForEmployeesThenDepartments(actual, expected) {
                 'INNER JOIN departments t2 ON t1.department_id = t2.id'
             ))
 }
-
-const departmentsThenEmployees = departments
-    .join(employees, d => d.id, e => e.departmentId)
 
 function testSelectionForDepartmentsThenEmployees(actual, expected) {
     checkSql(

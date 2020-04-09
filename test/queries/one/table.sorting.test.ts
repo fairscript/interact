@@ -1,8 +1,8 @@
 import {employees} from '../../test_tables'
 import {checkSql} from '../sql_assertion'
 
-describe('Sorting one table', () => {
-    describe('works using a single order', () => {
+describe('Table', () => {
+    describe('can sort', () => {
         it('in ascending direction', () => {
             checkSql(
                 employees
