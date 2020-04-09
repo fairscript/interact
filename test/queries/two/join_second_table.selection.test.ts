@@ -1,45 +1,56 @@
 import {departments, employees} from '../../test_tables'
 import {checkSql} from '../sql_assertion'
 
-describe('JoinSecondTable', () => {
-    const employeesThenDepartments = employees
-        .join(departments, e => e.departmentId, d => d.id)
 
-    const departmentsThenEmployees = departments
-        .join(employees, d => d.id, e => e.departmentId)
+const employeesThenDepartments = employees
+    .join(departments, e => e.departmentId, d => d.id)
 
-    it('can count rows', () => {
-        checkSql(
-            employeesThenDepartments
-                .count(),
-            [
-                'SELECT COUNT(*)',
+function testSelectionForEmployeesThenDepartments(actual, expected) {
+    checkSql(
+        actual,
+        [expected]
+            .concat(
                 'FROM employees t1',
                 'INNER JOIN departments t2 ON t1.department_id = t2.id'
-            ])
+            ))
+}
+
+const departmentsThenEmployees = departments
+    .join(employees, d => d.id, e => e.departmentId)
+
+function testSelectionForDepartmentsThenEmployees(actual, expected) {
+    checkSql(
+        actual,
+        [expected]
+            .concat(
+                'FROM departments t1',
+                'INNER JOIN employees t2 ON t1.id = t2.department_id'
+            ))
+}
+
+describe('JoinSecondTable', () => {
+    it('can count rows', () => {
+        testSelectionForEmployeesThenDepartments(
+            employeesThenDepartments
+                .count(),
+            'SELECT COUNT(*)')
     })
 
     describe('can get a single column from', () => {
         it('the first table', () => {
-            checkSql(
+            testSelectionForEmployeesThenDepartments(
                 employeesThenDepartments
                     .get((e, d) => e.id),
-                [
-                    'SELECT t1.id',
-                    'FROM employees t1',
-                    'INNER JOIN departments t2 ON t1.department_id = t2.id'
-                ])
+                'SELECT t1.id'
+            )
         })
 
         it('the second table', () => {
-            checkSql(
+            testSelectionForEmployeesThenDepartments(
                 employeesThenDepartments
                     .get((e, d) => d.id),
-                [
-                    'SELECT t2.id',
-                    'FROM employees t1',
-                    'INNER JOIN departments t2 ON t1.department_id = t2.id'
-                ])
+                'SELECT t2.id'
+            )
         })
     })
 
@@ -47,14 +58,10 @@ describe('JoinSecondTable', () => {
         const firstTable = 't1.id AS employee_id, t1.first_name AS employee_firstName, t1.last_name AS employee_lastName, t1.title AS employee_title, t1.salary AS employee_salary, t1.department_id AS employee_departmentId, t1.fulltime AS employee_fulltime'
         const secondTable = 't2.id AS department_id, t2.name AS department_name, t2.company_id AS department_companyId'
 
-        checkSql(
+        testSelectionForEmployeesThenDepartments(
             employeesThenDepartments
                 .select('employee', 'department'),
-            [
-                `SELECT ${firstTable}, ${secondTable}`,
-                'FROM employees t1',
-                'INNER JOIN departments t2 ON t1.department_id = t2.id'
-            ]
+            `SELECT ${firstTable}, ${secondTable}`
         )
     })
 
@@ -73,132 +80,84 @@ describe('JoinSecondTable', () => {
         describe('a single column', () => {
             describe('from the first table by', () => {
                 it('maximization', () => {
-                    checkSql(
+                    testSelectionForEmployeesThenDepartments(
                         employeesThenDepartments
                             .max(e => e.salary),
-                        [
-                            'SELECT MAX(t1.salary)',
-                            'FROM employees t1',
-                            'INNER JOIN departments t2 ON t1.department_id = t2.id'
-                        ]
+                            'SELECT MAX(t1.salary)'
                     )
                 })
 
                 it('minimization', () => {
-                    checkSql(
+                    testSelectionForEmployeesThenDepartments(
                         employeesThenDepartments
                             .min(e => e.salary),
-                        [
-                            'SELECT MIN(t1.salary)',
-                            'FROM employees t1',
-                            'INNER JOIN departments t2 ON t1.department_id = t2.id'
-                        ]
-                    )
+                        'SELECT MIN(t1.salary)')
                 })
 
                 it('averaging', () => {
-                    checkSql(
+                    testSelectionForEmployeesThenDepartments(
                         employeesThenDepartments
                             .average(e => e.salary),
-                        [
-                            'SELECT AVG(t1.salary)',
-                            'FROM employees t1',
-                            'INNER JOIN departments t2 ON t1.department_id = t2.id'
-                        ]
-                    )
+                        'SELECT AVG(t1.salary)')
                 })
 
                 it('summation', () => {
-                    checkSql(
+                    testSelectionForEmployeesThenDepartments(
                         employeesThenDepartments
                             .sum(e => e.salary),
-                        [
-                            'SELECT SUM(t1.salary)',
-                            'FROM employees t1',
-                            'INNER JOIN departments t2 ON t1.department_id = t2.id'
-                        ]
-                    )
+                        'SELECT SUM(t1.salary)')
                 })
 
             })
 
             describe('from the second table by', () => {
                 it('maximization', () => {
-                    checkSql(
+                    testSelectionForDepartmentsThenEmployees(
                         departmentsThenEmployees
-                            .max((d, e ) => e.salary),
-                        [
-                            'SELECT MAX(t2.salary)',
-                            'FROM departments t1',
-                            'INNER JOIN employees t2 ON t1.id = t2.department_id'
-                        ]
+                            .max((d, e) => e.salary),
+                        'SELECT MAX(t2.salary)'
                     )
                 })
 
                 it('minimization', () => {
-                    checkSql(
+                    testSelectionForDepartmentsThenEmployees(
                         departmentsThenEmployees
-                            .min((d, e ) => e.salary),
-                        [
-                            'SELECT MIN(t2.salary)',
-                            'FROM departments t1',
-                            'INNER JOIN employees t2 ON t1.id = t2.department_id'
-                        ]
-                    )
+                            .min((d, e) => e.salary),
+                        'SELECT MIN(t2.salary)')
                 })
 
                 it('averaging', () => {
-                    checkSql(
+                    testSelectionForDepartmentsThenEmployees(
                         departmentsThenEmployees
-                            .average((d, e ) => e.salary),
-                        [
-                            'SELECT AVG(t2.salary)',
-                            'FROM departments t1',
-                            'INNER JOIN employees t2 ON t1.id = t2.department_id'
-                        ]
-                    )
+                            .average((d, e) => e.salary),
+                        'SELECT AVG(t2.salary)')
                 })
 
                 it('summation', () => {
-                    checkSql(
+                    testSelectionForDepartmentsThenEmployees(
                         departmentsThenEmployees
-                            .sum((d, e ) => e.salary),
-                        [
-                            'SELECT SUM(t2.salary)',
-                            'FROM departments t1',
-                            'INNER JOIN employees t2 ON t1.id = t2.department_id'
-                        ]
-                    )
+                            .sum((d, e) => e.salary),
+                        'SELECT SUM(t2.salary)')
                 })
             })
         })
 
         describe('multiple columns', () => {
-
             it('from the first table', () => {
-                checkSql(
+                testSelectionForEmployeesThenDepartments(
                     employeesThenDepartments
                         .aggregate((e, d, count) => ({ highestSalary: e.salary.max(), lowestSalary: e.salary.min(), averageSalary: e.salary.avg(), totalSalary: e.salary.sum(), salaries: count() })),
-                    [
-                        'SELECT MAX(t1.salary) AS highestSalary, MIN(t1.salary) AS lowestSalary, AVG(t1.salary) AS averageSalary, SUM(t1.salary) AS totalSalary, COUNT(*) AS salaries',
-                        'FROM employees t1',
-                        'INNER JOIN departments t2 ON t1.department_id = t2.id'
-                    ]
+                    'SELECT MAX(t1.salary) AS highestSalary, MIN(t1.salary) AS lowestSalary, AVG(t1.salary) AS averageSalary, SUM(t1.salary) AS totalSalary, COUNT(*) AS salaries',
                 )
             })
 
             it('from the second table', () => {
-                checkSql(
+                testSelectionForDepartmentsThenEmployees(
                     departmentsThenEmployees
                         .aggregate((d, e, count) => ({ highestSalary: e.salary.max(), lowestSalary: e.salary.min(), averageSalary: e.salary.avg(), totalSalary: e.salary.sum(), salaries: count() })),
-                    [
-                        'SELECT MAX(t2.salary) AS highestSalary, MIN(t2.salary) AS lowestSalary, AVG(t2.salary) AS averageSalary, SUM(t2.salary) AS totalSalary, COUNT(*) AS salaries',
-                        'FROM departments t1',
-                        'INNER JOIN employees t2 ON t1.id = t2.department_id'
-                    ]
+                    'SELECT MAX(t2.salary) AS highestSalary, MIN(t2.salary) AS lowestSalary, AVG(t2.salary) AS averageSalary, SUM(t2.salary) AS totalSalary, COUNT(*) AS salaries',
                 )
             })
-
         })
     })
 })
