@@ -17,12 +17,14 @@
   "homepage": "https://github.com/fairscript/interact#Readme.md",
   "license": "MIT",
   "author": "Sebastian E. Kwiatkowski",
-  "main": "index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/fairscript/interact.git"
   },
   "scripts": {
+    "build": "tsc",
     "test": "mocha -r ts-node/register test/**/*.test.ts --exclude test/databases/**",
     "test-sqlite": "mocha -r ts-node/register test/databases/sqlite/**/*.test.ts",
     "test-postgres": "mocha -r ts-node/register --timeout 5000 test/databases/postgres/**/*.test.ts",

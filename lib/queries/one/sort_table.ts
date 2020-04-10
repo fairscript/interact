@@ -11,25 +11,25 @@ export type Direction = 'asc' | 'desc'
 export class SortTable<T> {
 
     constructor(
-        private readonly constructor: Constructor<T>,
+        private readonly typeConstructor: Constructor<T>,
         private readonly statement: SelectStatement) {}
 
     thenBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
-            this.constructor,
+            this.typeConstructor,
             addAscendingOrder(this.statement, sortBy)
         )
     }
 
     thenDescendinglyBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
-            this.constructor,
+            this.typeConstructor,
             addDescendingOrder(this.statement, sortBy)
         )
     }
 
     select(): SelectRows<T> {
-        return selectTable(this.statement, this.constructor)
+        return selectTable(this.statement, this.typeConstructor)
     }
 
     map<U extends ValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>

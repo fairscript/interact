@@ -34,14 +34,14 @@ import {groupTablesBy} from '../../statements/group_select_statement'
 export class FilterTable<T> {
 
     constructor(
-        private readonly constructor: Constructor<T>,
+        private readonly typeConstructor: Constructor<T>,
         private readonly statement: SelectStatement) {}
 
     filter(predicate: (table: T) => boolean): FilterTable<T>
     filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, table: T) => boolean): FilterTable<T>
     filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((table: T) => boolean)|P, predicate?: (parameters: P, table: T) => boolean): FilterTable<T> {
         return new FilterTable(
-            this.constructor,
+            this.typeConstructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
                 : addParameterizedFilter(this.statement, predicate!, predicateOrProvided)
@@ -50,18 +50,18 @@ export class FilterTable<T> {
 
     sortBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
-            this.constructor,
+            this.typeConstructor,
             addAscendingOrder(this.statement, sortBy))
     }
 
     sortDescendinglyBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
-            this.constructor,
+            this.typeConstructor,
             addDescendingOrder(this.statement, sortBy))
     }
 
     select(): SelectRows<T> {
-        return selectTable(this.statement, this.constructor)
+        return selectTable(this.statement, this.typeConstructor)
     }
 
     map<U extends ValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
