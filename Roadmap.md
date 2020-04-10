@@ -1,8 +1,5 @@
 # Roadmap
 
-## v0.14
-- Publication to NPM
-
 ## v0.15
 - Dates
 

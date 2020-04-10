@@ -1,7 +1,7 @@
 {
   "name": "interact",
-  "version": "0.13.2",
-  "description": "A database interaction library for Node.js/JavaScript/TypeScipt that uses code reflection to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.",
+  "version": "0.14.0",
+  "description": "A database interaction library for Node.js/JavaScript/TypeScript that uses code reflection to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.",
   "keywords": [
     "database",
     "data",

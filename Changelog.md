@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.14
+- Publication to NPM
+
 ## v0.13.2
 - Renamed project to "interact".
 
