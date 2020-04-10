@@ -1,6 +1,9 @@
 # Changelog
 
-## v0.14
+## v0.14.1
+- Package scope
+
+## v0.14.0
 - Publication to NPM
 
 ## v0.13.2
