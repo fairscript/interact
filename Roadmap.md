@@ -11,7 +11,7 @@
 
 ## v0.17
 - Return class instances in single/multi table selections
-- first/single methods
+- single/singleOrNull methods
 
 ## v0.18
 - Set up and increase test coverage

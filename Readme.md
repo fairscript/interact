@@ -1,6 +1,6 @@
-# λSQL
+# Interact
 
-An object-relational mapper for Node.js/TypeScript designed to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.
+A database interaction library for node.js/JavaScript/Type that uses code reflection to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.
 
 ## Features
 - [Selecting tables](doc/Selection.md)
@@ -40,7 +40,7 @@ class Department {
 ### Step 2) Define tables
 
 ```typescript
-import { defineTable } from 'lambda-sql'
+import { defineTable } from 'interact'
 
 const employees = defineTable(Employee, 'employees')
 const departments = defineTable(Department, 'departments')

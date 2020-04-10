@@ -1,25 +1,26 @@
 {
-  "name": "lambda-sql",
-  "version": "0.13.1",
-  "description": "An object-relational mapper for Node.js/TypeScript designed to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.",
+  "name": "interact",
+  "version": "0.13.2",
+  "description": "A database interaction library for Node.js/JavaScript/TypeScipt that uses code reflection to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.",
   "keywords": [
-    "lambda",
+    "database",
+    "data",
     "sql",
     "orm",
     "sqlite",
     "postgres",
     "bigquery",
-    "typescript",
     "typesafe",
+    "reflection",
     "linq"
   ],
-  "homepage": "https://github.com/sekwiatkowski/lambda-sql#Readme.md",
+  "homepage": "https://github.com/fairscript/interact#Readme.md",
   "license": "MIT",
   "author": "Sebastian E. Kwiatkowski",
   "main": "index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sekwiatkowski/lambda-sql.git"
+    "url": "https://github.com/fairscript/interact.git"
   },
   "scripts": {
     "test": "mocha -r ts-node/register test/**/*.test.ts --exclude test/databases/**",

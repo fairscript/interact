@@ -1,8 +1,11 @@
 # Changelog
 
+## v0.13.2
+- Renamed project to "interact".
+
 ## v0.13.1
 - Fixed the signature of th aggregate method in classes representing joins.
-- Rewrote test suite for Table and JoinSecondTable to JoinThirdTable. 
+- Rewrote test suite for Table, JoinSecondTable and JoinThirdTable. 
 
 ## v0.13.0
 - Joins of up to five tables
