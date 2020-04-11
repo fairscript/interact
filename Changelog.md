@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.15.0
+- Set up Lerna
+- Moved database-specific code to separate modules
+
 ## v0.14.1
 - Package scope
 

@@ -1,0 +1,15 @@
+{
+  "include": ["lib/**/*"],
+  "exclude": ["node_modules", "test", "dist"],
+  "compilerOptions": {
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "outDir": "dist",
+    "target": "ES5",
+    "declaration": true
+  }
+}

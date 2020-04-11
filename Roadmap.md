@@ -1,28 +1,25 @@
 # Roadmap
 
-## v0.15
-- Dates
-
 ## v0.16
-- HAVING
+- Improve documentation
 
 ## v0.17
+- Dates
+
+## v0.18
+- HAVING
+
+## v0.19
 - Return class instances in single/multi table selections
 - single/singleOrNull methods
 
-## v0.18
+## v0.20
 - Set up and increase test coverage
 
-## v0.19
-- Move database-specific code to separate modules
-
-## v0.20
+## v0.21
 - INSERT
 - DELETE
 - UPDATE
-
-## v0.21
-- Improve documentation
 
 ## v0.22
 - Byte arrays

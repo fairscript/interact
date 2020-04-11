@@ -1,56 +1,6 @@
 {
-  "name": "@fairscript/interact",
-  "version": "0.14.1",
-  "description": "A database interaction library for Node.js/JavaScript/TypeScript that uses code reflection to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.",
-  "keywords": [
-    "database",
-    "data",
-    "sql",
-    "orm",
-    "sqlite",
-    "postgres",
-    "bigquery",
-    "typesafe",
-    "reflection",
-    "linq"
-  ],
-  "homepage": "https://github.com/fairscript/interact#Readme.md",
-  "license": "MIT",
-  "author": "Sebastian E. Kwiatkowski",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/fairscript/interact.git"
-  },
-  "scripts": {
-    "build": "tsc",
-    "test": "mocha -r ts-node/register test/**/*.test.ts --exclude test/databases/**",
-    "test-sqlite": "mocha -r ts-node/register test/databases/sqlite/**/*.test.ts",
-    "test-postgres": "mocha -r ts-node/register --timeout 5000 test/databases/postgres/**/*.test.ts",
-    "test-bigquery": "mocha -r ts-node/register --timeout 5000 test/databases/bigquery/**/*.test.ts",
-    "test-all": "mocha -r ts-node/register --timeout 5000 test/**/*.test.ts"
-  },
-  "dependencies": {
-    "@google-cloud/bigquery": "4.7.0",
-    "arcsecond": "2.0.4",
-    "js-snakecase": "1.2.0",
-    "pg": "7.18.2",
-    "sqlite3": "4.1.1",
-    "yesql": "4.1.1"
-  },
+  "name": "root",
   "devDependencies": {
-    "@types/chai": "4.2.11",
-    "@types/chai-as-promised": "7.1.2",
-    "@types/mocha": "7.0.1",
-    "@types/node": "13.7.7",
-    "@types/pg": "7.14.3",
-    "@types/sqlite3": "3.1.6",
-    "chai": "4.2.0",
-    "chai-as-promised": "7.1.1",
-    "dotenv": "8.2.0",
-    "mocha": "7.1.0",
-    "ts-node": "8.6.2",
-    "typescript": "3.8.3"
+    "lerna": "^3.20.2"
   }
 }
