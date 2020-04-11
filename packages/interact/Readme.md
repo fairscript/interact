@@ -2,6 +2,27 @@
 
 A database interaction library for node.js/JavaScript/Type that uses code reflection to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.
 
+## Installation
+
+Interact can be installed from npm:
+
+```bash
+npm install interact
+```
+
+There is one additional module for each of the three supported databases: 
+
+```bash
+# Required for Postgres support
+npm install interact-with-postgres
+
+# Required for Gogole BigQuery support
+npm install interact-with-bigquery
+
+# Required for SQLite support
+npm install interact-with-sqlite
+```
+
 ## Features
 - [Selecting tables](doc/Selection.md)
 - [Mapping tables](doc/Mapping.md)
