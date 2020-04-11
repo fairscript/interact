@@ -1,6 +1,6 @@
 {
   "name": "@fairscript/interact-with-sqlite",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "description": "SQLite support for interact",
   "keywords": [
     "database",
@@ -27,7 +27,7 @@
     "test": "mocha -r ts-node/register test/**/*.test.ts"
   },
   "dependencies": {
-    "@fairscript/interact": "^0.15.0",
+    "@fairscript/interact": "^0.15.1",
     "sqlite3": "4.1.1"
   },
   "devDependencies": {

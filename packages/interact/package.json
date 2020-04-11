@@ -1,6 +1,6 @@
 {
   "name": "@fairscript/interact",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "description": "A database interaction library for Node.js/JavaScript/TypeScript that uses code reflection to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.",
   "keywords": [
     "database",
