@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.15.2
+- Set publishConfig
+
+## v0.15.1
+- Same Readme.md file in project root and interact package 
+
 ## v0.15.0
 - Set up Lerna
 - Moved database-specific code to separate modules
