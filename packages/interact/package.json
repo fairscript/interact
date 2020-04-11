@@ -14,7 +14,7 @@
     "reflection",
     "linq"
   ],
-  "homepage": "https://github.com/fairscript/interact/interact#Readme.md",
+  "homepage": "https://github.com/fairscript/interact#Readme.md",
   "license": "MIT",
   "author": "Sebastian E. Kwiatkowski",
   "main": "dist/index.js",
