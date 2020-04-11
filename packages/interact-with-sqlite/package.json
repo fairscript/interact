@@ -1,6 +1,9 @@
 {
   "name": "@fairscript/interact-with-sqlite",
   "version": "0.15.1",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "SQLite support for interact",
   "keywords": [
     "database",

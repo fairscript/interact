@@ -16,7 +16,7 @@ There is one additional module for each of the three supported databases:
 # Required for Postgres support
 npm install interact-with-postgres
 
-# Required for Gogole BigQuery support
+# Required for Google BigQuery support
 npm install interact-with-bigquery
 
 # Required for SQLite support
