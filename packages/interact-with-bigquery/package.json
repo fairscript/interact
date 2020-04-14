@@ -1,6 +1,6 @@
 {
   "name": "@fairscript/interact-with-bigquery",
-  "version": "0.15.3",
+  "version": "0.15.4",
   "publishConfig": {
     "access": "public"
   },
@@ -26,7 +26,7 @@
     "test": "mocha -r ts-node/register test/**/*.test.ts --timeout 5000"
   },
   "dependencies": {
-    "@fairscript/interact": "^0.15.3",
+    "@fairscript/interact": "^0.15.4",
     "@google-cloud/bigquery": "4.7.0",
     "js-snakecase": "1.2.0"
   },
