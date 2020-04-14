@@ -2,7 +2,7 @@ import {SortTwoTables} from './sort_two_tables'
 import {GroupTwoTables} from './group_two_tables'
 import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
-import {Columns, Table} from '../one/table'
+import {Table} from '../one/table'
 import {Subtable} from '../subtable'
 import {
     averageColumn,
@@ -20,7 +20,6 @@ import {
     addDescendingOrder,
     addParameterizedFilter,
     addParameterlessFilter,
-    Constructor,
     SelectStatement
 } from '../../statements/select_statement'
 import {groupTablesBy} from '../../statements/group_select_statement'
@@ -30,16 +29,12 @@ import {selectExpectedSetOfRows, SelectExpectedSetOfRows} from '../selection/sel
 
 export class FilterTwoTables<T1, T2> {
     constructor(
-        private readonly firstConstructor: Constructor<T1>,
-        private readonly secondConstructor: Constructor<T2>,
         private readonly statement: SelectStatement) {}
 
     filter(predicate: (first: T1, second: T2) => boolean): FilterTwoTables<T1, T2>
     filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2>
     filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((first: T1, second: T2) => boolean)|P, predicate?: (parameters: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
         return new FilterTwoTables(
-            this.firstConstructor,
-            this.secondConstructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
                 : addParameterizedFilter(this.statement, predicate!, predicateOrProvided)
@@ -48,15 +43,11 @@ export class FilterTwoTables<T1, T2> {
 
     sortBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {
         return new SortTwoTables(
-            this.firstConstructor,
-            this.secondConstructor,
             addAscendingOrder(this.statement, sortBy))
     }
 
     sortDescendinglyBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {
         return new SortTwoTables(
-            this.firstConstructor,
-            this.secondConstructor,
             addDescendingOrder(this.statement, sortBy))
     }
 
@@ -64,8 +55,8 @@ export class FilterTwoTables<T1, T2> {
         return selectSetsOfRows(
             this.statement,
             [
-                [firstName, this.firstConstructor],
-                [secondName, this.secondConstructor]
+                firstName,
+                secondName
             ])
     }
 
@@ -73,8 +64,8 @@ export class FilterTwoTables<T1, T2> {
         return selectExpectedSetOfRows(
             this.statement,
             [
-                [firstName, this.firstConstructor],
-                [secondName, this.secondConstructor]
+                firstName,
+                secondName
             ])
     }
 

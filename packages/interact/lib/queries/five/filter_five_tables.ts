@@ -20,7 +20,6 @@ import {
     addDescendingOrder,
     addParameterizedFilter,
     addParameterlessFilter,
-    Constructor,
     SelectStatement
 } from '../../statements/select_statement'
 import {groupTablesBy} from '../../statements/group_select_statement'
@@ -29,23 +28,12 @@ import {selectSetsOfRows, SelectSetsOfRows} from '../selection/select_sets_of_ro
 import {selectExpectedSetOfRows, SelectExpectedSetOfRows} from '../selection/select_expected_set_of_rows'
 
 export class FilterFiveTables<T1, T2, T3, T4, T5> {
-    constructor(
-        private readonly firstConstructor: Constructor<T1>,
-        private readonly secondConstructor: Constructor<T2>,
-        private readonly thirdConstructor: Constructor<T3>,
-        private readonly fourthConstructor: Constructor<T4>,
-        private readonly fifthConstructor: Constructor<T5>,
-        private readonly statement: SelectStatement) {}
+    constructor(private readonly statement: SelectStatement) {}
 
     filter(predicate: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => boolean): FilterFiveTables<T1, T2, T3, T4, T5>
     filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => boolean): FilterFiveTables<T1, T2, T3, T4, T5>
     filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => boolean)|P, predicate?: (parameters: P, first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => boolean): FilterFiveTables<T1, T2, T3, T4, T5> {
         return new FilterFiveTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
-            this.fourthConstructor,
-            this.fifthConstructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
                 : addParameterizedFilter(this.statement, predicate!, predicateOrProvided)
@@ -54,21 +42,11 @@ export class FilterFiveTables<T1, T2, T3, T4, T5> {
 
     sortBy(sortBy: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => Value): SortFiveTables<T1, T2, T3, T4, T5> {
         return new SortFiveTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
-            this.fourthConstructor,
-            this.fifthConstructor,
             addAscendingOrder(this.statement, sortBy))
     }
 
     sortDescendinglyBy(sortBy: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => Value): SortFiveTables<T1, T2, T3, T4, T5> {
         return new SortFiveTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
-            this.fourthConstructor,
-            this.fifthConstructor,
             addDescendingOrder(this.statement, sortBy))
     }
 
@@ -76,11 +54,11 @@ export class FilterFiveTables<T1, T2, T3, T4, T5> {
         return selectSetsOfRows(
             this.statement,
             [
-                [firstName, this.firstConstructor],
-                [secondName, this.secondConstructor],
-                [thirdName, this.thirdConstructor],
-                [fourthName, this.fourthConstructor],
-                [fifthName, this.fifthConstructor]
+                firstName,
+                secondName,
+                thirdName,
+                fourthName,
+                fifthName
             ])
     }
 
@@ -88,11 +66,11 @@ export class FilterFiveTables<T1, T2, T3, T4, T5> {
         return selectExpectedSetOfRows(
             this.statement,
             [
-                [firstName, this.firstConstructor],
-                [secondName, this.secondConstructor],
-                [thirdName, this.thirdConstructor],
-                [fourthName, this.fourthConstructor],
-                [fifthName, this.fifthConstructor]
+                firstName,
+                secondName,
+                thirdName,
+                fourthName,
+                fifthName
             ])
     }
 

@@ -1,8 +1,5 @@
 # Roadmap
 
-## v0.15.4
-- Replace the use of constructors with column specifications.
-
 ## v0.16
 - Improve documentation
 

@@ -1,4 +1,4 @@
-import {parseConstructor} from '../functions/constructor_parsing'
+import {ColumnRecord} from '../../record'
 
 export interface SingleTableSelection {
     kind: 'single-table-selection'
@@ -12,8 +12,8 @@ export function createSingleTableSelection(properties: string[]): SingleTableSel
     }
 }
 
-export function parseSingleTableSelection(constructor: Function): SingleTableSelection {
-    const properties = parseConstructor(constructor)
+export function parseSingleTableSelection(columns: ColumnRecord): SingleTableSelection {
+    const properties = Object.keys(columns)
 
     return createSingleTableSelection(properties)
 }

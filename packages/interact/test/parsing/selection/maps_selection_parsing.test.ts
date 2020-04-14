@@ -6,19 +6,19 @@ import {createSubselectStatement} from '../../../lib/statements/subselect_statem
 import {createCountSelection} from '../../../lib/parsing/selection/count_selection'
 import {createEqual, createGreaterThan} from '../../../lib/parsing/boolean_expressions/comparisons'
 import {createGetColumn} from '../../../lib/parsing/value_expressions/get_column_parsing'
-import {employeeColumns} from '../../../lib/test/model/employee'
+import {employees} from '../../../lib/test/test_tables'
 
 describe('parseMapS can parse a map with a subquery', function () {
 
     it('with one filter', () => {
-        const actual = parseMapWithSubquerySelection('employees', employeeColumns, (st, e) => ({
+        const actual = parseMapWithSubquerySelection('employees', employees.columns, (st, e) => ({
             id: e.id,
             higherSalary: st.filter(se => se.salary > e.salary).count()
         }))
 
         const expectedSubselectStatement = createSubselectStatement(
             'employees',
-            employeeColumns,
+            employees.columns,
             [
                 createParameterlessFilter(
                     {se: 's1', e: 't1'},
@@ -40,7 +40,7 @@ describe('parseMapS can parse a map with a subquery', function () {
     })
 
     it('with two filters', () => {
-        const actual = parseMapWithSubquerySelection('employees', employeeColumns, (st, e) => ({
+        const actual = parseMapWithSubquerySelection('employees', employees.columns, (st, e) => ({
             id: e.id,
             higherSalary: st.filter(se => se.salary > e.salary).filter(se => se.departmentId === e.departmentId).count()
         }))
@@ -48,7 +48,7 @@ describe('parseMapS can parse a map with a subquery', function () {
         const tableParameterNameToTableAlias = {se: 's1', e: 't1'}
         const expectedSubselectStatement = createSubselectStatement(
             'employees',
-            employeeColumns,
+            employees.columns,
             [
                 createParameterlessFilter(
                     tableParameterNameToTableAlias,

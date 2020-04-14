@@ -4,27 +4,21 @@ import {Table} from '../one/table'
 import {Subtable} from '../subtable'
 import {mapTable, mapTableWithSubquery, SelectRows} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
-import {addAscendingOrder, addDescendingOrder, Constructor, SelectStatement} from '../../statements/select_statement'
+import {addAscendingOrder, addDescendingOrder, SelectStatement} from '../../statements/select_statement'
 import {selectSetsOfRows, SelectSetsOfRows} from '../selection/select_sets_of_rows'
 
 export class SortTwoTables<T1, T2> {
 
     constructor(
-        private readonly firstConstructor: Constructor<T1>,
-        private readonly secondConstructor: Constructor<T2>,
         private readonly statement: SelectStatement) {}
 
     thenBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {
         return new SortTwoTables(
-            this.firstConstructor,
-            this.secondConstructor,
             addAscendingOrder(this.statement, sortBy))
     }
 
     thenDescendinglyBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {
         return new SortTwoTables(
-            this.firstConstructor,
-            this.secondConstructor,
             addDescendingOrder(this.statement, sortBy))
     }
 
@@ -32,8 +26,8 @@ export class SortTwoTables<T1, T2> {
         return selectSetsOfRows(
             this.statement,
             [
-                [firstName, this.firstConstructor],
-                [secondName, this.secondConstructor]
+                firstName,
+                secondName
             ])
     }
 

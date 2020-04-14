@@ -1,6 +1,6 @@
 # Interact
 
-A database interaction library for node.js/JavaScript/Type that uses code reflection to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.
+A database interaction library for node.js/JavaScript/TypeScript that uses code reflection to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.
 
 ## Installation
 
@@ -23,6 +23,8 @@ npm install interact-with-bigquery
 npm install interact-with-sqlite
 ```
 
+## Features
+
 - [Selecting tables](https://github.com/fairscript/interact/tree/master/packages/interact/doc/Selection.md)
 - [Mapping tables](https://github.com/fairscript/interact/tree/master/packages/interact/doc/Mapping.md)
 - [Getting a single column](https://github.com/fairscript/interact/tree/master/packages/interact/doc/Getting.md)
@@ -35,30 +37,38 @@ npm install interact-with-sqlite
 
 ## Getting started
 
-### Step 1) Define a class
+### Step 1: Define a type
 
 ```typescript
-class Employee {
-    constructor(
-        public id: number,
-        public firstName: string,
-        public lastName: string,
-        public title: string,
-        public salary: number,
-        public departmentId: string) {
-    }
+interface Employee {
+    id: number,
+    firstName: string,
+    lastName: string,
+    title: string,
+    salary: number,
+    departmentId: string
+    fulltime: boolean
 }
 ```
 
-### Step 2) Define a table
+### Step 2: Define a table
 
 ```typescript
-import { defineTable } from 'interact'
+import { defineTable } from '@fairscript/interact'
 
-const employees = defineTable(Employee, 'employees')
+const employees = defineTable<Employee>(
+    'employees',
+    {
+        id: 'number',
+        firstName: 'string',
+        lastName: 'string',
+        title: 'string',
+        salary: 'number',
+        departmentId: 'string',
+        fulltime: 'boolean'
+    })
 ```
-
-The `defineTable` function takes two parameters: a constructor and the database table name.
+`defineTable` is a generic function that expects two arguments: the database table name and a record specifying the column types for the specified type.
 
 ### Step 3) Create a database context and start running queries
 
@@ -67,7 +77,7 @@ const dbContext = createSqliteContext(filename)
 
 const query = employees
     .filter(e => e.id === 1)
-    .map(e => ({ firstName: e.firstName, lastName: e.lastName }))
+    .map(e => ({ first: e.firstName, last: e.lastName }))
 
 const namesOfEmployees = dbContext.get(query)
 ```
@@ -75,6 +85,7 @@ const namesOfEmployees = dbContext.get(query)
 This generates the following SQL query:
 
 ```sql
-SELECT t1.first_name AS firstName, t1.last_name AS lastName
+SELECT t1.first_name AS first, t1.last_name AS last
 FROM employees t1
+WHERE t1.id = 1
 ```

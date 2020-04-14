@@ -4,36 +4,20 @@ import {Table} from '../one/table'
 import {Subtable} from '../subtable'
 import {mapTable, mapTableWithSubquery, SelectRows} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
-import {addAscendingOrder, addDescendingOrder, Constructor, SelectStatement} from '../../statements/select_statement'
+import {addAscendingOrder, addDescendingOrder, SelectStatement} from '../../statements/select_statement'
 import {selectSetsOfRows, SelectSetsOfRows} from '../selection/select_sets_of_rows'
 
 export class SortFiveTables<T1, T2, T3, T4, T5> {
 
-    constructor(
-        private firstConstructor: Constructor<T1>,
-        private secondConstructor: Constructor<T2>,
-        private thirdConstructor: Constructor<T3>,
-        private fourthConstructor: Constructor<T4>,
-        private fifthConstructor: Constructor<T5>,
-        private readonly statement: SelectStatement) {}
+    constructor(private readonly statement: SelectStatement) {}
 
     thenBy(sortBy: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => Value): SortFiveTables<T1, T2, T3, T4, T5> {
         return new SortFiveTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
-            this.fourthConstructor,
-            this.fifthConstructor,
             addAscendingOrder(this.statement, sortBy))
     }
 
     thenDescendinglyBy(sortBy: (first: T1, second: T2, third: T3, fourth: T4, fifth: T5) => Value): SortFiveTables<T1, T2, T3, T4, T5> {
         return new SortFiveTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
-            this.fourthConstructor,
-            this.fifthConstructor,
             addDescendingOrder(this.statement, sortBy))
     }
 
@@ -41,11 +25,11 @@ export class SortFiveTables<T1, T2, T3, T4, T5> {
         return selectSetsOfRows(
             this.statement,
             [
-                [firstName, this.firstConstructor],
-                [secondName, this.secondConstructor],
-                [thirdName, this.thirdConstructor],
-                [fourthName, this.fourthConstructor],
-                [fifthName, this.fifthConstructor]
+                firstName,
+                secondName,
+                thirdName,
+                fourthName,
+                fifthName
             ])
     }
 

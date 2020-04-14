@@ -21,7 +21,7 @@ import {
     addDescendingOrder,
     addParameterizedFilter,
     addParameterlessFilter,
-    Constructor, joinTable,
+    joinTable,
     SelectStatement
 } from '../../statements/select_statement'
 import {groupTablesBy} from '../../statements/group_select_statement'
@@ -32,20 +32,12 @@ import {selectSetsOfRows, SelectSetsOfRows} from '../selection/select_sets_of_ro
 export class JoinFourthTable<T1, T2, T3, T4> {
 
     constructor(
-        private readonly firstConstructor: Constructor<T1>,
-        private readonly secondConstructor: Constructor<T2>,
-        private readonly thirdConstructor: Constructor<T3>,
-        private readonly fourthConstructor: Constructor<T4>,
         private readonly statement: SelectStatement) {}
 
     filter(predicate: (first: T1, second: T2, third: T3, fourth: T4) => boolean): FilterFourTables<T1, T2, T3, T4>
     filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, first: T1, second: T2, third: T3, fourth: T4) => boolean): FilterFourTables<T1, T2, T3, T4>
     filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((first: T1, second: T2, third: T3, fourth: T4) => boolean)|P, predicate?: (parameters: P, first: T1, second: T2, third: T3, fourth: T4) => boolean): FilterFourTables<T1, T2, T3, T4> {
         return new FilterFourTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
-            this.fourthConstructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
                 : addParameterizedFilter(this.statement, predicate!, predicateOrProvided),
@@ -54,29 +46,16 @@ export class JoinFourthTable<T1, T2, T3, T4> {
 
     sortBy(sortBy: (first: T1, second: T2, third: T3, fourth: T4) => Value): SortFourTables<T1, T2, T3, T4> {
         return new SortFourTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
-            this.fourthConstructor,
             addAscendingOrder(this.statement, sortBy))
     }
 
     sortDescendinglyBy(sortBy: (first: T1, second: T2, third: T3, fourth: T4) => Value): SortFourTables<T1, T2, T3, T4> {
         return new SortFourTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
-            this.fourthConstructor,
             addDescendingOrder(this.statement, sortBy))
     }
 
     join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T1, secondTable: T2, thirdTable: T3, fourthTable: T4) => K, right: (thirdTable: U) => K): JoinFifthTable<T1, T2, T3, T4, U> {
         return new JoinFifthTable(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
-            this.fourthConstructor,
-            otherTable.typeConstructor,
             joinTable(this.statement, otherTable, left, right))
     }
 
@@ -84,10 +63,10 @@ export class JoinFourthTable<T1, T2, T3, T4> {
         return selectSetsOfRows(
             this.statement,
             [
-                [firstName, this.firstConstructor],
-                [secondName, this.secondConstructor],
-                [thirdName, this.thirdConstructor],
-                [fourthName, this.fourthConstructor]
+                firstName,
+                secondName,
+                thirdName,
+                fourthName
             ])
     }
 

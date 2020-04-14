@@ -3,8 +3,7 @@ import {Employee} from './model/employee'
 import {Company} from './model/companies'
 import {Department} from './model/department'
 
-export const employees = defineTable(
-    Employee,
+export const employees = defineTable<Employee>(
     'employees',
     {
         id: 'number',
@@ -16,23 +15,6 @@ export const employees = defineTable(
         fulltime: 'boolean'
     })
 
-export const departments = defineTable(
-    Department,
-    'departments',
-    {
-        id: 'number',
-        name: 'string',
-        companyId: 'number'
-    })
-
-export const companies = defineTable(
-    Company,
-    'companies',
-    {
-        id: 'number',
-        name: 'string',
-    })
-
 export const testEmployees: Employee[] =
     [
         new Employee(1, 'John', 'Doe', 'CEO', 10_000, 1, true),
@@ -42,8 +24,28 @@ export const testEmployees: Employee[] =
         new Employee(5, 'James', 'Miller', 'Assistant', 2_000, 2, false)
     ]
 
+export const departments = defineTable<Department>(
+    'departments',
+    {
+        id: 'number',
+        name: 'string',
+        companyId: 'number'
+    })
+
 export const testDepartments: Department[] =
     [
         new Department(1, 'Board of Directors', 1),
-        new Department(2, 'Research & Development', 2)
+        new Department(2, 'Research & Development', 1)
+    ]
+
+export const companies = defineTable<Company>(
+    'companies',
+    {
+        id: 'number',
+        name: 'string',
+    })
+
+export const testCompanies: Company[] =
+    [
+        new Company(1, 'Board of Directors'),
     ]

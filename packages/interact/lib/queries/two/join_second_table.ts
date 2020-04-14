@@ -21,7 +21,6 @@ import {
     addDescendingOrder,
     addParameterizedFilter,
     addParameterlessFilter,
-    Constructor,
     joinTable,
     SelectStatement
 } from '../../statements/select_statement'
@@ -32,17 +31,12 @@ import {selectSetsOfRows, SelectSetsOfRows} from '../selection/select_sets_of_ro
 
 export class JoinSecondTable<T1, T2> {
 
-    constructor(
-        private readonly firstConstructor: Constructor<T1>,
-        private readonly secondConstructor: Constructor<T2>,
-        private readonly statement: SelectStatement) {}
+    constructor(private readonly statement: SelectStatement) {}
 
     filter(predicate: (first: T1, second: T2) => boolean): FilterTwoTables<T1, T2>
     filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2>
     filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((first: T1, second: T2) => boolean)|P, predicate?: (parameters: P, first: T1, second: T2) => boolean): FilterTwoTables<T1, T2> {
         return new FilterTwoTables(
-            this.firstConstructor,
-            this.secondConstructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
                 : addParameterizedFilter(this.statement, predicate!, predicateOrProvided),
@@ -51,23 +45,16 @@ export class JoinSecondTable<T1, T2> {
 
     sortBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {
         return new SortTwoTables(
-            this.firstConstructor,
-            this.secondConstructor,
             addAscendingOrder(this.statement, sortBy))
     }
 
     sortDescendinglyBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {
         return new SortTwoTables(
-            this.firstConstructor,
-            this.secondConstructor,
             addDescendingOrder(this.statement, sortBy))
     }
 
     join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T1, secondTable: T2) => K, right: (thirdTable: U) => K): JoinThirdTable<T1, T2, U> {
         return new JoinThirdTable(
-            this.firstConstructor,
-            this.secondConstructor,
-            otherTable.typeConstructor,
             joinTable(this.statement, otherTable, left, right))
     }
 
@@ -75,8 +62,8 @@ export class JoinSecondTable<T1, T2> {
         return selectSetsOfRows(
             this.statement,
             [
-                [firstName, this.firstConstructor],
-                [secondName, this.secondConstructor]
+                firstName,
+                secondName
             ])
     }
 

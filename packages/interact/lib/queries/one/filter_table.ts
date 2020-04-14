@@ -3,7 +3,7 @@ import {GroupTable} from './group_table'
 import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
 import {Subtable} from '../subtable'
-import {Columns, Table} from './table'
+import {Table} from './table'
 import {
     averageColumn,
     countRows,
@@ -12,12 +12,7 @@ import {
     SelectScalar,
     sumColumn
 } from '../selection/select_scalar'
-import {
-    mapTable,
-    mapTableWithSubquery,
-    SelectRows,
-    selectTable
-} from '../selection/select_rows'
+import {mapTable, mapTableWithSubquery, SelectRows, selectTable} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
 import {AggregatableTable, Count} from '../aggregatable_table'
 import {
@@ -25,7 +20,6 @@ import {
     addDescendingOrder,
     addParameterizedFilter,
     addParameterlessFilter,
-    Constructor,
     SelectStatement
 } from '../../statements/select_statement'
 import {groupTablesBy} from '../../statements/group_select_statement'
@@ -35,14 +29,12 @@ import {aggregateTables, SelectGuaranteedSingleRow} from '../selection/select_gu
 export class FilterTable<T> {
 
     constructor(
-        private readonly typeConstructor: Constructor<T>,
         private readonly statement: SelectStatement) {}
 
     filter(predicate: (table: T) => boolean): FilterTable<T>
     filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, table: T) => boolean): FilterTable<T>
     filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((table: T) => boolean)|P, predicate?: (parameters: P, table: T) => boolean): FilterTable<T> {
         return new FilterTable(
-            this.typeConstructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
                 : addParameterizedFilter(this.statement, predicate!, predicateOrProvided)
@@ -51,22 +43,20 @@ export class FilterTable<T> {
 
     sortBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
-            this.typeConstructor,
             addAscendingOrder(this.statement, sortBy))
     }
 
     sortDescendinglyBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
-            this.typeConstructor,
             addDescendingOrder(this.statement, sortBy))
     }
 
     select(): SelectRows<T> {
-        return selectTable(this.statement, this.typeConstructor)
+        return selectTable(this.statement)
     }
 
     single(): SelectExpectedSingleRow<T> {
-        return selectExpectedSingleRow(this.statement, this.typeConstructor)
+        return selectExpectedSingleRow(this.statement)
     }
 
     map<U extends ValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>

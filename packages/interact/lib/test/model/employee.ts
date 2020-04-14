@@ -1,6 +1,3 @@
-import {ColumnRecord} from '../../record'
-import {Columns} from '../../queries/one/table'
-
 export class Employee {
     constructor(
         public id: number,
@@ -11,14 +8,4 @@ export class Employee {
         public departmentId: number,
         public fulltime: boolean) {
     }
-}
-
-export const employeeColumns: Columns<Employee> = {
-    id: 'number',
-    firstName: 'string',
-    lastName: 'string',
-    title: 'string',
-    salary: 'string',
-    departmentId: 'number',
-    fulltime: 'boolean'
 }

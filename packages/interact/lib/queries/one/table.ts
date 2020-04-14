@@ -13,18 +13,14 @@ import {
     SelectScalar,
     sumColumn
 } from '../selection/select_scalar'
-import {
-    mapTable,
-    mapTableWithSubquery,
-    SelectRows, selectTable
-} from '../selection/select_rows'
+import {mapTable, mapTableWithSubquery, SelectRows, selectTable} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
 import {AggregatableTable, Count} from '../aggregatable_table'
 import {
-    addAscendingOrder, addDescendingOrder,
+    addAscendingOrder,
+    addDescendingOrder,
     addParameterizedFilter,
     addParameterlessFilter,
-    Constructor,
     createEmptySelectStatement,
     joinTable,
     SelectStatement
@@ -41,7 +37,6 @@ export class Table<T> {
     private readonly statement: SelectStatement
 
     constructor(
-        public readonly typeConstructor: Constructor<T>,
         public readonly tableName: string,
         public readonly columns: Columns<T>) {
 
@@ -52,7 +47,6 @@ export class Table<T> {
     filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, table: T) => boolean): FilterTable<T>
     filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((table: T) => boolean)|P, predicate?: (parameters: P, table: T) => boolean): FilterTable<T> {
         return new FilterTable(
-            this.typeConstructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
                 : addParameterizedFilter(this.statement, predicate!, predicateOrProvided)
@@ -61,27 +55,23 @@ export class Table<T> {
 
     sortBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
-            this.typeConstructor,
             addAscendingOrder(this.statement, sortBy)
         )
     }
 
     sortDescendinglyBy(sortBy: (table: T) => Value): SortTable<T> {
         return new SortTable(
-            this.typeConstructor,
             addDescendingOrder(this.statement, sortBy)
         )
     }
 
     join<U, K extends Value>(otherTable: Table<U>, left: (firstTable: T) => K, right: (secondTable: U) => K): JoinSecondTable<T, U> {
         return new JoinSecondTable(
-            this.typeConstructor,
-            otherTable.typeConstructor,
             joinTable(this.statement, otherTable, left, right))
     }
 
     select(): SelectRows<T> {
-        return selectTable(this.statement, this.typeConstructor)
+        return selectTable(this.statement)
     }
 
     map<U extends ValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
@@ -126,6 +116,6 @@ export class Table<T> {
     }
 }
 
-export function defineTable<T>(typeConstructor: Constructor<T>, tableName: string, columns: Columns<T>): Table<T> {
-    return new Table(typeConstructor, tableName, columns)
+export function defineTable<T>(tableName: string, columns: Columns<T>): Table<T> {
+    return new Table(tableName, columns)
 }

@@ -2,7 +2,7 @@ import {SortThreeTables} from './sort_three_tables'
 import {GroupThreeTables} from './group_three_tables'
 import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
-import {Columns, Table} from '../one/table'
+import {Table} from '../one/table'
 import {Subtable} from '../subtable'
 import {
     averageColumn,
@@ -20,7 +20,6 @@ import {
     addDescendingOrder,
     addParameterizedFilter,
     addParameterlessFilter,
-    Constructor,
     SelectStatement
 } from '../../statements/select_statement'
 import {groupTablesBy} from '../../statements/group_select_statement'
@@ -30,18 +29,12 @@ import {selectExpectedSetOfRows, SelectExpectedSetOfRows} from '../selection/sel
 
 export class FilterThreeTables<T1, T2, T3> {
     constructor(
-        private readonly firstConstructor: Constructor<T1>,
-        private readonly secondConstructor: Constructor<T2>,
-        private readonly thirdConstructor: Constructor<T3>,
         private readonly statement: SelectStatement) {}
 
     filter(predicate: (first: T1, second: T2, third: T3) => boolean): FilterThreeTables<T1, T2, T3>
     filter<P extends ValueOrNestedValueRecord>(provided: P, predicate: (parameters: P, first: T1, second: T2, third: T3) => boolean): FilterThreeTables<T1, T2, T3>
     filter<P extends ValueOrNestedValueRecord>(predicateOrProvided: ((first: T1, second: T2, third: T3) => boolean)|P, predicate?: (parameters: P, first: T1, second: T2, third: T3) => boolean): FilterThreeTables<T1, T2, T3> {
         return new FilterThreeTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
             typeof predicateOrProvided === 'function'
                 ? addParameterlessFilter(this.statement, predicateOrProvided)
                 : addParameterizedFilter(this.statement, predicate!, predicateOrProvided)
@@ -50,17 +43,11 @@ export class FilterThreeTables<T1, T2, T3> {
 
     sortBy(sortBy: (first: T1, second: T2, third: T3) => Value): SortThreeTables<T1, T2, T3> {
         return new SortThreeTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
             addAscendingOrder(this.statement, sortBy))
     }
 
     sortDescendinglyBy(sortBy: (first: T1, second: T2, third: T3) => Value): SortThreeTables<T1, T2, T3> {
         return new SortThreeTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
             addDescendingOrder(this.statement, sortBy))
     }
 
@@ -68,9 +55,9 @@ export class FilterThreeTables<T1, T2, T3> {
         return selectSetsOfRows(
             this.statement,
             [
-                [firstName, this.firstConstructor],
-                [secondName, this.secondConstructor],
-                [thirdName, this.thirdConstructor]
+                firstName,
+                secondName,
+                thirdName
             ])
     }
 
@@ -78,9 +65,9 @@ export class FilterThreeTables<T1, T2, T3> {
         return selectExpectedSetOfRows(
             this.statement,
             [
-                [firstName, this.firstConstructor],
-                [secondName, this.secondConstructor],
-                [thirdName, this.thirdConstructor]
+                firstName,
+                secondName,
+                thirdName
             ])
     }
 

@@ -11,7 +11,7 @@ import {
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import {defineTable} from '@fairscript/interact/lib'
-import {Employee, employeeColumns} from '@fairscript/interact/lib/test/model/employee'
+import {employees} from '@fairscript/interact/lib/test/test_tables'
 import {createDatabaseContextTestSuite} from '@fairscript/interact/lib/test/integration/database_context_test_suite'
 
 describe('BigQuery context', () => {
@@ -21,7 +21,7 @@ describe('BigQuery context', () => {
     const tableName = computeBigQueryTestTableName('context_tests')
 
     const ctx = createBigQueryContext(bigQuery, datasetName)
-    const suite = createDatabaseContextTestSuite(ctx, defineTable(Employee, tableName, employeeColumns))
+    const suite = createDatabaseContextTestSuite(ctx, defineTable(tableName, employees.columns))
 
     before(async() => {
         chai.should()

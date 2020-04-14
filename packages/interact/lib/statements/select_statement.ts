@@ -8,10 +8,6 @@ import {parseParameterizedFilter} from '../parsing/filtering/parameterized_filte
 import {Direction} from '../queries/one/sort_table'
 import {Table} from '../queries/one/table'
 
-export interface Constructor<T> {
-    new(...args: any[]): T
-}
-
 export interface SelectStatement {
     tableName: string
     columns: ColumnRecord

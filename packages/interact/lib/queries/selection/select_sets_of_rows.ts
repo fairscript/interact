@@ -10,6 +10,7 @@ import {Runnable} from '../../databases/database_context'
 import {SelectStatement} from '../../statements/select_statement'
 import {GroupSelectStatement} from '../../statements/group_select_statement'
 import {DistinctRows} from './distinct_rows'
+import {collectColumnRecords} from '../../record'
 
 export class SelectSetsOfRows<T> implements Runnable<T[]> {
     constructor(public statement: SelectStatement) {}
@@ -37,11 +38,11 @@ export class SelectSetsOfRows<T> implements Runnable<T[]> {
 
 export function selectSetsOfRows<Ts>(
     statement: SelectStatement,
-    nameAndConstructorPairs: [string, Function][]): SelectSetsOfRows<Ts> {
+    nameAndConstructorPairs: string[]): SelectSetsOfRows<Ts> {
 
     return new SelectSetsOfRows(
         {
             ...statement,
-            selection: parseMultipleTableSelection(nameAndConstructorPairs)
+            selection: parseMultipleTableSelection(nameAndConstructorPairs, collectColumnRecords(statement))
         })
 }

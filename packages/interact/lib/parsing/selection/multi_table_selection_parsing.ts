@@ -1,4 +1,4 @@
-import {parseConstructor} from '../functions/constructor_parsing'
+import {ColumnRecord} from '../../record'
 
 export interface MultiTableSelection {
     kind: 'multi-table-selection'
@@ -12,9 +12,13 @@ export function createMultiTableSelection(namesPairedWithProperties: [string, st
     }
 }
 
-export function parseMultipleTableSelection(pairs: [string, Function][]): MultiTableSelection {
-    const namesPairedWithProperties = pairs.map(([name , table]) =>
-        [name, parseConstructor(table)] as [string, string[]]
+export function parseMultipleTableSelection(names: string[], columnRecords: ColumnRecord[]): MultiTableSelection {
+    const namesPairedWithProperties = names.reduce(
+        (acc, name, index) => {
+            acc.push([name, Object.keys(columnRecords[index])])
+            return acc
+        },
+        [] as [string, string[]][]
     )
 
     return createMultiTableSelection(namesPairedWithProperties)

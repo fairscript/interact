@@ -4,30 +4,21 @@ import {Table} from '../one/table'
 import {Subtable} from '../subtable'
 import {mapTable, mapTableWithSubquery, SelectRows} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
-import {addAscendingOrder, addDescendingOrder, Constructor, SelectStatement} from '../../statements/select_statement'
+import {addAscendingOrder, addDescendingOrder, SelectStatement} from '../../statements/select_statement'
 import {selectSetsOfRows, SelectSetsOfRows} from '../selection/select_sets_of_rows'
 
 export class SortThreeTables<T1, T2, T3> {
 
     constructor(
-        private readonly firstConstructor: Constructor<T1>,
-        private readonly secondConstructor: Constructor<T2>,
-        private readonly thirdConstructor: Constructor<T3>,
         private readonly statement: SelectStatement) {}
 
     thenBy(sortBy: (first: T1, second: T2, third: T3) => Value): SortThreeTables<T1, T2, T3> {
         return new SortThreeTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
             addAscendingOrder(this.statement, sortBy))
     }
 
     thenDescendinglyBy(sortBy: (first: T1, second: T2, third: T3) => Value): SortThreeTables<T1, T2, T3> {
         return new SortThreeTables(
-            this.firstConstructor,
-            this.secondConstructor,
-            this.thirdConstructor,
             addDescendingOrder(this.statement, sortBy))
     }
 
@@ -35,9 +26,9 @@ export class SortThreeTables<T1, T2, T3> {
         return selectSetsOfRows(
             this.statement,
             [
-                [firstName, this.firstConstructor],
-                [secondName, this.secondConstructor],
-                [thirdName, this.thirdConstructor]
+                firstName,
+                secondName,
+                thirdName
             ])
     }
 

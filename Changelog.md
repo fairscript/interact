@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.15.4
+- Replace the use of constructors with column specifications
+- Updated the project readme
+
 ## v0.15.3
 - Column type specification
 - Fixed multi-table selections

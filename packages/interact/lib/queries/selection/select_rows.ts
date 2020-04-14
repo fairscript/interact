@@ -38,11 +38,11 @@ export class SelectRows<T> implements Runnable<T[]> {
     readonly clientInstruction = 'rows'
 }
 
-export function selectTable<T>(statement: SelectStatement, typeConstructor: Function): SelectRows<T> {
+export function selectTable<T>(statement: SelectStatement): SelectRows<T> {
     return new SelectRows(
         {
             ...statement,
-            selection: parseSingleTableSelection(typeConstructor)
+            selection: parseSingleTableSelection(statement.columns)
         })
 }
 
