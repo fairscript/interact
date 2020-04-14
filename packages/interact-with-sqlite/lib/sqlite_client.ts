@@ -1,5 +1,7 @@
 import { Database } from 'sqlite3'
-import {DatabaseClient, ValueRecord, Value} from '@fairscript/interact'
+import {DatabaseClient} from '@fairscript/interact/lib/databases/database_client'
+import {ValueRecord} from '@fairscript/interact/lib/record'
+import {Value} from '@fairscript/interact/lib/value'
 
 export class SqliteClient implements DatabaseClient {
 

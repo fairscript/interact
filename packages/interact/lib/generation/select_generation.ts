@@ -1,4 +1,4 @@
-import {Selection} from '../parsing/selection/selection_parsing'
+import {GroupSelection, TableSelection} from '../parsing/selection/selection_parsing'
 import {generateCountSelection} from './selection/count_selection_generation'
 import {generateMapSelection} from './selection/map_selection_generation'
 import {generateGroupAggregationSelection} from './selection/group_aggregation_selection_generation'
@@ -6,9 +6,10 @@ import {generateSingleTableSelection} from './selection/single_table_selection_g
 import {generateMultiTableSelection} from './selection/multi_table_selection_generation'
 import {generateSingleColumnSelection} from './selection/single_column_selection_generation'
 import {generateTableAggregationSelection} from './selection/table_aggregation_selection_generation'
+import {Key} from '../parsing/get_key_parsing'
 
 
-function generateSelection(aliasEscape: string|null, namedParameterPrefix: string, selection: Selection): string {
+function generateTableSelection(aliasEscape: string|null, namedParameterPrefix: string, selection: TableSelection): string {
     switch (selection.kind) {
         case 'count-selection':
             return generateCountSelection()
@@ -18,8 +19,6 @@ function generateSelection(aliasEscape: string|null, namedParameterPrefix: strin
             return generateSingleTableSelection(aliasEscape, selection)
         case 'multi-table-selection':
             return generateMultiTableSelection(aliasEscape, selection)
-        case 'group-aggregation-selection':
-            return generateGroupAggregationSelection(aliasEscape, selection)
         case 'table-aggregation-selection':
             return generateTableAggregationSelection(aliasEscape, selection)
         case 'map-selection':
@@ -27,7 +26,7 @@ function generateSelection(aliasEscape: string|null, namedParameterPrefix: strin
     }
 }
 
-export function generateSelect (aliasEscape: string|null, namedParameterPrefix: string, selection: Selection, distinct: boolean): string {
+export function generateTableSelect (distinct: boolean, aliasEscape: string|null, namedParameterPrefix: string, selection: TableSelection): string {
     let result = 'SELECT'
     result += ' '
 
@@ -36,7 +35,28 @@ export function generateSelect (aliasEscape: string|null, namedParameterPrefix: 
         result += ' '
     }
 
-    result += generateSelection(aliasEscape, namedParameterPrefix, selection)
+    result += generateTableSelection(aliasEscape, namedParameterPrefix, selection)
+
+    return result
+}
+
+function generateGroupSelection(aliasEscape: string|null, namedParameterPrefix: string, selection: GroupSelection, key: Key): string {
+    switch (selection.kind) {
+        case 'group-aggregation-selection':
+            return generateGroupAggregationSelection(aliasEscape, namedParameterPrefix, selection, key)
+    }
+}
+
+export function generateGroupSelect(distinct: boolean, aliasEscape: string|null, namedParameterPrefix: string, key: Key, selection: GroupSelection): string {
+    let result = 'SELECT'
+    result += ' '
+
+    if (distinct) {
+        result += 'DISTINCT'
+        result += ' '
+    }
+
+    result += generateGroupSelection(aliasEscape, namedParameterPrefix, selection, key)
 
     return result
 }

@@ -1,4 +1,4 @@
-import {departments, employees} from '@fairscript/interact'
+import {departments, employees} from '@fairscript/interact/lib/test/test_tables'
 
 export const employeesThenDepartments = employees
     .join(departments, e => e.departmentId, d => d.id)

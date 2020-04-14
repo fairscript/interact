@@ -3,7 +3,7 @@ import {GroupTable} from './group_table'
 import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
 import {Subtable} from '../subtable'
-import {Table} from './table'
+import {Columns, Table} from './table'
 import {
     averageColumn,
     countRows,
@@ -20,7 +20,6 @@ import {
 } from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
 import {AggregatableTable, Count} from '../aggregatable_table'
-import {aggregateTables, SelectSingleRow} from '../selection/select_single_row'
 import {
     addAscendingOrder,
     addDescendingOrder,
@@ -30,6 +29,8 @@ import {
     SelectStatement
 } from '../../statements/select_statement'
 import {groupTablesBy} from '../../statements/group_select_statement'
+import {SelectExpectedSingleRow, selectExpectedSingleRow} from '../selection/select_expected_single_row'
+import {aggregateTables, SelectGuaranteedSingleRow} from '../selection/select_guaranteed_single_row'
 
 export class FilterTable<T> {
 
@@ -62,6 +63,10 @@ export class FilterTable<T> {
 
     select(): SelectRows<T> {
         return selectTable(this.statement, this.typeConstructor)
+    }
+
+    single(): SelectExpectedSingleRow<T> {
+        return selectExpectedSingleRow(this.statement, this.typeConstructor)
     }
 
     map<U extends ValueRecord>(f: (table: T) => EnforceNonEmptyRecord<U> & U): SelectRows<U>
@@ -97,7 +102,7 @@ export class FilterTable<T> {
     }
 
     aggregate<A extends TableAggregationRecord>(
-        aggregation: (table: AggregatableTable<T>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
+        aggregation: (table: AggregatableTable<T>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectGuaranteedSingleRow<A> {
         return aggregateTables(this.statement, aggregation)
     }
 

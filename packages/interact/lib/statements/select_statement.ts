@@ -1,8 +1,8 @@
-import {Selection} from '../parsing/selection/selection_parsing'
+import {TableSelection} from '../parsing/selection/selection_parsing'
 import {Filter} from '../parsing/filtering/filter_parsing'
 import {OrderExpression, parseSorting} from '../parsing/sorting/sorting_parsing'
 import {JoinExpression, parseJoin} from '../parsing/join_parsing'
-import {ValueOrNestedValueRecord} from '../record'
+import {ColumnRecord, ValueOrNestedValueRecord} from '../record'
 import {parseParameterlessFilter} from '../parsing/filtering/parameterless_filter_parsing'
 import {parseParameterizedFilter} from '../parsing/filtering/parameterized_filter_parsing'
 import {Direction} from '../queries/one/sort_table'
@@ -14,19 +14,21 @@ export interface Constructor<T> {
 
 export interface SelectStatement {
     tableName: string
+    columns: ColumnRecord
     filters: Filter[]
     joins: JoinExpression[]
     orders: OrderExpression[]
-    selection: Selection | null
+    selection: TableSelection | null
     distinct: boolean
     limit: number | 'all'
     offset: number,
     kind: 'select-statement'
 }
 
-export function createEmptySelectStatement(tableName: string): SelectStatement {
+export function createEmptySelectStatement<T>(tableName: string, columns: ColumnRecord): SelectStatement {
     return {
         tableName,
+        columns,
         filters: [],
         joins: [],
         orders: [],
@@ -74,7 +76,7 @@ export function addDescendingOrder(statement: SelectStatement, sortBy: Function)
 
 export function joinTable<T>(statement: SelectStatement, otherTable: Table<T>, left: Function, right: Function): SelectStatement {
     const existingJoins = statement.joins
-    const additionalJoin = parseJoin(otherTable.tableName, left, right, statement.joins.length+1)
+    const additionalJoin = parseJoin(otherTable.tableName, otherTable.columns, left, right, statement.joins.length+1)
 
     return {
         ...statement,

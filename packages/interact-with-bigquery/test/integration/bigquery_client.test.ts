@@ -1,6 +1,5 @@
 require('dotenv').config()
 
-import {createDatabaseClientTestSuite} from '@fairscript/interact'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import {BigQueryClient, createBigQueryClient} from '../../lib/bigquery_client'
@@ -10,6 +9,7 @@ import {
     setupBigQueryTestData,
     tearDownBigQueryTestData
 } from './bigquery_setup'
+import {createDatabaseClientTestSuite} from '@fairscript/interact/lib/test/integration/database_client_test_suite'
 
 describe('BigQueryClient', () => {
 

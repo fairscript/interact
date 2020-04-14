@@ -1,4 +1,4 @@
-import {departments, employees} from '@fairscript/interact'
+import {departments, employees} from '@fairscript/interact/lib/test/test_tables'
 import {checkSql} from '../sql_assertion'
 
 describe('Aggregation of a join of two tables', () => {

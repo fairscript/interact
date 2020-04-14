@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.15.3
+- Column type specification
+- Fixed multi-table selections
+- Map numbers back to booleans in SQLite
+- SQLite integration tests
+- Expectation of single rows
+- Filtering in sorted tables
+
 ## v0.15.2
 - Set publishConfig
 

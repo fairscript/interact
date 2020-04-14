@@ -1,6 +1,7 @@
 import {Table} from '../../queries/one/table'
-import {DatabaseContext, Employee} from '../..'
 import {testEmployees} from '../test_tables'
+import {DatabaseContext} from '../../databases/database_context'
+import {Employee} from '../model/employee'
 
 export function createDatabaseContextTestSuite(ctx: DatabaseContext, employees: Table<Employee>) {
     const scalarQuery = employees.count()

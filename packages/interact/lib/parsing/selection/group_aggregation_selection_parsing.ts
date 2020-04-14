@@ -7,40 +7,23 @@ import {GroupAggregationOperation, createGroupAggregationOperationParser} from '
 
 export interface GroupAggregationSelection {
     kind: 'group-aggregation-selection',
-    partOfKeyToTableAndProperty: {[partOfKey: string]: [string, string]},
     parameterToTable: {[partOfKey: string]: string},
-
     operations: [string, GroupAggregationOperation][]
 }
 
 export function createGroupAggregation(
-    partOfKeyToTableAndProperty: {[partOfKey: string]: [string, string]},
     parameterToTable: {[partOfKey: string]: string},
     operations: [string, GroupAggregationOperation][]): GroupAggregationSelection {
 
     return {
         kind: 'group-aggregation-selection',
-        partOfKeyToTableAndProperty,
         parameterToTable,
         operations
     }
 }
 
-export function mapPartOfKeyToTableAndProperty(key: Key): {[partOfKey: string]: [string, string]} {
-    return key.parts.reduce(
-        (acc, part) => {
-            acc[part.alias] = [key.parameterToTable[part.get.object], part.get.property]
-
-            return acc
-        },
-        {}
-    )
-}
-
 export function parseGroupAggregationSelection(f: Function, key: Key, numberOfTables: number): GroupAggregationSelection {
     const { parameters, expression } = extractLambdaParametersAndExpression(f)
-
-    const partOfKeyToTableAndProperty = mapPartOfKeyToTableAndProperty(key)
 
     const keyParameterName = parameters[0]
     const objectParameterNames = parameters.slice(1, numberOfTables+1)
@@ -53,7 +36,7 @@ export function parseGroupAggregationSelection(f: Function, key: Key, numberOfTa
 
     const operations = parser.run(expression).result
 
-    const aggregation = createGroupAggregation(partOfKeyToTableAndProperty, parameterToTable, operations)
+    const aggregation = createGroupAggregation(parameterToTable, operations)
 
     return aggregation
 }

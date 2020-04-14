@@ -1,10 +1,10 @@
-import {createDatabaseClientTestSuite} from '@fairscript/interact'
-
 require('dotenv').config()
+
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import {createPgTestClient, setUpPostgresTestData} from './postgres_setup'
 import {createPostgresClient} from '../../lib/postgres_client'
+import {createDatabaseClientTestSuite} from '@fairscript/interact/lib/test/integration/database_client_test_suite'
 
 describe('PostgresClient', () => {
 

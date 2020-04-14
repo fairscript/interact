@@ -1,12 +1,12 @@
-import {createPostgresContext} from '../../lib'
-
 require('dotenv').config()
 
+import {createPostgresContext} from '../../lib'
 import {createPgTestClient, setUpPostgresTestData} from './postgres_setup'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import {createPostgresClient} from '../../lib/postgres_client'
-import {createDatabaseContextTestSuite, employees} from '@fairscript/interact'
+import {createDatabaseContextTestSuite} from '@fairscript/interact/lib/test/integration/database_context_test_suite'
+import {employees} from '@fairscript/interact/lib/test/test_tables'
 
 describe('Postgres context', () => {
 

@@ -16,12 +16,10 @@ function generateSidesOfJoin(left: LeftSideOfJoin, right: RightSideOfJoin): stri
     return `${generateLeftSideOfJoin(left)} = ${generateRightSideOfJoin(right)}`
 }
 
-export function generateInnerJoin(joinExpression: JoinExpression): string {
-    const {tableName, left, right} = joinExpression
-
+export function generateInnerJoin(tableName: string, left: LeftSideOfJoin, right: RightSideOfJoin): string {
     return `INNER JOIN ${tableName} ${right.tableAlias} ON ${generateSidesOfJoin(left, right)}`
 }
 
 export function generateJoins(joinExpressions: JoinExpression[]): string[] {
-    return joinExpressions.map(generateInnerJoin)
+    return joinExpressions.map(({tableName, left, right}) => generateInnerJoin(tableName, left, right))
 }

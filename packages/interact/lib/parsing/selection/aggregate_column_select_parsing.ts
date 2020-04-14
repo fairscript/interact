@@ -1,4 +1,3 @@
-import {Selection} from './selection_parsing'
 import {parseGetColumn} from '../value_expressions/get_column_parsing'
 import {AggregationFunction, createAggregateColumn} from '../aggregation/aggregate_column_parsing'
 import {createSingleColumnSelection, SingleColumnSelection} from './single_column_selection_parsing'
@@ -10,18 +9,18 @@ export function parseAggregateColumnSelection(f: Function, aggregationFunction: 
     return createSingleColumnSelection(parameterNameToTableAlias, aggregateColumn)
 }
 
-export function parseMaxSelection(f: Function): Selection {
+export function parseMaxSelection(f: Function): SingleColumnSelection {
     return parseAggregateColumnSelection(f, 'max')
 }
 
-export function parseMinSelection(f: Function): Selection {
+export function parseMinSelection(f: Function): SingleColumnSelection {
     return parseAggregateColumnSelection(f, 'min')
 }
 
-export function parseAverageSelection(f: Function): Selection {
+export function parseAverageSelection(f: Function): SingleColumnSelection {
     return parseAggregateColumnSelection(f, 'avg')
 }
 
-export function parseSumSelection(f: Function): Selection {
+export function parseSumSelection(f: Function): SingleColumnSelection {
     return parseAggregateColumnSelection(f, 'sum')
 }

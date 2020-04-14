@@ -20,7 +20,6 @@ import {
 } from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
 import {AggregatableTable, Count} from '../aggregatable_table'
-import {aggregateTables, SelectSingleRow} from '../selection/select_single_row'
 import {
     addAscendingOrder, addDescendingOrder,
     addParameterizedFilter,
@@ -31,16 +30,22 @@ import {
     SelectStatement
 } from '../../statements/select_statement'
 import {groupTablesBy} from '../../statements/group_select_statement'
+import {aggregateTables, SelectGuaranteedSingleRow} from '../selection/select_guaranteed_single_row'
 
+
+export type Columns<T> = {
+    [P in keyof T]: 'string'|'number'|'boolean';
+}
 
 export class Table<T> {
     private readonly statement: SelectStatement
 
     constructor(
-        public typeConstructor: Constructor<T>,
-        public tableName: string) {
+        public readonly typeConstructor: Constructor<T>,
+        public readonly tableName: string,
+        public readonly columns: Columns<T>) {
 
-        this.statement = createEmptySelectStatement(tableName)
+        this.statement = createEmptySelectStatement(tableName, columns)
     }
 
     filter(predicate: (table: T) => boolean): FilterTable<T>
@@ -112,7 +117,7 @@ export class Table<T> {
     }
 
     aggregate<A extends TableAggregationRecord>(
-        aggregation: (table: AggregatableTable<T>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
+        aggregation: (table: AggregatableTable<T>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectGuaranteedSingleRow<A> {
         return aggregateTables(this.statement, aggregation)
     }
 
@@ -121,6 +126,6 @@ export class Table<T> {
     }
 }
 
-export function defineTable<T>(typeConstructor: Constructor<T>, name: string): Table<T> {
-    return new Table(typeConstructor, name)
+export function defineTable<T>(typeConstructor: Constructor<T>, tableName: string, columns: Columns<T>): Table<T> {
+    return new Table(typeConstructor, tableName, columns)
 }

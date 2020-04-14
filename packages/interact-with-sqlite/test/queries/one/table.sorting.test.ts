@@ -1,4 +1,4 @@
-import {employees} from '@fairscript/interact'
+import {employees} from '@fairscript/interact/lib/test/test_tables'
 import {checkSql} from '../sql_assertion'
 
 describe('Table', () => {

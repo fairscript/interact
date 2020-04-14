@@ -2,8 +2,9 @@ import * as A from 'arcsecond'
 import {createGetPartOfKeyParser, GetPartOfKey} from './get_part_of_key_parsing'
 import {AggregateColumn, createAggregateColumnParser} from './aggregate_column_parsing'
 import {CountOperation, createCountOperationParser} from '../count_operation_parsing'
+import {SubselectStatement} from '../../statements/subselect_statement'
 
-export type GroupAggregationOperation = GetPartOfKey|AggregateColumn|CountOperation
+export type GroupAggregationOperation = GetPartOfKey|AggregateColumn|CountOperation|SubselectStatement
 
 export function createGroupAggregationOperationParser(keyParameterName: string, objectParameterNames: string[], countParameter: string|null) {
     const valueParsers: any[] = []

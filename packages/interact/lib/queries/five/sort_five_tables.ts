@@ -2,9 +2,10 @@ import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
 import {Table} from '../one/table'
 import {Subtable} from '../subtable'
-import {mapTable, mapTableWithSubquery, SelectRows, selectTables} from '../selection/select_rows'
+import {mapTable, mapTableWithSubquery, SelectRows} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
 import {addAscendingOrder, addDescendingOrder, Constructor, SelectStatement} from '../../statements/select_statement'
+import {selectSetsOfRows, SelectSetsOfRows} from '../selection/select_sets_of_rows'
 
 export class SortFiveTables<T1, T2, T3, T4, T5> {
 
@@ -36,8 +37,8 @@ export class SortFiveTables<T1, T2, T3, T4, T5> {
             addDescendingOrder(this.statement, sortBy))
     }
 
-    select<K extends string>(firstName: string, secondName: string, thirdName: string, fourthName: string, fifthName: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 } & { [third in K]: T3 } & { [fourth in K]: T4 } & { [fifth in K]: T5 }> {
-        return selectTables(
+    select<K extends string>(firstName: string, secondName: string, thirdName: string, fourthName: string, fifthName: string): SelectSetsOfRows<{ [first in K]: T1 } & { [second in K]: T2 } & { [third in K]: T3 } & { [fourth in K]: T4 } & { [fifth in K]: T5 }> {
+        return selectSetsOfRows(
             this.statement,
             [
                 [firstName, this.firstConstructor],

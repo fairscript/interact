@@ -1,6 +1,6 @@
-import {DatabaseContext} from '@fairscript/interact'
 import {createSqliteInFileClient, createSqliteInMemoryClient, SqliteClient} from './sqlite_client'
 import {sqliteDialect} from './sqlite_dialect'
+import {DatabaseContext} from '@fairscript/interact/lib/databases/database_context'
 
 export function createSqliteContext(client: SqliteClient): DatabaseContext {
     return new DatabaseContext(client, sqliteDialect)

@@ -13,10 +13,9 @@ import {
     SelectScalar,
     sumColumn
 } from '../selection/select_scalar'
-import {mapTable, mapTableWithSubquery, SelectRows, selectTables} from '../selection/select_rows'
+import {mapTable, mapTableWithSubquery, SelectRows} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
 import {AggregatableTable, Count} from '../aggregatable_table'
-import {aggregateTables, SelectSingleRow} from '../selection/select_single_row'
 import {
     addAscendingOrder,
     addDescendingOrder,
@@ -26,6 +25,8 @@ import {
     SelectStatement
 } from '../../statements/select_statement'
 import {groupTablesBy} from '../../statements/group_select_statement'
+import {aggregateTables, SelectGuaranteedSingleRow} from '../selection/select_guaranteed_single_row'
+import {selectSetsOfRows, SelectSetsOfRows} from '../selection/select_sets_of_rows'
 
 export class JoinFifthTable<T1, T2, T3, T4, T5> {
 
@@ -72,8 +73,8 @@ export class JoinFifthTable<T1, T2, T3, T4, T5> {
             addDescendingOrder(this.statement, sortBy))
     }
 
-    select<K extends string>(firstName: string, secondName: string, thirdName: string, fourthName: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 } & { [third in K]: T3 } & { [fourth in K]: T4 } > {
-        return selectTables(
+    select<K extends string>(firstName: string, secondName: string, thirdName: string, fourthName: string): SelectSetsOfRows<{ [first in K]: T1 } & { [second in K]: T2 } & { [third in K]: T3 } & { [fourth in K]: T4 } > {
+        return selectSetsOfRows(
             this.statement,
             [
                 [firstName, this.firstConstructor],
@@ -116,7 +117,7 @@ export class JoinFifthTable<T1, T2, T3, T4, T5> {
     }
 
     aggregate<A extends TableAggregationRecord>(
-        aggregation: (first: AggregatableTable<T1>, second: AggregatableTable<T2>, third: AggregatableTable<T3>, fourth: AggregatableTable<T4>, fifth: AggregatableTable<T5>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
+        aggregation: (first: AggregatableTable<T1>, second: AggregatableTable<T2>, third: AggregatableTable<T3>, fourth: AggregatableTable<T4>, fifth: AggregatableTable<T5>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectGuaranteedSingleRow<A> {
         return aggregateTables(this.statement, aggregation)
     }
 

@@ -1,5 +1,5 @@
-import {employees} from '@fairscript/interact'
 import {checkSql, checkSqlAndParameters} from '../sql_assertion'
+import {employees} from '@fairscript/interact/lib/test/test_tables'
 
 describe('Table can filter', () => {
     it('without a user-provided parameter', () => {

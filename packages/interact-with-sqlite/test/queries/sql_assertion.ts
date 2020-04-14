@@ -1,13 +1,13 @@
 import * as assert from 'assert'
+import {sqliteDialect} from '../../lib/sqlite_dialect'
+import {Runnable} from '@fairscript/interact/lib/databases/database_context'
 import {
     generateSelectStatementParameters,
-    generateSelectStatementSql,
-    joinWithNewLine,
-    Runnable,
-    Value,
-    ValueRecord
-} from '@fairscript/interact'
-import {sqliteDialect} from '../../lib/sqlite_dialect'
+    generateSelectStatementSql
+} from '@fairscript/interact/lib/generation/select_statement_generation'
+import {joinWithNewLine} from '@fairscript/interact/lib/join'
+import {ValueRecord} from '@fairscript/interact/lib/record'
+import {Value} from '@fairscript/interact/lib/value'
 
 export function checkSql<T>(
     select: Runnable<T>,

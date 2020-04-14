@@ -2,15 +2,16 @@ import {EnforceNonEmptyRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
 import {Table} from '../one/table'
 import {Subtable} from '../subtable'
-import {mapTable, mapTableWithSubquery, SelectRows, selectTables} from '../selection/select_rows'
+import {mapTable, mapTableWithSubquery, SelectRows} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
 import {addAscendingOrder, addDescendingOrder, Constructor, SelectStatement} from '../../statements/select_statement'
+import {selectSetsOfRows, SelectSetsOfRows} from '../selection/select_sets_of_rows'
 
 export class SortTwoTables<T1, T2> {
 
     constructor(
-        private firstConstructor: Constructor<T1>,
-        private secondConstructor: Constructor<T2>,
+        private readonly firstConstructor: Constructor<T1>,
+        private readonly secondConstructor: Constructor<T2>,
         private readonly statement: SelectStatement) {}
 
     thenBy(sortBy: (first: T1, second: T2) => Value): SortTwoTables<T1, T2> {
@@ -27,8 +28,8 @@ export class SortTwoTables<T1, T2> {
             addDescendingOrder(this.statement, sortBy))
     }
 
-    select<K extends string>(firstName: string, secondName: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
-        return selectTables(
+    select<K extends string>(firstName: string, secondName: string): SelectSetsOfRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
+        return selectSetsOfRows(
             this.statement,
             [
                 [firstName, this.firstConstructor],

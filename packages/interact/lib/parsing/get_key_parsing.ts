@@ -20,13 +20,13 @@ export function createPartOfKey(alias: string, get: GetColumn): PartOfKey {
 
 export interface Key {
     parameterToTable: {[parameter: string]: string}
-    parts: PartOfKey[]
+    partsOfKey: PartOfKey[]
 }
 
-export function createKey(parameterToTable: {[parameter: string]: string}, parts: PartOfKey[]): Key {
+export function createKey(parameterToTable: {[parameter: string]: string}, partsOfKey: PartOfKey[]): Key {
     return {
         parameterToTable,
-        parts
+        partsOfKey
     }
 }
 

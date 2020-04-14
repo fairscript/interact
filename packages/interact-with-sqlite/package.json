@@ -15,7 +15,7 @@
     "reflection",
     "linq"
   ],
-  "homepage": "https://github.com/fairscript/interact/interact-with-sqlite/#Readme.md",
+  "homepage": "https://github.com/fairscript/interact/blob/master/packages/interact-with-sqlite/Readme.md",
   "license": "MIT",
   "author": "Sebastian E. Kwiatkowski",
   "main": "dist/index.js",

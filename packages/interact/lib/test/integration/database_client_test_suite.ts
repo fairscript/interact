@@ -1,5 +1,5 @@
 import {testEmployees} from '../test_tables'
-import {DatabaseClient} from '../..'
+import {DatabaseClient} from '../../databases/database_client'
 
 export function createDatabaseClientTestSuite(
     client: DatabaseClient,

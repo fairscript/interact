@@ -2,7 +2,7 @@ import {SortThreeTables} from './sort_three_tables'
 import {GroupThreeTables} from './group_three_tables'
 import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
-import {Table} from '../one/table'
+import {Columns, Table} from '../one/table'
 import {Subtable} from '../subtable'
 import {
     averageColumn,
@@ -12,10 +12,9 @@ import {
     SelectScalar,
     sumColumn
 } from '../selection/select_scalar'
-import {mapTable, mapTableWithSubquery, SelectRows, selectTables} from '../selection/select_rows'
+import {mapTable, mapTableWithSubquery, SelectRows} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
 import {AggregatableTable, Count} from '../aggregatable_table'
-import {aggregateTables, SelectSingleRow} from '../selection/select_single_row'
 import {
     addAscendingOrder,
     addDescendingOrder,
@@ -25,6 +24,9 @@ import {
     SelectStatement
 } from '../../statements/select_statement'
 import {groupTablesBy} from '../../statements/group_select_statement'
+import {aggregateTables, SelectGuaranteedSingleRow} from '../selection/select_guaranteed_single_row'
+import {selectSetsOfRows, SelectSetsOfRows} from '../selection/select_sets_of_rows'
+import {selectExpectedSetOfRows, SelectExpectedSetOfRows} from '../selection/select_expected_set_of_rows'
 
 export class FilterThreeTables<T1, T2, T3> {
     constructor(
@@ -62,8 +64,18 @@ export class FilterThreeTables<T1, T2, T3> {
             addDescendingOrder(this.statement, sortBy))
     }
 
-    select<K extends string>(firstName: string, secondName: string, thirdName: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 } & { [third in K]: T3 }> {
-        return selectTables(
+    select<K extends string>(firstName: string, secondName: string, thirdName: string): SelectSetsOfRows<{ [first in K]: T1 } & { [second in K]: T2 } & { [third in K]: T3 }> {
+        return selectSetsOfRows(
+            this.statement,
+            [
+                [firstName, this.firstConstructor],
+                [secondName, this.secondConstructor],
+                [thirdName, this.thirdConstructor]
+            ])
+    }
+
+    single<K extends string>(firstName: string, secondName: string, thirdName: string): SelectExpectedSetOfRows<{ [first in K]: T1 } & { [second in K]: T2 } & { [third in K]: T3 }> {
+        return selectExpectedSetOfRows(
             this.statement,
             [
                 [firstName, this.firstConstructor],
@@ -105,7 +117,7 @@ export class FilterThreeTables<T1, T2, T3> {
     }
 
     aggregate<A extends TableAggregationRecord>(
-        aggregation: (first: AggregatableTable<T1>, second: AggregatableTable<T2>, third: AggregatableTable<T3>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
+        aggregation: (first: AggregatableTable<T1>, second: AggregatableTable<T2>, third: AggregatableTable<T3>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectGuaranteedSingleRow<A> {
         return aggregateTables(this.statement, aggregation)
     }
 

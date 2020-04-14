@@ -11,7 +11,7 @@ function generateMapPropertyOperation(namedParameterPrefix: string, parameterToT
         case 'get-column':
             return generateGetColumn(parameterToTable, operation)
         case 'subselect-statement':
-            return generateSubselectStatement(namedParameterPrefix, operation)
+            return generateSubselectStatement(namedParameterPrefix, operation.selection, operation.tableName, operation.filters)
     }
 }
 

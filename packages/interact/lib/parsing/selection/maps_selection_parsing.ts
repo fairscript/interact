@@ -7,14 +7,15 @@ import {createRecordInParenthesesParser} from '../literals/record_parsing'
 import {createParameterlessFilter} from '../filtering/parameterless_filter_parsing'
 import {createSubselectParser} from './subselection_parsing'
 import {createGetColumnParser} from '../value_expressions/get_column_parsing'
+import {ColumnRecord} from '../../record'
 
-export function parseMapWithSubquerySelection(f: Function, subtableNames: string[]): MapSelection {
+export function parseMapWithSubquerySelection(subtableName: string, columns: ColumnRecord, f: Function): MapSelection {
     const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
-    const subParameterNames = parameters.slice(0, subtableNames.length)
+    const subParameterNames = [parameters[0]]
     const subParameterToTableAlias = mapParameterNamesToTableAliases(subParameterNames, 's')
 
-    const outerParameterNames = parameters.slice(subtableNames.length)
+    const outerParameterNames = parameters.slice(1)
     const outerParameterToTableAlias = mapParameterNamesToTableAliases(outerParameterNames, 't')
 
     const getColumnParser = createGetColumnParser(outerParameterNames)
@@ -24,10 +25,6 @@ export function parseMapWithSubquerySelection(f: Function, subtableNames: string
         getColumnParser,
         subselectParser
             .chain(([parsedSubtableParameter, parsedFilterInvocations, parsedSelection]) => {
-
-                // Map the table parameter used in the outer function to the table name in the database
-                const indexOfSubtable = subParameterNames.indexOf(parsedSubtableParameter)
-                const subtableName = subtableNames[indexOfSubtable]
 
                 const filters = parsedFilterInvocations
                     .map(([parameter, predicate]) => {
@@ -43,7 +40,7 @@ export function parseMapWithSubquerySelection(f: Function, subtableNames: string
                             predicate)
                     })
 
-                const statement = createSubselectStatement(subtableName, filters, parsedSelection)
+                const statement = createSubselectStatement(subtableName, columns, filters, parsedSelection)
 
                 return A.succeedWith(statement)
             })

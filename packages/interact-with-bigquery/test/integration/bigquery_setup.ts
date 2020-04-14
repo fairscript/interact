@@ -1,7 +1,8 @@
 import {BigQuery, Table} from '@google-cloud/bigquery'
 import * as assert from 'assert'
 import * as toSnakeCase from 'js-snakecase'
-import {join, testEmployees} from '@fairscript/interact'
+import {join} from '@fairscript/interact/lib/join'
+import {testEmployees} from '@fairscript/interact/lib/test/test_tables'
 
 
 export function createBigQueryForTests(): BigQuery {
@@ -97,8 +98,7 @@ export async function tearDownBigQueryTestData(client: BigQuery, datasetName: st
     const dataset = client.dataset(datasetName)
     const table = dataset.table(tableName)
 
-    await table
-        .delete()
+    await table.delete()
 
     const tableExistsAfterDeletion = await checkIfTableExists(table)
     assert.equal(tableExistsAfterDeletion, false)

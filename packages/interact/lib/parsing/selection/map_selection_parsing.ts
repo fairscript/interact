@@ -1,10 +1,9 @@
-import {Selection} from './selection_parsing'
 import {mapParameterNamesToTableAliases} from '../../generation/table_aliases'
 import {extractLambdaParametersAndExpression} from '../functions/lambda_parsing'
 import {createRecordInParenthesesParser} from '../literals/record_parsing'
-import {findReferencedColumns} from './search_for_referenced_columns'
 import {SubselectStatement} from '../../statements/subselect_statement'
 import {createGetColumnParser, GetColumn} from '../value_expressions/get_column_parsing'
+import {findReferencedColumns} from './search_for_referenced_columns'
 
 
 export interface MapSelection {
@@ -34,7 +33,7 @@ function createMapParser(parameterNames: string[]) {
     return createRecordInParenthesesParser(createGetColumnParser(parameterNames))
 }
 
-export function parseMapSelection(f: Function): Selection {
+export function parseMapSelection(f: Function): MapSelection {
     const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
     const parameterToTable = mapParameterNamesToTableAliases(parameters)

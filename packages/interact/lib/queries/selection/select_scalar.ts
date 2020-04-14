@@ -1,5 +1,3 @@
-import {Runnable} from '../../databases/database_context'
-import {SelectStatement} from '../../statements/select_statement'
 import {
     parseAverageSelection,
     parseMaxSelection,
@@ -7,11 +5,13 @@ import {
     parseSumSelection
 } from '../../parsing/selection/aggregate_column_select_parsing'
 import {createCountSelection} from '../../parsing/selection/count_selection'
+import {Runnable} from '../../databases/database_context'
+import {SelectStatement} from '../../statements/select_statement'
 
 export class SelectScalar<T> implements Runnable<T> {
     constructor(public statement: SelectStatement) {}
 
-    readonly client = 'scalar'
+    readonly clientInstruction = 'scalar'
 }
 
 export function maximizeColumn<T>(statement: SelectStatement, max: Function): SelectScalar<T> {

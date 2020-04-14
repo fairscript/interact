@@ -1,3 +1,4 @@
+
 require('dotenv').config()
 
 import {createBigQueryContext} from '../../lib'
@@ -9,7 +10,9 @@ import {
 } from './bigquery_setup'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {createDatabaseContextTestSuite, defineTable, Employee} from '@fairscript/interact'
+import {defineTable} from '@fairscript/interact/lib'
+import {Employee, employeeColumns} from '@fairscript/interact/lib/test/model/employee'
+import {createDatabaseContextTestSuite} from '@fairscript/interact/lib/test/integration/database_context_test_suite'
 
 describe('BigQuery context', () => {
 
@@ -18,7 +21,7 @@ describe('BigQuery context', () => {
     const tableName = computeBigQueryTestTableName('context_tests')
 
     const ctx = createBigQueryContext(bigQuery, datasetName)
-    const suite = createDatabaseContextTestSuite(ctx, defineTable(Employee, tableName))
+    const suite = createDatabaseContextTestSuite(ctx, defineTable(Employee, tableName, employeeColumns))
 
     before(async() => {
         chai.should()

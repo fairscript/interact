@@ -3,9 +3,35 @@ import {Employee} from './model/employee'
 import {Company} from './model/companies'
 import {Department} from './model/department'
 
-export const employees = defineTable(Employee, 'employees')
-export const departments = defineTable(Department, 'departments')
-export const companies = defineTable(Company, 'companies')
+export const employees = defineTable(
+    Employee,
+    'employees',
+    {
+        id: 'number',
+        firstName: 'string',
+        lastName: 'string',
+        title: 'string',
+        salary: 'number',
+        departmentId: 'number',
+        fulltime: 'boolean'
+    })
+
+export const departments = defineTable(
+    Department,
+    'departments',
+    {
+        id: 'number',
+        name: 'string',
+        companyId: 'number'
+    })
+
+export const companies = defineTable(
+    Company,
+    'companies',
+    {
+        id: 'number',
+        name: 'string',
+    })
 
 export const testEmployees: Employee[] =
     [
@@ -16,6 +42,8 @@ export const testEmployees: Employee[] =
         new Employee(5, 'James', 'Miller', 'Assistant', 2_000, 2, false)
     ]
 
-export const testEmployeeRowsWithoutId = testEmployees.map(e =>
-    [e.firstName, e.lastName, e.title, e.salary, e.departmentId, e.fulltime]
-)
+export const testDepartments: Department[] =
+    [
+        new Department(1, 'Board of Directors', 1),
+        new Department(2, 'Research & Development', 2)
+    ]

@@ -1,9 +1,11 @@
 import {extractLambdaParametersAndExpression} from './functions/lambda_parsing'
 import {createGetColumnParser, GetColumn} from './value_expressions/get_column_parsing'
 import {computeTableAlias, mapParameterNamesToTableAliases} from '../generation/table_aliases'
+import {ColumnRecord} from '../record'
 
 export interface JoinExpression {
     tableName: string
+    columns: ColumnRecord
     left: LeftSideOfJoin
     right: RightSideOfJoin
 }
@@ -22,7 +24,7 @@ export function createLeftSideOfJoin(tableParameterToTableAlias: {[parameter: st
     }
 }
 
-function parseLeftSide(f: Function): LeftSideOfJoin {
+export function parseLeftSide(f: Function): LeftSideOfJoin {
     const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
     const tableParameterToTableAlias = mapParameterNamesToTableAliases(parameters)
@@ -47,7 +49,7 @@ export function createRightSideOfJoin(tableAlias: string, getColumn: GetColumn):
     }
 }
 
-function parseRightSide(f: Function, nthJoin: number): RightSideOfJoin {
+export function parseRightSide(f: Function, nthJoin: number): RightSideOfJoin {
     const {parameters, expression} = extractLambdaParametersAndExpression(f)
 
     const tableAlias = computeTableAlias('t', nthJoin)
@@ -56,9 +58,10 @@ function parseRightSide(f: Function, nthJoin: number): RightSideOfJoin {
     return createRightSideOfJoin(tableAlias, getColumn)
 }
 
-export function parseJoin(tableName: string, left: Function, right: Function, nthJoin: number): JoinExpression {
+export function parseJoin(tableName: string, columns: ColumnRecord, left: Function, right: Function, nthJoin: number): JoinExpression {
     return {
         tableName,
+        columns,
         left: parseLeftSide(left),
         right: parseRightSide(right, nthJoin)
     }

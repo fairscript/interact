@@ -10,3 +10,5 @@ interface NestedValueRecord extends Record<string, Value|NestedValueRecord> {}
 export type ValueOrNestedValueRecord = Value|NestedValueRecord
 
 export type TableAggregationRecord = Record<string, Max|Min|Avg|Sum|Count>
+
+export type ColumnRecord = Record<string, 'string'|'number'|'boolean'>

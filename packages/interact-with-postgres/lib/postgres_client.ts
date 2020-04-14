@@ -1,5 +1,7 @@
 import {Client, types} from 'pg'
-import {DatabaseClient, Value, ValueRecord} from '@fairscript/interact'
+import {DatabaseClient} from '@fairscript/interact/lib/databases/database_client'
+import {ValueRecord} from '@fairscript/interact/lib/record'
+import {Value} from '@fairscript/interact/lib/value'
 const named = require('yesql').pg
 
 export class PostgresClient implements DatabaseClient {

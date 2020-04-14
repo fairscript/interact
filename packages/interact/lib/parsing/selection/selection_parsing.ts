@@ -6,4 +6,5 @@ import {MultiTableSelection} from './multi_table_selection_parsing'
 import {SingleColumnSelection} from './single_column_selection_parsing'
 import {TableAggregationSelection} from './table_aggregation_selection_parsing'
 
-export type Selection = CountSelection|SingleColumnSelection|MapSelection|SingleTableSelection|MultiTableSelection|GroupAggregationSelection|TableAggregationSelection
+export type GroupSelection = GroupAggregationSelection
+export type TableSelection = CountSelection|SingleColumnSelection|MapSelection|SingleTableSelection|MultiTableSelection|TableAggregationSelection

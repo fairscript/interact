@@ -15,7 +15,7 @@
     "reflection",
     "linq"
   ],
-  "homepage": "https://github.com/fairscript/interact/interact-with-bigquery/#Readme.md",
+  "homepage": "https://github.com/fairscript/interact/blob/master/packages/interact-with-bigquery/Readme.md",
   "license": "MIT",
   "author": "Sebastian E. Kwiatkowski",
   "main": "dist/index.js",
@@ -23,7 +23,7 @@
   "repository": "https://github.com/fairscript/interact/tree/master/packages/interact-with-big-query",
   "scripts": {
     "build": "tsc",
-    "test": "mocha -r ts-node/register test/**/*.test.ts"
+    "test": "mocha -r ts-node/register test/**/*.test.ts --timeout 5000"
   },
   "dependencies": {
     "@fairscript/interact": "^0.15.2",

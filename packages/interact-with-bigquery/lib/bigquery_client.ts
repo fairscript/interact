@@ -1,5 +1,7 @@
 import {BigQuery, Dataset} from '@google-cloud/bigquery'
-import {DatabaseClient, Value, ValueRecord} from '@fairscript/interact'
+import {DatabaseClient} from '@fairscript/interact/lib/databases/database_client'
+import {Value} from '@fairscript/interact/lib/value'
+import {ValueRecord} from '@fairscript/interact/lib/record'
 
 export class BigQueryClient implements DatabaseClient {
     private dataset: Dataset

@@ -1,5 +1,4 @@
 import {generateSubselectStatement} from '../../lib/generation/subselect_generation'
-import {createSubselectStatement} from '../../lib/statements/subselect_statement'
 import * as assert from 'assert'
 import {createParameterlessFilter} from '../../lib/parsing/filtering/parameterless_filter_parsing'
 import {sqliteDialect} from '../../../interact-with-sqlite/lib/sqlite_dialect'
@@ -9,24 +8,19 @@ import {createGetColumn} from '../../lib/parsing/value_expressions/get_column_pa
 
 describe('generateSubselect', () => {
     it('works for a subselect statement with one filter', () => {
-        const subselectStatement = createSubselectStatement(
-            "employees",
-            [
-                createParameterlessFilter(
-                    {
-                        se: 's1',
-                        e: 't1'
-                    },
-                    createGreaterThan(
-                        createGetColumn('se', 'salary'),
-                        createGetColumn('e', 'salary')
-                    )
-                )
-            ],
-            createCountSelection()
+        const filter = createParameterlessFilter(
+            {
+                se: 's1',
+                e: 't1'
+            },
+            createGreaterThan(
+                createGetColumn('se', 'salary'),
+                createGetColumn('e', 'salary')
+            )
         )
+
         assert.equal(
-            generateSubselectStatement(sqliteDialect.namedParameterPrefix, subselectStatement),
+            generateSubselectStatement(sqliteDialect.namedParameterPrefix, createCountSelection(), "employees", [filter]),
             '(SELECT COUNT(*) FROM employees s1 WHERE s1.salary > t1.salary)'
         )
     })

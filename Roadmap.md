@@ -1,5 +1,8 @@
 # Roadmap
 
+## v0.15.4
+- Replace the use of constructors with column specifications.
+
 ## v0.16
 - Improve documentation
 
@@ -10,35 +13,31 @@
 - HAVING
 
 ## v0.19
-- Return class instances in single/multi table selections
-- single/singleOrNull methods
-
-## v0.20
 - Set up and increase test coverage
 
-## v0.21
+## v0.20
 - INSERT
 - DELETE
 - UPDATE
 
-## v0.22
+## v0.21
 - Byte arrays
 
-## v0.23
+## v0.22
 - Boolean expressions in selections
 - Boolean expressions as a subset of value expressions
 
-## v0.24
+## v0.23
 - Set clauses
 
-## v0.25
+## v0.24
 - String operations
 
-## v0.26
+## v0.25
 - Date operations
 
-## v0.27
+## v0.26
 - Mathematical operations
 
-## v0.28
+## v0.27
 - Array operations

@@ -2,7 +2,7 @@ import {SortTwoTables} from './sort_two_tables'
 import {GroupTwoTables} from './group_two_tables'
 import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
-import {Table} from '../one/table'
+import {Columns, Table} from '../one/table'
 import {Subtable} from '../subtable'
 import {
     averageColumn,
@@ -12,10 +12,9 @@ import {
     SelectScalar,
     sumColumn
 } from '../selection/select_scalar'
-import {mapTable, mapTableWithSubquery, SelectRows, selectTables} from '../selection/select_rows'
+import {mapTable, mapTableWithSubquery, SelectRows} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
 import {AggregatableTable, Count} from '../aggregatable_table'
-import {aggregateTables, SelectSingleRow} from '../selection/select_single_row'
 import {
     addAscendingOrder,
     addDescendingOrder,
@@ -25,6 +24,9 @@ import {
     SelectStatement
 } from '../../statements/select_statement'
 import {groupTablesBy} from '../../statements/group_select_statement'
+import {aggregateTables, SelectGuaranteedSingleRow} from '../selection/select_guaranteed_single_row'
+import {selectSetsOfRows, SelectSetsOfRows} from '../selection/select_sets_of_rows'
+import {selectExpectedSetOfRows, SelectExpectedSetOfRows} from '../selection/select_expected_set_of_rows'
 
 export class FilterTwoTables<T1, T2> {
     constructor(
@@ -58,8 +60,17 @@ export class FilterTwoTables<T1, T2> {
             addDescendingOrder(this.statement, sortBy))
     }
 
-    select<K extends string>(firstName: string, secondName: string): SelectRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
-        return selectTables(
+    select<K extends string>(firstName: string, secondName: string): SelectSetsOfRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
+        return selectSetsOfRows(
+            this.statement,
+            [
+                [firstName, this.firstConstructor],
+                [secondName, this.secondConstructor]
+            ])
+    }
+
+    single<K extends string>(firstName: string, secondName: string): SelectExpectedSetOfRows<{ [first in K]: T1 } & { [second in K]: T2 }> {
+        return selectExpectedSetOfRows(
             this.statement,
             [
                 [firstName, this.firstConstructor],
@@ -100,7 +111,7 @@ export class FilterTwoTables<T1, T2> {
     }
 
     aggregate<A extends TableAggregationRecord>(
-        aggregation: (first: AggregatableTable<T1>, second: AggregatableTable<T2>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectSingleRow<A> {
+        aggregation: (first: AggregatableTable<T1>, second: AggregatableTable<T2>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectGuaranteedSingleRow<A> {
         return aggregateTables(this.statement, aggregation)
     }
 

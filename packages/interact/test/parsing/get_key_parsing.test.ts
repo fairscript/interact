@@ -1,7 +1,8 @@
-import {createKey, createPartOfKey, parseGetKey} from '../../lib/parsing/get_key_parsing'
 import * as assert from 'assert'
+import {createKey, createPartOfKey, parseGetKey} from '../../lib/parsing/get_key_parsing'
 import {createGetColumn} from '../../lib/parsing/value_expressions/get_column_parsing'
-import {Department, Employee} from '../../lib'
+import {Employee} from '../../lib/test/model/employee'
+import {Department} from '../../lib/test/model/department'
 
 describe('parseGetKey', () => {
 

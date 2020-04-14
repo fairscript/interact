@@ -1,4 +1,3 @@
-import {Selection} from './selection_parsing'
 import {parseConstructor} from '../functions/constructor_parsing'
 
 export interface SingleTableSelection {
@@ -13,7 +12,7 @@ export function createSingleTableSelection(properties: string[]): SingleTableSel
     }
 }
 
-export function parseSingleTableSelection(constructor: Function): Selection {
+export function parseSingleTableSelection(constructor: Function): SingleTableSelection {
     const properties = parseConstructor(constructor)
 
     return createSingleTableSelection(properties)

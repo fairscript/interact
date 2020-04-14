@@ -16,7 +16,7 @@
     "reflection",
     "linq"
   ],
-  "homepage": "https://github.com/fairscript/interact/interact-with-postgres/#Readme.md",
+  "homepage": "https://github.com/fairscript/interact/blob/master/packages/interact-with-postgres/Readme.md",
   "license": "MIT",
   "author": "Sebastian E. Kwiatkowski",
   "main": "dist/index.js",

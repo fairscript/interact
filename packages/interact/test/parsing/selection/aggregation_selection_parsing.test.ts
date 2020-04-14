@@ -6,7 +6,7 @@ import {createGetPartOfKey} from '../../../lib/parsing/aggregation/get_part_of_k
 import {createCountOperation} from '../../../lib/parsing/count_operation_parsing'
 import {createAggregateColumn} from '../../../lib/parsing/aggregation/aggregate_column_parsing'
 import {createGetColumn} from '../../../lib/parsing/value_expressions/get_column_parsing'
-import {Employee} from '../../../lib'
+import {Employee} from '../../../lib/test/model/employee'
 
 describe('parseAggregate', () => {
     const firstKeyColumn = createGetColumn('e', 'departmentId')
@@ -23,7 +23,6 @@ describe('parseAggregate', () => {
             assert.deepEqual(
                 parseGroupAggregationSelection((key: {departmentId: string}) => ({ depId: key.departmentId }), keyOfOnePart, 1),
                 createGroupAggregation(
-                    {'departmentId': ['t1', 'departmentId']},
                     {},
                     [['depId', createGetPartOfKey('departmentId')]]
                 )
@@ -35,7 +34,6 @@ describe('parseAggregate', () => {
                 assert.deepEqual(
                     parseGroupAggregationSelection((key: {departmentId: string, title: string}) => ({ depId: key.departmentId, title: key.title }), keyOfTwoParts, 1),
                     createGroupAggregation(
-                        {departmentId: ['t1', 'departmentId'], title: ['t1', 'title']},
                         {},
                         [['depId', createGetPartOfKey('departmentId')], ['title', createGetPartOfKey('title')]]
                     )
@@ -46,7 +44,6 @@ describe('parseAggregate', () => {
                 assert.deepEqual(
                     parseGroupAggregationSelection((key: {departmentId: string, title: string}) => ({ title: key.title, depId: key.departmentId }), keyOfTwoParts, 1),
                     createGroupAggregation(
-                        {departmentId: ['t1', 'departmentId'], title: ['t1', 'title']},
                         {},
                         [['title', createGetPartOfKey('title')], ['depId', createGetPartOfKey('departmentId')]]
                     )
@@ -59,7 +56,6 @@ describe('parseAggregate', () => {
         assert.deepEqual(
             parseGroupAggregationSelection((_, e: AggregatableTable<Employee>) => ({ highestSalary: e.salary.max() }), keyOfOnePart, 1),
             createGroupAggregation(
-                {departmentId: ['t1', 'departmentId']},
                 {e: 't1'},
                 [['highestSalary', createAggregateColumn('max', createGetColumn('e', 'salary'))]]
             )
@@ -70,7 +66,6 @@ describe('parseAggregate', () => {
         assert.deepEqual(
             parseGroupAggregationSelection((_, e: AggregatableTable<Employee>, count) => ({ employees: count()}), keyOfOnePart, 1),
             createGroupAggregation(
-                {departmentId: ['t1', 'departmentId']},
                 {e: 't1'},
                 [['employees', createCountOperation()]]
             )
@@ -81,7 +76,6 @@ describe('parseAggregate', () => {
         assert.deepEqual(
             parseGroupAggregationSelection((key: {departmentId: string}, e, count) => ({ depId: key.departmentId, highestSalary: e.salary.max(), employees: count() }), keyOfOnePart, 1),
             createGroupAggregation(
-                {departmentId: ['t1', 'departmentId']},
                 {e: 't1'},
                 [
                     ['depId', createGetPartOfKey('departmentId')],

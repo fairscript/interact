@@ -2,14 +2,17 @@ import {MultiTableSelection} from '../../parsing/selection/multi_table_selection
 import {generateColumnAccess} from '../column_access_generation'
 import {generateAlias} from '../alias_generation'
 import {joinWithCommaWhitespace} from '../../join'
+import {computeTableAlias} from '../table_aliases'
 
 export function generateMultiTableSelection(aliasEscape: string|null, selection: MultiTableSelection): string {
-    const {nameToTable, properties} = selection
+    return joinWithCommaWhitespace(selection.namesPairedWithProperties
+        .map(([name, properties], index) => {
 
-    return joinWithCommaWhitespace(properties
-        .map(([alias, [name, property]]) => {
-            const tableAlias = nameToTable[name]
+            const tableAlias = computeTableAlias('t', index)
 
-            return generateAlias(aliasEscape, generateColumnAccess(tableAlias, property), alias)
+            const columns = properties
+                .map(property => generateAlias(aliasEscape, generateColumnAccess(tableAlias, property), `${name}_${property}`) )
+
+            return joinWithCommaWhitespace(columns)
         }))
 }

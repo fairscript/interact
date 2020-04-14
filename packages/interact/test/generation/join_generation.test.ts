@@ -6,11 +6,11 @@ import {createLeftSideOfJoin, createRightSideOfJoin} from '../../lib/parsing/joi
 describe('generateInnerJoin', () => {
     it('works when two tables are joined', () => {
         assert.equal(
-            generateInnerJoin({
-                tableName: 'departments',
-                left: createLeftSideOfJoin({e: 't1'}, createGetColumn('e', 'departmentId')),
-                right: createRightSideOfJoin('t2', createGetColumn('d', 'id'))
-            }),
+            generateInnerJoin(
+                'departments',
+                createLeftSideOfJoin({e: 't1'}, createGetColumn('e', 'departmentId')),
+                createRightSideOfJoin('t2', createGetColumn('d', 'id'))
+            ),
             'INNER JOIN departments t2 ON t1.department_id = t2.id'
         )
     })

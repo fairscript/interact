@@ -1,10 +1,16 @@
-import {Runnable} from '../../databases/database_context'
 import {LimitRows} from './limit_rows'
-import {SelectStatement} from '../../statements/select_statement'
 import {parseGetSelection} from '../../parsing/selection/get_selection_parsing'
+import {Runnable} from '../../databases/database_context'
+import {SelectStatement} from '../../statements/select_statement'
+import {SelectScalar} from './select_scalar'
+import {DistinctRows} from './distinct_rows'
 
 export class SelectVector<T> implements Runnable<T> {
     constructor(public statement: SelectStatement) {}
+
+    single(): SelectScalar<T> {
+        return new SelectScalar(this.statement)
+    }
 
     limit(limit: number): LimitRows<T> {
         return new LimitRows(
@@ -12,19 +18,19 @@ export class SelectVector<T> implements Runnable<T> {
                 ...this.statement,
                 limit
             },
-            this.client)
+            this.clientInstruction)
     }
 
     distinct() {
-        return new LimitRows(
+        return new DistinctRows(
             {
                 ...this.statement,
                 distinct: true
             },
-            this.client)
+            this.clientInstruction)
     }
 
-    readonly client = 'vector'
+    readonly clientInstruction = 'vector'
 }
 
 export function getColumn<T>(statement: SelectStatement, get: Function): SelectVector<T> {

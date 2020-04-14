@@ -1,9 +1,8 @@
-import {generateSelect} from './select_generation'
 import {generateFrom} from './from_generation'
 import {generateWhereParameters, generateWhereSql} from './where_generation'
 import {generateOrderBy} from './sorting/order_by_generation'
 import {generateGroupBy} from './group_by_generation'
-import {generateInnerJoin, generateJoins} from './join_generation'
+import {generateJoins} from './join_generation'
 import {Dialect} from '../databases/dialects'
 import {ValueRecord} from '../record'
 import {generateLimit} from './limit_generation'
@@ -12,15 +11,26 @@ import {generateGroupOrderBy} from './sorting/group_order_by_generation'
 import {SelectStatement} from '../statements/select_statement'
 import {GroupSelectStatement} from '../statements/group_select_statement'
 import {joinWithNewLine} from '../join'
+import {generateGroupSelect, generateTableSelect} from './select_generation'
 
 
 export function generateSelectStatementSql(dialect: Dialect, statement: SelectStatement|GroupSelectStatement): string {
-    const {selection, distinct, tableName, filters, joins, limit, offset} = statement
+    const {distinct, tableName, filters, joins, limit, offset} = statement
 
-    const clauses = [
-        generateSelect(dialect.aliasEscape, dialect.namedParameterPrefix, selection!, distinct),
-        generateFrom(tableName)
-    ]
+    const clauses: string[] = []
+
+    const {aliasEscape, namedParameterPrefix} = dialect
+
+    switch (statement.kind) {
+        case 'select-statement':
+            clauses.push(generateTableSelect(distinct, aliasEscape, namedParameterPrefix, statement.selection!))
+            break
+        case 'group-select-statement':
+            clauses.push(generateGroupSelect(distinct, aliasEscape, namedParameterPrefix, statement.key, statement.selection!))
+            break
+    }
+
+    clauses.push(generateFrom(tableName))
 
     if (joins.length > 0) {
         clauses.push(...generateJoins(joins))
@@ -37,10 +47,11 @@ export function generateSelectStatementSql(dialect: Dialect, statement: SelectSt
             }
             break
         case 'group-select-statement':
-            clauses.push(generateGroupBy(statement.key))
+            const {key, orders} = statement
+            clauses.push(generateGroupBy(key))
 
-            if (statement.orders.length > 0) {
-                clauses.push(generateGroupOrderBy(statement.orders))
+            if (orders.length > 0) {
+                clauses.push(generateGroupOrderBy(namedParameterPrefix, key, orders))
             }
             break
     }

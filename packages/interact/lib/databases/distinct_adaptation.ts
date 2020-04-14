@@ -3,7 +3,6 @@ import {createKey, createPartOfKey, Key} from '../parsing/get_key_parsing'
 import {MapSelection} from '../parsing/selection/map_selection_parsing'
 import {createAggregateColumn} from '../parsing/aggregation/aggregate_column_parsing'
 import {createGroupOrderExpression} from '../parsing/sorting/group_sorting_parsing'
-import {mapPartOfKeyToTableAndProperty} from '../parsing/selection/group_aggregation_selection_parsing'
 import {SingleColumnSelection} from '../parsing/selection/single_column_selection_parsing'
 import {GetColumn} from '../parsing/value_expressions/get_column_parsing'
 import {SelectStatement} from '../statements/select_statement'
@@ -11,6 +10,13 @@ import {
     createEmptyGroupSelectStatement,
     GroupSelectStatement
 } from '../statements/group_select_statement'
+import {Filter} from '../parsing/filtering/filter_parsing'
+import {ColumnRecord} from '../record'
+import {JoinExpression} from '../parsing/join_parsing'
+import {createGroupAggregation} from '../parsing/selection/group_aggregation_selection_parsing'
+import {createGetPartOfKey} from '../parsing/aggregation/get_part_of_key_parsing'
+import {GroupSelection} from '../parsing/selection/selection_parsing'
+import {GroupAggregationOperation} from '../parsing/aggregation/group_aggregation_operation_parsing'
 
 function checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders: OrderExpression[], selection: SingleColumnSelection|MapSelection): boolean {
     for (let indexOrder in orders) {
@@ -32,20 +38,48 @@ function checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders: 
 
 // Replace GetColumn order operations with MIN/MAX operations
 function mapOrderExpressionsToGroupOrderExpressions(key: Key, orders: OrderExpression[]) {
-    const partOfKeyToTableAndProperty = mapPartOfKeyToTableAndProperty(key)
-
     return orders.map(({ parameterNameToTableAlias, get, direction }) => {
         switch (direction) {
             case 'asc':
-                return createGroupOrderExpression(partOfKeyToTableAndProperty, parameterNameToTableAlias, createAggregateColumn('min', get), 'asc')
+                return createGroupOrderExpression(parameterNameToTableAlias, createAggregateColumn('min', get), 'asc')
             case 'desc':
-                return createGroupOrderExpression(partOfKeyToTableAndProperty, parameterNameToTableAlias, createAggregateColumn('max', get), 'desc')
+                return createGroupOrderExpression(parameterNameToTableAlias, createAggregateColumn('max', get), 'desc')
         }
     })
 }
 
+function mapTableSelectionToGroupSelection(tableSelection: SingleColumnSelection|MapSelection): GroupSelection {
+    const {parameterNameToTableAlias} = tableSelection
+
+    switch (tableSelection.kind) {
+        case 'single-column-selection':
+            const {operation} = tableSelection
+            const getColumn = operation.kind === 'aggregate-column' ? operation.get : operation
+
+            return createGroupAggregation(parameterNameToTableAlias, [[getColumn.property, createGetPartOfKey(getColumn.property)]])
+        case 'map-selection':
+            const operations: [string, GroupAggregationOperation][] = tableSelection.operations.map(([alias, op]) => {
+                switch (op.kind) {
+                    case 'get-column':
+                        return [alias, createGetPartOfKey(getColumn.property)]
+                    case 'subselect-statement':
+                        return [alias, op]
+                }
+            })
+
+            return createGroupAggregation(parameterNameToTableAlias, operations)
+    }
+}
+
 function adaptOrderedDistinct(
-    statement: SelectStatement,
+    tableName: string,
+    columns: ColumnRecord,
+    tableSelection: SingleColumnSelection|MapSelection,
+    joins: JoinExpression[],
+    filters: Filter[],
+    orders: OrderExpression[],
+    limit: number|'all',
+    offset: number,
     parameterNameToTableAlias: {[parameter: string]: string},
     referencedColumns: GetColumn[]): GroupSelectStatement {
 
@@ -55,23 +89,21 @@ function adaptOrderedDistinct(
             .map(operation =>
                 createPartOfKey(
                     operation.property,
-                    operation as GetColumn
+                    operation
                 )
             )
     )
 
-    const { tableName, filters, joins, selection, limit, offset } = statement
+    const groupSelection = mapTableSelectionToGroupSelection(tableSelection)
 
     return {
-        ...createEmptyGroupSelectStatement(tableName, key),
-
+        ...createEmptyGroupSelectStatement(tableName, columns, key),
         filters,
         joins,
-        selection,
+        selection: groupSelection,
         limit,
         offset,
-
-        orders: mapOrderExpressionsToGroupOrderExpressions(key, statement.orders),
+        orders: mapOrderExpressionsToGroupOrderExpressions(key, orders),
         distinct: false
     }
 }
@@ -83,7 +115,21 @@ export function adaptDistinct(statement: SelectStatement): SelectStatement|Group
     const selection = statement.selection!
 
     if ((selection.kind === 'single-column-selection' || selection.kind === 'map-selection') && checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders, selection)) {
-        return adaptOrderedDistinct(statement, selection.parameterNameToTableAlias, selection.referencedColumns)
+        const {tableName, columns, joins, filters, orders, limit, offset} = statement
+        const {parameterNameToTableAlias, referencedColumns} = selection
+
+        return adaptOrderedDistinct(
+            tableName,
+            columns,
+            selection,
+            joins,
+            filters,
+            orders,
+            limit,
+            offset,
+            parameterNameToTableAlias,
+            referencedColumns
+        )
     }
     else {
         return statement
