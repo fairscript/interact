@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.15.5
+- Fixed negations
+- Added filtering integration tests for SQLite
+
 ## v0.15.4
 - Replace the use of constructors with column specifications
 - Updated the project readme

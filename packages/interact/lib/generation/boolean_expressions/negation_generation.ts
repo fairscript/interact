@@ -4,7 +4,7 @@ import {generateGetColumn} from '../value_expressions/get_column_generation'
 import {generateGetProvided} from '../value_expressions/get_provided_generation'
 import {generateLiteral} from '../literals/literal_generation'
 
-export function generateNegated(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, negated: Negatable) {
+export function generateNegetable(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, negated: Negatable) {
     switch (negated.kind) {
         case 'literal':
             return generateLiteral(negated)
@@ -17,13 +17,13 @@ export function generateNegated(namedParameterPrefix: string, parameterNameToTab
     }
 }
 
-export function generateNegation(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, { negated }: Negation) {
-    const generatedNegated = generateNegated(namedParameterPrefix, parameterNameToTableAlias, negated)
+export function generateNegation(namedParameterPrefix: string, parameterNameToTableAlias: { [parameterName: string]: string }, negation: Negation) {
+    const generatedNegated = generateNegetable(namedParameterPrefix, parameterNameToTableAlias, negation.negated)
 
-    if (negated.kind === 'inside') {
-        return generatedNegated
+    if (negation.negated.kind === 'inside') {
+        return `NOT${generatedNegated}`
     }
     else {
-        return `(${generatedNegated})`
+        return `NOT(${generatedNegated})`
     }
 }
