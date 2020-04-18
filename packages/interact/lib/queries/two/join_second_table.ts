@@ -1,7 +1,7 @@
 import {SortTwoTables} from './sort_two_tables'
 import {FilterTwoTables} from './filter_two_tables'
 import {GroupTwoTables} from './group_two_tables'
-import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
+import {EnforceNonEmptyRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
 import {Subtable} from '../subtable'
 import {Table} from '../one/table'
@@ -15,7 +15,7 @@ import {
 } from '../selection/select_scalar'
 import {mapTable, mapTableWithSubquery, SelectRows} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
-import {AggregatableTable, Count} from '../aggregatable_table'
+import {AggregatableTable} from '../aggregatable_table'
 import {
     addAscendingOrder,
     addDescendingOrder,
@@ -99,8 +99,8 @@ export class JoinSecondTable<T1, T2> {
         return averageColumn(this.statement, f)
     }
 
-    aggregate<A extends TableAggregationRecord>(
-        aggregation: (first: AggregatableTable<T1>, second: AggregatableTable<T2>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectGuaranteedSingleRow<A> {
+    aggregate<A extends ValueRecord>(
+        aggregation: (first: AggregatableTable<T1>, second: AggregatableTable<T2>, count: () => number) => EnforceNonEmptyRecord<A> & A): SelectGuaranteedSingleRow<A> {
         return aggregateTables(this.statement, aggregation)
     }
 

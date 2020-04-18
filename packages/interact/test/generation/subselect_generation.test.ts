@@ -20,7 +20,7 @@ describe('generateSubselect', () => {
         )
 
         assert.equal(
-            generateSubselectStatement(sqliteDialect.namedParameterPrefix, createCountSelection(), "employees", [filter]),
+            generateSubselectStatement(sqliteDialect.namedParameterPrefix, sqliteDialect.generateConvertToInteger, createCountSelection(), 'employees', [filter]),
             '(SELECT COUNT(*) FROM employees s1 WHERE s1.salary > t1.salary)'
         )
     })

@@ -1,21 +1,7 @@
-import {setUpSqliteTestData} from '../sqlite_setup'
-import {createSqliteInMemoryClient} from '../../lib/sqlite_client'
-import {employees, testEmployees} from '@fairscript/interact/lib/test/test_tables'
-import {createSqliteContext} from '../../lib'
+import {employees, testEmployees} from '../test_tables'
+import {DatabaseContext} from '../../databases/database_context'
 
-import * as chai from 'chai'
-import * as chaiAsPromised from 'chai-as-promised'
-
-describe('SqliteContext can filter', () => {
-    const client = createSqliteInMemoryClient()
-    const context = createSqliteContext(client)
-
-    before(async() => {
-        chai.should()
-        chai.use(chaiAsPromised)
-
-        await setUpSqliteTestData(client)
-    })
+export function performFilteringIntegrationTests(context: DatabaseContext) {
 
     describe('by evaluating', () => {
         it('a boolean column', () => {
@@ -169,4 +155,4 @@ describe('SqliteContext can filter', () => {
         })
 
     })
-})
+}

@@ -4,12 +4,16 @@ import {generateTableAggregationOperation} from '../aggregation/table_aggregatio
 import {joinWithCommaWhitespace} from '../../join'
 
 
-export function generateTableAggregationSelection(aliasEscape: string|null, aggregation: TableAggregationSelection): string {
+export function generateTableAggregationSelection(
+    aliasEscape: string|null,
+    generateConvertToInt: (getColumn: string) => string,
+    aggregation: TableAggregationSelection): string {
+
     const {parameterToTable, operations} = aggregation
 
     const columnOperations = operations
         .map(([alias, operation]) => {
-            const generatedAggregationOperation = generateTableAggregationOperation(parameterToTable, operation)
+            const generatedAggregationOperation = generateTableAggregationOperation(generateConvertToInt, parameterToTable, operation)
 
             return generateAlias(aliasEscape, generatedAggregationOperation, alias)
         })

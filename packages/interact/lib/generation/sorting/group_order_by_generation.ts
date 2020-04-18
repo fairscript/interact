@@ -4,19 +4,33 @@ import {generateGroupAggregationOperation} from '../aggregation/group_aggregatio
 import {joinWithCommaWhitespace} from '../../join'
 import {Key} from '../../parsing/get_key_parsing'
 
-function generateGroupOrder(namedParameterPrefix: string, key: Key, order: GroupOrderExpression): string {
+function generateGroupOrder(
+    namedParameterPrefix: string,
+    generateConvertToInt: (getColumn: string) => string,
+    key: Key,
+    order: GroupOrderExpression): string {
+
     const { parameterNameToTableAlias, operation, direction } = order
 
-    const generatedAggregationOperation = generateGroupAggregationOperation(namedParameterPrefix, key, parameterNameToTableAlias, operation)
+    const generatedAggregationOperation = generateGroupAggregationOperation(namedParameterPrefix, generateConvertToInt, key, parameterNameToTableAlias, operation)
     const generatedDirection = generateDirection(direction)
 
     return `${generatedAggregationOperation} ${generatedDirection}`
 }
 
-function generateGroupOrders(namedParameterPrefix: string, key: Key, orders: GroupOrderExpression[]): string {
-    return joinWithCommaWhitespace(orders.map(order => generateGroupOrder(namedParameterPrefix, key, order)))
+function generateGroupOrders(
+    namedParameterPrefix: string,
+    generateConvertToInt: (getColumn: string) => string,
+    key: Key,
+    orders: GroupOrderExpression[]): string {
+
+    return joinWithCommaWhitespace(orders.map(order => generateGroupOrder(namedParameterPrefix, generateConvertToInt, key, order)))
 }
 
-export function generateGroupOrderBy(namedParameterPrefix: string, key: Key, orders: GroupOrderExpression[]): string {
-    return 'ORDER BY ' + generateGroupOrders(namedParameterPrefix, key, orders)
+export function generateGroupOrderBy(
+    namedParameterPrefix: string,
+    generateConvertToInt: (getColumn: string) => string,
+    key: Key,
+    orders: GroupOrderExpression[]): string {
+    return 'ORDER BY ' + generateGroupOrders(namedParameterPrefix, generateConvertToInt, key, orders)
 }

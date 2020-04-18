@@ -1,7 +1,6 @@
-import {parseMultipleTableSelection} from '../../parsing/selection/multi_table_selection_parsing'
 import {Runnable} from '../../databases/database_context'
 import {SelectStatement} from '../../statements/select_statement'
-import {collectColumnRecords} from '../../record'
+import {createMultiTableSelection} from '../../parsing/selection/multi_table_selection_parsing'
 
 export class SelectExpectedSetOfRows<T> implements Runnable<T[]> {
     constructor(public statement: SelectStatement) {}
@@ -16,6 +15,6 @@ export function selectExpectedSetOfRows<Ts>(
     return new SelectExpectedSetOfRows(
         {
             ...statement,
-            selection: parseMultipleTableSelection(names, collectColumnRecords(statement))
+            selection: createMultiTableSelection(names)
         })
 }

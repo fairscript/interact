@@ -6,12 +6,12 @@ import {Department} from './model/department'
 export const employees = defineTable<Employee>(
     'employees',
     {
-        id: 'number',
+        id: 'integer',
         firstName: 'string',
         lastName: 'string',
         title: 'string',
-        salary: 'number',
-        departmentId: 'number',
+        salary: 'integer',
+        departmentId: 'integer',
         fulltime: 'boolean'
     })
 
@@ -27,9 +27,9 @@ export const testEmployees: Employee[] =
 export const departments = defineTable<Department>(
     'departments',
     {
-        id: 'number',
+        id: 'integer',
         name: 'string',
-        companyId: 'number'
+        companyId: 'integer'
     })
 
 export const testDepartments: Department[] =
@@ -41,7 +41,7 @@ export const testDepartments: Department[] =
 export const companies = defineTable<Company>(
     'companies',
     {
-        id: 'number',
+        id: 'integer',
         name: 'string',
     })
 

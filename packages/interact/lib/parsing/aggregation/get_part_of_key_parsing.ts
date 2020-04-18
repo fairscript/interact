@@ -2,7 +2,7 @@ import {createNamedObjectPropertyParser} from '../literals/record_parsing'
 
 export interface GetPartOfKey {
     kind: 'get-part-of-key',
-    part: string,
+    part: string
 }
 
 export function createGetPartOfKey(part: string): GetPartOfKey {

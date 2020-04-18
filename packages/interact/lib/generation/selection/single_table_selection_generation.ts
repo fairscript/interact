@@ -2,11 +2,15 @@ import {SingleTableSelection} from '../../parsing/selection/single_table_selecti
 import {generateColumnAccess} from '../column_access_generation'
 import {generateAlias} from '../alias_generation'
 import {joinWithCommaWhitespace} from '../../join'
+import {ColumnTypeRecord} from '../../record'
 
-export function generateSingleTableSelection(aliasEscape: string|null, selection: SingleTableSelection): string {
+export function generateSingleTableSelection(
+    aliasEscape: string|null,
+    selection: SingleTableSelection,
+    columns: ColumnTypeRecord): string {
     return joinWithCommaWhitespace(
-        selection.properties.map(property =>
-            generateAlias(aliasEscape, generateColumnAccess('t1', property), property)
+        Object.keys(columns).map(column =>
+            generateAlias(aliasEscape, generateColumnAccess('t1', column), column)
         )
     )
 }

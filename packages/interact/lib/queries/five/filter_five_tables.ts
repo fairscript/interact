@@ -1,6 +1,6 @@
 import {SortFiveTables} from './sort_five_tables'
 import {GroupFiveTables} from './group_five_tables'
-import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
+import {EnforceNonEmptyRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
 import {Value} from '../../value'
 import {Table} from '../one/table'
 import {Subtable} from '../subtable'
@@ -14,7 +14,7 @@ import {
 } from '../selection/select_scalar'
 import {mapTable, mapTableWithSubquery, SelectRows} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
-import {AggregatableTable, Count} from '../aggregatable_table'
+import {AggregatableTable} from '../aggregatable_table'
 import {
     addAscendingOrder,
     addDescendingOrder,
@@ -106,8 +106,8 @@ export class FilterFiveTables<T1, T2, T3, T4, T5> {
         return averageColumn(this.statement, f)
     }
 
-    aggregate<A extends TableAggregationRecord>(
-        aggregation: (first: AggregatableTable<T1>, second: AggregatableTable<T2>, third: AggregatableTable<T3>, fourth: AggregatableTable<T4>, fifth: AggregatableTable<T5>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectGuaranteedSingleRow<A> {
+    aggregate<A extends ValueRecord>(
+        aggregation: (first: AggregatableTable<T1>, second: AggregatableTable<T2>, third: AggregatableTable<T3>, fourth: AggregatableTable<T4>, fifth: AggregatableTable<T5>, count: () => number) => EnforceNonEmptyRecord<A> & A): SelectGuaranteedSingleRow<A> {
         return aggregateTables(this.statement, aggregation)
     }
 

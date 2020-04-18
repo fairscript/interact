@@ -6,19 +6,29 @@ import {SubselectStatement} from '../../statements/subselect_statement'
 import {GetColumn} from '../../parsing/value_expressions/get_column_parsing'
 import {joinWithCommaWhitespace} from '../../join'
 
-function generateMapPropertyOperation(namedParameterPrefix: string, parameterToTable: { [parameter: string]: string }, operation: GetColumn | SubselectStatement): string {
+function generateMapPropertyOperation(
+    namedParameterPrefix: string,
+    generateConvertToInt: (getColumn: string) => string,
+    parameterToTable: { [parameter: string]: string },
+    operation: GetColumn | SubselectStatement): string {
+
     switch (operation.kind) {
         case 'get-column':
             return generateGetColumn(parameterToTable, operation)
         case 'subselect-statement':
-            return generateSubselectStatement(namedParameterPrefix, operation.selection, operation.tableName, operation.filters)
+            return generateSubselectStatement(namedParameterPrefix, generateConvertToInt, operation.selection, operation.tableName, operation.filters)
     }
 }
 
-export function generateMapSelection(aliasEscape: string|null, namedParameterPrefix: string, selection: MapSelection): string {
+export function generateMapSelection(
+    aliasEscape: string|null,
+    namedParameterPrefix: string,
+    generateConvertToInt: (getColumn: string) => string,
+    selection: MapSelection): string {
+
     const {parameterNameToTableAlias, operations} = selection
 
     return joinWithCommaWhitespace(operations.map(([alias, operation]) =>
-        generateAlias(aliasEscape, generateMapPropertyOperation(namedParameterPrefix, parameterNameToTableAlias, operation), alias)
+        generateAlias(aliasEscape, generateMapPropertyOperation(namedParameterPrefix, generateConvertToInt, parameterNameToTableAlias, operation), alias)
     ))
 }

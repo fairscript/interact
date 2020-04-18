@@ -2,7 +2,7 @@ import {TableSelection} from '../parsing/selection/selection_parsing'
 import {Filter} from '../parsing/filtering/filter_parsing'
 import {OrderExpression, parseSorting} from '../parsing/sorting/sorting_parsing'
 import {JoinExpression, parseJoin} from '../parsing/join_parsing'
-import {ColumnRecord, ValueOrNestedValueRecord} from '../record'
+import {ColumnTypeRecord, ValueOrNestedValueRecord} from '../record'
 import {parseParameterlessFilter} from '../parsing/filtering/parameterless_filter_parsing'
 import {parseParameterizedFilter} from '../parsing/filtering/parameterized_filter_parsing'
 import {Direction} from '../queries/one/sort_table'
@@ -10,7 +10,7 @@ import {Table} from '../queries/one/table'
 
 export interface SelectStatement {
     tableName: string
-    columns: ColumnRecord
+    columns: ColumnTypeRecord
     filters: Filter[]
     joins: JoinExpression[]
     orders: OrderExpression[]
@@ -21,7 +21,7 @@ export interface SelectStatement {
     kind: 'select-statement'
 }
 
-export function createEmptySelectStatement<T>(tableName: string, columns: ColumnRecord): SelectStatement {
+export function createEmptySelectStatement<T>(tableName: string, columns: ColumnTypeRecord): SelectStatement {
     return {
         tableName,
         columns,

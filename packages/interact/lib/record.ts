@@ -1,6 +1,7 @@
 import {Value} from './value'
-import {Avg, Count, Max, Min, Sum} from './queries/aggregatable_table'
+import {ColumnType} from './queries/one/table'
 import {SelectStatement} from './statements/select_statement'
+import {GroupSelectStatement} from './statements/group_select_statement'
 
 export type EnforceNonEmptyRecord<R> = keyof R extends never ? never : R
 
@@ -10,10 +11,8 @@ interface NestedValueRecord extends Record<string, Value|NestedValueRecord> {}
 
 export type ValueOrNestedValueRecord = Value|NestedValueRecord
 
-export type TableAggregationRecord = Record<string, Max|Min|Avg|Sum|Count>
+export type ColumnTypeRecord = Record<string, ColumnType>
 
-export type ColumnRecord = Record<string, 'string'|'number'|'boolean'>
-
-export function collectColumnRecords(selectStatement: SelectStatement): ColumnRecord[] {
-    return [selectStatement.columns].concat(selectStatement.joins.map(j => j.columns))
+export function collectColumnTypeRecords(statement: SelectStatement|GroupSelectStatement): ColumnTypeRecord[] {
+    return [statement.columns].concat(statement.joins.map(j => j.columns))
 }

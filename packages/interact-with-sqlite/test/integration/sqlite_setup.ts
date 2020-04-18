@@ -1,4 +1,4 @@
-import {SqliteClient} from '../lib/sqlite_client'
+import {SqliteClient} from '../../lib/sqlite_client'
 import {testDepartments, testEmployees} from '@fairscript/interact/lib/test/test_tables'
 
 export async function setUpSqliteTestData(client: SqliteClient) {

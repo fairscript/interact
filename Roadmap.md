@@ -1,7 +1,7 @@
 # Roadmap
 
-## v0.15
-- SQLite integration tests for sorting and joins
+## v0.15.6
+- SQLite integration tests for distinct, sorting and joins
 - Make integration tests reusable for Postgres and BigQuery
 
 ## v0.16

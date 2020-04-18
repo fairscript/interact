@@ -1,7 +1,7 @@
 import * as sqlite3 from 'sqlite3'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {createSqliteInMemoryClient} from '../lib/sqlite_client'
+import {createSqliteInMemoryClient} from '../../lib/sqlite_client'
 import {setUpSqliteTestData} from './sqlite_setup'
 import {createDatabaseClientTestSuite} from '@fairscript/interact/lib/test/integration/database_client_test_suite'
 

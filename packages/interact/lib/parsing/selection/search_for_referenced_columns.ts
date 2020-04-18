@@ -10,7 +10,16 @@ export function findReferencedColumns(operation: GetColumn | AggregateColumn | S
             referencedColumns.push(operation)
             break
         case 'aggregate-column':
-            referencedColumns.push(operation.get)
+            const {aggregated} = operation
+
+            switch (aggregated.kind) {
+                case 'get-column':
+                    referencedColumns.push(aggregated)
+                    break
+                case 'implicitly-convert-boolean-to-integer':
+                    referencedColumns.push(aggregated.get)
+                    break
+            }
     }
 
     return referencedColumns

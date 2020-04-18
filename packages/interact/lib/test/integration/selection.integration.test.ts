@@ -1,22 +1,7 @@
-import {setUpSqliteTestData} from '../sqlite_setup'
-import {createSqliteInMemoryClient} from '../../lib/sqlite_client'
-import {departments, employees, testDepartments, testEmployees} from '@fairscript/interact/lib/test/test_tables'
-import {createSqliteContext} from '../../lib'
+import {DatabaseContext} from '../../databases/database_context'
+import {departments, employees, testDepartments, testEmployees} from '../test_tables'
 
-import * as chai from 'chai'
-import * as chaiAsPromised from 'chai-as-promised'
-
-describe('SqliteContext can select', () => {
-    const client = createSqliteInMemoryClient()
-    const context = createSqliteContext(client)
-
-    before(async() => {
-        chai.should()
-        chai.use(chaiAsPromised)
-
-        await setUpSqliteTestData(client)
-    })
-
+export function performSelectionIntegrationTest(context: DatabaseContext) {
     describe('all rows', () => {
         it('from a single table', () => {
             return context.run(employees.select())
@@ -62,7 +47,7 @@ describe('SqliteContext can select', () => {
             return actual.should.eventually.eql(expected)
         })
 
-        it('from two tables table', () => {
+        it('from two tables', () => {
             const actual = context.run(
                 employees
                     .join(departments, e => e.departmentId, d => d.id)
@@ -85,20 +70,20 @@ describe('SqliteContext can select', () => {
     it('can map rows', () => {
         const actual = context.run(
             employees
-                .map(e => ({ first: e.firstName, last: e.lastName, worksFulltime: e.fulltime }))
+                .map(e => ({first: e.firstName, last: e.lastName, worksFulltime: e.fulltime}))
         )
 
         const expected = testEmployees
-            .map(e => ({ first: e.firstName, last: e.lastName, worksFulltime: e.fulltime }))
+            .map(e => ({first: e.firstName, last: e.lastName, worksFulltime: e.fulltime}))
 
         return actual.should.eventually.eql(expected)
     })
 
     describe('a single column', () => {
-        const salaries = testEmployees.map(e => e.salary)
+        const salaries = testEmployees.map(e => e.salary).sort((a, b) => a - b)
 
         it('with duplicates', () => {
-            const actual = context.run(employees.get(e => e.salary))
+            const actual = context.run(employees.sortBy(e => e.salary).get(e => e.salary))
 
             const expected = salaries
 
@@ -106,7 +91,7 @@ describe('SqliteContext can select', () => {
         })
 
         it('without duplicates', () => {
-            const actual = context.run(employees.get(e => e.salary).distinct())
+            const actual = context.run(employees.sortBy(e => e.salary).get(e => e.salary).distinct())
 
             const expected = salaries.filter((salary, index) => salaries.indexOf(salary) === index)
 
@@ -126,4 +111,4 @@ describe('SqliteContext can select', () => {
         return context.run(employees.count())
             .should.eventually.equal(testEmployees.length)
     })
-})
+}

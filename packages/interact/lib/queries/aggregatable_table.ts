@@ -1,17 +1,24 @@
-export interface Count {}
-export interface Max {}
-export interface Min {}
-export interface Avg {}
-export interface Sum {}
-
-export type AggregatableColumn = {
-    avg(): Avg
-    max(): Max
-    min(): Min
-    sum(): Sum
+export type StringAggregation = {
+    avg(): string
+    max(): string
+    min(): string
+    sum(): string
 }
+
+export type NumberAggregation = {
+    avg(): number
+    max(): number
+    min(): number
+    sum(): number
+}
+
+export type BooleanAggregation = {
+    avg(): number
+    max(): boolean
+    min(): boolean
+    sum(): number
+}
+
 export type AggregatableTable<T> = {
-    [F in keyof T]: AggregatableColumn
+    [F in keyof T]: T[F] extends string ? StringAggregation : T[F] extends number ? NumberAggregation : BooleanAggregation
 }
-
-export type GroupAggregationRecord<K> = Record<string, K|Max|Min|Avg|Sum|Count>

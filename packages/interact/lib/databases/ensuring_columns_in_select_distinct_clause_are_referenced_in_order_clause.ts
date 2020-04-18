@@ -11,12 +11,13 @@ import {
     GroupSelectStatement
 } from '../statements/group_select_statement'
 import {Filter} from '../parsing/filtering/filter_parsing'
-import {ColumnRecord} from '../record'
+import {ColumnTypeRecord} from '../record'
 import {JoinExpression} from '../parsing/join_parsing'
 import {createGroupAggregation} from '../parsing/selection/group_aggregation_selection_parsing'
 import {createGetPartOfKey} from '../parsing/aggregation/get_part_of_key_parsing'
 import {GroupSelection} from '../parsing/selection/selection_parsing'
 import {GroupAggregationOperation} from '../parsing/aggregation/group_aggregation_operation_parsing'
+import {createSingleGroupAggregationOperationSelection} from '../parsing/selection/single_group_aggregation_operation_selection'
 
 function checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders: OrderExpression[], selection: SingleColumnSelection|MapSelection): boolean {
     for (let indexOrder in orders) {
@@ -54,9 +55,10 @@ function mapTableSelectionToGroupSelection(tableSelection: SingleColumnSelection
     switch (tableSelection.kind) {
         case 'single-column-selection':
             const {operation} = tableSelection
-            const getColumn = operation.kind === 'aggregate-column' ? operation.get : operation
+            const getColumnOrConvertColumn = operation.kind === 'aggregate-column' ? operation.aggregated : operation
+            const getColumn = getColumnOrConvertColumn.kind === 'implicitly-convert-boolean-to-integer' ? getColumnOrConvertColumn.get : getColumnOrConvertColumn
 
-            return createGroupAggregation(parameterNameToTableAlias, [[getColumn.property, createGetPartOfKey(getColumn.property)]])
+            return createSingleGroupAggregationOperationSelection(parameterNameToTableAlias, createGetPartOfKey(getColumn.property))
         case 'map-selection':
             const operations: [string, GroupAggregationOperation][] = tableSelection.operations.map(([alias, op]) => {
                 switch (op.kind) {
@@ -73,7 +75,7 @@ function mapTableSelectionToGroupSelection(tableSelection: SingleColumnSelection
 
 function adaptOrderedDistinct(
     tableName: string,
-    columns: ColumnRecord,
+    columns: ColumnTypeRecord,
     tableSelection: SingleColumnSelection|MapSelection,
     joins: JoinExpression[],
     filters: Filter[],
@@ -108,31 +110,40 @@ function adaptOrderedDistinct(
     }
 }
 
-export function adaptDistinct(statement: SelectStatement): SelectStatement|GroupSelectStatement {
+export function ensureColumnsInSelectDistinctClauseAreReferencedInOrderClauseRule(statement: SelectStatement|GroupSelectStatement): SelectStatement|GroupSelectStatement {
+    if(statement.kind !== 'select-statement') {
+        return statement
+    }
 
-    const {orders} = statement
+    if (!statement.distinct) {
+        return statement
+    }
 
     const selection = statement.selection!
 
-    if ((selection.kind === 'single-column-selection' || selection.kind === 'map-selection') && checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders, selection)) {
-        const {tableName, columns, joins, filters, orders, limit, offset} = statement
-        const {parameterNameToTableAlias, referencedColumns} = selection
-
-        return adaptOrderedDistinct(
-            tableName,
-            columns,
-            selection,
-            joins,
-            filters,
-            orders,
-            limit,
-            offset,
-            parameterNameToTableAlias,
-            referencedColumns
-        )
-    }
-    else {
+    if (selection.kind !== 'single-column-selection' && selection.kind !== 'map-selection') {
         return statement
     }
+
+    const {orders} = statement
+
+    if (!checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders, selection)) {
+        return statement
+    }
+
+    const {tableName, columns, joins, filters, limit, offset} = statement
+    const {parameterNameToTableAlias, referencedColumns} = selection
+
+    return adaptOrderedDistinct(
+        tableName,
+        columns,
+        selection,
+        joins,
+        filters,
+        orders,
+        limit,
+        offset,
+        parameterNameToTableAlias,
+        referencedColumns)
 
 }

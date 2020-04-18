@@ -7,12 +7,12 @@ import {GroupAggregationOperation, createGroupAggregationOperationParser} from '
 
 export interface GroupAggregationSelection {
     kind: 'group-aggregation-selection',
-    parameterToTable: {[partOfKey: string]: string},
+    parameterToTable: {[parameter: string]: string},
     operations: [string, GroupAggregationOperation][]
 }
 
 export function createGroupAggregation(
-    parameterToTable: {[partOfKey: string]: string},
+    parameterToTable: {[parameter: string]: string},
     operations: [string, GroupAggregationOperation][]): GroupAggregationSelection {
 
     return {

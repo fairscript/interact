@@ -5,11 +5,11 @@ import {JoinExpression} from '../parsing/join_parsing'
 import {Key, parseGetKey} from '../parsing/get_key_parsing'
 import {Direction} from '../queries/one/sort_table'
 import {SelectStatement} from './select_statement'
-import {ColumnRecord} from '../record'
+import {ColumnTypeRecord} from '../record'
 
 export interface GroupSelectStatement {
     tableName: string
-    columns: ColumnRecord
+    columns: ColumnTypeRecord
     key: Key
     filters: Filter[]
     joins: JoinExpression[]
@@ -21,7 +21,7 @@ export interface GroupSelectStatement {
     kind: 'group-select-statement'
 }
 
-export function createEmptyGroupSelectStatement(tableName: string, columns: ColumnRecord, key: Key): GroupSelectStatement {
+export function createEmptyGroupSelectStatement(tableName: string, columns: ColumnTypeRecord, key: Key): GroupSelectStatement {
     return {
         tableName,
         columns,

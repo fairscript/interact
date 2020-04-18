@@ -1,17 +1,17 @@
 import {Filter} from '../parsing/filtering/filter_parsing'
 import {CountSelection} from '../parsing/selection/count_selection'
 import {SingleColumnSelection} from '../parsing/selection/single_column_selection_parsing'
-import {ColumnRecord} from '../record'
+import {ColumnTypeRecord} from '../record'
 
 export interface SubselectStatement {
     selection: CountSelection|SingleColumnSelection
     tableName: string
     filters: Filter[],
-    columns: ColumnRecord,
+    columns: ColumnTypeRecord,
     kind: 'subselect-statement'
 }
 
-export function createSubselectStatement(tableName: string, columns: ColumnRecord, filters: Filter[], selection: CountSelection|SingleColumnSelection): SubselectStatement {
+export function createSubselectStatement(tableName: string, columns: ColumnTypeRecord, filters: Filter[], selection: CountSelection|SingleColumnSelection): SubselectStatement {
     return {
         tableName,
         columns,

@@ -1,25 +1,11 @@
-import {ColumnRecord} from '../../record'
-
 export interface MultiTableSelection {
     kind: 'multi-table-selection'
-    namesPairedWithProperties: [string, string[]][]
+    names: string[]
 }
 
-export function createMultiTableSelection(namesPairedWithProperties: [string, string[]][]): MultiTableSelection {
+export function createMultiTableSelection(names: string[]): MultiTableSelection {
     return {
         kind: 'multi-table-selection',
-        namesPairedWithProperties
+        names
     }
-}
-
-export function parseMultipleTableSelection(names: string[], columnRecords: ColumnRecord[]): MultiTableSelection {
-    const namesPairedWithProperties = names.reduce(
-        (acc, name, index) => {
-            acc.push([name, Object.keys(columnRecords[index])])
-            return acc
-        },
-        [] as [string, string[]][]
-    )
-
-    return createMultiTableSelection(namesPairedWithProperties)
 }

@@ -7,9 +7,9 @@ import {createRecordInParenthesesParser} from '../literals/record_parsing'
 import {createParameterlessFilter} from '../filtering/parameterless_filter_parsing'
 import {createSubselectParser} from './subselection_parsing'
 import {createGetColumnParser} from '../value_expressions/get_column_parsing'
-import {ColumnRecord} from '../../record'
+import {ColumnTypeRecord} from '../../record'
 
-export function parseMapWithSubquerySelection(subtableName: string, columns: ColumnRecord, f: Function): MapSelection {
+export function parseMapWithSubquerySelection(subtableName: string, columns: ColumnTypeRecord, f: Function): MapSelection {
     const { parameters, expression } = extractLambdaParametersAndExpression(f)
 
     const subParameterNames = [parameters[0]]

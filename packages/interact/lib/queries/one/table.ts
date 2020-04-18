@@ -2,7 +2,11 @@ import {FilterTable} from './filter_table'
 import {SortTable} from './sort_table'
 import {GroupTable} from './group_table'
 import {JoinSecondTable} from '../two/join_second_table'
-import {EnforceNonEmptyRecord, TableAggregationRecord, ValueOrNestedValueRecord, ValueRecord} from '../../record'
+import {
+    EnforceNonEmptyRecord,
+    ValueOrNestedValueRecord,
+    ValueRecord
+} from '../../record'
 import {Value} from '../../value'
 import {Subtable} from '../subtable'
 import {
@@ -15,7 +19,7 @@ import {
 } from '../selection/select_scalar'
 import {mapTable, mapTableWithSubquery, SelectRows, selectTable} from '../selection/select_rows'
 import {getColumn, SelectVector} from '../selection/select_vector'
-import {AggregatableTable, Count} from '../aggregatable_table'
+import {AggregatableTable} from '../aggregatable_table'
 import {
     addAscendingOrder,
     addDescendingOrder,
@@ -28,9 +32,10 @@ import {
 import {groupTablesBy} from '../../statements/group_select_statement'
 import {aggregateTables, SelectGuaranteedSingleRow} from '../selection/select_guaranteed_single_row'
 
+export type ColumnType = 'string' | 'integer' | 'float' | 'boolean'
 
 export type Columns<T> = {
-    [P in keyof T]: 'string'|'number'|'boolean';
+    [P in keyof T]: ColumnType
 }
 
 export class Table<T> {
@@ -106,8 +111,8 @@ export class Table<T> {
         return averageColumn(this.statement, f)
     }
 
-    aggregate<A extends TableAggregationRecord>(
-        aggregation: (table: AggregatableTable<T>, count: () => Count) => EnforceNonEmptyRecord<A> & A): SelectGuaranteedSingleRow<A> {
+    aggregate<A extends ValueRecord>(
+        aggregation: (table: AggregatableTable<T>, count: () => number) => EnforceNonEmptyRecord<A> & A): SelectGuaranteedSingleRow<A> {
         return aggregateTables(this.statement, aggregation)
     }
 

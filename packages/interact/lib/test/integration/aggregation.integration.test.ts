@@ -1,22 +1,7 @@
-import {employees, testEmployees} from '@fairscript/interact/lib/test/test_tables'
+import {DatabaseContext} from '../../databases/database_context'
+import {employees, testEmployees} from '../test_tables'
 
-import * as chai from 'chai'
-import * as chaiAsPromised from 'chai-as-promised'
-import {createSqliteInMemoryClient} from '../../lib/sqlite_client'
-import {createSqliteContext} from '../../lib'
-import {setUpSqliteTestData} from '../sqlite_setup'
-
-describe('SqliteContext can aggregate', () => {
-    const client = createSqliteInMemoryClient()
-    const context = createSqliteContext(client)
-
-    before(async() => {
-        chai.should()
-        chai.use(chaiAsPromised)
-
-        await setUpSqliteTestData(client)
-    })
-
+export function performAggregationIntegrationTests(context: DatabaseContext) {
     describe('a single column', () => {
         const salaries = testEmployees.map(e => e.salary)
 
@@ -117,5 +102,4 @@ describe('SqliteContext can aggregate', () => {
 
         actual.should.eventually.eql(expected)
     })
-
-})
+}

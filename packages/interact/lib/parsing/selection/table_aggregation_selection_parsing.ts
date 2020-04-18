@@ -9,12 +9,12 @@ import {createRecordInParenthesesParser} from '../literals/record_parsing'
 
 export interface TableAggregationSelection {
     kind: 'table-aggregation-selection',
-    parameterToTable: {[partOfKey: string]: string},
+    parameterToTable: {[parameter: string]: string},
     operations: [string, TableAggregationOperation][]
 }
 
 export function createTableAggregationSelection(
-    parameterToTable: {[partOfKey: string]: string},
+    parameterToTable: {[parameter: string]: string},
     operations: [string, TableAggregationOperation][]): TableAggregationSelection {
 
     return {
