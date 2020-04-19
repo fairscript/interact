@@ -80,13 +80,13 @@ WHERE t1.id = 1
 
 ## Selection features
 
-### Selecting a single column
+### Single column
 
 ```typescript
 employees.get(e => e.id)
 ```
 
-### Selecting a single row
+### Single row
 
 ```typescript
 employees
@@ -101,13 +101,13 @@ employees
 	.map(e => ({ firstName: e.firstName, lastName: e.lastName }))
 ```
 
-### Selecting a single table
+### Single table
 
 ```typescript
 employees.select()
 ```
 
-### Selecting multiple tables
+### Multiple tables
 
 ```typescript
 employees
@@ -118,31 +118,31 @@ employees
 
 ## Aggregation features
 
-### Counting the number of rows
+### Number of rows
 
 ```typescript
 employees.count()
 ```
 
-### Finding the minimum value in a column
+### Minimum value in a column
 
 ```typescript
 employees.min(e => e.salary)
 ```
 
-### Finding the maximum value in a column
+### Maximum value in a column
 
 ```typescript
 employees.max(e => e.salary)
 ```
 
-### Computing the sum of values in a column
+### Sum of values in a column
 
 ```typescript
 employees.sum(e => e.salary)
 ```
 
-### Computing the sum of values in a column
+### Average column value
 
 ```typescript
 employees.sum(e => e.average)
@@ -161,7 +161,7 @@ employees
     }))
 ```
 
-### Aggregate groups
+### Aggregating groups
 
 ```typescript
 employees
@@ -242,7 +242,7 @@ employees
 
 ## Sorting features
 
-### Sorting in ascending order
+### Ascending order
 
 ```typescript
 employees
@@ -250,7 +250,7 @@ employees
     .select()
 ```
 
-### Sorting in descending order
+### Descending order
 
 ```typescript
 employees
@@ -258,7 +258,7 @@ employees
     .select()
 ```
 
-### Sorting with multiple orders
+### Multiple orders
 
 ```typescript
 employees
