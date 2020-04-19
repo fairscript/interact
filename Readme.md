@@ -116,6 +116,29 @@ employees
     .select('employee', 'department', 'company')
 ```
 
+### Limited number of rows
+```typescript
+employees
+    .select()
+    .limit(n)
+```
+
+### Limited number of rows, with an offset
+```typescript
+employees
+    .select()
+    .limit(m)
+    .offset(n)
+```
+
+### Distinct rows
+
+```typescript
+employees
+    .select()
+    .distinct()
+```
+
 ## Aggregation features
 
 ### Number of rows
@@ -204,6 +227,10 @@ employees.filter(e => !e.fulltime)
 
 ```typescript
 employees.filter(e => e.firstName === 'John' && e.lastName === 'Doe')
+
+employees
+    .filter(e => e.firstName === 'John')
+	.filter(e => e.lastName === 'Doe')
 ```
 
 ### Disjunction
