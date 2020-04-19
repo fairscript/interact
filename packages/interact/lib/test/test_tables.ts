@@ -2,18 +2,23 @@ import {defineTable} from '..'
 import {Employee} from './model/employee'
 import {Company} from './model/companies'
 import {Department} from './model/department'
+import {Table} from '../queries/one/table'
 
-export const employees = defineTable<Employee>(
-    'employees',
-    {
-        id: 'integer',
-        firstName: 'string',
-        lastName: 'string',
-        title: 'string',
-        salary: 'integer',
-        departmentId: 'integer',
-        fulltime: 'boolean'
-    })
+export function defineEmployeesTable(name: string): Table<Employee> {
+    return defineTable<Employee>(
+        name,
+        {
+            id: 'integer',
+            firstName: 'string',
+            lastName: 'string',
+            title: 'string',
+            salary: 'integer',
+            departmentId: 'integer',
+            fulltime: 'boolean'
+        })
+}
+
+export const employees = defineEmployeesTable('employees')
 
 export const testEmployees: Employee[] =
     [
@@ -24,13 +29,17 @@ export const testEmployees: Employee[] =
         new Employee(5, 'James', 'Miller', 'Assistant', 2_000, 2, false)
     ]
 
-export const departments = defineTable<Department>(
-    'departments',
-    {
-        id: 'integer',
-        name: 'string',
-        companyId: 'integer'
-    })
+export function defineDepartmentsTable(name: string): Table<Department> {
+    return defineTable<Department>(
+        name,
+        {
+            id: 'integer',
+            name: 'string',
+            companyId: 'integer'
+        })
+}
+
+export const departments = defineDepartmentsTable('departments')
 
 export const testDepartments: Department[] =
     [

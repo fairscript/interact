@@ -1,20 +1,13 @@
 # Roadmap
 
-## v0.15.6
-- SQLite integration tests for distinct, sorting and joins
-- Make integration tests reusable for Postgres and BigQuery
-
-## v0.16
+## v0.17
 - Improve documentation
 
-## v0.17
+## v0.18
 - Dates
 
-## v0.18
-- HAVING
-
 ## v0.19
-- Set up and increase test coverage
+- HAVING
 
 ## v0.20
 - INSERT
@@ -22,23 +15,26 @@
 - UPDATE
 
 ## v0.21
-- Byte arrays
+- Set up and increase test coverage
 
 ## v0.22
+- Byte arrays
+
+## v0.23
 - Boolean expressions in selections
 - Boolean expressions as a subset of value expressions
 
-## v0.23
+## v0.24
 - Set clauses
 
-## v0.24
+## v0.25
 - String operations
 
-## v0.25
+## v0.26
 - Date operations
 
-## v0.26
+## v0.27
 - Mathematical operations
 
-## v0.27
+## v0.28
 - Array operations

@@ -1,8 +1,9 @@
-import {BigQuery, Table} from '@google-cloud/bigquery'
+import {BigQuery, Dataset, Table} from '@google-cloud/bigquery'
 import * as assert from 'assert'
 import * as toSnakeCase from 'js-snakecase'
-import {join} from '@fairscript/interact/lib/join'
-import {testEmployees} from '@fairscript/interact/lib/test/test_tables'
+import {join, joinWithUnderscore} from '@fairscript/interact/lib/join'
+import {testDepartments, testEmployees} from '@fairscript/interact/lib/test/test_tables'
+import {TableMetadata} from '@google-cloud/bigquery/build/src/table'
 
 
 export function createBigQueryForTests(): BigQuery {
@@ -47,12 +48,15 @@ function generateTimestamp(): string {
     return `${dateParts}_${timeParts}`
 }
 
-export function computeBigQueryTestTableName(prefix: string): string {
-    return `${prefix}_employees_${generateTimestamp()}`
+export function computeBigQueryTestTableName(prefix: string, name: string): string {
+    return joinWithUnderscore([
+        prefix,
+        name,
+        generateTimestamp()
+    ])
 }
 
-export async function setupBigQueryTestData(client: BigQuery, datasetName: string, tableName: string) {
-    const dataset = client.dataset(datasetName)
+async function setUpBigQueryTable<T>(dataset: Dataset, tableName: string, metaData: TableMetadata, data: T[]) {
     const table = dataset.table(tableName)
 
     const tableExistsBeforeCreation = await checkIfTableExists(table)
@@ -61,17 +65,7 @@ export async function setupBigQueryTestData(client: BigQuery, datasetName: strin
     await dataset
         .createTable(
             tableName,
-            {
-                schema: [
-                    {name: 'id', type: 'INTEGER', mode: 'REQUIRED'},
-                    {name: 'first_name', type: 'STRING', mode: 'REQUIRED'},
-                    {name: 'last_name', type: 'STRING', mode: 'REQUIRED'},
-                    {name: 'title', type: 'STRING', mode: 'REQUIRED'},
-                    {name: 'salary', type: 'NUMERIC', mode: 'REQUIRED'},
-                    {name: 'department_id', type: 'INTEGER', mode: 'REQUIRED'},
-                    {name: 'fulltime', type: 'BOOL', mode: 'REQUIRED'}
-                ]
-            })
+            metaData)
         .catch(err => {
             console.log(err.errors)
         })
@@ -79,7 +73,7 @@ export async function setupBigQueryTestData(client: BigQuery, datasetName: strin
     const tableExistsAfterCreation = await checkIfTableExists(table)
     assert.equal(tableExistsAfterCreation, true)
 
-    const testEmployeesInSnakeCase = testEmployees.map(e =>
+    const dataInSnakeCase = data.map(e =>
         Object.keys(e).reduce(
             (acc, key) => {
                 acc[toSnakeCase(key)] = e[key]
@@ -90,16 +84,51 @@ export async function setupBigQueryTestData(client: BigQuery, datasetName: strin
     )
 
     await table
-        .insert(testEmployeesInSnakeCase)
-
+        .insert(dataInSnakeCase)
 }
 
-export async function tearDownBigQueryTestData(client: BigQuery, datasetName: string, tableName: string) {
-    const dataset = client.dataset(datasetName)
+export async function setUpBigQueryTestData(dataset: Dataset, employeesTableName: string, departmentsTableName: string|null = null) {
+    const employeesSchema = {
+        schema: [
+            {name: 'id', type: 'INTEGER', mode: 'REQUIRED'},
+            {name: 'first_name', type: 'STRING', mode: 'REQUIRED'},
+            {name: 'last_name', type: 'STRING', mode: 'REQUIRED'},
+            {name: 'title', type: 'STRING', mode: 'REQUIRED'},
+            {name: 'salary', type: 'INTEGER', mode: 'REQUIRED'},
+            {name: 'department_id', type: 'INTEGER', mode: 'REQUIRED'},
+            {name: 'fulltime', type: 'BOOL', mode: 'REQUIRED'}
+        ]
+    }
+
+    await setUpBigQueryTable(dataset, employeesTableName, employeesSchema, testEmployees)
+
+    if (departmentsTableName !== null) {
+        const departmentsSchema = {
+            schema: [
+                {name: 'id', type: 'INTEGER', mode: 'REQUIRED'},
+                {name: 'name', type: 'STRING', mode: 'REQUIRED'},
+                {name: 'company_id', type: 'INTEGER', mode: 'REQUIRED'}
+            ]
+        }
+
+        await setUpBigQueryTable(dataset, departmentsTableName, departmentsSchema, testDepartments)
+    }
+}
+
+async function tearDownBigQueryTable(dataset: Dataset, tableName: string) {
     const table = dataset.table(tableName)
 
     await table.delete()
 
     const tableExistsAfterDeletion = await checkIfTableExists(table)
     assert.equal(tableExistsAfterDeletion, false)
+}
+
+
+export async function tearDownBigQueryTestData(dataset: Dataset, employeesTableName: string, departmentsTableName: string|null = null) {
+    await tearDownBigQueryTable(dataset,  employeesTableName)
+
+    if (departmentsTableName !== null) {
+        await tearDownBigQueryTable(dataset, departmentsTableName)
+    }
 }

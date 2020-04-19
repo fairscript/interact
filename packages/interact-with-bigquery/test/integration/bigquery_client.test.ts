@@ -6,7 +6,7 @@ import {BigQueryClient, createBigQueryClient} from '../../lib/bigquery_client'
 import {
     createBigQueryForTests,
     computeBigQueryTestTableName,
-    setupBigQueryTestData,
+    setUpBigQueryTestData,
     tearDownBigQueryTestData
 } from './bigquery_setup'
 import {createDatabaseClientTestSuite} from '@fairscript/interact/lib/test/integration/database_client_test_suite'
@@ -15,7 +15,9 @@ describe('BigQueryClient', () => {
 
     const bigQuery = createBigQueryForTests()
     const datasetId = 'testdataset'
-    const tableName = computeBigQueryTestTableName('client_tests')
+
+    const dataset = bigQuery.dataset(datasetId)
+    const tableName = computeBigQueryTestTableName('client_tests', 'employees')
 
     const client = createBigQueryClient(bigQuery, datasetId)
 
@@ -38,7 +40,7 @@ describe('BigQueryClient', () => {
         chai.should()
         chai.use(chaiAsPromised)
 
-        await setupBigQueryTestData(bigQuery, datasetId, tableName)
+        await setUpBigQueryTestData(dataset, tableName)
     })
 
     it('can get a scalar', () => suite.testScalar())
@@ -50,7 +52,7 @@ describe('BigQueryClient', () => {
     it('can get multiple rows', () => suite.testRows())
 
     after(async() => {
-        await tearDownBigQueryTestData(bigQuery, datasetId, tableName)
+        await tearDownBigQueryTestData(dataset, tableName)
     })
 
 })

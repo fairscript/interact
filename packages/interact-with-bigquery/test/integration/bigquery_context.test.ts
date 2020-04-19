@@ -1,33 +1,32 @@
-
 require('dotenv').config()
 
 import {createBigQueryContext} from '../../lib'
 import {
     computeBigQueryTestTableName,
     createBigQueryForTests,
-    setupBigQueryTestData,
+    setUpBigQueryTestData,
     tearDownBigQueryTestData
 } from './bigquery_setup'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {defineTable} from '@fairscript/interact/lib'
-import {employees} from '@fairscript/interact/lib/test/test_tables'
+import {defineEmployeesTable, employees} from '@fairscript/interact/lib/test/test_tables'
 import {createDatabaseContextTestSuite} from '@fairscript/interact/lib/test/integration/database_context_test_suite'
 
-describe('BigQuery context', () => {
+describe('BigQueryContext', () => {
 
     const bigQuery = createBigQueryForTests()
     const datasetName = 'testdataset'
-    const tableName = computeBigQueryTestTableName('context_tests')
+    const dataset = bigQuery.dataset(datasetName)
+    const tableName = computeBigQueryTestTableName('context_tests', 'employees')
 
     const ctx = createBigQueryContext(bigQuery, datasetName)
-    const suite = createDatabaseContextTestSuite(ctx, defineTable(tableName, employees.columns))
+    const suite = createDatabaseContextTestSuite(ctx, defineEmployeesTable(tableName))
 
     before(async() => {
         chai.should()
         chai.use(chaiAsPromised)
 
-        await setupBigQueryTestData(bigQuery, datasetName, tableName)
+        await setUpBigQueryTestData(dataset, tableName)
     })
 
     it('can get a scalar', () => suite.testScalarQuery())
@@ -71,7 +70,7 @@ describe('BigQuery context', () => {
         () => suite.testParallelQueries())
 
     after(async() => {
-        await tearDownBigQueryTestData(bigQuery, datasetName, tableName)
+        await tearDownBigQueryTestData(dataset, tableName)
     })
 
 })

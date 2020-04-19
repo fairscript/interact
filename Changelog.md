@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.16.0
+- Integration test suites for all three supported databases
+- Specification of integer/float column types
+- Boolean<=>Integer mapping in SQLite
+- Maximization/minimization of boolean columns in Postgres
+- Adaptation of Postgres client result types
+- Fixed return types of aggregation methods  
+
 ## v0.15.5
 - Fixed negations
 - Added filtering integration tests for SQLite

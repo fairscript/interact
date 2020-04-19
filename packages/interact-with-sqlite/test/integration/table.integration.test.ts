@@ -3,28 +3,16 @@ import * as chaiAsPromised from 'chai-as-promised'
 import {createSqliteInMemoryClient} from '../../lib/sqlite_client'
 import {createSqliteContext} from '../../lib'
 import {setUpSqliteTestData} from './sqlite_setup'
-import {
-    testBooleanEvaluationFilteringIntegration,
-    testComparisonFilteringIntegration,
-    testConcatenationFilteringIntegration,
-    testNegationFilteringIntegration
-} from '@fairscript/interact/lib/test/integration/filtering.integration.test'
-import {
-    testGroupAggregationIntegration,
-    testMultiColumnAggregationIntegration,
-    testSingleColumnAggregationIntegration
-} from '@fairscript/interact/lib/test/integration/aggregation.integration.test'
-import {
-    testLimitedSelectionIntegration,
-    testMapSelectionIntegration, testRowCountSelectionIntegration,
-    testSelectionOfAllRowsIntegration,
-    testVectorSelectionIntegration,
-    testSingleRowSelectionIntegration,
-    testScalarSelectionIntegration
-} from '@fairscript/interact/lib/test/integration/selection.integration.test'
+import {SelectionIntegrationTestSuite} from '@fairscript/interact/lib/test/integration/selection_integration_test_suite'
+import {AggregationIntegrationTestSuite} from '@fairscript/interact/lib/test/integration/aggregation_integration_test_suite'
+import {FilteringIntegrationTestSuite} from '@fairscript/interact/lib/test/integration/filtering_integration_test_suite'
+import {departments, employees} from '@fairscript/interact/lib/test/test_tables'
 
 describe('SqliteContext', () => {
     const client = createSqliteInMemoryClient()
+
+    const context = createSqliteContext(client)
+
     before(async() => {
         chai.should()
         chai.use(chaiAsPromised)
@@ -32,67 +20,73 @@ describe('SqliteContext', () => {
         await setUpSqliteTestData(client)
     })
 
-    const context = createSqliteContext(client)
-
     describe('can select', () => {
+        const selectionTestSuite = new SelectionIntegrationTestSuite(context, employees, departments)
+
         describe('all rows', () => {
-            testSelectionOfAllRowsIntegration(context)
+            selectionTestSuite.testSelectionOfAllRows()
         })
 
         describe('a limited number of rows', () => {
-            testLimitedSelectionIntegration(context)
+            selectionTestSuite.testLimitedSelection()
         })
 
         describe('a single row', () => {
-            testSingleRowSelectionIntegration(context)
+            selectionTestSuite.testSingleRowSelection()
         })
 
         it('can map rows', () => {
-            return testMapSelectionIntegration(context)
+            return selectionTestSuite.testMapSelection()
         })
 
         describe('a single column', () => {
-            testVectorSelectionIntegration(context)
+            selectionTestSuite.testVectorSelection()
         })
 
         it('a scalar', () => {
-            return testScalarSelectionIntegration(context)
+            return selectionTestSuite.testScalarSelection()
         })
 
         it('the row count', () => {
-            return testRowCountSelectionIntegration(context)
+            return selectionTestSuite.testRowCountSelection()
         })
     })
 
     describe('can aggregate', () => {
+        const aggregationTestSuite = new AggregationIntegrationTestSuite(context, employees)
+
         describe('a single column', () => {
-            testSingleColumnAggregationIntegration(context)
+            aggregationTestSuite.testSingleColumnAggregation()
         })
 
         it('multiple columns', () => {
-            return testMultiColumnAggregationIntegration(context)
+            return aggregationTestSuite.testMultiColumnAggregation()
         })
 
         it('groups', () => {
-            return testGroupAggregationIntegration(context)
+            return aggregationTestSuite.testGroupAggregation()
         })
     })
 
     describe('can filter', () => {
+        const filteringTestSuite = new FilteringIntegrationTestSuite(context, employees)
+
         describe('by evaluating', () => {
-            testBooleanEvaluationFilteringIntegration(context)
+            filteringTestSuite.testBooleanEvaluationFiltering()
         })
 
         describe('using a comparison', () => {
-            testComparisonFilteringIntegration(context)
+            filteringTestSuite.testComparisonFiltering()
         })
 
         describe('by negating', () => {
-            testNegationFilteringIntegration(context)
+            filteringTestSuite.testNegationFiltering()
         })
 
         describe('using a concatenation of comparisons', () => {
-            testConcatenationFilteringIntegration(context)
+            filteringTestSuite.testConcatenationFiltering()
         })
     })
+
+
 })

@@ -1,32 +1,47 @@
 require('dotenv').config()
 
-import {departments, employees} from '@fairscript/interact/lib/test/test_tables'
+import {
+    computeBigQueryTestTableName,
+    createBigQueryForTests,
+    setUpBigQueryTestData,
+    tearDownBigQueryTestData
+} from './bigquery_setup'
 
 import {AggregationIntegrationTestSuite} from '@fairscript/interact/lib/test/integration/aggregation_integration_test_suite'
 import {FilteringIntegrationTestSuite} from '@fairscript/interact/lib/test/integration/filtering_integration_test_suite'
 import {SelectionIntegrationTestSuite} from '@fairscript/interact/lib/test/integration/selection_integration_test_suite'
+import {
+    defineDepartmentsTable,
+    defineEmployeesTable
+} from '@fairscript/interact/lib/test/test_tables'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import {createPgTestClient, setUpPostgresTestData} from './postgres_setup'
-import {createPostgresClient} from '../../lib/postgres_client'
-import {createPostgresContext} from '../../lib'
+import {createBigQueryContext} from '../../lib'
 
-describe('PostgresContext', () => {
-    const pg = createPgTestClient()
-    const client = createPostgresClient(pg)
-    const context = createPostgresContext(client)
+describe('BigQueryContext', () => {
+    const bigQuery = createBigQueryForTests()
+    const datasetName = 'testdataset'
+    const dataset = bigQuery.dataset(datasetName)
+
+    const tableNamePrefix = 'integration_tests'
+
+    const employeesTableName = computeBigQueryTestTableName(tableNamePrefix, 'employees')
+    const employeesTable = defineEmployeesTable(employeesTableName)
+
+    const departmentsTableName = computeBigQueryTestTableName(tableNamePrefix, 'departments')
+    const departmentsTable = defineDepartmentsTable(departmentsTableName)
+
+    const context = createBigQueryContext(bigQuery, datasetName)
 
     before(async() => {
         chai.should()
         chai.use(chaiAsPromised)
 
-        await pg.connect()
-
-        await setUpPostgresTestData(client)
+        await setUpBigQueryTestData(dataset, employeesTableName, departmentsTableName)
     })
 
     describe('can select', () => {
-        const selectionTestSuite = new SelectionIntegrationTestSuite(context, employees, departments)
+        const selectionTestSuite = new SelectionIntegrationTestSuite(context, employeesTable, departmentsTable)
 
         describe('all rows', () => {
             selectionTestSuite.testSelectionOfAllRows()
@@ -58,7 +73,7 @@ describe('PostgresContext', () => {
     })
 
     describe('can aggregate', () => {
-        const aggregationTestSuite = new AggregationIntegrationTestSuite(context, employees)
+        const aggregationTestSuite = new AggregationIntegrationTestSuite(context, employeesTable)
 
         describe('a single column', () => {
             aggregationTestSuite.testSingleColumnAggregation()
@@ -74,7 +89,7 @@ describe('PostgresContext', () => {
     })
 
     describe('can filter', () => {
-        const filteringTestSuite = new FilteringIntegrationTestSuite(context, employees)
+        const filteringTestSuite = new FilteringIntegrationTestSuite(context, employeesTable)
 
         describe('by evaluating', () => {
             filteringTestSuite.testBooleanEvaluationFiltering()
@@ -94,6 +109,6 @@ describe('PostgresContext', () => {
     })
 
     after(async() => {
-        await pg.end()
+        await tearDownBigQueryTestData(dataset, employeesTableName, departmentsTableName)
     })
 })
