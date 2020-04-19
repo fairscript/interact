@@ -1,5 +1,5 @@
 export type StringAggregation = {
-    avg(): string
+    // Averaging strings hardly makes sense.
     max(): string
     min(): string
     sum(): string

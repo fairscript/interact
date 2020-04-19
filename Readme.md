@@ -140,7 +140,7 @@ await pg.end()
 ### BigQuery
 
 ```typescript
-import {BigQuery, Dataset, Table} from '@google-cloud/bigquery'
+import {BigQuery} from '@google-cloud/bigquery'
 
 const bigQuery = new BigQuery(...)
 const context = createBigQueryContext(bigQuery, datasetName)
@@ -391,6 +391,71 @@ employees
     .join(departments, e => e.departmentId, d => d.id)
     .join(companies, d => d.companyId, c => c.id)
     .select('employee', 'department', 'company')
+```
+
+## Subqueries
+
+### Number of rows
+
+```typescript
+employees.map(
+     employees,
+     (subtable, e) => ({
+         id: e.id,
+         departmentSize: subtable
+             .filter(se => se.departmentId === e.departmentId)
+             .count()
+     }))
+```
+
+### Minimum value in a column
+
+```typescript
+employees.map(
+     employees,
+     (subtable, e) => ({
+         id: e.id,
+         lowestSalaryInDepartment: subtable
+             .filter(se => se.departmentId === e.departmentId)
+             .min(se => se.salary)
+     }))
+```
+
+### Maximum value in a column
+
+```typescript
+employees.map(
+     employees,
+     (subtable, e) => ({
+         id: e.id,
+         highestSalaryInDepartment: subtable
+             .filter(se => se.departmentId === e.departmentId)
+             .max(se => se.salary)
+     }))
+```
+
+### Sum of values in a column
+
+```typescript
+employees.map(
+     employees,
+     (subtable, e) => ({
+         id: e.id,
+         totalSalariesInDepartment: subtable
+             .filter(se => se.departmentId === e.departmentId)
+             .sum(se => se.salary)
+     }))
+```
+
+### Average column value
+
+```typescript
+employees.map(
+     employees,
+     (subtable, e) => ({
+         id: e.id,
+         averageSalaryInDepartment: subtable.filter(se => se.departmentId === e.departmentId).average(se => se.salary)
+     }))
 ```
 
 ## Parallel queries

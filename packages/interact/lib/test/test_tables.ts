@@ -63,11 +63,3 @@ export const testCompanies: Company[] =
     [
         new Company(1, 'Board of Directors')
     ]
-
-const promise = createSqliteInMemoryContext().parallelRun({
-        numberOfEmployees: employees.count(),
-        numberOfDepartments: departments.count(),
-        numberOfCompanies: companies.count()
-    })
-
-promise.then(res => res.numberOfCompanies)

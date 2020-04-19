@@ -5,6 +5,7 @@ import {departments, employees} from '@fairscript/interact/lib/test/test_tables'
 import {AggregationIntegrationTestSuite} from '@fairscript/interact/lib/test/integration/aggregation_integration_test_suite'
 import {FilteringIntegrationTestSuite} from '@fairscript/interact/lib/test/integration/filtering_integration_test_suite'
 import {SelectionIntegrationTestSuite} from '@fairscript/interact/lib/test/integration/selection_integration_test_suite'
+import {SubqueryIntegrationTestSuite} from '@fairscript/interact/lib/test/integration/subquery_integration_test_suite'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import {createPgTestClient, setUpPostgresTestData} from './postgres_setup'
@@ -90,6 +91,30 @@ describe('PostgresContext', () => {
 
         describe('using a concatenation of comparisons', () => {
             filteringTestSuite.testConcatenationFiltering()
+        })
+    })
+
+    describe('can subquery', () => {
+        const subqueryTestSuite = new SubqueryIntegrationTestSuite(context, employees)
+
+        it('a count', () => {
+            return subqueryTestSuite.testCounting()
+        })
+
+        it('a maximum', () => {
+            return subqueryTestSuite.testMaximization()
+        })
+
+        it('a minimum', () => {
+            return subqueryTestSuite.testMinimization()
+        })
+
+        it('a sum', () => {
+            return subqueryTestSuite.testSum()
+        })
+
+        it('an average', () => {
+            return subqueryTestSuite.testAverage()
         })
     })
 
