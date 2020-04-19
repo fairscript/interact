@@ -78,7 +78,7 @@ FROM employees t1
 WHERE t1.id = 1
 ```
 
-## Selection features
+## Selection
 
 ### Single column
 
@@ -94,7 +94,7 @@ employees
     .single()
 ```
 
-### Mapping over rows
+### Map over rows
 
 ```typescript
 employees
@@ -105,15 +105,6 @@ employees
 
 ```typescript
 employees.select()
-```
-
-### Multiple tables
-
-```typescript
-employees
-    .join(departments, e => e.departmentId, d => d.id)
-    .join(companies, d => d.companyId, c => c.id)
-    .select('employee', 'department', 'company')
 ```
 
 ### Limited number of rows
@@ -139,7 +130,7 @@ employees
     .distinct()
 ```
 
-## Aggregation features
+## Aggregation
 
 ### Number of rows
 
@@ -198,7 +189,7 @@ employees
     }))
 ```
 
-## Filtering features
+## Filtering
 
 ### Comparison
 
@@ -292,4 +283,43 @@ employees
     .sortBy(e => e.departmentId)
     .thenDescendinglyBy(e => e.salary)
     .select()
+```
+
+## Joins
+
+### Joining tables
+
+```javascript
+employees
+    .join(departments, e => e.departmentId, d => d.id)
+	.join(departments, e => e.companyId, c => c.id)
+```
+
+### Column from a joined table
+
+```typescript
+employees
+    .join(departments, e => e.departmentId, d => d.id)
+	.get((e, d) => d.name)
+```
+
+### Map over rows
+
+```typescript
+employees
+    .join(departments, e => e.departmentId, d => d.id)
+	.get((e, d) => {
+    	firstName: e.firstName,
+    	lastName: e.lastName,
+        department: d.name
+	})
+```
+
+### Selecting multiple tables
+
+```typescript
+employees
+    .join(departments, e => e.departmentId, d => d.id)
+    .join(companies, d => d.companyId, c => c.id)
+    .select('employee', 'department', 'company')
 ```

@@ -13,7 +13,7 @@
 - Added filtering integration tests for SQLite
 
 ## v0.15.4
-- Replace the use of constructors with column specifications
+- Replaced the use of constructors with column specifications
 - Updated the project readme
 
 ## v0.15.3
@@ -127,7 +127,7 @@
 
 ## v0.6.1
 
-- Count in grouped tables is now defined on the table-level.
+- Count in grouped tables is now defined on the table-level
 
 ## v0.6
 
@@ -136,7 +136,7 @@
 ## v0.5.4
 
 - Greater than, greater than or equal to, less than or equal to, less than
-- Table columns and constants can now be on both sides of a comparison.
+- Table columns and constants can now be on both sides of a comparison
 
 ## v0.5.3
 
