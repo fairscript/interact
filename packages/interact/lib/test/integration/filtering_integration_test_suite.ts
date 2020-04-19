@@ -17,7 +17,7 @@ export class FilteringIntegrationTestSuite {
                 .should.eventually.eql(testEmployees.filter(e => e.fulltime))
         })
 
-        describe('a boolean literal:', () => {
+        describe('a boolean literal', () => {
             it('true', () => {
                 return this.context.run(this.employeesSortedById.filter(() => true).select())
                     .should.eventually.eql(testEmployees.filter(() => true))
@@ -29,7 +29,7 @@ export class FilteringIntegrationTestSuite {
             })
         })
 
-        describe('a user-provided boolean value:', () => {
+        describe('a user-provided boolean value', () => {
             it('true', () => {
                 const provided = true
                 return this.context.run(this.employeesSortedById.filter(provided, (p, e) => p).select())

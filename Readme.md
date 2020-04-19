@@ -175,6 +175,71 @@ employees
     }))
 ```
 
+## Filtering features
+
+### Comparison
+
+```typescript
+employees.filter(e => e.id == 1)
+employees.filter(e => e.id === 1)
+
+employees.filter(e => e.id != 1)
+employees.filter(e => e.id !== 1)
+
+employees.filter(e => e.salary > 10000)
+employees.filter(e => e.salary >= 10000)
+employees.filter(e => e.salary < 10000)
+employees.filter(e => e.salary <= 10000)
+```
+
+### Evaluating a Boolean column
+
+```typescript
+employees.filter(e => e.fulltime)
+
+employees.filter(e => !e.fulltime)
+```
+
+### Conjunction
+
+```typescript
+employees.filter(e => e.firstName === 'John' && e.lastName === 'Doe')
+```
+
+### Disjunction
+
+```typescript
+employees.filter(e => e.firstName === 'Jim' && e.firstName === 'James')
+```
+
+### Conjunction of disjunctions
+
+```typescript
+employees.filter(e => (e.firstName === 'John' || e.firstName === 'Richard') && (e.firstName === 'Doe' || e.firstName === 'Roe'))
+```
+
+### Disjunction of conjunctions
+
+```typescript
+employees.filter(e => (e.firstName = 'John' && e.firstName = 'Doe') || (e.firstName = 'Richard' || e.firstName = 'Roe'))
+```
+
+### User-provided value
+
+```typescript
+employees.filter(1, (id, e) => e.id === 1)
+```
+
+### User-provided object
+
+```typescript
+employees
+    .filter(
+        { firstName: 'John', lastName: 'Doe' },
+        (search, e) => e.firstName === search.firstName, e.lastName === search.lastName)
+    )
+```
+
 ## Sorting features
 
 ### Sorting in ascending order
@@ -193,7 +258,7 @@ employees
     .select()
 ```
 
-## Sorting with multiple orders
+### Sorting with multiple orders
 
 ```typescript
 employees
@@ -201,4 +266,3 @@ employees
     .thenDescendinglyBy(e => e.salary)
     .select()
 ```
-
