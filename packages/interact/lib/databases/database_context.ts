@@ -142,7 +142,10 @@ export class DatabaseContext {
     }
 
     run<T>({ statement, clientInstruction }: Runnable<T>): Promise<T> {
-        const adaptedStatement = this.dialect.adaptSelectStatement(statement)
+        const adaptedStatement = this.dialect.selectStatementAdaptionRules.reduce(
+            (adaptedStatement, rule) => rule(adaptedStatement),
+            statement
+        )
 
         const sql = generateSelectStatementSql(this.dialect, adaptedStatement)
         const parameters = generateSelectStatementParameters(this.dialect, adaptedStatement)

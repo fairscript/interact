@@ -25,7 +25,7 @@
 - Boolean expressions as a subset of value expressions
 
 ## v0.24
-- Set clauses
+- Compound select statements
 
 ## v0.25
 - String operations

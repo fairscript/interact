@@ -63,7 +63,7 @@ const employees = defineTable<Employee>(
         firstName: 'string',
         lastName: 'string',
         title: 'string',
-        salary: 'number',
+        salary: 'integer',
         departmentId: 'string',
         fulltime: 'boolean'
     })

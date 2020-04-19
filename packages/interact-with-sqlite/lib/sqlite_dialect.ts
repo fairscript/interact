@@ -1,7 +1,4 @@
 import {Dialect} from '@fairscript/interact/lib/databases/dialects'
-import {SelectStatement} from '@fairscript/interact/lib/statements/select_statement'
-import {GroupSelectStatement} from '@fairscript/interact/lib/statements/group_select_statement'
-
 
 export const sqliteDialect: Dialect = {
     aliasEscape: null,
@@ -19,9 +16,5 @@ export const sqliteDialect: Dialect = {
         return `CAST(${getColumn} AS float)`
     },
 
-    adaptSelectStatement(statement: SelectStatement|GroupSelectStatement): SelectStatement|GroupSelectStatement {
-        return statement
-    }
-
-
+    selectStatementAdaptionRules: []
 }
