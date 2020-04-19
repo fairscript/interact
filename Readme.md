@@ -23,18 +23,6 @@ npm install interact-with-bigquery
 npm install interact-with-sqlite
 ```
 
-## Features
-
-- [Selecting tables](https://github.com/fairscript/interact/tree/master/packages/interact/doc/Selection.md)
-- [Mapping tables](https://github.com/fairscript/interact/tree/master/packages/interact/doc/Mapping.md)
-- [Getting a single column](https://github.com/fairscript/interact/tree/master/packages/interact/doc/Getting.md)
-- [Grouping and aggregating tables](https://github.com/fairscript/interact/tree/master/packages/interact/doc/Grouping_Aggregation.md)
-- [Counting the number of rows](https://github.com/fairscript/interact/tree/master/packages/interact/doc/Counting.md)
-- [Filtering](https://github.com/fairscript/interact/tree/master/packages/interact/doc/Filtering.md)
-- [Sorting](https://github.com/fairscript/interact/tree/master/packages/interact/doc/Sorting.md)
-- [Joining two tables](https://github.com/fairscript/interact/tree/master/packages/interact/doc/Joins.md)
-- [Count subqueries with one or more filters](https://github.com/fairscript/interact/tree/master/packages/interact/doc/Subqueries.md)
-
 ## Getting started
 
 ### Step 1: Define a type
@@ -79,7 +67,7 @@ const query = employees
     .filter(e => e.id === 1)
     .map(e => ({ first: e.firstName, last: e.lastName }))
 
-const namesOfEmployees = dbContext.get(query)
+const namesOfEmployees = dbContext.run(query)
 ```
 
 This generates the following SQL query:
@@ -89,3 +77,128 @@ SELECT t1.first_name AS first, t1.last_name AS last
 FROM employees t1
 WHERE t1.id = 1
 ```
+
+## Selection features
+
+### Selecting a single column
+
+```typescript
+employees.get(e => e.id)
+```
+
+### Selecting a single row
+
+```typescript
+employees
+    .filter(e => e.id === 1)
+    .single()
+```
+
+### Mapping over rows
+
+```typescript
+employees
+	.map(e => ({ firstName: e.firstName, lastName: e.lastName }))
+```
+
+### Selecting a single table
+
+```typescript
+employees.select()
+```
+
+### Selecting multiple tables
+
+```typescript
+employees
+    .join(departments, e => e.departmentId, d => d.id)
+    .join(companies, d => d.companyId, c => c.id)
+    .select('employee', 'department', 'company')
+```
+
+## Aggregation features
+
+### Counting the number of rows
+
+```typescript
+employees.count()
+```
+
+### Finding the minimum value in a column
+
+```typescript
+employees.min(e => e.salary)
+```
+
+### Finding the maximum value in a column
+
+```typescript
+employees.max(e => e.salary)
+```
+
+### Computing the sum of values in a column
+
+```typescript
+employees.sum(e => e.salary)
+```
+
+### Computing the sum of values in a column
+
+```typescript
+employees.sum(e => e.average)
+```
+
+### Selecting multiple aggregations
+
+```typescript
+employees
+    .aggregate((e, count) => ({
+        lowestSalary: e.salary.min(),
+        highestSalary: e.salary.max(),
+        totalSalaries: e.salary.sum(),
+        averageSalary: e.salary.average(),
+        numberOfEmployees: count()
+    }))
+```
+
+### Aggregate groups
+
+```typescript
+employees
+    .groupBy(e => e.departmentId)
+    .aggregate((key, e, count) => ({
+        lowestSalary: e.salary.min(),
+        highestSalary: e.salary.max(),
+        totalSalaries: e.salary.sum(),
+        averageSalary: e.salary.average(),
+        employeesInDepartment: count()
+    }))
+```
+
+## Sorting features
+
+### Sorting in ascending order
+
+```typescript
+employees
+    .sortBy(e => e.id)
+    .select()
+```
+
+### Sorting in descending order
+
+```typescript
+employees
+    .sortDescendinglyBy(e => e.salary)
+    .select()
+```
+
+## Sorting with multiple orders
+
+```typescript
+employees
+    .sortBy(e => e.departmentId)
+    .thenDescendinglyBy(e => e.salary)
+    .select()
+```
+
