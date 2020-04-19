@@ -12,8 +12,8 @@ describe('Postgres context', () => {
 
     const pg = createPgTestClient()
     const client = createPostgresClient(pg)
-    const ctx = createPostgresContext(client)
-    const suite = createDatabaseContextTestSuite(ctx, employees)
+    const context = createPostgresContext(pg)
+    const suite = createDatabaseContextTestSuite(context, employees)
 
     before(async() => {
         chai.should()

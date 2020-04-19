@@ -1,6 +1,6 @@
 # Interact
 
-A database interaction library for node.js/JavaScript/TypeScript that uses code reflection to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.
+A database interaction library for node.js/JavaScript/TypeScript that uses code reflection to maximize type safety and minimize friction. Supports SQLite, PostgreSQL and Google BigQuery.
 
 ## Installation
 
@@ -107,6 +107,44 @@ const companies = defineTable<Company>(
         id: 'integer',
         name: 'string'
     })
+```
+
+## Supported databases
+
+### In-memory SQLite
+
+```typescript
+const context = createSqliteInMemoryContext()
+```
+
+### On-disk SQLite
+
+```typescript
+const context = createSqliteOnDiskContext(filename)
+```
+
+### Postgres
+
+```typescript
+import {Client} from 'pg'
+
+const pg = new Client(...)
+                      
+await pg.connect()
+
+const context = createPostgresContext(pg)
+
+await pg.end()
+```
+
+### BigQuery
+
+```typescript
+import {BigQuery, Dataset, Table} from '@google-cloud/bigquery'
+
+const bigQuery = new BigQuery(...)
+const context = createBigQueryContext(bigQuery, datasetName)
+                              
 ```
 
 ## Selection
@@ -339,8 +377,8 @@ employees
 ```typescript
 employees
     .join(departments, e => e.departmentId, d => d.id)
-	.get((e, d) => {
-    	firstName: e.firstName,
+    .get((e, d) => {
+        firstName: e.firstName,
     	lastName: e.lastName,
         department: d.name
 	})
@@ -353,4 +391,19 @@ employees
     .join(departments, e => e.departmentId, d => d.id)
     .join(companies, d => d.companyId, c => c.id)
     .select('employee', 'department', 'company')
+```
+
+## Parallel queries
+
+```typescript
+const promiseOfResults: Promise = context
+	.parallelRun({
+		numberOfEmployees: employees.count(),
+        numberOfDepartments: departments.count(),
+        numberOfCompanies: companies.count()
+	})
+    .then(res => {
+        { numberOfEmployees, numberOfDepartments, numberOfCompanies } = res
+        [...]
+    })
 ```

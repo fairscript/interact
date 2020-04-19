@@ -3,13 +3,13 @@ import {Client} from 'pg'
 import {testDepartments, testEmployees} from '@fairscript/interact/lib/test/test_tables'
 
 export function createPgTestClient(): Client {
-    const config = {
-        connectionString: process.env.POSTGRES_URL,
-        ssl: {
-            rejectUnauthorized: false
+    return new Client({
+            connectionString: process.env.POSTGRES_URL,
+            ssl: {
+                rejectUnauthorized: false
+            }
         }
-    }
-    return new Client(config)
+    )
 }
 
 export async function setUpPostgresTestData(client: PostgresClient) {

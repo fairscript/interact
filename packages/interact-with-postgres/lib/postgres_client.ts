@@ -40,6 +40,6 @@ export class PostgresClient implements DatabaseClient {
     }
 }
 
-export function createPostgresClient(pg: Client): PostgresClient {
-    return new PostgresClient(pg)
+export function createPostgresClient(client: Client): PostgresClient {
+    return new PostgresClient(client)
 }

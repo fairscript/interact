@@ -14,7 +14,7 @@ import {createPostgresContext} from '../../lib'
 describe('PostgresContext', () => {
     const pg = createPgTestClient()
     const client = createPostgresClient(pg)
-    const context = createPostgresContext(client)
+    const context = createPostgresContext(pg)
 
     before(async() => {
         chai.should()

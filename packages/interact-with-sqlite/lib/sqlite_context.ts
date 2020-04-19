@@ -6,7 +6,7 @@ export function createSqliteContext(client: SqliteClient): DatabaseContext {
     return new DatabaseContext(client, sqliteDialect)
 }
 
-export function createSqliteInFileContext(filename: string) : DatabaseContext {
+export function createSqliteOnDiskContext(filename: string) : DatabaseContext {
     return createSqliteContext(createSqliteInFileClient(filename))
 }
 

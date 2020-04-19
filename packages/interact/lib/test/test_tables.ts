@@ -3,6 +3,7 @@ import {Employee} from './model/employee'
 import {Company} from './model/companies'
 import {Department} from './model/department'
 import {Table} from '../queries/one/table'
+import {createSqliteInMemoryContext} from '../../../interact-with-sqlite/lib'
 
 export function defineEmployeesTable(name: string): Table<Employee> {
     return defineTable<Employee>(
@@ -62,3 +63,11 @@ export const testCompanies: Company[] =
     [
         new Company(1, 'Board of Directors')
     ]
+
+const promise = createSqliteInMemoryContext().parallelRun({
+        numberOfEmployees: employees.count(),
+        numberOfDepartments: departments.count(),
+        numberOfCompanies: companies.count()
+    })
+
+promise.then(res => res.numberOfCompanies)
