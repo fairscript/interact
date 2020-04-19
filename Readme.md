@@ -78,6 +78,37 @@ FROM employees t1
 WHERE t1.id = 1
 ```
 
+## Table definition
+
+```typescript
+const employees = defineTable<Employee>(
+    'employees',
+    {
+        id: 'integer',
+        firstName: 'string',
+        lastName: 'string',
+        title: 'string',
+        salary: 'integer',
+        departmentId: 'integer',
+        fulltime: 'boolean'
+    })
+
+const departments = defineTable<Department>(
+    'departments',
+    {
+        id: 'integer',
+        name: 'string',
+        companyId: 'integer'
+    })
+
+const companies = defineTable<Company>(
+    'companies',
+    {
+        id: 'integer',
+        name: 'string'
+    })
+```
+
 ## Selection
 
 ### Single column

@@ -47,14 +47,18 @@ export const testDepartments: Department[] =
         new Department(2, 'Research & Development', 1)
     ]
 
-export const companies = defineTable<Company>(
-    'companies',
-    {
-        id: 'integer',
-        name: 'string',
-    })
+export function defineCompaniesTable(name: string): Table<Company> {
+    return defineTable<Company>(
+        name,
+        {
+            id: 'integer',
+            name: 'string'
+        })
+}
+
+export const companies = defineCompaniesTable('companies')
 
 export const testCompanies: Company[] =
     [
-        new Company(1, 'Board of Directors'),
+        new Company(1, 'Board of Directors')
     ]
