@@ -7,13 +7,14 @@ import {joinWithCommaWhitespace} from '../../join'
 export function generateTableAggregationSelection(
     aliasEscape: string|null,
     generateConvertToInt: (getColumn: string) => string,
+    generateConvertToFloat: (getColumn: string) => string,
     aggregation: TableAggregationSelection): string {
 
     const {parameterToTable, operations} = aggregation
 
     const columnOperations = operations
         .map(([alias, operation]) => {
-            const generatedAggregationOperation = generateTableAggregationOperation(generateConvertToInt, parameterToTable, operation)
+            const generatedAggregationOperation = generateTableAggregationOperation(generateConvertToInt, generateConvertToFloat, parameterToTable, operation)
 
             return generateAlias(aliasEscape, generatedAggregationOperation, alias)
         })

@@ -8,6 +8,7 @@ export function generateGroupAggregationSelection(
     aliasEscape: string|null,
     namedParameterPrefix: string,
     generateConvertToInt: (getColumn: string) => string,
+    generateConvertToFloat: (getColumn: string) => string,
     aggregation: GroupAggregationSelection,
     key: Key): string {
 
@@ -15,7 +16,7 @@ export function generateGroupAggregationSelection(
 
     const columnOperations = operations
         .map(([alias, operation]) => {
-            const generatedAggregationOperation = generateGroupAggregationOperation(namedParameterPrefix, generateConvertToInt, key, parameterToTable, operation)
+            const generatedAggregationOperation = generateGroupAggregationOperation(namedParameterPrefix, generateConvertToInt, generateConvertToFloat, key, parameterToTable, operation)
 
             return generateAlias(aliasEscape, generatedAggregationOperation, alias)
         })

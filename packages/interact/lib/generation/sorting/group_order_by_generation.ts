@@ -7,12 +7,13 @@ import {Key} from '../../parsing/get_key_parsing'
 function generateGroupOrder(
     namedParameterPrefix: string,
     generateConvertToInt: (getColumn: string) => string,
+    generateConvertToFloat: (getColumn: string) => string,
     key: Key,
     order: GroupOrderExpression): string {
 
     const { parameterNameToTableAlias, operation, direction } = order
 
-    const generatedAggregationOperation = generateGroupAggregationOperation(namedParameterPrefix, generateConvertToInt, key, parameterNameToTableAlias, operation)
+    const generatedAggregationOperation = generateGroupAggregationOperation(namedParameterPrefix, generateConvertToInt, generateConvertToFloat, key, parameterNameToTableAlias, operation)
     const generatedDirection = generateDirection(direction)
 
     return `${generatedAggregationOperation} ${generatedDirection}`
@@ -21,16 +22,18 @@ function generateGroupOrder(
 function generateGroupOrders(
     namedParameterPrefix: string,
     generateConvertToInt: (getColumn: string) => string,
+    generateConvertToFloat: (getColumn: string) => string,
     key: Key,
     orders: GroupOrderExpression[]): string {
 
-    return joinWithCommaWhitespace(orders.map(order => generateGroupOrder(namedParameterPrefix, generateConvertToInt, key, order)))
+    return joinWithCommaWhitespace(orders.map(order => generateGroupOrder(namedParameterPrefix, generateConvertToInt, generateConvertToFloat, key, order)))
 }
 
 export function generateGroupOrderBy(
     namedParameterPrefix: string,
     generateConvertToInt: (getColumn: string) => string,
+    generateConvertToFloat: (getColumn: string) => string,
     key: Key,
     orders: GroupOrderExpression[]): string {
-    return 'ORDER BY ' + generateGroupOrders(namedParameterPrefix, generateConvertToInt, key, orders)
+    return 'ORDER BY ' + generateGroupOrders(namedParameterPrefix, generateConvertToInt, generateConvertToFloat, key, orders)
 }

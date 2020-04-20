@@ -4,6 +4,7 @@ import {generateAggregateColumn} from '../aggregation/aggregate_column_generatio
 
 export function generateSingleColumnSelection(
     generateConvertToInt: (getColumn: string) => string,
+    generateConvertToFloat: (getColumn: string) => string,
     selection: SingleColumnSelection): string {
     const {parameterNameToTableAlias, operation} = selection
 
@@ -11,6 +12,6 @@ export function generateSingleColumnSelection(
         case 'get-column':
             return generateGetColumn(parameterNameToTableAlias, operation)
         case 'aggregate-column':
-            return generateAggregateColumn(generateConvertToInt, parameterNameToTableAlias, operation)
+            return generateAggregateColumn(generateConvertToInt, generateConvertToFloat, parameterNameToTableAlias, operation)
     }
 }

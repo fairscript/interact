@@ -1,10 +1,3 @@
-export type StringAggregation = {
-    // Averaging strings hardly makes sense.
-    max(): string
-    min(): string
-    sum(): string
-}
-
 export type NumberAggregation = {
     avg(): number
     max(): number
@@ -20,5 +13,5 @@ export type BooleanAggregation = {
 }
 
 export type AggregatableTable<T> = {
-    [F in keyof T]: T[F] extends string ? StringAggregation : T[F] extends number ? NumberAggregation : BooleanAggregation
+    [F in keyof T]: T[F] extends number ? NumberAggregation : BooleanAggregation
 }

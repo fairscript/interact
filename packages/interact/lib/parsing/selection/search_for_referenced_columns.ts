@@ -1,26 +1,18 @@
 import {AggregateColumn} from '../aggregation/aggregate_column_parsing'
-import {SubselectStatement} from '../../statements/subselect_statement'
 import {GetColumn} from '../value_expressions/get_column_parsing'
+import {
+    AdaptBooleanAsInteger,
+    ConvertToInteger
+} from '../conversions'
 
-export function findReferencedColumns(operation: GetColumn | AggregateColumn | SubselectStatement): GetColumn[] {
-    const referencedColumns: GetColumn[] = []
-
+export function findReferencedColumn(operation: GetColumn | ConvertToInteger | AggregateColumn | AdaptBooleanAsInteger): GetColumn {
     switch (operation.kind) {
         case 'get-column':
-            referencedColumns.push(operation)
-            break
+            return operation
+        case 'convert-to-integer':
+        case 'adapt-boolean-as-integer':
+            return findReferencedColumn(operation.get)
         case 'aggregate-column':
-            const {aggregated} = operation
-
-            switch (aggregated.kind) {
-                case 'get-column':
-                    referencedColumns.push(aggregated)
-                    break
-                case 'implicitly-convert-boolean-to-integer':
-                    referencedColumns.push(aggregated.get)
-                    break
-            }
+            return findReferencedColumn(operation.aggregated)
     }
-
-    return referencedColumns
 }

@@ -1,7 +1,7 @@
 import {SelectStatement} from '../statements/select_statement'
 import {GroupSelectStatement} from '../statements/group_select_statement'
 
-type SelectStatementAdaptationRule = (statement: SelectStatement|GroupSelectStatement) => SelectStatement|GroupSelectStatement
+export type SelectStatementAdaptationRule = (statement: SelectStatement|GroupSelectStatement) => SelectStatement|GroupSelectStatement
 
 export interface Dialect {
     aliasEscape: string|null

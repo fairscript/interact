@@ -9,13 +9,14 @@ import {Filter} from '../parsing/filtering/filter_parsing'
 export function generateSubselectStatement(
     namedParameterPrefix: string,
     generateConvertToInt: (getColumn: string) => string,
+    generateConvertToFloat: (getColumn: string) => string,
     selection: CountSelection|SingleColumnSelection,
     tableName: string,
     filters: Filter[]): string {
 
     const parts: string[] = []
 
-    const SELECT = 'SELECT ' + generateSubselectSelection(generateConvertToInt, selection)
+    const SELECT = 'SELECT ' + generateSubselectSelection(generateConvertToInt, generateConvertToFloat, selection)
     parts.push(SELECT)
 
     const FROM = `FROM ${tableName} s1`
@@ -29,11 +30,14 @@ export function generateSubselectStatement(
     return `(${joinWithWhitespace(parts)})`
 }
 
-function generateSubselectSelection(generateConvertToInt: (getColumn: string) => string, selection: CountSelection|SingleColumnSelection): string {
+function generateSubselectSelection(
+    generateConvertToInt: (getColumn: string) => string,
+    generateConvertToFloat: (getColumn: string) => string,
+    selection: CountSelection|SingleColumnSelection): string {
     switch (selection.kind) {
         case 'count-selection':
             return generateCountSelection()
         case 'single-column-selection':
-            return generateSingleColumnSelection(generateConvertToInt, selection)
+            return generateSingleColumnSelection(generateConvertToInt, generateConvertToFloat, selection)
     }
 }

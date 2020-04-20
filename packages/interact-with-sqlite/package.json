@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "SQLite support for interact",
+  "description": "SQLite support for Interact",
   "keywords": [
     "database",
     "data",

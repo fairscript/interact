@@ -3,7 +3,6 @@ import {extractLambdaParametersAndExpression} from '../functions/lambda_parsing'
 import {createRecordInParenthesesParser} from '../literals/record_parsing'
 import {SubselectStatement} from '../../statements/subselect_statement'
 import {createGetColumnParser, GetColumn} from '../value_expressions/get_column_parsing'
-import {findReferencedColumns} from './search_for_referenced_columns'
 
 
 export interface MapSelection {
@@ -18,7 +17,11 @@ export function createMapSelection(
     operations: [string, GetColumn|SubselectStatement][]): MapSelection {
 
     const referencedColumns = operations.reduce(
-        (acc, [_, op]) => acc.concat(findReferencedColumns(op)),
+        (acc, [_, op]) => {
+            const referencedColumn = op.kind === 'get-column' ? op : null
+
+            return referencedColumn === null ? acc : acc.concat(referencedColumn)
+        },
         [] as GetColumn[])
 
     return {

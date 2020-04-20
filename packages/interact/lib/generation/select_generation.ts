@@ -15,6 +15,7 @@ function generateTableSelection(
     aliasEscape: string|null,
     namedParameterPrefix: string,
     generateConvertToInt: (getColumn: string) => string,
+    generateConvertToFloat: (getColumn: string) => string,
     selection: TableSelection,
     fromColumnRecord: ColumnTypeRecord,
     joinColumnRecords: ColumnTypeRecord[]): string {
@@ -23,15 +24,15 @@ function generateTableSelection(
         case 'count-selection':
             return generateCountSelection()
         case 'single-column-selection':
-            return generateSingleColumnSelection(generateConvertToInt, selection)
+            return generateSingleColumnSelection(generateConvertToInt, generateConvertToFloat, selection)
         case 'single-table-selection':
             return generateSingleTableSelection(aliasEscape, selection, fromColumnRecord)
         case 'multi-table-selection':
             return generateMultiTableSelection(aliasEscape, selection, fromColumnRecord, joinColumnRecords)
         case 'table-aggregation-selection':
-            return generateTableAggregationSelection(aliasEscape, generateConvertToInt, selection)
+            return generateTableAggregationSelection(aliasEscape, generateConvertToInt, generateConvertToFloat, selection)
         case 'map-selection':
-            return generateMapSelection(aliasEscape, namedParameterPrefix, generateConvertToInt, selection)
+            return generateMapSelection(aliasEscape, namedParameterPrefix, generateConvertToInt, generateConvertToFloat, selection)
     }
 }
 
@@ -40,6 +41,7 @@ export function generateGroupSelect(
     aliasEscape: string | null,
     namedParameterPrefix: string,
     generateConvertToInt: (getColumn: string) => string,
+    generateConvertToFloat: (getColumn: string) => string,
     selection: GroupSelection,
     key: Key): string {
 
@@ -51,7 +53,7 @@ export function generateGroupSelect(
         result += ' '
     }
 
-    result += generateGroupSelection(aliasEscape, namedParameterPrefix, generateConvertToInt, selection, key)
+    result += generateGroupSelection(aliasEscape, namedParameterPrefix, generateConvertToInt, generateConvertToFloat, selection, key)
 
     return result
 }
@@ -61,6 +63,7 @@ export function generateTableSelect (
     aliasEscape: string|null,
     namedParameterPrefix: string,
     generateConvertToInt: (getColumn: string) => string,
+    generateConvertToFloat: (getColumn: string) => string,
     selection: TableSelection,
     fromColumnRecord: ColumnTypeRecord,
     joinColumnRecords: ColumnTypeRecord[]): string {
@@ -73,7 +76,7 @@ export function generateTableSelect (
         result += ' '
     }
 
-    result += generateTableSelection(aliasEscape, namedParameterPrefix, generateConvertToInt, selection, fromColumnRecord, joinColumnRecords)
+    result += generateTableSelection(aliasEscape, namedParameterPrefix, generateConvertToInt, generateConvertToFloat, selection, fromColumnRecord, joinColumnRecords)
 
     return result
 }
@@ -82,13 +85,14 @@ function generateGroupSelection(
     aliasEscape: string|null,
     namedParameterPrefix: string,
     generateConvertToInt: (getColumn: string) => string,
+    generateConvertToFloat: (getColumn: string) => string,
     selection: GroupSelection,
     key: Key): string {
 
     switch (selection.kind) {
         case 'group-aggregation-selection':
-            return generateGroupAggregationSelection(aliasEscape, namedParameterPrefix, generateConvertToInt, selection, key)
+            return generateGroupAggregationSelection(aliasEscape, namedParameterPrefix, generateConvertToInt, generateConvertToFloat, selection, key)
         case 'single-group-aggregation-operation-selection':
-            return generateSingleGroupAggregationSelection(aliasEscape, namedParameterPrefix, generateConvertToInt, selection, key)
+            return generateSingleGroupAggregationSelection(aliasEscape, namedParameterPrefix, generateConvertToInt, generateConvertToFloat, selection, key)
     }
 }

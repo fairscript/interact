@@ -56,8 +56,12 @@ describe('SqliteContext', () => {
     describe('can aggregate', () => {
         const aggregationTestSuite = new AggregationIntegrationTestSuite(context, employees)
 
-        describe('a single column', () => {
-            aggregationTestSuite.testSingleColumnAggregation()
+        describe('a single numeric column', () => {
+            aggregationTestSuite.testNumericColumnAggregation()
+        })
+
+        describe('a single Boolean column', () => {
+            aggregationTestSuite.testBooleanColumnAggregation()
         })
 
         it('multiple columns', () => {

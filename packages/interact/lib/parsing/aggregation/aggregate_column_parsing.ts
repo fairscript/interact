@@ -4,7 +4,7 @@ import {dot} from '../literals/single_character_parsing'
 import {createParameterlessFunctionInvocationChoice} from '../functions/invocation_parsing'
 import {createNamedObjectPropertyParser} from '../literals/record_parsing'
 import {createGetColumn, GetColumn} from '../value_expressions/get_column_parsing'
-import {ImplicitlyConvertBooleanToInteger} from '../conversions'
+import {AdaptBooleanAsInteger, ConvertToInteger} from '../conversions'
 
 export type AggregationFunction = 'avg' | 'min' | 'max' | 'sum'
 
@@ -20,10 +20,10 @@ export function mapLibraryAggregateFunctionNameToSqlFunctionName(library): Aggre
 export interface AggregateColumn {
     kind: 'aggregate-column'
     aggregationFunction: AggregationFunction
-    aggregated: GetColumn|ImplicitlyConvertBooleanToInteger
+    aggregated: GetColumn|AdaptBooleanAsInteger|ConvertToInteger
 }
 
-export function createAggregateColumn(aggregationFunction: AggregationFunction, aggregated: GetColumn|ImplicitlyConvertBooleanToInteger): AggregateColumn {
+export function createAggregateColumn(aggregationFunction: AggregationFunction, aggregated: GetColumn|AdaptBooleanAsInteger|ConvertToInteger): AggregateColumn {
     return {
         kind: 'aggregate-column',
         aggregationFunction,

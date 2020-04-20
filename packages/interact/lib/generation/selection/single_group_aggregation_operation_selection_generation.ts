@@ -6,10 +6,11 @@ export function generateSingleGroupAggregationSelection(
     aliasEscape: string|null,
     namedParameterPrefix: string,
     generateConvertToInt: (getColumn: string) => string,
+    generateConvertToFloat: (getColumn: string) => string,
     selection: SingleGroupAggregationOperationSelection,
     key: Key): string {
 
     const {parameterNameToTableAlias, operation} = selection
 
-    return generateGroupAggregationOperation(namedParameterPrefix, generateConvertToInt, key, parameterNameToTableAlias, operation)
+    return generateGroupAggregationOperation(namedParameterPrefix, generateConvertToInt, generateConvertToFloat, key, parameterNameToTableAlias, operation)
 }

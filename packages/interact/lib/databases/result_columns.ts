@@ -10,6 +10,10 @@ import {CountOperation, createCountOperation} from '../parsing/count_operation_p
 import {SubselectStatement} from '../statements/subselect_statement'
 import {GetPartOfKey} from '../parsing/aggregation/get_part_of_key_parsing'
 import {Key} from '../parsing/get_key_parsing'
+import {
+    AdaptBooleanAsInteger,
+    ConvertToInteger
+} from '../parsing/conversions'
 
 export type ColumnTypeMapping = [ColumnType, ColumnType]
 export type ColumnTypeMappingRecord = Record<string, ColumnTypeMapping>
@@ -17,27 +21,10 @@ export type ColumnTypeMappingRecord = Record<string, ColumnTypeMapping>
 export function determineOperationColumnTypeMapping(
     columnTypeRecords: ColumnTypeRecord[],
     parameterNameToTableAlias: {[parameter: string]: string},
-    op: GetPartOfKey|CountOperation|GetColumn|AggregateColumn|SubselectStatement,
+    op: GetPartOfKey|CountOperation|GetColumn|AggregateColumn|SubselectStatement|ConvertToInteger|AdaptBooleanAsInteger,
     key: Key|null): [ColumnType, ColumnType] {
 
     switch (op.kind) {
-        case 'count-operation':
-            return ['integer', 'integer']
-        case 'aggregate-column':
-            const aggregated = op.aggregated
-            if (aggregated.kind === 'implicitly-convert-boolean-to-integer') {
-                return ['integer', 'boolean']
-            }
-            else {
-                switch (op.aggregationFunction) {
-                    case 'avg':
-                        return ['float', 'float']
-                    case 'min':
-                    case 'max':
-                    case 'sum':
-                        return determineOperationColumnTypeMapping(columnTypeRecords, parameterNameToTableAlias, aggregated, null)
-                }
-            }
         case 'get-column':
             const {object, property} = op
 
@@ -47,6 +34,29 @@ export function determineOperationColumnTypeMapping(
             const columnType = columnTypes[property]
 
             return [columnType, columnType]
+        case 'count-operation':
+            return ['integer', 'integer']
+        case 'adapt-boolean-as-integer':
+            return ['integer', 'boolean']
+        case 'convert-to-integer':
+            return ['integer', 'integer']
+        case 'aggregate-column':
+            if (op.aggregationFunction === 'avg') {
+                return ['float', 'float']
+            }
+            else if (op.aggregationFunction === 'sum') {
+                const [inner, _] = determineOperationColumnTypeMapping(columnTypeRecords, parameterNameToTableAlias, op.aggregated, null)
+
+                if (inner === 'boolean' || inner === 'integer') {
+                    return ['integer', 'integer']
+                }
+                else {
+                    return ['float', 'float']
+                }
+            }
+            else {
+                return determineOperationColumnTypeMapping(columnTypeRecords, parameterNameToTableAlias, op.aggregated, null)
+            }
         case 'get-part-of-key':
             // Recall that a part of key consists of an alias and a GetColumn operation.
             // Further, note that key provides a parameter name to table alias mapping.

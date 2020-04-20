@@ -1,6 +1,6 @@
 # Interact
 
-A database interaction library for node.js/JavaScript/TypeScript that uses code reflection to maximize type safety and minimize friction. Supports PostgreSQL, Google BigQuery and SQLite.
+A database interaction library for node.js/JavaScript/TypeScript that uses code reflection to maximize type safety and minimize friction. Supports SQLite, PostgreSQL and Google BigQuery.
 
 ## Installation
 
@@ -78,6 +78,75 @@ FROM employees t1
 WHERE t1.id = 1
 ```
 
+## Table definition
+
+```typescript
+const employees = defineTable<Employee>(
+    'employees',
+    {
+        id: 'integer',
+        firstName: 'string',
+        lastName: 'string',
+        title: 'string',
+        salary: 'integer',
+        departmentId: 'integer',
+        fulltime: 'boolean'
+    })
+
+const departments = defineTable<Department>(
+    'departments',
+    {
+        id: 'integer',
+        name: 'string',
+        companyId: 'integer'
+    })
+
+const companies = defineTable<Company>(
+    'companies',
+    {
+        id: 'integer',
+        name: 'string'
+    })
+```
+
+## Supported databases
+
+### In-memory SQLite
+
+```typescript
+const context = createSqliteInMemoryContext()
+```
+
+### On-disk SQLite
+
+```typescript
+const context = createSqliteOnDiskContext(filename)
+```
+
+### Postgres
+
+```typescript
+import {Client} from 'pg'
+
+const pg = new Client(...)
+                      
+await pg.connect()
+
+const context = createPostgresContext(pg)
+
+await pg.end()
+```
+
+### BigQuery
+
+```typescript
+import {BigQuery} from '@google-cloud/bigquery'
+
+const bigQuery = new BigQuery(...)
+const context = createBigQueryContext(bigQuery, datasetName)
+                              
+```
+
 ## Selection
 
 ### Single column
@@ -98,7 +167,7 @@ employees
 
 ```typescript
 employees
-	.map(e => ({ firstName: e.firstName, lastName: e.lastName }))
+    .map(e => ({ firstName: e.firstName, lastName: e.lastName }))
 ```
 
 ### Single table
@@ -221,7 +290,7 @@ employees.filter(e => e.firstName === 'John' && e.lastName === 'Doe')
 
 employees
     .filter(e => e.firstName === 'John')
-	.filter(e => e.lastName === 'Doe')
+    .filter(e => e.lastName === 'Doe')
 ```
 
 ### Disjunction
@@ -292,7 +361,7 @@ employees
 ```javascript
 employees
     .join(departments, e => e.departmentId, d => d.id)
-	.join(departments, e => e.companyId, c => c.id)
+    .join(departments, e => e.companyId, c => c.id)
 ```
 
 ### Column from a joined table
@@ -308,11 +377,11 @@ employees
 ```typescript
 employees
     .join(departments, e => e.departmentId, d => d.id)
-	.get((e, d) => {
-    	firstName: e.firstName,
+    .get((e, d) => {
+        firstName: e.firstName,
     	lastName: e.lastName,
         department: d.name
-	})
+    })
 ```
 
 ### Selecting multiple tables
@@ -322,4 +391,86 @@ employees
     .join(departments, e => e.departmentId, d => d.id)
     .join(companies, d => d.companyId, c => c.id)
     .select('employee', 'department', 'company')
+```
+
+## Subqueries
+
+### Number of rows
+
+```typescript
+employees.map(
+     employees,
+     (subtable, e) => ({
+         id: e.id,
+         departmentSize: subtable
+             .filter(se => se.departmentId === e.departmentId)
+             .count()
+     }))
+```
+
+### Minimum value in a column
+
+```typescript
+employees.map(
+     employees,
+     (subtable, e) => ({
+         id: e.id,
+         lowestSalaryInDepartment: subtable
+             .filter(se => se.departmentId === e.departmentId)
+             .min(se => se.salary)
+     }))
+```
+
+### Maximum value in a column
+
+```typescript
+employees.map(
+     employees,
+     (subtable, e) => ({
+         id: e.id,
+         highestSalaryInDepartment: subtable
+             .filter(se => se.departmentId === e.departmentId)
+             .max(se => se.salary)
+     }))
+```
+
+### Sum of values in a column
+
+```typescript
+employees.map(
+     employees,
+     (subtable, e) => ({
+         id: e.id,
+         totalSalariesInDepartment: subtable
+             .filter(se => se.departmentId === e.departmentId)
+             .sum(se => se.salary)
+     }))
+```
+
+### Average column value
+
+```typescript
+employees.map(
+     employees,
+     (subtable, e) => ({
+         id: e.id,
+         averageSalaryInDepartment: subtable
+             .filter(se => se.departmentId === e.departmentId)
+             .average(se => se.salary)
+     }))
+```
+
+## Parallel queries
+
+```typescript
+const promiseOfResults: Promise = context
+	.parallelRun({
+        numberOfEmployees: employees.count(),
+        numberOfDepartments: departments.count(),
+        numberOfCompanies: companies.count()
+	})
+    .then(res => {
+        { numberOfEmployees, numberOfDepartments, numberOfCompanies } = res
+        [...]
+    })
 ```

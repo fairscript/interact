@@ -11,7 +11,7 @@ import {AggregationIntegrationTestSuite} from '@fairscript/interact/lib/test/int
 import {FilteringIntegrationTestSuite} from '@fairscript/interact/lib/test/integration/filtering_integration_test_suite'
 import {SelectionIntegrationTestSuite} from '@fairscript/interact/lib/test/integration/selection_integration_test_suite'
 import {SubqueryIntegrationTestSuite} from '@fairscript/interact/lib/test/integration/subquery_integration_test_suite'
-import {defineDepartmentsTable, defineEmployeesTable} from '@fairscript/interact/lib/test/test_tables'
+import {defineDepartmentsTable, defineEmployeesTable, employees} from '@fairscript/interact/lib/test/test_tables'
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import {createBigQueryContext} from '../../lib'
@@ -73,8 +73,12 @@ describe('BigQueryContext', () => {
     describe('can aggregate', () => {
         const aggregationTestSuite = new AggregationIntegrationTestSuite(context, employeesTable)
 
-        describe('a single column', () => {
-            aggregationTestSuite.testSingleColumnAggregation()
+        describe('a single numeric column', () => {
+            aggregationTestSuite.testNumericColumnAggregation()
+        })
+
+        describe('a single Boolean column', () => {
+            aggregationTestSuite.testBooleanColumnAggregation()
         })
 
         it('multiple columns', () => {

@@ -1,12 +1,12 @@
 import {AggregateColumn} from '../aggregation/aggregate_column_parsing'
-import {findReferencedColumns} from './search_for_referenced_columns'
+import {findReferencedColumn} from './search_for_referenced_columns'
 import {GetColumn} from '../value_expressions/get_column_parsing'
 
 export interface SingleColumnSelection {
     kind: 'single-column-selection'
-    parameterNameToTableAlias: { [parameter: string]: string },
-    operation: GetColumn | AggregateColumn,
-    referencedColumns: GetColumn[]
+    parameterNameToTableAlias: { [parameter: string]: string }
+    operation: GetColumn | AggregateColumn
+    referencedColumn: GetColumn
 
 }
 
@@ -18,6 +18,6 @@ export function createSingleColumnSelection(
         kind: 'single-column-selection',
         parameterNameToTableAlias,
         operation,
-        referencedColumns: findReferencedColumns(operation)
+        referencedColumn: findReferencedColumn(operation)
     }
 }

@@ -6,7 +6,7 @@ import {Employee} from '../model/employee'
 export class AggregationIntegrationTestSuite {
     constructor(private context: DatabaseContext, private employees: Table<Employee>) {}
 
-    testSingleColumnAggregation() {
+    testNumericColumnAggregation() {
         const salaries = testEmployees.map(e => e.salary)
 
         it('by maximization', () => {
@@ -37,6 +37,42 @@ export class AggregationIntegrationTestSuite {
             const actual = this.context.run(this.employees.average(e => e.salary))
 
             const expected = salaries.reduce((sum, salary) => sum + salary, 0.0) / salaries.length
+
+            return actual.should.eventually.equal(expected)
+        })
+    }
+
+    testBooleanColumnAggregation() {
+        const fulltimeAsNumbers: number[] = testEmployees.map(e => e.fulltime).map(fulltime => fulltime ? 1.0 : 0.0)
+
+        it('by maximization', () => {
+            const actual = this.context.run(this.employees.max(e => e.fulltime))
+
+            const expected = Math.max(...fulltimeAsNumbers)
+
+            return actual.should.eventually.equal(expected === 1.0)
+        })
+
+        it('by minimization', () => {
+            const actual = this.context.run(this.employees.min(e => e.fulltime))
+
+            const expected = Math.min(...fulltimeAsNumbers)
+
+            return actual.should.eventually.equal(expected === 1.0)
+        })
+
+        it('by summation', () => {
+            const actual = this.context.run(this.employees.sum(e => e.fulltime))
+
+            const expected = fulltimeAsNumbers.reduce((sum, item) => sum + item, 0.0)
+
+            return actual.should.eventually.equal(expected)
+        })
+
+        it('by averaging', () => {
+            const actual = this.context.run(this.employees.average(e => e.fulltime))
+
+            const expected = fulltimeAsNumbers.reduce((sum, item) => sum + item, 0.0) / fulltimeAsNumbers.length
 
             return actual.should.eventually.equal(expected)
         })

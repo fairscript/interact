@@ -6,10 +6,7 @@ import {createGroupOrderExpression} from '../parsing/sorting/group_sorting_parsi
 import {SingleColumnSelection} from '../parsing/selection/single_column_selection_parsing'
 import {GetColumn} from '../parsing/value_expressions/get_column_parsing'
 import {SelectStatement} from '../statements/select_statement'
-import {
-    createEmptyGroupSelectStatement,
-    GroupSelectStatement
-} from '../statements/group_select_statement'
+import {createEmptyGroupSelectStatement, GroupSelectStatement} from '../statements/group_select_statement'
 import {Filter} from '../parsing/filtering/filter_parsing'
 import {ColumnTypeRecord} from '../record'
 import {JoinExpression} from '../parsing/join_parsing'
@@ -18,16 +15,21 @@ import {createGetPartOfKey} from '../parsing/aggregation/get_part_of_key_parsing
 import {GroupSelection} from '../parsing/selection/selection_parsing'
 import {GroupAggregationOperation} from '../parsing/aggregation/group_aggregation_operation_parsing'
 import {createSingleGroupAggregationOperationSelection} from '../parsing/selection/single_group_aggregation_operation_selection'
+import {findReferencedColumn} from '../parsing/selection/search_for_referenced_columns'
 
-function checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders: OrderExpression[], selection: SingleColumnSelection|MapSelection): boolean {
+function checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(
+    orders: OrderExpression[],
+    selectionParameterNameToTableAlias: {[parameterName: string]: string},
+    referencedColumns: GetColumn[]): boolean {
+
     for (let indexOrder in orders) {
         const order = orders[indexOrder]
         const orderOperation = order.get
 
-        for (let indexMap in selection.referencedColumns) {
-            const selectOperation = selection.referencedColumns[indexMap]
+        for (let indexMap in referencedColumns) {
+            const selectOperation = referencedColumns[indexMap]
 
-            if (order.parameterNameToTableAlias[orderOperation.object] !== selection.parameterNameToTableAlias[selectOperation.object] ||
+            if (order.parameterNameToTableAlias[orderOperation.object] !== selectionParameterNameToTableAlias[selectOperation.object] ||
                 orderOperation.property !== selectOperation.property) {
                 return true
             }
@@ -55,15 +57,15 @@ function mapTableSelectionToGroupSelection(tableSelection: SingleColumnSelection
     switch (tableSelection.kind) {
         case 'single-column-selection':
             const {operation} = tableSelection
-            const getColumnOrConvertColumn = operation.kind === 'aggregate-column' ? operation.aggregated : operation
-            const getColumn = getColumnOrConvertColumn.kind === 'implicitly-convert-boolean-to-integer' ? getColumnOrConvertColumn.get : getColumnOrConvertColumn
 
-            return createSingleGroupAggregationOperationSelection(parameterNameToTableAlias, createGetPartOfKey(getColumn.property))
+            const {property} = findReferencedColumn(operation)
+
+            return createSingleGroupAggregationOperationSelection(parameterNameToTableAlias, createGetPartOfKey(property))
         case 'map-selection':
             const operations: [string, GroupAggregationOperation][] = tableSelection.operations.map(([alias, op]) => {
                 switch (op.kind) {
                     case 'get-column':
-                        return [alias, createGetPartOfKey(getColumn.property)]
+                        return [alias, createGetPartOfKey(op.property)]
                     case 'subselect-statement':
                         return [alias, op]
                 }
@@ -127,12 +129,13 @@ export function ensureColumnsInSelectDistinctClauseAreReferencedInOrderClauseRul
 
     const {orders} = statement
 
-    if (!checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders, selection)) {
+    const referencedColumns = selection.kind === 'single-column-selection' ? [selection.referencedColumn] : selection.referencedColumns
+
+    if (!checkIfColumnsReferencedInOrderClauseAreAbsentFromSelectClause(orders, selection.parameterNameToTableAlias, referencedColumns)) {
         return statement
     }
 
     const {tableName, columns, joins, filters, limit, offset} = statement
-    const {parameterNameToTableAlias, referencedColumns} = selection
 
     return adaptOrderedDistinct(
         tableName,
@@ -143,7 +146,7 @@ export function ensureColumnsInSelectDistinctClauseAreReferencedInOrderClauseRul
         orders,
         limit,
         offset,
-        parameterNameToTableAlias,
+        selection.parameterNameToTableAlias,
         referencedColumns)
 
 }

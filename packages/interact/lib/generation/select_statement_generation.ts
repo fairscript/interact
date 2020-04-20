@@ -19,14 +19,14 @@ export function generateSelectStatementSql(dialect: Dialect, statement: SelectSt
 
     const clauses: string[] = []
 
-    const {aliasEscape, namedParameterPrefix, generateConvertToInteger} = dialect
+    const {aliasEscape, namedParameterPrefix, generateConvertToInteger, generateConvertToFloat} = dialect
 
     switch (statement.kind) {
         case 'select-statement':
-            clauses.push(generateTableSelect(distinct, aliasEscape, namedParameterPrefix, generateConvertToInteger, statement.selection!, statement.columns, statement.joins.map(j => j.columns)))
+            clauses.push(generateTableSelect(distinct, aliasEscape, namedParameterPrefix, generateConvertToInteger, generateConvertToFloat, statement.selection!, statement.columns, statement.joins.map(j => j.columns)))
             break
         case 'group-select-statement':
-            clauses.push(generateGroupSelect(distinct, aliasEscape, namedParameterPrefix, generateConvertToInteger, statement.selection!, statement.key))
+            clauses.push(generateGroupSelect(distinct, aliasEscape, namedParameterPrefix, generateConvertToInteger, generateConvertToFloat, statement.selection!, statement.key))
             break
     }
 
@@ -51,7 +51,7 @@ export function generateSelectStatementSql(dialect: Dialect, statement: SelectSt
             clauses.push(generateGroupBy(key))
 
             if (orders.length > 0) {
-                clauses.push(generateGroupOrderBy(namedParameterPrefix, generateConvertToInteger, key, orders))
+                clauses.push(generateGroupOrderBy(namedParameterPrefix, generateConvertToInteger, generateConvertToFloat, key, orders))
             }
             break
     }

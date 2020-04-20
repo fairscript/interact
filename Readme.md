@@ -167,7 +167,7 @@ employees
 
 ```typescript
 employees
-	.map(e => ({ firstName: e.firstName, lastName: e.lastName }))
+    .map(e => ({ firstName: e.firstName, lastName: e.lastName }))
 ```
 
 ### Single table
@@ -290,7 +290,7 @@ employees.filter(e => e.firstName === 'John' && e.lastName === 'Doe')
 
 employees
     .filter(e => e.firstName === 'John')
-	.filter(e => e.lastName === 'Doe')
+    .filter(e => e.lastName === 'Doe')
 ```
 
 ### Disjunction
@@ -361,7 +361,7 @@ employees
 ```javascript
 employees
     .join(departments, e => e.departmentId, d => d.id)
-	.join(departments, e => e.companyId, c => c.id)
+    .join(departments, e => e.companyId, c => c.id)
 ```
 
 ### Column from a joined table
@@ -381,7 +381,7 @@ employees
         firstName: e.firstName,
     	lastName: e.lastName,
         department: d.name
-	})
+    })
 ```
 
 ### Selecting multiple tables
@@ -454,7 +454,9 @@ employees.map(
      employees,
      (subtable, e) => ({
          id: e.id,
-         averageSalaryInDepartment: subtable.filter(se => se.departmentId === e.departmentId).average(se => se.salary)
+         averageSalaryInDepartment: subtable
+             .filter(se => se.departmentId === e.departmentId)
+             .average(se => se.salary)
      }))
 ```
 
@@ -463,7 +465,7 @@ employees.map(
 ```typescript
 const promiseOfResults: Promise = context
 	.parallelRun({
-		numberOfEmployees: employees.count(),
+        numberOfEmployees: employees.count(),
         numberOfDepartments: departments.count(),
         numberOfCompanies: companies.count()
 	})
