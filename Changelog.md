@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.17.0
+- Removed BigQuery support
+
+## v0.16.1
+- Aggregation of Boolean columns, including integration tests
+- Improved readme
+- Included examples from the docs directory in the readme
+- Added integration tests for subqueries
+- Averaging now always returns a float, removed string averaging
+
 ## v0.16.0
 - Integration test suites for all three supported databases
 - Specification of integer/float column types
