@@ -1,6 +1,6 @@
 {
   "name": "@fairscript/interact-with-sqlite",
-  "version": "0.16.1",
+  "version": "0.17.0",
   "publishConfig": {
     "access": "public"
   },
@@ -26,7 +26,7 @@
     "test": "mocha -r ts-node/register test/**/*.test.ts"
   },
   "dependencies": {
-    "@fairscript/interact": "^0.16.1",
+    "@fairscript/interact": "^0.17.0",
     "sqlite3": "4.1.1"
   },
   "devDependencies": {

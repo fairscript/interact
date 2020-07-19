@@ -1,6 +1,6 @@
 {
   "name": "@fairscript/interact-with-postgres",
-  "version": "0.16.1",
+  "version": "0.17.0",
   "publishConfig": {
     "access": "public"
   },
@@ -27,7 +27,7 @@
     "test": "mocha -r ts-node/register test/**/*.test.ts --timeout 10000"
   },
   "dependencies": {
-    "@fairscript/interact": "^0.16.1",
+    "@fairscript/interact": "^0.17.0",
     "pg": "7.18.2",
     "yesql": "4.1.1"
   },
