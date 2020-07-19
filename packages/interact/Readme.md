@@ -1,6 +1,6 @@
 # Interact
 
-A database interaction library for node.js/JavaScript/TypeScript that uses code reflection to maximize type safety and minimize friction. Supports SQLite, PostgreSQL and Google BigQuery.
+A database interaction library for node.js/JavaScript/TypeScript that uses code reflection to maximize type safety and minimize friction. Supports PostgreSQL and SQLite.
 
 ## Installation
 
@@ -15,9 +15,6 @@ There is one additional module for each of the three supported databases:
 ```sh
 # Required for Postgres support
 npm install interact-with-postgres
-
-# Required for Google BigQuery support
-npm install interact-with-bigquery
 
 # Required for SQLite support
 npm install interact-with-sqlite
@@ -135,16 +132,6 @@ await pg.connect()
 const context = createPostgresContext(pg)
 
 await pg.end()
-```
-
-### BigQuery
-
-```typescript
-import {BigQuery} from '@google-cloud/bigquery'
-
-const bigQuery = new BigQuery(...)
-const context = createBigQueryContext(bigQuery, datasetName)
-                              
 ```
 
 ## Selection
